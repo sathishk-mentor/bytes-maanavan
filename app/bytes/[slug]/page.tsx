@@ -72,10 +72,6 @@ export default async function BytePage({ params }: BytePageProps) {
       label: category?.title || byte.category,
       href: `/category/${byte.category}`,
     },
-    {
-      label: byte.title,
-      href: `/bytes/${byte.slug}`,
-    },
   ];
 
   return (
