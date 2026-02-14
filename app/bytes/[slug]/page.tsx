@@ -80,7 +80,7 @@ export default async function BytePage({ params }: BytePageProps) {
 
   return (
     <>
-      <ByteHeader byte={byte} />
+      <ByteHeader byte={byte} breadcrumbItems={breadcrumbItems} />
 
       <div className="bg-white min-h-screen">
         <div className="relative">
@@ -89,11 +89,7 @@ export default async function BytePage({ params }: BytePageProps) {
 
           {/* Main Content Area */}
           <div className="ml-0 lg:ml-[300px] max-w-full lg:max-w-[900px] px-6 lg:px-12 py-10 relative z-10">
-            <Breadcrumbs items={breadcrumbItems} />
-
-            <div className="mt-8">
-              <ByteContent content={byte.content} />
-            </div>
+            <ByteContent content={byte.content} />
 
             <div className="mt-12">
               <PrevNextNav prev={prev} next={next} />
