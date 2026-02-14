@@ -13,16 +13,16 @@ export function PrevNextNav({ prev, next }: PrevNextNavProps) {
   }
 
   return (
-    <div className="mt-12 grid grid-cols-1 gap-4 border-t border-gray-800 pt-8 sm:grid-cols-2">
+    <div className="mt-12 grid grid-cols-1 gap-4 border-t border-gray-700 pt-8 sm:grid-cols-2">
       {prev && (
         <Link
           href={`/${prev.category}/${prev.slug}`}
-          className="group flex items-start rounded-lg border border-gray-800 bg-gray-900 p-6 transition-colors hover:border-primary-500 hover:bg-gray-800"
+          className="group flex items-start rounded-lg border border-gray-200 bg-white shadow-md p-6 transition-all hover:border-primary-300 hover:shadow-lg"
         >
-          <ArrowLeft className="mr-4 h-6 w-6 flex-shrink-0 text-gray-400 transition-colors group-hover:text-primary-400" />
+          <ArrowLeft className="mr-4 h-6 w-6 flex-shrink-0 text-gray-400 transition-colors group-hover:text-primary-600" />
           <div>
             <p className="text-sm font-medium text-gray-500">Previous</p>
-            <p className="mt-1 font-medium text-white group-hover:text-primary-400">
+            <p className="mt-1 font-medium text-gray-900 group-hover:text-primary-700">
               {prev.title}
             </p>
           </div>
@@ -32,15 +32,15 @@ export function PrevNextNav({ prev, next }: PrevNextNavProps) {
       {next && (
         <Link
           href={`/${next.category}/${next.slug}`}
-          className="group flex items-start justify-end rounded-lg border border-gray-800 bg-gray-900 p-6 text-right transition-colors hover:border-primary-500 hover:bg-gray-800 sm:col-start-2"
+          className="group flex items-start justify-end rounded-lg border border-gray-200 bg-white shadow-md p-6 text-right transition-all hover:border-primary-300 hover:shadow-lg sm:col-start-2"
         >
           <div>
             <p className="text-sm font-medium text-gray-500">Next</p>
-            <p className="mt-1 font-medium text-white group-hover:text-primary-400">
+            <p className="mt-1 font-medium text-gray-900 group-hover:text-primary-700">
               {next.title}
             </p>
           </div>
-          <ArrowRight className="ml-4 h-6 w-6 flex-shrink-0 text-gray-400 transition-colors group-hover:text-primary-400" />
+          <ArrowRight className="ml-4 h-6 w-6 flex-shrink-0 text-gray-400 transition-colors group-hover:text-primary-600" />
         </Link>
       )}
     </div>
