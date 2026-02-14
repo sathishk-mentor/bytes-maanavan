@@ -82,3 +82,29 @@ html {
 .accordion-sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.2);
 }
+
+/* Theme Card Content Styles */
+.theme-card-content {
+  @apply space-y-4;
+}
+
+.theme-card-content h3 {
+  @apply text-xl font-semibold text-gray-900 mb-3 mt-6 first:mt-0;
+}
+
+.theme-card-content p {
+  @apply text-gray-700 leading-relaxed;
+}
+
+.theme-card-content ul {
+  @apply space-y-2;
+}
+
+.theme-card-content li {
+  @apply text-gray-700;
+}
+
+/* Ensure callout boxes have proper spacing inside cards */
+.theme-card-content > div[class*="border-l-4"] {
+  @apply my-4;
+}

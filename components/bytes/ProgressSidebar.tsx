@@ -70,7 +70,7 @@ export function ProgressSidebar({ byteSlug, category, relatedBytes, totalCategor
 
         {relatedBytes.length > 0 && (
           <div className="mt-6">
-            <Button variant="primary" href={`/bytes/${relatedBytes[0].slug}`} className="w-full">
+            <Button variant="primary" href={`/${relatedBytes[0].category}/${relatedBytes[0].slug}`} className="w-full">
               Next Byte
             </Button>
           </div>
@@ -86,7 +86,7 @@ export function ProgressSidebar({ byteSlug, category, relatedBytes, totalCategor
             {relatedBytes.slice(0, 4).map((byte) => (
               <Link
                 key={byte.slug}
-                href={`/bytes/${byte.slug}`}
+                href={`/${byte.category}/${byte.slug}`}
                 className="group block rounded-lg border border-gray-200 p-3 transition-colors hover:border-primary-300 hover:bg-primary-50"
               >
                 <p className="text-sm font-medium text-gray-900 group-hover:text-primary-700">

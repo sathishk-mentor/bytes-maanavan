@@ -16,7 +16,7 @@ export function PrevNextNav({ prev, next }: PrevNextNavProps) {
     <div className="mt-12 grid grid-cols-1 gap-4 border-t border-gray-200 pt-8 sm:grid-cols-2">
       {prev && (
         <Link
-          href={`/bytes/${prev.slug}`}
+          href={`/${prev.category}/${prev.slug}`}
           className="group flex items-start rounded-lg border border-gray-200 p-6 transition-colors hover:border-primary-300 hover:bg-primary-50"
         >
           <ArrowLeft className="mr-4 h-6 w-6 flex-shrink-0 text-gray-400 transition-colors group-hover:text-primary-600" />
@@ -31,7 +31,7 @@ export function PrevNextNav({ prev, next }: PrevNextNavProps) {
 
       {next && (
         <Link
-          href={`/bytes/${next.slug}`}
+          href={`/${next.category}/${next.slug}`}
           className="group flex items-start justify-end rounded-lg border border-gray-200 p-6 text-right transition-colors hover:border-primary-300 hover:bg-primary-50 sm:col-start-2"
         >
           <div>

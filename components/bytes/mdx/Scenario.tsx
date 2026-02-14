@@ -7,12 +7,12 @@ interface ScenarioProps {
 
 export function Scenario({ title = 'Real-world Scenario', children }: ScenarioProps) {
   return (
-    <div className="my-6 rounded-lg border-l-4 border-orange-500 bg-orange-50 p-6">
-      <div className="flex items-start">
-        <Lightbulb className="mr-3 h-6 w-6 flex-shrink-0 text-orange-600" />
+    <div className="my-4 rounded-r-lg border-l-4 border-orange-400 bg-orange-50 p-4">
+      <div className="flex items-start gap-2">
+        <Lightbulb className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
         <div>
-          <h4 className="mb-2 font-bold text-orange-900">{title}</h4>
-          <div className="text-orange-800">{children}</div>
+          <h4 className="font-semibold text-orange-900 mb-2">{title}</h4>
+          <div className="text-gray-700 text-sm">{children}</div>
         </div>
       </div>
     </div>

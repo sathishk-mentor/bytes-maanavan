@@ -6,12 +6,12 @@ interface MistakesProps {
 
 export function Mistakes({ children }: MistakesProps) {
   return (
-    <div className="my-6 rounded-lg border-l-4 border-red-500 bg-red-50 p-6">
-      <div className="flex items-start">
-        <AlertTriangle className="mr-3 h-6 w-6 flex-shrink-0 text-red-600" />
+    <div className="my-4 rounded-r-lg border-l-4 border-red-400 bg-red-50 p-4">
+      <div className="flex items-start gap-2">
+        <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
         <div className="flex-1">
-          <h4 className="mb-3 font-bold text-red-900">Common Mistakes</h4>
-          <div className="text-red-800">{children}</div>
+          <h4 className="font-semibold text-red-900 mb-2">Common Mistakes</h4>
+          <div className="text-gray-700 text-sm">{children}</div>
         </div>
       </div>
     </div>

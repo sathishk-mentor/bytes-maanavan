@@ -1,4 +1,6 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import { ThemeCard } from './ThemeCard';
+import { BulletList } from './mdx/BulletList';
 import { Scenario } from './mdx/Scenario';
 import { Takeaways } from './mdx/Takeaways';
 import { PromptBox } from './mdx/PromptBox';
@@ -9,7 +11,7 @@ const components = {
   h2: ({ children, ...props }: any) => {
     const id = slugify(children.toString());
     return (
-      <h2 id={id} className="mt-10 mb-4 text-2xl font-bold text-gray-900" {...props}>
+      <h2 id={id} className="sr-only" {...props}>
         {children}
       </h2>
     );
@@ -17,11 +19,13 @@ const components = {
   h3: ({ children, ...props }: any) => {
     const id = slugify(children.toString());
     return (
-      <h3 id={id} className="mt-8 mb-3 text-xl font-semibold text-gray-900" {...props}>
+      <h3 id={id} className="text-xl font-semibold text-gray-900 mb-3" {...props}>
         {children}
       </h3>
     );
   },
+  ThemeCard,
+  BulletList,
   Scenario,
   Takeaways,
   PromptBox,

@@ -1,24 +1,21 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { ByteHeader } from '@/components/bytes/ByteHeader';
 import { ByteContent } from '@/components/bytes/ByteContent';
-import { ProgressSidebar } from '@/components/bytes/ProgressSidebar';
 import { PrevNextNav } from '@/components/bytes/PrevNextNav';
 import { AccordionTableOfContents } from '@/components/bytes/AccordionTableOfContents';
 import {
   getAllBytes,
   getByteBySlug,
   getAdjacentBytes,
-  getRelatedBytes,
-  getCategoryBytesCount,
   extractHeadings,
 } from '@/lib/mdx';
 import { getCategoryBySlug } from '@/lib/categories';
 
 interface BytePageProps {
   params: {
-    slug: string;
+    categorySlug: string;
+    byteSlug: string;
   };
 }
 
@@ -26,14 +23,15 @@ export async function generateStaticParams() {
   const bytes = await getAllBytes();
 
   return bytes.map((byte) => ({
-    slug: byte.slug,
+    categorySlug: byte.category,
+    byteSlug: byte.slug,
   }));
 }
 
 export async function generateMetadata({ params }: BytePageProps): Promise<Metadata> {
-  const byte = await getByteBySlug(params.slug);
+  const byte = await getByteBySlug(params.byteSlug);
 
-  if (!byte) {
+  if (!byte || byte.category !== params.categorySlug) {
     return {
       title: 'Byte Not Found',
     };
@@ -53,16 +51,17 @@ export async function generateMetadata({ params }: BytePageProps): Promise<Metad
 }
 
 export default async function BytePage({ params }: BytePageProps) {
-  const byte = await getByteBySlug(params.slug);
+  const { categorySlug, byteSlug } = params;
 
-  if (!byte) {
+  // Get byte and validate category matches
+  const byte = await getByteBySlug(byteSlug);
+
+  if (!byte || byte.category !== categorySlug) {
     notFound();
   }
 
   const category = getCategoryBySlug(byte.category);
-  const { prev, next } = await getAdjacentBytes(params.slug);
-  const relatedBytes = await getRelatedBytes(params.slug);
-  const totalCategoryBytes = await getCategoryBytesCount(byte.category);
+  const { prev, next } = await getAdjacentBytes(byteSlug);
 
   // Extract headings for accordion navigation
   const headings = extractHeadings(byte.content);

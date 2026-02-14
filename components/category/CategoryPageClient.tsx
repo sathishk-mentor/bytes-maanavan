@@ -67,7 +67,7 @@ export function CategoryPageClient({ bytes }: CategoryPageClientProps) {
         {/* Bytes List */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredBytes.map((byte) => (
-            <Link key={byte.slug} href={`/bytes/${byte.slug}`}>
+            <Link key={byte.slug} href={`/${byte.category}/${byte.slug}`}>
               <Card hover className="h-full">
                 <div className="flex items-start justify-between">
                   <Badge variant="level" level={byte.level}>

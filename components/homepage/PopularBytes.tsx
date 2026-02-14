@@ -23,7 +23,7 @@ export function PopularBytes({ bytes }: PopularBytesProps) {
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {bytes.slice(0, 8).map((byte) => (
-            <Link key={byte.slug} href={`/bytes/${byte.slug}`}>
+            <Link key={byte.slug} href={`/${byte.category}/${byte.slug}`}>
               <Card hover className="h-full">
                 <div className="flex items-start justify-between">
                   <Badge variant="level" level={byte.level}>

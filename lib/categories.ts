@@ -2,7 +2,7 @@ import { Category } from './types';
 
 export const CATEGORIES: Category[] = [
   {
-    slug: 'generative-ai',
+    slug: 'genai',
     title: 'Generative AI',
     description: 'Fundamentals of GenAI models and applications',
     icon: 'Sparkles',
@@ -38,7 +38,7 @@ export const CATEGORIES: Category[] = [
     heroLine: 'Connect systems and extend AI capabilities',
   },
   {
-    slug: 'cloud-basics',
+    slug: 'cloud',
     title: 'Cloud Basics',
     description: 'Essential cloud computing concepts',
     icon: 'Cloud',

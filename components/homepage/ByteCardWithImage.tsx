@@ -15,7 +15,7 @@ export function ByteCardWithImage({ byte, imageSrc }: ByteCardWithImageProps) {
   const placeholderImage = imageSrc || `https://placehold.co/800x450/0ea5e9/ffffff?text=${encodeURIComponent(byte.title.substring(0, 20))}`;
 
   return (
-    <Link href={`/bytes/${byte.slug}`} className="block h-full">
+    <Link href={`/${byte.category}/${byte.slug}`} className="block h-full">
       <Card hover className="h-full overflow-hidden p-0">
         {/* Image Section */}
         <div className="relative h-48 w-full">

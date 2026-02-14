@@ -6,12 +6,12 @@ interface TakeawaysProps {
 
 export function Takeaways({ children }: TakeawaysProps) {
   return (
-    <div className="my-6 rounded-lg border-l-4 border-green-500 bg-green-50 p-6">
-      <div className="flex items-start">
-        <CheckCircle2 className="mr-3 h-6 w-6 flex-shrink-0 text-green-600" />
+    <div className="my-4 rounded-r-lg border-l-4 border-green-400 bg-green-50 p-4">
+      <div className="flex items-start gap-2">
+        <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
         <div className="flex-1">
-          <h4 className="mb-3 font-bold text-green-900">Key Takeaways</h4>
-          <div className="text-green-800">{children}</div>
+          <h4 className="font-semibold text-green-900 mb-2">Key Takeaways</h4>
+          <div className="text-gray-700 text-sm">{children}</div>
         </div>
       </div>
     </div>
