@@ -1,0 +1,86 @@
+---
+title: "How LLMs Actually Work"
+slug: "how-llms-work"
+summary: "Understand the basic mechanics of Large Language Models without the complex math."
+category: "generative-ai"
+tags: ["llm", "ai", "ml", "basics"]
+level: "beginner"
+duration: "12 min"
+updatedAt: "2024-01-18"
+order: 2
+isPopular: false
+---
+
+# How LLMs Actually Work
+
+LLM-னு சொன்னா Large Language Model. But எப்படி இது work பண்ணுது?
+
+## The Basic Idea
+
+Think of an LLM as a super-smart autocomplete.
+
+Your phone keyboard suggests the next word:
+- Type "Good" → suggests "morning", "night", "job"
+
+LLMs do the same, but way more sophisticated:
+- They predict the next word based on billions of examples
+- They understand context way better
+- They can generate entire paragraphs
+
+## Training Process (Simple Version)
+
+1. **Data Collection**
+   - Read billions of web pages, books, code
+   - Like studying the entire internet
+
+2. **Pattern Learning**
+   - Find patterns in how words appear together
+   - Learn grammar, facts, writing styles
+
+3. **Fine-Tuning**
+   - Teach specific behaviors (be helpful, avoid harm)
+   - Align with human preferences
+
+## How It Generates Text
+
+When you type a prompt:
+
+1. **Tokenization**: Breaks your text into pieces
+   - "Hello world" → ["Hello", " world"]
+
+2. **Context Understanding**: Looks at ALL previous words
+   - Not just the last word, but the entire conversation
+
+3. **Probability Calculation**: Predicts next word
+   - "The cat sat on the ___"
+   - High probability: "mat", "chair", "floor"
+   - Low probability: "banana", "cloud"
+
+4. **Selection**: Picks a word (with some randomness)
+   - Too predictable = boring
+   - Too random = nonsense
+
+5. **Repeat**: Generates word by word until done
+
+## Why Temperature Matters
+
+**Temperature = 0** (Deterministic)
+- Always picks the most likely word
+- Consistent, predictable output
+- Good for: code, factual answers
+
+**Temperature = 1** (Creative)
+- Adds randomness to word selection
+- More creative, varied responses
+- Good for: stories, brainstorming
+
+## Limitations to Remember
+
+- **No Real Understanding**: Just pattern matching (very sophisticated, but still)
+- **Training Cutoff**: Doesn't know events after training
+- **No Internet Access**: Can't browse (unless given tools)
+- **Can Make Mistakes**: "Hallucinations" = confident wrong answers
+
+## What's Next?
+
+இப்போ basic-அ LLM எப்படி work பண்ணுதுன்னு தெரியும். Next byte-ல different types of AI models பார்ப்போம்!
