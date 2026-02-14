@@ -115,7 +115,7 @@ export function AccordionTableOfContents({ headings, byteSlug }: AccordionTableO
       {/* Sidebar */}
       <nav
         className={cn(
-          "fixed left-0 top-16 bottom-0 w-[300px] bg-white border-r border-gray-200 shadow-lg overflow-y-auto accordion-sidebar z-40 transition-transform duration-300",
+          "fixed left-0 top-16 bottom-0 w-[300px] bg-white border-r border-gray-200 shadow-lg overflow-y-auto accordion-sidebar z-30 transition-transform duration-300",
           "lg:translate-x-0",
           isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
@@ -148,31 +148,35 @@ export function AccordionTableOfContents({ headings, byteSlug }: AccordionTableO
             return (
               <div key={section.id} className="border-b border-gray-100">
                 {/* H2 Section Toggle */}
-                <button
-                  onClick={() => toggleSection(section.id)}
-                  className={cn(
-                    "w-full flex items-center justify-between px-5 py-3.5 text-sm font-medium hover:bg-gray-50 transition-all duration-200",
-                    activeId === section.id ? "text-primary-600 bg-primary-50" : "text-gray-900"
-                  )}
-                >
-                  <div className="flex items-center gap-3">
+                <div className="flex items-stretch">
+                  <button
+                    onClick={() => scrollToSection(section.id)}
+                    className={cn(
+                      "flex-1 flex items-center gap-3 px-5 py-3.5 text-sm font-medium hover:bg-gray-50 transition-all duration-200 text-left",
+                      activeId === section.id ? "text-primary-600 bg-primary-50" : "text-gray-900"
+                    )}
+                  >
                     <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 text-xs flex items-center justify-center text-gray-600 font-semibold">
                       {index + 1}
                     </span>
-                    <span className="text-left">{section.title}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
+                    <span className="flex-1">{section.title}</span>
                     {sectionVisited && (
                       <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
                     )}
+                  </button>
+                  <button
+                    onClick={() => toggleSection(section.id)}
+                    className="px-3 py-3.5 hover:bg-gray-50 transition-colors"
+                    aria-label={isExpanded ? "Collapse section" : "Expand section"}
+                  >
                     <ChevronRight
                       className={cn(
                         "w-4 h-4 text-gray-400 transition-transform duration-200 flex-shrink-0",
                         isExpanded && "rotate-90"
                       )}
                     />
-                  </div>
-                </button>
+                  </button>
+                </div>
 
                 {/* H3 Subsections */}
                 {isExpanded && section.subsections.length > 0 && (
