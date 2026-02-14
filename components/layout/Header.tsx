@@ -6,6 +6,7 @@ export function Header() {
     { href: '/category/generative-ai', label: 'GenAI' },
     { href: '/category/cloud-basics', label: 'Cloud' },
     { href: '/category/data-engineering', label: 'Data Engineering' },
+    { href: '/docs', label: 'Docs' },
     { href: '#examples', label: 'Examples' },
     { href: '#reference', label: 'Reference' },
     { href: '#live-classes', label: 'Live Classes' },
