@@ -10,7 +10,7 @@ interface ByteHeaderProps {
 
 export function ByteHeader({ byte }: ByteHeaderProps) {
   return (
-    <div className="border-b border-gray-200 bg-white pb-6">
+    <div className="border-b border-gray-200 bg-white pb-6 ml-0 lg:ml-[300px]">
       <div className="container-custom pt-8">
         <h1 className="text-4xl font-bold text-gray-900 md:text-5xl">
           {byte.title}
