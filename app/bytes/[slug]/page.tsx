@@ -85,10 +85,10 @@ export default async function BytePage({ params }: BytePageProps) {
       <div className="bg-white">
         <div className="relative">
           {/* Left Accordion Sidebar */}
-          <AccordionTableOfContents headings={headings} />
+          <AccordionTableOfContents headings={headings} byteSlug={byte.slug} />
 
           {/* Main Content Area */}
-          <div className="ml-[300px] max-w-[900px] px-12 py-10">
+          <div className="ml-0 lg:ml-[300px] max-w-full lg:max-w-[900px] px-6 lg:px-12 py-10">
             <Breadcrumbs items={breadcrumbItems} />
 
             <div className="mt-8">

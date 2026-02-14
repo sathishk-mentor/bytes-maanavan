@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, X, Menu, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { isByteComplete } from '@/lib/progress';
 
 interface Heading {
   id: string;
@@ -16,9 +17,22 @@ interface AccordionSection {
   subsections: Heading[];
 }
 
-export function AccordionTableOfContents({ headings }: { headings: Heading[] }) {
+interface AccordionTableOfContentsProps {
+  headings: Heading[];
+  byteSlug: string;
+}
+
+export function AccordionTableOfContents({ headings, byteSlug }: AccordionTableOfContentsProps) {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [activeId, setActiveId] = useState<string>('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const [visitedSections, setVisitedSections] = useState<Set<string>>(new Set());
+
+  // Check if byte is marked as complete
+  useEffect(() => {
+    setIsComplete(isByteComplete(byteSlug));
+  }, [byteSlug]);
 
   // Group H3s under their parent H2
   const sections: AccordionSection[] = [];
@@ -46,6 +60,8 @@ export function AccordionTableOfContents({ headings }: { headings: Heading[] }) 
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id);
+            // Mark section as visited
+            setVisitedSections(prev => new Set(prev).add(entry.target.id));
           }
         });
       },
@@ -72,58 +88,123 @@ export function AccordionTableOfContents({ headings }: { headings: Heading[] }) 
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Close mobile sidebar after navigation
+      setIsSidebarOpen(false);
     }
   };
 
   return (
-    <nav className="fixed left-0 top-16 bottom-0 w-[300px] bg-white border-r border-gray-200 shadow-sm overflow-y-auto accordion-sidebar">
-      <div className="py-6">
-        <div className="px-5 pb-3 border-b border-gray-100">
-          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-            Contents
-          </h2>
-        </div>
+    <>
+      {/* Mobile Hamburger Menu Button */}
+      <button
+        onClick={() => setIsSidebarOpen(true)}
+        className="fixed left-4 bottom-4 z-50 lg:hidden bg-primary-600 text-white p-3 rounded-full shadow-lg hover:bg-primary-700 transition-colors"
+        aria-label="Open table of contents"
+      >
+        <Menu className="w-6 h-6" />
+      </button>
 
-        {sections.map(section => {
-          const isExpanded = expandedSections.includes(section.id);
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
-          return (
-            <div key={section.id} className="border-b border-gray-100">
-              {/* H2 Section Toggle */}
-              <button
-                onClick={() => toggleSection(section.id)}
-                className="w-full flex items-center justify-between px-5 py-3.5 text-sm text-gray-900 font-medium hover:bg-gray-50 transition-all duration-200"
-              >
-                <span>{section.title}</span>
-                <ChevronRight
-                  className={cn(
-                    "w-4 h-4 text-gray-400 transition-transform duration-200",
-                    isExpanded && "rotate-90"
-                  )}
-                />
-              </button>
+      {/* Sidebar */}
+      <nav
+        className={cn(
+          "fixed left-0 top-16 bottom-0 w-[300px] bg-white border-r border-gray-200 shadow-lg overflow-y-auto accordion-sidebar z-40 transition-transform duration-300",
+          "lg:translate-x-0",
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        )}
+      >
+        {/* Mobile Close Button */}
+        <button
+          onClick={() => setIsSidebarOpen(false)}
+          className="absolute top-4 right-4 lg:hidden text-gray-400 hover:text-gray-600 p-1"
+          aria-label="Close table of contents"
+        >
+          <X className="w-5 h-5" />
+        </button>
 
-              {/* H3 Subsections */}
-              {isExpanded && section.subsections.length > 0 && (
-                <div className="bg-gray-50/50">
-                  {section.subsections.map(sub => (
-                    <button
-                      key={sub.id}
-                      onClick={() => scrollToSection(sub.id)}
-                      className={cn(
-                        "w-full text-left px-5 py-2 pl-14 text-xs text-gray-600 hover:bg-gray-50 transition-all duration-200",
-                        activeId === sub.id && "border-l-[3px] border-primary-600 bg-primary-50 text-primary-600 font-medium"
-                      )}
-                    >
-                      {sub.text}
-                    </button>
-                  ))}
-                </div>
+        <div className="py-6">
+          <div className="px-5 pb-3 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Contents
+              </h2>
+              {isComplete && (
+                <CheckCircle2 className="w-4 h-4 text-green-600" />
               )}
             </div>
-          );
-        })}
-      </div>
-    </nav>
+          </div>
+
+          {sections.map((section, index) => {
+            const isExpanded = expandedSections.includes(section.id);
+            const sectionVisited = visitedSections.has(section.id);
+
+            return (
+              <div key={section.id} className="border-b border-gray-100">
+                {/* H2 Section Toggle */}
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  className={cn(
+                    "w-full flex items-center justify-between px-5 py-3.5 text-sm font-medium hover:bg-gray-50 transition-all duration-200",
+                    activeId === section.id ? "text-primary-600 bg-primary-50" : "text-gray-900"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 text-xs flex items-center justify-center text-gray-600 font-semibold">
+                      {index + 1}
+                    </span>
+                    <span className="text-left">{section.title}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {sectionVisited && (
+                      <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
+                    )}
+                    <ChevronRight
+                      className={cn(
+                        "w-4 h-4 text-gray-400 transition-transform duration-200 flex-shrink-0",
+                        isExpanded && "rotate-90"
+                      )}
+                    />
+                  </div>
+                </button>
+
+                {/* H3 Subsections */}
+                {isExpanded && section.subsections.length > 0 && (
+                  <div className="bg-gray-50/50">
+                    {section.subsections.map(sub => {
+                      const subVisited = visitedSections.has(sub.id);
+
+                      return (
+                        <button
+                          key={sub.id}
+                          onClick={() => scrollToSection(sub.id)}
+                          className={cn(
+                            "w-full text-left px-5 py-2 pl-14 text-xs hover:bg-gray-100 transition-all duration-200 flex items-center justify-between group",
+                            activeId === sub.id
+                              ? "border-l-[3px] border-primary-600 bg-primary-50 text-primary-600 font-medium"
+                              : "text-gray-600"
+                          )}
+                        >
+                          <span>{sub.text}</span>
+                          {subVisited && (
+                            <CheckCircle2 className="w-3 h-3 text-green-600 mr-2 opacity-60 group-hover:opacity-100" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </nav>
+    </>
   );
 }
