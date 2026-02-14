@@ -8,7 +8,7 @@ export default function NotFound() {
         <h1 className="text-6xl font-bold text-gray-900">404</h1>
         <p className="mt-4 text-xl text-gray-600">Byte Not Found</p>
         <p className="mt-2 text-gray-500">
-          The byte you're looking for doesn't exist.
+          The byte you&apos;re looking for doesn&apos;t exist.
         </p>
         <div className="mt-8">
           <Button href="/" variant="primary">
