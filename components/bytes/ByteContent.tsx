@@ -19,7 +19,7 @@ const components = {
   h3: ({ children, ...props }: any) => {
     const id = slugify(children.toString());
     return (
-      <h3 id={id} className="text-xl font-semibold text-gray-900 mb-3" {...props}>
+      <h3 id={id} className="text-xl font-semibold text-white mb-3" {...props}>
         {children}
       </h3>
     );

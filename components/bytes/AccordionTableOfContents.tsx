@@ -115,7 +115,7 @@ export function AccordionTableOfContents({ headings, byteSlug }: AccordionTableO
       {/* Sidebar */}
       <nav
         className={cn(
-          "fixed left-0 top-16 bottom-0 w-[300px] bg-white border-r border-gray-200 shadow-lg overflow-y-auto accordion-sidebar z-30 transition-transform duration-300",
+          "fixed left-0 top-16 bottom-0 w-[300px] bg-gray-900 border-r border-gray-800 shadow-lg overflow-y-auto accordion-sidebar z-30 transition-transform duration-300",
           "lg:translate-x-0",
           isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
@@ -123,7 +123,7 @@ export function AccordionTableOfContents({ headings, byteSlug }: AccordionTableO
         {/* Mobile Close Button */}
         <button
           onClick={() => setIsSidebarOpen(false)}
-          className="absolute top-4 right-4 lg:hidden text-gray-400 hover:text-gray-600 p-1"
+          className="absolute top-4 right-4 lg:hidden text-gray-400 hover:text-gray-200 p-1"
           aria-label="Close table of contents"
         >
           <X className="w-5 h-5" />
@@ -135,14 +135,14 @@ export function AccordionTableOfContents({ headings, byteSlug }: AccordionTableO
             const sectionVisited = visitedSections.has(section.id);
 
             return (
-              <div key={section.id} className="border-b border-gray-100">
+              <div key={section.id} className="border-b border-gray-800">
                 {/* H2 Section */}
                 <div className="flex items-center group">
                   <button
                     onClick={() => scrollToSection(section.id)}
                     className={cn(
-                      "flex-1 flex items-center gap-2 px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-all duration-200 text-left",
-                      activeId === section.id ? "text-primary-600 bg-primary-50" : "text-gray-900"
+                      "flex-1 flex items-center gap-2 px-4 py-3 text-sm font-medium hover:bg-gray-800 transition-all duration-200 text-left",
+                      activeId === section.id ? "text-primary-400 bg-gray-800" : "text-gray-300"
                     )}
                   >
                     <span className="flex-1">{section.title}</span>
@@ -153,8 +153,8 @@ export function AccordionTableOfContents({ headings, byteSlug }: AccordionTableO
                   <button
                     onClick={() => toggleSection(section.id)}
                     className={cn(
-                      "px-3 py-3 hover:bg-gray-100 transition-colors border-l border-gray-100",
-                      activeId === section.id && "bg-primary-50"
+                      "px-3 py-3 hover:bg-gray-800 transition-colors border-l border-gray-800",
+                      activeId === section.id && "bg-gray-800"
                     )}
                     aria-label={isExpanded ? "Collapse section" : "Expand section"}
                   >
@@ -169,7 +169,7 @@ export function AccordionTableOfContents({ headings, byteSlug }: AccordionTableO
 
                 {/* H3 Subsections */}
                 {isExpanded && section.subsections.length > 0 && (
-                  <div className="bg-gray-50/30">
+                  <div className="bg-gray-800/30">
                     {section.subsections.map(sub => {
                       const subVisited = visitedSections.has(sub.id);
 
@@ -178,10 +178,10 @@ export function AccordionTableOfContents({ headings, byteSlug }: AccordionTableO
                           key={sub.id}
                           onClick={() => scrollToSection(sub.id)}
                           className={cn(
-                            "w-full text-left px-4 py-2 pl-8 text-xs hover:bg-gray-100 transition-all duration-200 flex items-center justify-between group",
+                            "w-full text-left px-4 py-2 pl-8 text-xs hover:bg-gray-800 transition-all duration-200 flex items-center justify-between group",
                             activeId === sub.id
-                              ? "border-l-2 border-primary-600 bg-primary-50 text-primary-700 font-medium"
-                              : "text-gray-600 border-l-2 border-transparent"
+                              ? "border-l-2 border-primary-400 bg-gray-800 text-primary-400 font-medium"
+                              : "text-gray-400 border-l-2 border-transparent"
                           )}
                         >
                           <span>{sub.text}</span>
