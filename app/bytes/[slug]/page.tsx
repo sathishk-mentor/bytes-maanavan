@@ -5,12 +5,14 @@ import { ByteHeader } from '@/components/bytes/ByteHeader';
 import { ByteContent } from '@/components/bytes/ByteContent';
 import { ProgressSidebar } from '@/components/bytes/ProgressSidebar';
 import { PrevNextNav } from '@/components/bytes/PrevNextNav';
+import { AccordionTableOfContents } from '@/components/bytes/AccordionTableOfContents';
 import {
   getAllBytes,
   getByteBySlug,
   getAdjacentBytes,
   getRelatedBytes,
   getCategoryBytesCount,
+  extractHeadings,
 } from '@/lib/mdx';
 import { getCategoryBySlug } from '@/lib/categories';
 
@@ -62,6 +64,9 @@ export default async function BytePage({ params }: BytePageProps) {
   const relatedBytes = await getRelatedBytes(params.slug);
   const totalCategoryBytes = await getCategoryBytesCount(byte.category);
 
+  // Extract headings for accordion navigation
+  const headings = extractHeadings(byte.content);
+
   const breadcrumbItems = [
     {
       label: category?.title || byte.category,
@@ -77,26 +82,22 @@ export default async function BytePage({ params }: BytePageProps) {
     <>
       <ByteHeader byte={byte} />
 
-      <div className="bg-white py-12">
-        <div className="container-custom">
-          <Breadcrumbs items={breadcrumbItems} />
+      <div className="bg-white">
+        <div className="relative">
+          {/* Left Accordion Sidebar */}
+          <AccordionTableOfContents headings={headings} />
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr,320px]">
-            {/* Main Content */}
-            <div>
+          {/* Main Content Area */}
+          <div className="ml-[300px] max-w-[900px] px-12 py-10">
+            <Breadcrumbs items={breadcrumbItems} />
+
+            <div className="mt-8">
               <ByteContent content={byte.content} />
-              <PrevNextNav prev={prev} next={next} />
             </div>
 
-            {/* Sidebar */}
-            <aside className="lg:sticky lg:top-20 lg:self-start">
-              <ProgressSidebar
-                byteSlug={byte.slug}
-                category={byte.category}
-                relatedBytes={relatedBytes}
-                totalCategoryBytes={totalCategoryBytes}
-              />
-            </aside>
+            <div className="mt-12">
+              <PrevNextNav prev={prev} next={next} />
+            </div>
           </div>
         </div>
       </div>

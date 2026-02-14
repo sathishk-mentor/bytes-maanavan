@@ -159,3 +159,38 @@ export async function getBeginnerBytesCount(category: string): Promise<number> {
   const bytes = await getBytesByCategory(category);
   return bytes.filter((byte) => byte.level === 'beginner').length;
 }
+
+// Heading extraction for accordion navigation
+export interface Heading {
+  id: string;
+  text: string;
+  level: 2 | 3;
+}
+
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+export function extractHeadings(mdxContent: string): Heading[] {
+  const headings: Heading[] = [];
+  const lines = mdxContent.split('\n');
+
+  for (const line of lines) {
+    if (line.startsWith('## ') && !line.startsWith('### ')) {
+      const text = line.substring(3).trim();
+      headings.push({ id: slugify(text), text, level: 2 });
+    }
+    else if (line.startsWith('### ')) {
+      const text = line.substring(4).trim();
+      headings.push({ id: slugify(text), text, level: 3 });
+    }
+  }
+
+  return headings;
+}

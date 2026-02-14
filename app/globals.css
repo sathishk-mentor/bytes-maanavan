@@ -58,3 +58,27 @@
     text-wrap: balance;
   }
 }
+
+/* Accordion Sidebar Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+/* Custom Scrollbar for Accordion Sidebar */
+.accordion-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.accordion-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.accordion-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.accordion-sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
