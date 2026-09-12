@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, ChevronDown, Menu, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, BookOpen, ChevronDown, Mail, Menu, Phone, X } from 'lucide-react';
 import { getAllCategories } from '@/lib/categories';
 
 const courseLibrary = 'https://www.maanavan.com/course-library';
@@ -13,6 +13,7 @@ export function Header() {
   const [tracksOpen, setTracksOpen] = useState(false);
   const categories = getAllCategories();
   return <header className="site-header sticky top-0 z-50">
+    <div className="header-utility-bar"><div className="header-utility-inner"><div className="header-utility-contact"><a href="tel:+918073044127"><Phone/><span>Call:</span> +91 8073044127</a><a className="utility-email" href="mailto:info@maanavan.com"><Mail/><span>Email:</span> info@maanavan.com</a></div><div className="header-utility-right"><a className="learner-portal-link" href="https://courses.maanavanlearncode.com/learn">Learner Portal <ArrowUpRight/></a><a className="membership-portal-link" href={membership}>Membership Portal <ArrowUpRight/></a></div></div></div>
     <div className="header-main container-custom">
       <Link href="/" className="brand-lockup" aria-label="MaanavaN Bytes home"><span><strong>MaanavaN<sup>®</sup></strong><small><i/>AI UPSKILLS</small></span><b>BYTES</b></Link>
       <nav className="desktop-nav" aria-label="Main navigation">
