@@ -29,7 +29,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: BytePageProps): Promise<Metadata> {
-  const byte = legacyByte(params.categorySlug, params.byteSlug) || await getByteBySlug(params.byteSlug);
+  const byte = await getByteBySlug(params.byteSlug) || legacyByte(params.categorySlug, params.byteSlug);
 
   if (!byte || byte.category !== params.categorySlug) {
     return {
@@ -54,7 +54,7 @@ export default async function BytePage({ params }: BytePageProps) {
   const { categorySlug, byteSlug } = params;
 
   // Get byte and validate category matches
-  const byte = legacyByte(categorySlug, byteSlug) || await getByteBySlug(byteSlug);
+  const byte = await getByteBySlug(byteSlug) || legacyByte(categorySlug, byteSlug);
 
   if (!byte || byte.category !== categorySlug) {
     notFound();
