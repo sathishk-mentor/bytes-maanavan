@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Sparkles } from 'lucide-react';
 
 interface PromptBoxProps {
   children: React.ReactNode;
@@ -32,19 +32,10 @@ export function PromptBox({ children, label = 'Copy-paste prompt' }: PromptBoxPr
   return (
     <div className="prompt-box">
       <div className="prompt-box-header">
-        <span>{label}</span>
-      <button
-        onClick={handleCopy}
-        className={copied ? 'is-copied' : ''}
-        title="Copy prompt"
-        aria-label={copied ? 'Prompt copied' : 'Copy prompt'}
-      >
-        {copied ? (
-          <><Check />Copied</>
-        ) : (
-          <><Copy />Copy prompt</>
-        )}
-      </button>
+        <div className="prompt-box-title"><span className="prompt-spark"><Sparkles /></span><span><small>READY TO USE</small><strong>{label}</strong></span></div>
+        <button onClick={handleCopy} className={copied ? 'is-copied' : ''} title="Copy prompt" aria-label={copied ? 'Prompt copied' : 'Copy prompt'}>
+          {copied ? <><Check />Copied</> : <><Copy />Copy prompt</>}
+        </button>
       </div>
 
       <div className="prompt-box-content">
