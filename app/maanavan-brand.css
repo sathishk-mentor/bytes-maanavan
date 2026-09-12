@@ -147,4 +147,40 @@
 .byte-card-label,.byte-callout-header>div>span,.byte-section-title:before{color:#914a34;font-size:.72rem;font-weight:850;line-height:1.5;letter-spacing:.14em}
 @media(max-width:1450px) and (min-width:801px){.byte-reading-layout{grid-template-columns:15.5rem minmax(0,52.5rem);max-width:74rem}.byte-trust-rail{display:none}}
 @media(max-width:800px){.byte-hero-grid h1{font-size:clamp(2.6rem,12vw,3.5rem);line-height:1.04}.byte-deck{font-size:1.05rem;line-height:1.7}.byte-section-title{font-size:2.25rem;line-height:1.12}.byte-subtitle{font-size:1.2rem}.byte-paragraph,.byte-article>.byte-paragraph,.theme-card-content p,.byte-theme-card .theme-card-content p,.byte-callout-body{font-size:1.02rem!important;line-height:1.78!important}}
+
+/* Larger navigation and high-legibility animated explainers */
+.byte-toc{padding:1.4rem}
+.byte-toc header{font-size:.72rem;line-height:1.5}
+.byte-toc nav button{grid-template-columns:1.8rem 1fr;gap:.55rem;padding:.9rem .1rem;color:#4f646c;font-size:.88rem;font-weight:620;line-height:1.48}
+.byte-toc nav span{font-size:.7rem;font-weight:750}
+.byte-toc footer b{font-size:.78rem}.byte-toc footer small{font-size:.69rem;line-height:1.45}
+.llm-answer-flow,.concept-visual{border-radius:1.5rem;box-shadow:0 22px 52px rgba(7,55,82,.1)}
+.llm-infographic-header,.concept-visual>header{padding:1.3rem 1.5rem}
+.llm-infographic-header span,.concept-visual>header span{font-size:.68rem}
+.llm-infographic-header h3,.concept-visual>header h3{font-size:1.2rem;line-height:1.4}
+.llm-infographic-header>p{font-size:.75rem}
+.llm-live-demo{padding:1.7rem;gap:.85rem}
+.llm-live-demo:before{content:"";position:absolute;z-index:1;top:0;bottom:0;width:18%;background:linear-gradient(90deg,transparent,rgba(91,225,234,.09),transparent);animation:diagram-scan 5s linear infinite;pointer-events:none}
+.llm-live-demo small{font-size:.58rem}
+.llm-demo-prompt strong,.llm-demo-answer strong{font-size:.78rem;line-height:1.6}
+.llm-token-stream span{padding:.42rem .5rem;font-size:.68rem}
+.attention-core{width:3.15rem;height:3.15rem;font-size:.8rem}
+.orbit-one{width:4.35rem;height:4.35rem}.orbit-two{width:5.35rem;height:3.15rem}.orbit-three{width:3.2rem;height:5.45rem}
+.llm-probability em,.llm-probability i{font-size:.61rem}
+.llm-flow-track{gap:1rem;padding:1.5rem}
+.llm-flow-node{min-height:9.4rem;padding:1.15rem;animation:node-breathe 4.2s ease-in-out infinite}
+.llm-flow-wrap:nth-child(2) .llm-flow-node{animation-delay:.35s}.llm-flow-wrap:nth-child(3) .llm-flow-node{animation-delay:.7s}.llm-flow-wrap:nth-child(4) .llm-flow-node{animation-delay:1.05s}.llm-flow-wrap:nth-child(5) .llm-flow-node{animation-delay:1.4s}.llm-flow-wrap:nth-child(6) .llm-flow-node{animation-delay:1.75s}
+.llm-flow-node>span{font-size:.66rem}.llm-flow-node svg{width:1.55rem;height:1.55rem}.llm-flow-node strong{font-size:.94rem}.llm-flow-node small{font-size:.75rem;line-height:1.48}
+.llm-answer-flow figcaption,.concept-visual figcaption{padding:.9rem 1.2rem;font-size:.75rem;line-height:1.55}
+.context-inputs strong{font-size:.8rem}.context-inputs svg{width:1.15rem}.context-window>span{font-size:.65rem}.context-window b{font-size:.74rem}.context-window small{font-size:.73rem;line-height:1.5}
+.visual-sentence,.visual-ids{font-size:.82rem}.visual-tokens span{font-size:.72rem}.visual-ids>span{font-size:.72rem}.visual-ids small{font-size:.62rem}
+.product-capabilities span{font-size:.74rem}.product-capabilities svg{width:1.05rem}.model-core small{font-size:.61rem}.model-core strong{font-size:.86rem}
+.grounding-wrap small{font-size:.61rem}.grounding-wrap strong{font-size:.76rem;line-height:1.42}.grounding-wrap>div svg{width:1.2rem}.grounding-outcome strong{font-size:.84rem}.grounding-outcome small{font-size:.7rem}
+.grounding-wrap>div{animation:workflow-focus 5s ease-in-out infinite}.grounding-wrap:nth-child(2)>div{animation-delay:.45s}.grounding-wrap:nth-child(3)>div{animation-delay:.9s}.grounding-wrap:nth-child(4)>div{animation-delay:1.35s}.grounding-wrap:nth-child(5)>div{animation-delay:1.8s}
+@keyframes diagram-scan{0%{left:-22%}100%{left:105%}}
+@keyframes node-breathe{0%,75%,100%{border-color:#d8e6ed;box-shadow:none;transform:translateY(0)}12%{border-color:#79cbd6;box-shadow:0 12px 28px rgba(8,123,145,.13);transform:translateY(-3px)}}
+@keyframes workflow-focus{0%,78%,100%{border-color:#d9e6ec;background:#f8fbfc;transform:translateY(0)}12%{border-color:#72ccd6;background:#eaf9fa;transform:translateY(-3px)}}
+@media(max-width:1450px) and (min-width:801px){.byte-reading-layout{grid-template-columns:16.5rem minmax(0,52.5rem);max-width:75rem}}
+@media(max-width:800px){.byte-toc nav button{font-size:.95rem;padding:1rem .15rem}.llm-live-demo{padding:1.2rem}.llm-flow-node{min-height:auto}.llm-infographic-header h3,.concept-visual>header h3{font-size:1.08rem}.context-inputs strong,.product-capabilities span{font-size:.74rem}}
+@media(prefers-reduced-motion:reduce){.llm-live-demo:before,.llm-flow-node,.grounding-wrap>div{animation:none!important}}
 @media(prefers-reduced-motion:reduce){.hero-visual-label span,.hero-token-row i,.hero-model-orbit b,.hero-model-orbit span,.hero-token-visual{animation:none!important}}
