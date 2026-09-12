@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { ByteMetadata, Byte } from './types';
+import { legacyByte, legacyBytes } from './legacy-content';
 
 const contentDirectory = path.join(process.cwd(), 'content/bytes');
 
@@ -37,9 +38,7 @@ function getAllMdxFiles(dir: string): string[] {
 }
 
 export async function getAllBytes(): Promise<ByteMetadata[]> {
-  if (!ensureContentDirectory()) {
-    return [];
-  }
+  if (!ensureContentDirectory()) return legacyBytes;
 
   const mdxFiles = getAllMdxFiles(contentDirectory);
 
@@ -62,7 +61,8 @@ export async function getAllBytes(): Promise<ByteMetadata[]> {
   });
 
   // Sort by category order, then by byte order
-  return bytes.sort((a, b) => {
+  const sourceBytes = legacyBytes.map((legacy) => bytes.find((byte) => byte.slug === legacy.slug) || legacy);
+  return sourceBytes.sort((a, b) => {
     if (a.category === b.category) {
       return a.order - b.order;
     }
@@ -71,9 +71,7 @@ export async function getAllBytes(): Promise<ByteMetadata[]> {
 }
 
 export async function getByteBySlug(slug: string): Promise<Byte | null> {
-  if (!ensureContentDirectory()) {
-    return null;
-  }
+  if (!ensureContentDirectory()) return legacyBytes.find((item) => item.slug === slug) ? legacyByte(legacyBytes.find((item) => item.slug === slug)!.category, slug) : null;
 
   const mdxFiles = getAllMdxFiles(contentDirectory);
 
@@ -98,7 +96,8 @@ export async function getByteBySlug(slug: string): Promise<Byte | null> {
     }
   }
 
-  return null;
+  const metadata = legacyBytes.find((item) => item.slug === slug);
+  return metadata ? legacyByte(metadata.category, slug) : null;
 }
 
 export async function getBytesByCategory(category: string): Promise<ByteMetadata[]> {

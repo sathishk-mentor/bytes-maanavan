@@ -1,51 +1,10 @@
 import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
+import { ArrowUpRight } from 'lucide-react';
 
 export function Header() {
-  const navLinks = [
-    { href: '/category/generative-ai', label: 'GenAI' },
-    { href: '/category/cloud-basics', label: 'Cloud' },
-    { href: '/category/data-engineering', label: 'Data Engineering' },
-    { href: '/docs', label: 'Docs' },
-    { href: '#examples', label: 'Examples' },
-    { href: '#reference', label: 'Reference' },
-    { href: '#live-classes', label: 'Live Classes' },
-  ];
-
-  return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
-      <div className="container-custom">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-primary-600">MaanavaN</span>
-            <span className="text-2xl font-bold text-gray-900">Bytes</span>
-          </Link>
-
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* CTA Buttons */}
-          <div className="flex items-center space-x-3">
-            <Button variant="primary" size="sm" href="#start-genai">
-              Start GenAI Foundations
-            </Button>
-            <Button variant="secondary" size="sm" href="https://chat.whatsapp.com/invite">
-              Join WhatsApp
-            </Button>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
+  return <header className="sticky top-0 z-50 border-b border-white/10 bg-[#071f2c]/95 text-white backdrop-blur"><div className="container-custom flex h-[72px] items-center justify-between">
+    <Link href="/" className="flex items-baseline gap-2"><span className="text-xl font-bold tracking-tight">MaanavaN</span><span className="rounded-full bg-cyan-300 px-2 py-0.5 text-xs font-bold text-[#06202d]">BYTES</span></Link>
+    <nav className="hidden items-center gap-7 text-sm text-slate-300 lg:flex"><Link href="/genai/">GenAI</Link><Link href="/ai-agents/">AI Agents</Link><Link href="/data-engineering/">Data</Link><Link href="/cloud-devops/">Cloud & DevOps</Link><Link href="/case-studies/">Case Studies</Link></nav>
+    <Link href="https://www.maanavan.com/" className="flex items-center gap-1 text-sm font-semibold text-cyan-300">MaanavaN Home <ArrowUpRight className="h-4 w-4"/></Link>
+  </div></header>;
 }

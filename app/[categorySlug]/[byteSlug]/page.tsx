@@ -11,6 +11,7 @@ import {
   extractHeadings,
 } from '@/lib/mdx';
 import { getCategoryBySlug } from '@/lib/categories';
+import { legacyByte, legacyBytes } from '@/lib/legacy-content';
 
 interface BytePageProps {
   params: {
@@ -20,16 +21,14 @@ interface BytePageProps {
 }
 
 export async function generateStaticParams() {
-  const bytes = await getAllBytes();
-
-  return bytes.map((byte) => ({
+  return legacyBytes.map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
 }
 
 export async function generateMetadata({ params }: BytePageProps): Promise<Metadata> {
-  const byte = await getByteBySlug(params.byteSlug);
+  const byte = legacyByte(params.categorySlug, params.byteSlug) || await getByteBySlug(params.byteSlug);
 
   if (!byte || byte.category !== params.categorySlug) {
     return {
@@ -54,7 +53,7 @@ export default async function BytePage({ params }: BytePageProps) {
   const { categorySlug, byteSlug } = params;
 
   // Get byte and validate category matches
-  const byte = await getByteBySlug(byteSlug);
+  const byte = legacyByte(categorySlug, byteSlug) || await getByteBySlug(byteSlug);
 
   if (!byte || byte.category !== categorySlug) {
     notFound();
