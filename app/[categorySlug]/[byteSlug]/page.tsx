@@ -77,21 +77,17 @@ export default async function BytePage({ params }: BytePageProps) {
     <>
       <ByteHeader byte={byte} breadcrumbItems={breadcrumbItems} />
 
-      <div className="bg-gray-950 min-h-screen">
-        <div className="relative">
-          {/* Left Accordion Sidebar */}
+      <div className="byte-reading-canvas">
+        <div className="byte-reading-layout">
           <AccordionTableOfContents headings={headings} byteSlug={byte.slug} />
-
-          {/* Main Content Area */}
-          <div className="ml-0 lg:ml-[300px] max-w-full lg:max-w-[900px] px-6 lg:px-12 py-10 relative z-10">
+          <div className="byte-main-column">
             <ByteContent content={byte.content} />
-
             <CourseRecommendation categorySlug={categorySlug} />
-
             <div className="mt-12">
               <PrevNextNav prev={prev} next={next} />
             </div>
           </div>
+          <aside className="byte-trust-rail"><div><span>REVIEWED BY</span><h3>Sathish Kumar</h3><p>Founder & Chief AI Educator, MaanavaN</p><small>17+ years of industry and learning experience</small></div><div><span>LEARNING FORMAT</span><p>Easy English</p><p>Limited Tamil support</p><p>Real-world application</p><p>Interview preparation</p></div></aside>
         </div>
       </div>
     </>

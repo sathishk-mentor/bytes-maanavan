@@ -12,10 +12,10 @@ interface ThemeCardProps {
 
 export function ThemeCard({ title, badge, children, takeaway }: ThemeCardProps) {
   return (
-    <Card className="mb-8 bg-white border-gray-200 shadow-lg">
+    <Card className="byte-theme-card">
       {/* Card Header */}
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+      <div className="byte-theme-heading">
+        <h2>{title}</h2>
         {badge && (
           <Badge variant="tag" className="text-xs">
             {badge}
@@ -24,7 +24,7 @@ export function ThemeCard({ title, badge, children, takeaway }: ThemeCardProps) 
       </div>
 
       {/* Card Body */}
-      <div className="theme-card-content space-y-4">
+      <div className="theme-card-content">
         {children}
       </div>
 
