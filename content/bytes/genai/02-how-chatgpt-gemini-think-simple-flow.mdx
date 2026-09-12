@@ -39,6 +39,8 @@ Some modern systems spend extra computation on difficult problems, use tools or 
 
 Your visible prompt may be only one part of the actual input. The application can combine:
 
+<ContextAssemblyVisual />
+
 - system instructions defining behaviour and boundaries;
 - your current question;
 - relevant conversation history;
@@ -51,6 +53,8 @@ This combined input must fit within the model’s **context window**. A larger c
 ### Step 2: Text becomes tokens
 
 A tokenizer divides text into units called tokens and maps them to numeric IDs. A token may be a whole short word, part of a word, punctuation or another text fragment. Token boundaries depend on the tokenizer; they are not the same as words.
+
+<TokenisationVisual />
 
 This matters because model input limits and API usage are commonly measured in tokens. The same sentence can require different token counts across models or languages.
 
@@ -129,6 +133,8 @@ Connecting an application to trusted retrieval, tools or validators can reduce p
 
 ## Chat application vs language model
 
+<ProductVsModelVisual />
+
 <ThemeCard title="Do not confuse the product with the model" badge="System view">
 
 A **language model** generates or scores token sequences. A **chat application** can manage user accounts, conversation storage, attachments, web search, code execution, tool calls, safety policies, citations and the interface.
@@ -138,6 +144,8 @@ When two products use capable models but produce different answers, the reason m
 </ThemeCard>
 
 ## Real workplace scenario
+
+<GroundedAnswerVisual />
 
 A support team asks an AI assistant to draft a response using an approved troubleshooting guide.
 
