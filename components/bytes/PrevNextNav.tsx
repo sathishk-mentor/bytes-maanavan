@@ -13,18 +13,18 @@ export function PrevNextNav({ prev, next }: PrevNextNavProps) {
   }
 
   return (
-    <div className="mt-12 grid grid-cols-1 gap-4 border-t border-gray-700 pt-8 sm:grid-cols-2">
+    <nav className="byte-prev-next" aria-label="Continue learning">
       {prev && (
         <Link
           href={`/${prev.category}/${prev.slug}`}
-          className="group flex items-start rounded-lg border border-gray-200 bg-white shadow-md p-6 transition-all hover:border-primary-300 hover:shadow-lg"
+          className="byte-prev-card"
         >
-          <ArrowLeft className="mr-4 h-6 w-6 flex-shrink-0 text-gray-400 transition-colors group-hover:text-primary-600" />
+          <ArrowLeft />
           <div>
-            <p className="text-sm font-medium text-gray-500">Previous</p>
-            <p className="mt-1 font-medium text-gray-900 group-hover:text-primary-700">
+            <p>PREVIOUS BYTE</p>
+            <strong>
               {prev.title}
-            </p>
+            </strong>
           </div>
         </Link>
       )}
@@ -32,17 +32,17 @@ export function PrevNextNav({ prev, next }: PrevNextNavProps) {
       {next && (
         <Link
           href={`/${next.category}/${next.slug}`}
-          className="group flex items-start justify-end rounded-lg border border-gray-200 bg-white shadow-md p-6 text-right transition-all hover:border-primary-300 hover:shadow-lg sm:col-start-2"
+          className="byte-next-card"
         >
           <div>
-            <p className="text-sm font-medium text-gray-500">Next</p>
-            <p className="mt-1 font-medium text-gray-900 group-hover:text-primary-700">
+            <p>NEXT BYTE</p>
+            <strong>
               {next.title}
-            </p>
+            </strong>
           </div>
-          <ArrowRight className="ml-4 h-6 w-6 flex-shrink-0 text-gray-400 transition-colors group-hover:text-primary-600" />
+          <ArrowRight />
         </Link>
       )}
-    </div>
+    </nav>
   );
 }

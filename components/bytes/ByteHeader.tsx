@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BookOpenCheck, CheckCircle2, ChevronRight, Clock3, Sparkles, UserRoundCheck } from 'lucide-react';
+import { BookOpenCheck, CheckCircle2, ChevronRight, Clock3, Sparkles, UserRoundCheck, BrainCircuit } from 'lucide-react';
 import { ByteMetadata } from '@/lib/types';
 import { getCategoryBySlug } from '@/lib/categories';
 
@@ -9,7 +9,7 @@ export function ByteHeader({ byte }: { byte: ByteMetadata; breadcrumbItems?: {la
   return <header className="byte-editorial-hero"><div className="byte-hero-inner">
     <nav aria-label="Breadcrumb"><Link href="/">Bytes</Link><ChevronRight/><Link href={`/${byte.category}/`}>{category?.title}</Link><ChevronRight/><span>Lesson {String(byte.order).padStart(2,'0')}</span></nav>
     <div className="byte-hero-grid"><div><p className="byte-eyebrow"><Sparkles/>{category?.title} · BEGINNER GUIDE</p><h1>{byte.title}</h1><p className="byte-deck">{byte.summary}</p><div className="byte-byline"><span><Clock3/>{byte.duration} read</span><time dateTime={byte.updatedAt}>Reviewed 12 September 2026</time><span>Free learning guide</span></div></div>
-    {isTokenGuide ? <aside className="hero-token-visual"><div className="hero-visual-label"><span></span>ANIMATED VISUAL GUIDE</div><div className="hero-prompt-chip">Explain cloud simply</div><div className="hero-token-row"><i>Explain</i><i>cloud</i><i>simply</i></div><div className="hero-model-orbit"><b>LLM</b><span></span><span></span></div><div className="hero-output-line"><em></em><strong>Cloud computing lets you…</strong></div><p>Prompt → tokens → model → answer</p></aside> :
+    {isTokenGuide ? <aside className="hero-token-visual"><div className="hero-visual-top"><span className="hero-visual-icon"><BrainCircuit/></span><div><small>VISUAL EXPLAINER</small><strong>How an answer is generated</strong></div></div><div className="hero-visual-label"><span></span>LIVE CONCEPT FLOW</div><div className="hero-prompt-chip">Explain cloud simply</div><div className="hero-token-row"><i>Explain</i><i>cloud</i><i>simply</i></div><div className="hero-model-orbit"><b>LLM</b><span></span><span></span></div><div className="hero-output-line"><em></em><strong>Cloud computing lets you…</strong></div><p>Prompt <ChevronRight/> Tokens <ChevronRight/> Model <ChevronRight/> Answer</p></aside> :
     <aside className="byte-hero-proof"><div className="proof-icon"><BookOpenCheck/></div><small>MAANAVAN LEARNING STANDARD</small><h2>Understand. Apply. Explain.</h2><ul><li><CheckCircle2/>Simple English</li><li><CheckCircle2/>Practical examples</li><li><CheckCircle2/>Interview insight</li></ul><p><UserRoundCheck/>Personally reviewed learning guidance</p></aside>}</div>
   </div></header>;
 }

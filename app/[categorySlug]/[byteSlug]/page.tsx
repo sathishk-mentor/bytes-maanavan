@@ -11,7 +11,7 @@ import {
   extractHeadings,
 } from '@/lib/mdx';
 import { getCategoryBySlug } from '@/lib/categories';
-import { legacyByte, legacyBytes } from '@/lib/legacy-content';
+import { byteTopics, topicPreview } from '@/lib/topic-catalog';
 import { CourseRecommendation } from '@/components/bytes/CourseRecommendation';
 
 interface BytePageProps {
@@ -22,14 +22,14 @@ interface BytePageProps {
 }
 
 export async function generateStaticParams() {
-  return legacyBytes.map((byte) => ({
+  return byteTopics.map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
 }
 
 export async function generateMetadata({ params }: BytePageProps): Promise<Metadata> {
-  const byte = await getByteBySlug(params.byteSlug) || legacyByte(params.categorySlug, params.byteSlug);
+  const byte = await getByteBySlug(params.byteSlug) || topicPreview(params.categorySlug, params.byteSlug);
 
   if (!byte || byte.category !== params.categorySlug) {
     return {
@@ -54,7 +54,7 @@ export default async function BytePage({ params }: BytePageProps) {
   const { categorySlug, byteSlug } = params;
 
   // Get byte and validate category matches
-  const byte = await getByteBySlug(byteSlug) || legacyByte(categorySlug, byteSlug);
+  const byte = await getByteBySlug(byteSlug) || topicPreview(categorySlug, byteSlug);
 
   if (!byte || byte.category !== categorySlug) {
     notFound();
@@ -87,7 +87,7 @@ export default async function BytePage({ params }: BytePageProps) {
               <PrevNextNav prev={prev} next={next} />
             </div>
           </div>
-          <aside className="byte-trust-rail"><div><span>REVIEWED BY</span><h3>Sathish Kumar</h3><p>Founder & Chief AI Educator, MaanavaN</p><small>17+ years of industry and learning experience</small></div><div><span>LEARNING FORMAT</span><p>Easy English</p><p>Limited Tamil support</p><p>Real-world application</p><p>Interview preparation</p></div></aside>
+          <aside className="byte-trust-rail"><div className="byte-progress-card"><span>LEARNING PROGRESS</span><h3>Guide {String(byte.order).padStart(2,'0')}</h3><p>{category?.title} learning path</p><div className="byte-progress-track"><i style={{width:`${Math.min(100,Math.max(12,byte.order*10))}%`}} /></div><small>{byte.duration} focused reading</small></div><div className="byte-review-card"><span>PERSONALLY REVIEWED</span><h3>Sathish Kumar</h3><p>Founder & Chief AI Educator</p><small>17+ years of industry and learning experience</small></div></aside>
         </div>
       </div>
     </>
