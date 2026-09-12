@@ -12,6 +12,7 @@ import {
 } from '@/lib/mdx';
 import { getCategoryBySlug } from '@/lib/categories';
 import { legacyByte, legacyBytes } from '@/lib/legacy-content';
+import { CourseRecommendation } from '@/components/bytes/CourseRecommendation';
 
 interface BytePageProps {
   params: {
@@ -84,6 +85,8 @@ export default async function BytePage({ params }: BytePageProps) {
           {/* Main Content Area */}
           <div className="ml-0 lg:ml-[300px] max-w-full lg:max-w-[900px] px-6 lg:px-12 py-10 relative z-10">
             <ByteContent content={byte.content} />
+
+            <CourseRecommendation categorySlug={categorySlug} />
 
             <div className="mt-12">
               <PrevNextNav prev={prev} next={next} />

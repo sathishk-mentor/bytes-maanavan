@@ -7,21 +7,25 @@ import { Footer } from '@/components/layout/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'MaanavaN Bytes - Learn GenAI in Bite-Size (Tanglish)',
-  description: 'Learn Generative AI, Cloud, and Data Engineering in bite-sized Tanglish content. Simple explanations + real-time scenarios + copy-paste prompts.',
+  metadataBase: new URL('https://bytes.maanavan.com'),
+  title: { default: 'Free AI & Technology Tutorials | MaanavaN Bytes', template: '%s | MaanavaN Bytes' },
+  description: 'Learn AI, AI agents, data engineering, cloud, DevOps, software engineering and cybersecurity through clear bite-sized tutorials with Tamil learner support.',
   keywords: ['Generative AI', 'GenAI', 'Prompt Engineering', 'Cloud', 'Data Engineering', 'AI Agents', 'Tanglish', 'Tamil', 'Learning'],
-  authors: [{ name: 'MaanavaN' }],
+  authors: [{ name: 'Sathish Kumar', url: 'https://www.maanavan.com/about/sathish-kumar' }],
+  alternates: { canonical: '/' },
+  robots: { index: true, follow: true },
   openGraph: {
-    title: 'MaanavaN Bytes - Learn GenAI in Bite-Size (Tanglish)',
-    description: 'Learn Generative AI, Cloud, and Data Engineering in bite-sized Tanglish content.',
+    title: 'MaanavaN Bytes | Free AI and Technology Learning',
+    description: 'Clear technology lessons with practical examples, architecture walkthroughs and interview insights.',
+    url: '/',
     type: 'website',
     locale: 'en_US',
     siteName: 'MaanavaN Bytes',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MaanavaN Bytes - Learn GenAI in Bite-Size (Tanglish)',
-    description: 'Learn Generative AI, Cloud, and Data Engineering in bite-sized Tanglish content.',
+    title: 'MaanavaN Bytes | Free AI and Technology Learning',
+    description: 'Clear technology lessons with practical examples, architecture walkthroughs and interview insights.',
   },
 };
 
