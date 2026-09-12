@@ -7,6 +7,7 @@ import { PromptBox } from './mdx/PromptBox';
 import { Mistakes } from './mdx/Mistakes';
 import { AIComparisonFlow } from './mdx/AIComparisonFlow';
 import { RealUseCaseFlows } from './mdx/RealUseCaseFlows';
+import { GenAIDecisionGuide } from './mdx/GenAIDecisionGuide';
 import { slugify } from '@/lib/mdx';
 
 const components = {
@@ -23,7 +24,7 @@ const components = {
   table: ({children,...props}:any)=><div className="byte-table-wrap"><table {...props}>{children}</table></div>,
   th: ({children,...props}:any)=><th {...props}>{children}</th>, td: ({children,...props}:any)=><td {...props}>{children}</td>,
   code: ({children,...props}:any)=><code className="byte-code" {...props}>{children}</code>,
-  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows,
+  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide,
 };
 
 export function ByteContent({content}:{content:string}) { return <article className="byte-article"><MDXRemote source={content} components={components}/></article>; }

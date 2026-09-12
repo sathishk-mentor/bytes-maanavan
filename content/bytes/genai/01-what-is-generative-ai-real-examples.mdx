@@ -5,7 +5,7 @@ summary: "Understand what generative AI is, how it differs from traditional AI, 
 category: "genai"
 tags: ["generative AI", "GenAI basics", "AI in Tamil", "AI examples", "foundation models"]
 level: "beginner"
-duration: "12 min"
+duration: "16 min"
 updatedAt: "2026-09-12"
 order: 1
 isPopular: true
@@ -28,6 +28,18 @@ A writing assistant can draft an email. An image model can create a visual from 
 This does **not** mean the system thinks or understands exactly like a person. It calculates a suitable output based on learned relationships, the current prompt, supplied context and its configuration.
 
 </ThemeCard>
+
+## What can generative AI create?
+
+The word “content” is broader than writing. Depending on the model and application, generative AI can produce:
+
+- **Text:** explanations, summaries, emails, plans and structured responses.
+- **Images:** illustrations, product concepts and visual variations.
+- **Audio and speech:** narration, transcription, sound and synthetic voices.
+- **Video:** short clips, scene variations and animation.
+- **Code and structured data:** functions, tests, SQL, JSON and format transformations.
+
+The generated format does not prove that the result is accurate. A well-formatted table can still contain an incorrect value, just as a fluent paragraph can contain an invented fact.
 
 ## A simple real-life analogy
 
@@ -75,11 +87,61 @@ Generative AI becomes useful when it is placed inside a complete workflow. These
 
 <RealUseCaseFlows />
 
+## When should you use generative AI?
+
+Use generative AI when producing or transforming a **draft** creates value and a person or system can verify the result. Increase the controls as the possible impact increases.
+
+<GenAIDecisionGuide />
+
+**A practical rule:** If a wrong answer could seriously affect health, safety, money, rights, employment or reputation, AI output must not become the final decision by itself.
+
+## End-to-end workplace example
+
+<ThemeCard title="Creating a weekly project update" badge="Case study">
+
+Imagine that a project manager has meeting notes, completed work, open risks and next-week priorities. Instead of asking AI to “write a status report” without context, the manager follows a controlled workflow:
+
+1. **Prepare:** Remove personal or confidential information that the approved tool should not receive.
+2. **Provide context:** Supply the reporting period, approved notes, intended audience and required format.
+3. **Generate:** Request a factual draft with separate sections for progress, risks, decisions and next actions.
+4. **Verify:** Compare every name, date, percentage and commitment against the source notes.
+5. **Own the decision:** The project manager edits and approves the update before sharing.
+
+AI saves drafting time, but accountability remains with the project manager. The outcome is not merely “AI wrote the report”; it is “the manager produced a clearer, verified report with less repetitive work.”
+
+</ThemeCard>
+
+### Copy-paste prompt for the case study
+
+<PromptBox label="Project update prompt">
+
+You are assisting a project manager. Create a weekly project update using only the notes I provide.
+
+Audience: Senior stakeholders
+Tone: Clear, concise and factual
+Required sections:
+1. Progress this week
+2. Decisions made
+3. Risks or blockers
+4. Next-week priorities
+5. Actions with owner and due date
+
+Rules:
+- Do not invent missing names, dates or percentages.
+- Mark missing information as [NEEDS CONFIRMATION].
+- Keep the update under 350 words.
+- End with a verification checklist.
+
+Project notes:
+[PASTE APPROVED NOTES HERE]
+
+</PromptBox>
+
 ## A practical mini exercise
 
 **Try this prompt in a generative AI assistant. Do not include confidential information:**
 
-<PromptBox>
+<PromptBox label="Learning explanation prompt">
 
 You are helping a beginner understand cloud computing.
 
@@ -98,6 +160,20 @@ After receiving the answer, check:
 - Was the analogy helpful without being technically misleading?
 - Did the response invent facts?
 - What additional context would improve it?
+
+## From weak prompt to useful prompt
+
+<ThemeCard title="Why prompt quality changes the result" badge="Prompt design">
+
+**Weak prompt:** “Explain cloud.”
+
+The task, learner level, length and expected format are unclear. The model must guess what “good” means.
+
+The improved exercise specifies the audience, three output formats, word limit, analogy and quality check. These constraints make the response easier to evaluate.
+
+A useful beginner pattern is: **Role + task + context + constraints + output format + verification rule.** This cannot guarantee truth, but it makes the request and result easier to inspect.
+
+</ThemeCard>
 
 ## What generative AI cannot guarantee
 
@@ -132,6 +208,17 @@ Unlike a traditional classifier that may return a label or probability, a genera
 - When would you use retrieval-augmented generation?
 
 </ThemeCard>
+
+## Check your understanding
+
+Try answering without looking back:
+
+1. What is the main output difference between traditional predictive AI and generative AI?
+2. Why should a generated answer be reviewed even when it sounds confident?
+3. In the project-update example, which details must be checked against the original notes?
+4. Name one situation where GenAI is useful for drafting and one where it must not make the final decision alone.
+
+If you can explain each answer using your own example, you understand the foundation rather than only remembering a definition.
 
 ## Key takeaways
 

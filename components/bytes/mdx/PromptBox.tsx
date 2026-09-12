@@ -5,16 +5,21 @@ import { Copy, Check } from 'lucide-react';
 
 interface PromptBoxProps {
   children: React.ReactNode;
+  label?: string;
 }
 
-export function PromptBox({ children }: PromptBoxProps) {
+export function PromptBox({ children, label = 'Copy-paste prompt' }: PromptBoxProps) {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     const text = typeof children === 'string' ? children : extractText(children);
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(text.trim());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
   };
 
   function extractText(node: any): string {
@@ -25,20 +30,24 @@ export function PromptBox({ children }: PromptBoxProps) {
   }
 
   return (
-    <div className="group relative my-6 rounded-lg bg-gray-900 p-6">
+    <div className="prompt-box">
+      <div className="prompt-box-header">
+        <span>{label}</span>
       <button
         onClick={handleCopy}
-        className="absolute right-4 top-4 rounded-md bg-gray-800 p-2 text-gray-400 opacity-0 transition-opacity hover:bg-gray-700 hover:text-white group-hover:opacity-100"
+        className={copied ? 'is-copied' : ''}
         title="Copy prompt"
+        aria-label={copied ? 'Prompt copied' : 'Copy prompt'}
       >
         {copied ? (
-          <Check className="h-5 w-5 text-green-500" />
+          <><Check />Copied</>
         ) : (
-          <Copy className="h-5 w-5" />
+          <><Copy />Copy prompt</>
         )}
       </button>
+      </div>
 
-      <div className="pr-12 font-mono text-sm text-gray-100">
+      <div className="prompt-box-content">
         <pre className="whitespace-pre-wrap">{children}</pre>
       </div>
     </div>
