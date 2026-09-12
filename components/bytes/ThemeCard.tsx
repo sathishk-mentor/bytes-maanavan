@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Lightbulb } from 'lucide-react';
+import { BookOpenCheck, Lightbulb } from 'lucide-react';
 
 interface ThemeCardProps {
   title: string;
@@ -13,24 +12,20 @@ interface ThemeCardProps {
 export function ThemeCard({ title, badge, children, takeaway }: ThemeCardProps) {
   return (
     <Card className="byte-theme-card">
-      {/* Card Header */}
       <div className="byte-theme-heading">
-        <h2>{title}</h2>
-        {badge && (
-          <Badge variant="tag" className="text-xs">
-            {badge}
-          </Badge>
-        )}
+        <span className="byte-theme-icon" aria-hidden="true"><BookOpenCheck /></span>
+        <div>
+          <span className="byte-card-label">{badge || 'CONCEPT EXPLAINER'}</span>
+          <h2>{title}</h2>
+        </div>
       </div>
 
-      {/* Card Body */}
       <div className="theme-card-content">
         {children}
       </div>
 
-      {/* Key Takeaway */}
       {takeaway && (
-        <div className="mt-6 pt-4 border-t border-gray-100">
+        <div className="byte-card-takeaway">
           <div className="flex items-start gap-2">
             <Lightbulb className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
             <div>
