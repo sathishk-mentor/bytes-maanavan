@@ -1,36 +1,37 @@
 import Link from 'next/link';
-import { ArrowRight, BookOpen, BriefcaseBusiness, GraduationCap, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, BookOpen, CheckCircle2, Code2, Eye, SearchCheck, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { BytesLibrary } from '@/components/home/BytesLibrary';
+import { HomeMotion } from '@/components/home/HomeMotion';
 import { getBytesByCategory } from '@/lib/mdx';
 
 export default async function HomePage() {
   const chapters = await getBytesByCategory('software-engineering');
-  return <>
-    <section className="hero-grid overflow-hidden">
-      <div className="container-custom grid gap-12 py-20 lg:grid-cols-[1.2fr_.8fr] lg:py-28">
-        <div>
-          <p className="eyebrow"><Sparkles className="h-4 w-4"/> Learn clearly. Build confidently.</p>
-          <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.04] tracking-[-.045em] text-white md:text-7xl">Technology explained for the way you actually learn.</h1>
-          <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-300">Bite-sized tutorials with simple explanations, real-time analogies, practical use cases, architecture diagrams and interview insights.</p>
-          <div className="mt-9 flex flex-wrap gap-3"><Link className="primary-cta" href="/software-engineering/">Start the handbook <ArrowRight className="h-4 w-4"/></Link><Link className="ghost-cta" href="#tracks">Explore five chapters</Link></div>
-          <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3 text-sm text-slate-300"><span><b className="text-white">5</b> focused chapters</span><span><b className="text-white">1</b> complete handbook</span><span><b className="text-white">Human-reviewed</b> guidance</span></div>
+  return <HomeMotion>
+    <section className="bytes-premium-hero">
+      <div className="hero-aurora hero-aurora-one"/><div className="hero-aurora hero-aurora-two"/>
+      <div className="container-custom bytes-hero-layout">
+        <div className="bytes-hero-copy">
+          <p className="eyebrow"><Sparkles/> MaanavaN Bytes · Visual learning library</p>
+          <h1>Learn the concept.<br/><span>See how it works.</span></h1>
+          <p>Premium, bite-sized technology handbooks built with clear explanations, real developer scenarios, animated workflows, official screenshots and interview-ready insight.</p>
+          <div className="bytes-hero-actions"><Link className="primary-cta" href="#bytes-library">Explore Bytes Library <ArrowRight/></Link><Link className="ghost-cta" href="/software-engineering/">Open Copilot Handbook</Link></div>
+          <div className="bytes-hero-trust"><span><CheckCircle2/>Personally reviewed</span><span><CheckCircle2/>Primary-source research</span><span><CheckCircle2/>Free to learn</span></div>
         </div>
-        <div className="learning-card self-end">
-          <p className="text-sm font-semibold text-cyan-300">Inside every Byte</p>
-          <div className="mt-6 space-y-5">
-            <div className="flex gap-4"><span className="icon-box"><BookOpen className="h-5 w-5"/></span><div><h3 className="text-base text-white">Concept</h3><p className="mt-1 text-sm text-slate-400">A clear, jargon-free explanation</p></div></div>
-            <div className="flex gap-4"><span className="icon-box"><BriefcaseBusiness className="h-5 w-5"/></span><div><h3 className="text-base text-white">Application</h3><p className="mt-1 text-sm text-slate-400">A practical, real-world use case</p></div></div>
-            <div className="flex gap-4"><span className="icon-box"><GraduationCap className="h-5 w-5"/></span><div><h3 className="text-base text-white">Career</h3><p className="mt-1 text-sm text-slate-400">An interview question and answer</p></div></div>
-          </div>
+        <div className="hero-learning-console" aria-label="Animated GitHub Copilot learning workflow">
+          <header><span><i/><i/><i/></span><small>MAANAVAN / VISUAL EXPLAINER</small><b>LIVE</b></header>
+          <div className="console-prompt"><small>LEARNER QUESTION</small><p>How should I verify AI-generated code?</p></div>
+          <div className="console-flow"><div><span><Code2/></span><small>01</small><b>Generate</b></div><i/><div><span><Eye/></span><small>02</small><b>Inspect</b></div><i/><div><span><SearchCheck/></span><small>03</small><b>Test</b></div><i/><div><span><ShieldCheck/></span><small>04</small><b>Approve</b></div></div>
+          <footer><span><i/></span><div><small>ENGINEERING PRINCIPLE</small><strong>AI proposes. The developer remains responsible.</strong></div></footer>
         </div>
       </div>
+      <div className="bytes-impact-strip"><div className="container-custom"><span><b>5</b>In-depth chapters</span><span><b>25+</b>Visual explainers</span><span><b>15+</b>Copy-ready prompts</span><span><b>Official</b>Source credits</span></div></div>
     </section>
-    <section id="tracks" className="handbook-showcase"><div className="container-custom"><div className="handbook-card">
+    <section id="tracks" className="handbook-showcase home-motion-section"><div className="container-custom"><div className="handbook-card">
       <div className="handbook-card-copy"><p className="eyebrow dark">Featured Handbook · 01</p><h2>The GitHub Copilot Handbook</h2><p>One connected learning path for developers—not scattered AI tips. Understand how Copilot uses context, supports feature delivery, assists debugging and fits inside a responsible engineering workflow.</p><div className="handbook-outcomes"><span><b>5</b> practical chapters</span><span><b>5</b> animated explainers</span><span><b>100%</b> human reviewed</span></div><Link href="/software-engineering/">Explore the Handbook <ArrowRight/></Link></div>
       <div className="handbook-map" aria-label="Five chapter GitHub Copilot learning path">{chapters.map((chapter,index)=><Link href={`/${chapter.category}/${chapter.slug}/`} key={chapter.slug}><span>0{index+1}</span><div><small>CHAPTER</small><strong>{chapter.title}</strong></div><ArrowRight/></Link>)}</div>
     </div></div></section>
-    <BytesLibrary chapters={chapters} />
-    <section id="interview-prep" className="interview-section"><div className="container-custom interview-inner"><div><p className="eyebrow">Interview-ready learning</p><h2>Understand Copilot well enough to explain your engineering decisions.</h2><p>Every Handbook chapter includes a concise interview answer, follow-up questions and a practical developer scenario.</p><Link className="primary-cta" href="/software-engineering/">Open the complete handbook <ArrowRight/></Link></div><div className="interview-card"><span>INTERVIEW BIT</span><h3>“How do you verify AI-generated code before shipping it?”</h3><p>Start with the requirement. Inspect the diff. Run tests and security checks. Finish with human approval.</p><small>Practical framework · Stronger answer</small></div></div></section>
-    <section className="course-bridge"><div className="container-custom course-bridge-inner"><div><p className="eyebrow dark">From awareness to outcomes</p><h2>Learn the concept free. Build the complete skill with MaanavaN.</h2><p>Bytes give you focused explanations. The Course Library gives you structured learning, guided practice and project-based progression.</p><div className="bridge-steps"><span><b>01</b>Understand with Bytes</span><span><b>02</b>Practise in a course</span><span><b>03</b>Build practical evidence</span></div></div><div className="bridge-actions"><a className="bridge-primary" href="https://www.maanavan.com/course-library"><BookOpen/>Explore Course Library <ArrowRight/></a><a className="bridge-membership" href="https://aiupskills.maanavan.com/memberships/6a20ef646786ea4efcafb247"><Users/>All-Access Membership<span>Learn across eligible courses with continued guidance.</span></a></div></div></section>
-  </>;
+    <div className="home-motion-section"><BytesLibrary chapters={chapters} /></div>
+    <section id="interview-prep" className="interview-section home-motion-section"><div className="container-custom interview-inner"><div><p className="eyebrow">Interview-ready learning</p><h2>Understand Copilot well enough to explain your engineering decisions.</h2><p>Every Handbook chapter includes a concise interview answer, follow-up questions and a practical developer scenario.</p><Link className="primary-cta" href="/software-engineering/">Open the complete handbook <ArrowRight/></Link></div><div className="interview-card"><span>INTERVIEW BIT</span><h3>“How do you verify AI-generated code before shipping it?”</h3><p>Start with the requirement. Inspect the diff. Run tests and security checks. Finish with human approval.</p><small>Practical framework · Stronger answer</small></div></div></section>
+    <section className="course-bridge home-motion-section"><div className="container-custom course-bridge-inner"><div><p className="eyebrow dark">From awareness to outcomes</p><h2>Learn the concept free. Build the complete skill with MaanavaN.</h2><p>Bytes give you focused explanations. The Course Library gives you structured learning, guided practice and project-based progression.</p><div className="bridge-steps"><span><b>01</b>Understand with Bytes</span><span><b>02</b>Practise in a course</span><span><b>03</b>Build practical evidence</span></div></div><div className="bridge-actions"><a className="bridge-primary" href="https://www.maanavan.com/course-library"><BookOpen/>Explore Course Library <ArrowRight/></a><a className="bridge-membership" href="https://aiupskills.maanavan.com/memberships/6a20ef646786ea4efcafb247"><Users/>All-Access Membership<span>Learn across eligible courses with continued guidance.</span></a></div></div></section>
+  </HomeMotion>;
 }
