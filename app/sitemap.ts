@@ -1,5 +1,12 @@
 import type { MetadataRoute } from 'next';
-export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = ['/', '/handbooks/', '/software-engineering/', '/software-engineering/62-how-developers-use-ai-tools/', '/software-engineering/63-api-first-thinking/', '/software-engineering/66-ai-assisted-coding-workflow/', '/software-engineering/64-debugging-ai-generated-code/', '/software-engineering/75-secure-ai-coding/', '/forward-deployed-engineer/', '/forward-deployed-engineer/01-what-does-a-forward-deployed-engineer-do/', '/forward-deployed-engineer/02-problem-discovery-and-workflow-mapping/', '/forward-deployed-engineer/03-design-thin-production-slice/', '/forward-deployed-engineer/04-deploy-observe-and-improve/', '/forward-deployed-engineer/05-turn-field-learning-into-product/'];
-  return paths.map((path) => ({ url: `https://bytes.maanavan.com${path}`, lastModified: new Date('2026-09-13'), changeFrequency: path === '/' ? 'weekly' : 'monthly', priority: path === '/' ? 1 : path.split('/').filter(Boolean).length === 1 ? .9 : .8 }));
+import { getAllBytes } from '@/lib/mdx';
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const bytes=await getAllBytes();
+  const core:MetadataRoute.Sitemap=[
+    {url:'https://bytes.maanavan.com/',lastModified:new Date('2026-09-13'),changeFrequency:'weekly',priority:1},
+    {url:'https://bytes.maanavan.com/handbooks/',lastModified:new Date('2026-09-13'),changeFrequency:'monthly',priority:.9},
+    {url:'https://bytes.maanavan.com/software-engineering/',lastModified:new Date('2026-09-13'),changeFrequency:'monthly',priority:.9},
+    {url:'https://bytes.maanavan.com/forward-deployed-engineer/',lastModified:new Date('2026-09-13'),changeFrequency:'monthly',priority:.9},
+  ];
+  return [...core,...bytes.map((byte)=>({url:`https://bytes.maanavan.com/${byte.category}/${byte.slug}/`,lastModified:new Date(byte.updatedAt),changeFrequency:'monthly' as const,priority:.8}))];
 }
