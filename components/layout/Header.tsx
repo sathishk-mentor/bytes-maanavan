@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, BookOpen, Mail, Menu, Phone, X } from 'lucide-react';
+import { SocialIcon, socialLinks } from './SocialLinks';
 
 const courseLibrary = 'https://www.maanavan.com/course-library';
 const membership = 'https://aiupskills.maanavan.com/memberships/6a20ef646786ea4efcafb247';
@@ -10,7 +11,7 @@ const membership = 'https://aiupskills.maanavan.com/memberships/6a20ef646786ea4e
 export function Header() {
   const [open, setOpen] = useState(false);
   return <header className="site-header sticky top-0 z-50">
-    <div className="header-utility-bar"><div className="header-utility-inner"><div className="header-utility-contact"><a href="tel:+918073044127"><Phone/><span>Call:</span> +91 8073044127</a><a className="utility-email" href="mailto:info@maanavan.com"><Mail/><span>Email:</span> info@maanavan.com</a></div><div className="header-utility-right"><a className="learner-portal-link" href="https://courses.maanavanlearncode.com/learn">Learner Portal <ArrowUpRight/></a><a className="membership-portal-link" href={membership}>Membership Portal <ArrowUpRight/></a></div></div></div>
+    <div className="header-utility-bar"><div className="header-utility-inner"><div className="header-utility-contact"><a href="tel:+918073044127"><Phone/><span>Call:</span> +91 8073044127</a><a className="utility-email" href="mailto:info@maanavan.com"><Mail/><span>Email:</span> info@maanavan.com</a></div><div className="header-utility-right"><div className="header-social-links" aria-label="Follow MaanavaN on social media">{socialLinks.map((social)=><a className={`social-brand social-${social.label.toLowerCase()}`} key={social.label} href={social.href} target="_blank" rel="noreferrer" aria-label={`Follow MaanavaN on ${social.label}`} title={social.label}><SocialIcon label={social.label}/></a>)}</div><a className="learner-portal-link" href="https://courses.maanavanlearncode.com/learn">Learner Portal <ArrowUpRight/></a><a className="membership-portal-link" href={membership}>Membership Portal <ArrowUpRight/></a></div></div></div>
     <div className="header-main container-custom">
       <Link href="/" className="brand-lockup" aria-label="MaanavaN Bytes home"><span><strong>MaanavaN<sup>®</sup></strong><small><i/>AI UPSKILLS</small></span><b>BYTES</b></Link>
       <nav className="desktop-nav" aria-label="Main navigation">

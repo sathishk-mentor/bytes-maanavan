@@ -13,6 +13,7 @@ import { ContextAssemblyVisual, GroundedAnswerVisual, ProductVsModelVisual, Toke
 import { CopilotHandbookVisual, OfficialScreenshot } from './mdx/CopilotHandbookVisuals';
 import { FDEJourneyVisual } from './mdx/FDEVisuals';
 import { DockerCommand, DockerFlowVisual } from './mdx/DockerVisuals';
+import { SyntaxCode } from './SyntaxCode';
 import { slugify } from '@/lib/mdx';
 
 const components = {
@@ -28,6 +29,7 @@ const components = {
   img: ({alt='',...props}:any)=><figure className="byte-visual"><img alt={alt} loading="lazy" decoding="async" {...props}/>{alt&&<figcaption>{alt}</figcaption>}</figure>,
   table: ({children,...props}:any)=><div className="byte-table-wrap"><table {...props}>{children}</table></div>,
   th: ({children,...props}:any)=><th {...props}>{children}</th>, td: ({children,...props}:any)=><td {...props}>{children}</td>,
+  pre: ({children}:any)=>{const child=children as any;const code=child?.props?.children?.toString?.()||'';const language=(child?.props?.className||'').replace('language-','')||'text';return <SyntaxCode code={code} language={language}/>;},
   code: ({children,...props}:any)=><code className="byte-code" {...props}>{children}</code>,
   ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual,
 };
