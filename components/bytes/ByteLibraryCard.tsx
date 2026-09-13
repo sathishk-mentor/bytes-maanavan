@@ -18,12 +18,19 @@ const cardVisuals = {
 export function ByteLibraryCard({ chapter, chapterNumber }: { chapter: ByteMetadata; chapterNumber: number }) {
   const visual = cardVisuals[chapter.slug as keyof typeof cardVisuals] || { icon: Workflow, label: 'Technology Guide', tone: 'blue' };
   const Icon = visual.icon;
-  const handbook = chapter.category === 'forward-deployed-engineer' ? 'FDE HANDBOOK' : 'GITHUB COPILOT HANDBOOK';
+  const isFde = chapter.category === 'forward-deployed-engineer';
+  const category = isFde ? 'Technology Careers' : 'Software Engineering';
+  const handbook = isFde ? 'FDE Handbook' : 'GitHub Copilot Handbook';
 
   return <Link className={`library-byte-card tone-${visual.tone}`} href={`/${chapter.category}/${chapter.slug}/`}>
-    <div className="byte-card-cover"><span>{handbook}</span><Icon/><i>{String(chapterNumber).padStart(2, '0')}</i></div>
-    <div className="byte-card-title-tab"><span><Icon/></span><div><small>{visual.label}</small><h3>{chapter.title}</h3></div></div>
-    <p className="byte-card-description">{chapter.summary}</p>
-    <footer><div><i>{chapter.level}</i><i><Clock3/>{chapter.duration}</i></div><b>Read <ArrowRight/></b></footer>
+    <div className="byte-card-cover"><span>MAANAVAN BYTE</span><Icon/><i>BYTE {String(chapterNumber).padStart(2, '0')}</i></div>
+    <div className="byte-card-title-tab"><span><Icon/></span><div><small>{category}</small><strong>{visual.label}</strong></div></div>
+    <div className="byte-card-body">
+      <div className="byte-card-meta"><i>{chapter.level}</i><i><Clock3/>{chapter.duration}</i></div>
+      <h3>{chapter.title}</h3>
+      <p className="byte-card-description">{chapter.summary}</p>
+      <small className="byte-card-handbook">{handbook}</small>
+    </div>
+    <footer><b>Read <ArrowRight/></b></footer>
   </Link>;
 }
