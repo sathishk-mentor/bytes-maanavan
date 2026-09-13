@@ -24,7 +24,7 @@ const components = {
   li: ({children,...props}:any)=><li {...props}>{children}</li>,
   strong: ({children,...props}:any)=><strong className="byte-strong" {...props}>{children}</strong>,
   blockquote: ({children,...props}:any)=><blockquote className="byte-quote" {...props}>{children}</blockquote>,
-  img: (props:any)=><figure className="byte-visual"><img {...props}/><figcaption>Conceptual learning architecture · MaanavaN Bytes</figcaption></figure>,
+  img: ({alt='',...props}:any)=><figure className="byte-visual"><img alt={alt} loading="lazy" decoding="async" {...props}/>{alt&&<figcaption>{alt}</figcaption>}</figure>,
   table: ({children,...props}:any)=><div className="byte-table-wrap"><table {...props}>{children}</table></div>,
   th: ({children,...props}:any)=><th {...props}>{children}</th>, td: ({children,...props}:any)=><td {...props}>{children}</td>,
   code: ({children,...props}:any)=><code className="byte-code" {...props}>{children}</code>,
