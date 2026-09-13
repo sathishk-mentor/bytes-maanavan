@@ -329,9 +329,9 @@
 .byte-card-description{display:block;height:3.3em;min-height:3.3em;overflow:hidden;margin:.7rem 0 0;color:#526a73;font-size:.75rem;line-height:1.65;mask-image:none}
 .byte-card-handbook{margin-top:auto;padding-top:.9rem;color:#16808b;font-size:.59rem;font-weight:750;letter-spacing:.04em}
 .library-byte-card>footer{position:static;display:flex;justify-content:flex-end;margin:.8rem 1.05rem 1.05rem;border-top:1px solid #e5ebed;padding-top:.85rem}
-.library-byte-card>footer b{min-width:6.25rem;min-height:3rem;justify-content:center;border-radius:.58rem;background:#0c7887;padding:.72rem 1rem;color:#fff;font-size:.74rem;box-shadow:0 9px 20px rgba(12,120,135,.22);transition:background .2s,transform .2s}
-.library-byte-card:hover>footer b{background:#086674;transform:translateX(2px)}
-.library-byte-card>footer b svg{width:.72rem}
+.library-byte-card>footer b{width:100%;min-height:3.2rem;justify-content:center;border-radius:.62rem;background:linear-gradient(135deg,#087887,#0b8d91);padding:.78rem 1.1rem;color:#fff;font-size:.79rem;font-weight:800;letter-spacing:.01em;box-shadow:0 10px 24px rgba(12,120,135,.24);transition:background .2s,transform .2s,box-shadow .2s}
+.library-byte-card:hover>footer b{background:linear-gradient(135deg,#066775,#087b80);transform:translateY(-2px);box-shadow:0 14px 28px rgba(10,108,121,.3)}
+.library-byte-card>footer b svg{width:.85rem;transition:transform .2s}.library-byte-card:hover>footer b svg{transform:translateX(3px)}
 @media(max-width:1180px){.library-with-sidebar .library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){.library-with-sidebar{grid-template-columns:1fr}.library-with-sidebar .library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){.library-with-sidebar .library-grid{grid-template-columns:1fr}.library-byte-card{min-height:28.5rem}}
