@@ -1,9 +1,11 @@
 import Link from 'next/link';
-import { ArrowRight, BookOpen, BriefcaseBusiness, Clock3, GraduationCap, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, BookOpen, BriefcaseBusiness, GraduationCap, Sparkles, Users } from 'lucide-react';
 import { byteTopics } from '@/lib/topic-catalog';
+import { BytesLibrary } from '@/components/home/BytesLibrary';
 
 export default function HomePage() {
-  const chapters = byteTopics.filter((item) => item.category === 'software-engineering' && ['62-how-developers-use-ai-tools', '63-api-first-thinking', '64-debugging-ai-generated-code', '66-ai-assisted-coding-workflow', '75-secure-ai-coding'].includes(item.slug));
+  const chapterOrder = ['62-how-developers-use-ai-tools', '63-api-first-thinking', '66-ai-assisted-coding-workflow', '64-debugging-ai-generated-code', '75-secure-ai-coding'];
+  const chapters = byteTopics.filter((item) => item.category === 'software-engineering' && chapterOrder.includes(item.slug)).sort((a, b) => chapterOrder.indexOf(a.slug) - chapterOrder.indexOf(b.slug));
   return <>
     <section className="hero-grid overflow-hidden">
       <div className="container-custom grid gap-12 py-20 lg:grid-cols-[1.2fr_.8fr] lg:py-28">
@@ -24,10 +26,11 @@ export default function HomePage() {
         </div>
       </div>
     </section>
-    <section id="tracks" className="bg-[#f5f8fa] py-20"><div className="container-custom">
-      <div className="max-w-2xl"><p className="eyebrow dark">GitHub Copilot Handbook</p><h2 className="mt-4 text-4xl tracking-tight text-slate-950">Build understanding, one chapter at a time.</h2><p className="mt-4 text-slate-600">Follow the complete developer workflow—from context and generation to debugging, review and responsible delivery.</p></div>
-      <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{chapters.map((chapter,index)=><Link href={`/${chapter.category}/${chapter.slug}/`} className="track-card group" key={chapter.slug}><span className="track-number">0{index+1}</span><h3 className="mt-8 text-xl text-slate-950">{chapter.title}</h3><p className="mt-3 min-h-12 text-sm leading-6 text-slate-600">{chapter.summary}</p><div className="mt-7 flex items-center justify-between border-t border-slate-200 pt-5 text-sm"><span className="flex items-center gap-2 text-slate-500"><Clock3 className="h-4 w-4"/>{chapter.duration} read</span><ArrowRight className="h-5 w-5 text-cyan-700 transition-transform group-hover:translate-x-1"/></div></Link>)}</div>
-    </div></section>
+    <section id="tracks" className="handbook-showcase"><div className="container-custom"><div className="handbook-card">
+      <div className="handbook-card-copy"><p className="eyebrow dark">Featured Handbook · 01</p><h2>The GitHub Copilot Handbook</h2><p>One connected learning path for developers—not scattered AI tips. Understand how Copilot uses context, supports feature delivery, assists debugging and fits inside a responsible engineering workflow.</p><div className="handbook-outcomes"><span><b>5</b> practical chapters</span><span><b>5</b> animated explainers</span><span><b>100%</b> human reviewed</span></div><Link href="/software-engineering/">Explore the Handbook <ArrowRight/></Link></div>
+      <div className="handbook-map" aria-label="Five chapter GitHub Copilot learning path">{chapters.map((chapter,index)=><Link href={`/${chapter.category}/${chapter.slug}/`} key={chapter.slug}><span>0{index+1}</span><div><small>CHAPTER</small><strong>{chapter.title}</strong></div><ArrowRight/></Link>)}</div>
+    </div></div></section>
+    <BytesLibrary chapters={chapters} />
     <section id="interview-prep" className="interview-section"><div className="container-custom interview-inner"><div><p className="eyebrow">Interview-ready learning</p><h2>Understand Copilot well enough to explain your engineering decisions.</h2><p>Every Handbook chapter includes a concise interview answer, follow-up questions and a practical developer scenario.</p><Link className="primary-cta" href="/software-engineering/">Open the complete handbook <ArrowRight/></Link></div><div className="interview-card"><span>INTERVIEW BIT</span><h3>“How do you verify AI-generated code before shipping it?”</h3><p>Start with the requirement. Inspect the diff. Run tests and security checks. Finish with human approval.</p><small>Practical framework · Stronger answer</small></div></div></section>
     <section className="course-bridge"><div className="container-custom course-bridge-inner"><div><p className="eyebrow dark">From awareness to outcomes</p><h2>Learn the concept free. Build the complete skill with MaanavaN.</h2><p>Bytes give you focused explanations. The Course Library gives you structured learning, guided practice and project-based progression.</p><div className="bridge-steps"><span><b>01</b>Understand with Bytes</span><span><b>02</b>Practise in a course</span><span><b>03</b>Build practical evidence</span></div></div><div className="bridge-actions"><a className="bridge-primary" href="https://www.maanavan.com/course-library"><BookOpen/>Explore Course Library <ArrowRight/></a><a className="bridge-membership" href="https://aiupskills.maanavan.com/memberships/6a20ef646786ea4efcafb247"><Users/>All-Access Membership<span>Learn across eligible courses with continued guidance.</span></a></div></div></section>
   </>;

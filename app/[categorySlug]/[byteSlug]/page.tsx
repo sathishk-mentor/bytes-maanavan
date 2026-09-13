@@ -13,6 +13,7 @@ import {
 import { getCategoryBySlug } from '@/lib/categories';
 import { byteTopics, topicPreview } from '@/lib/topic-catalog';
 import { CourseRecommendation } from '@/components/bytes/CourseRecommendation';
+import { ReadingReveal } from '@/components/bytes/ReadingReveal';
 
 interface BytePageProps {
   params: {
@@ -79,13 +80,9 @@ export default async function BytePage({ params }: BytePageProps) {
         <div className="byte-reading-layout">
           <AccordionTableOfContents headings={headings} byteSlug={byte.slug} />
           <div className="byte-main-column">
-            <ByteContent content={byte.content} />
-            <CourseRecommendation categorySlug={categorySlug} />
-            <div className="mt-12">
-              <PrevNextNav prev={prev} next={next} />
-            </div>
+            <ReadingReveal><ByteContent content={byte.content} /><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
-          <aside className="byte-trust-rail"><div className="byte-progress-card"><span>LEARNING PROGRESS</span><h3>Guide {String(byte.order).padStart(2,'0')}</h3><p>{category?.title} learning path</p><div className="byte-progress-track"><i style={{width:`${Math.min(100,Math.max(12,byte.order*10))}%`}} /></div><small>{byte.duration} focused reading</small></div><div className="byte-review-card"><span>PERSONALLY REVIEWED</span><h3>Sathish Kumar</h3><p>Founder & Chief AI Educator</p><small>17+ years of industry and learning experience</small></div></aside>
+          <aside className="byte-trust-rail"><div className="byte-progress-card"><span>LEARNING PROGRESS</span><h3>Chapter {Math.max(1, ['62-how-developers-use-ai-tools','63-api-first-thinking','66-ai-assisted-coding-workflow','64-debugging-ai-generated-code','75-secure-ai-coding'].indexOf(byte.slug) + 1)} of 5</h3><p>{category?.title}</p><div className="byte-progress-track"><i style={{width:`${Math.max(20,(['62-how-developers-use-ai-tools','63-api-first-thinking','66-ai-assisted-coding-workflow','64-debugging-ai-generated-code','75-secure-ai-coding'].indexOf(byte.slug) + 1)*20)}%`}} /></div><small>{byte.duration} focused reading</small></div><div className="byte-review-card"><span>PERSONALLY REVIEWED</span><h3>Sathish Kumar</h3><p>Founder & Chief AI Educator</p><small>17+ years of industry and learning experience</small></div></aside>
         </div>
       </div>
     </>

@@ -110,7 +110,7 @@ export async function getBytesByCategory(category: string): Promise<ByteMetadata
 
   return allBytes
     .filter((byte) => byte.category === category && (!canonicalSlugs || canonicalSlugs.has(byte.slug)))
-    .sort((a, b) => a.order - b.order);
+    .sort((a, b) => handbook ? handbook.chapters.findIndex((chapter) => chapter.canonical.includes(`/${a.slug}/`)) - handbook.chapters.findIndex((chapter) => chapter.canonical.includes(`/${b.slug}/`)) : a.order - b.order);
 }
 
 export async function getPopularBytes(): Promise<ByteMetadata[]> {
