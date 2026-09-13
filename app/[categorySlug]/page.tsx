@@ -17,7 +17,7 @@ export default async function TrackPage({ params }: { params: { categorySlug: st
   const lessons = await getBytesByCategory(category.slug);
   return <>
     <section className="track-hero"><div className="container-custom py-16">
-      <p className="eyebrow">15-lesson learning track</p>
+      <p className="eyebrow">{lessons.length}-chapter learning handbook</p>
       <h1>{category.title}</h1><p className="mt-5 max-w-2xl text-lg text-slate-300">{category.heroLine}. Every lesson includes a simple explanation, analogy, use case, architecture walkthrough and interview bit.</p>
     </div></section>
     <CategoryPageClient bytes={lessons} />

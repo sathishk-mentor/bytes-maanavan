@@ -1,0 +1,110 @@
+---
+title: "Debug, Test and Refactor with GitHub Copilot"
+slug: "64-debugging-ai-generated-code"
+summary: "Use GitHub Copilot to investigate failures, create meaningful tests and refactor safely without confusing plausible suggestions with verified fixes."
+category: "software-engineering"
+tags: ["GitHub Copilot debugging", "Copilot testing", "AI code review", "refactoring"]
+level: "intermediate"
+duration: "21 min"
+updatedAt: "2026-09-13"
+order: 64
+isPopular: true
+---
+
+<ThemeCard title="What you will learn" badge="HANDBOOK 04">
+
+You will learn an evidence-first debugging loop, how to ask Copilot for test cases rather than decorative tests, how to constrain refactoring and why a passing test suite cannot replace requirement review.
+
+</ThemeCard>
+
+<CopilotHandbookVisual variant="quality" />
+
+## Debug from evidence, not from the first theory
+
+Copilot can rapidly suggest possible causes, but a plausible cause is not a diagnosed cause. Begin with an observable failure: input, expected result, actual result, error message, environment and minimal reproduction. Ask Copilot to separate evidence from hypotheses.
+
+The safe loop is **reproduce → explain → change one cause → test → review**. If several unrelated edits are made before rerunning the failure, you lose the ability to explain which change mattered.
+
+## A strong debugging conversation
+
+First ask for a trace of the failing path. Then ask for ranked hypotheses, with evidence needed to confirm or reject each one. Provide logs carefully—remove credentials, personal information and irrelevant production data. Finally, request the smallest diagnostic change or test before requesting a fix.
+
+## Generate tests that can detect failure
+
+AI-generated tests sometimes repeat the implementation, mock away the important behaviour or assert only that a function returned something. A meaningful test connects an input and precondition to an observable outcome.
+
+Ask for a test matrix before code: normal path, boundaries, malformed input, authorization, dependency failure and regression case. Review whether each test would fail if the bug returned.
+
+## Refactor while preserving behaviour
+
+Define what must not change: public API, database behaviour, error messages, performance threshold or serialization format. Establish tests before the refactor. Ask Copilot to change one structural concern at a time, then compare the diff and rerun checks.
+
+<OfficialScreenshot src="/images/github-copilot/official-code-completion.webp" alt="Visual Studio Code menu for GitHub Copilot code completion" sourceUrl="https://docs.github.com/en/copilot/how-tos/get-code-suggestions/get-ide-code-suggestions" note="GitHub Docs shows code-completion controls in Visual Studio Code; generated suggestions must still be inspected in their project context." />
+
+## Practical incident
+
+<Scenario title="Checkout total becomes negative">
+
+A checkout test reports a negative total when a percentage discount and refund adjustment are both present. Instead of asking “fix checkout,” the developer gives Copilot the failing test, calculation function and domain rules. Copilot identifies three hypotheses.
+
+The team adds a focused regression test that reproduces the incorrect order of operations. Only then is the calculation changed. Additional boundary tests cover zero, maximum discount and repeated adjustment. The fix is credible because the evidence and expected business rule are visible.
+
+</Scenario>
+
+## Copy-and-paste debugging prompt
+
+<PromptBox label="Evidence-first debugging">
+
+Observed failure:
+- Input or action: [value]
+- Expected result: [value]
+- Actual result: [value]
+- Error/log excerpt: [sanitized evidence]
+- Reproduction: [test or steps]
+
+Using the referenced code:
+1. Trace the execution path.
+2. Separate confirmed facts from hypotheses.
+3. Rank up to three likely causes.
+4. For each cause, propose one check that would confirm or reject it.
+5. Do not modify code until we select a confirmed cause.
+
+</PromptBox>
+
+## Common mistakes
+
+<Mistakes>
+
+- Pasting a stack trace without the action that produced it.
+- Applying several suggested fixes before reproducing the failure.
+- Accepting tests that only mirror implementation details.
+- Refactoring and changing behaviour in the same uncontrolled diff.
+- Sending secrets or personal data inside logs.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How do you use AI during debugging?" badge="CAREER">
+
+I use AI to accelerate investigation, not to skip diagnosis. I provide a minimal reproduction and sanitized evidence, ask it to separate facts from hypotheses, validate one hypothesis at a time and make the smallest change. I add a regression test that fails before the fix and passes afterward, then review wider side effects.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- A likely explanation is not verified diagnosis.
+- Reproduce before modifying code.
+- Tests should detect business failure, not merely execute lines.
+- Refactoring needs explicit behavioural boundaries.
+- Sanitise logs and keep sensitive information out of prompts.
+
+</Takeaways>
+
+## Official references
+
+- [GitHub Docs: Get IDE code suggestions](https://docs.github.com/en/copilot/how-tos/get-code-suggestions/get-ide-code-suggestions)
+- [GitHub Docs: GitHub Copilot code review](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/request-a-code-review/use-code-review)
+

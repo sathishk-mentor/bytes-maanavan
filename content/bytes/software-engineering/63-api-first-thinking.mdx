@@ -1,0 +1,127 @@
+---
+title: "Give GitHub Copilot Better Context"
+slug: "63-api-first-thinking"
+summary: "Learn how goals, relevant files, repository instructions, examples and acceptance criteria help GitHub Copilot produce more useful results."
+category: "software-engineering"
+tags: ["GitHub Copilot context", "copilot instructions", "prompt engineering", "repository instructions"]
+level: "beginner"
+duration: "19 min"
+updatedAt: "2026-09-13"
+order: 63
+isPopular: true
+---
+
+<ThemeCard title="What you will learn" badge="HANDBOOK 02">
+
+You will learn a five-part context pattern for Copilot, understand repository instructions and references, recognise context overload and create prompts that expose missing information instead of encouraging silent assumptions.
+
+</ThemeCard>
+
+<CopilotHandbookVisual variant="context" />
+
+## Context is the difference between guessing and assisting
+
+Copilot cannot use a requirement, convention or constraint that it cannot access. A prompt such as “add login” leaves unanswered questions about identity provider, session strategy, roles, error responses, audit needs and tests. The result may look polished while solving a different problem.
+
+A useful context package contains five things: **goal, relevant files, project rules, examples and acceptance checks**. More context is not automatically better. Include information that changes the answer and remove material that competes for attention.
+
+## The five-part context pattern
+
+### 1. Goal
+
+Describe the observable result. “Add CSV export to the filtered orders table” is more useful than “improve orders.” Mention the user and the reason when that affects design.
+
+### 2. Relevant files
+
+Reference the smallest set that establishes the current pattern: route, service, data type, UI component and related test. Ask Copilot to identify missing dependencies before editing.
+
+### 3. Project rules
+
+State architectural boundaries, supported versions, security expectations and style conventions. Repository custom instructions can make stable guidance available repeatedly, but instructions should remain concise, accurate and maintained.
+
+### 4. Examples
+
+Point to one good existing implementation. Examples communicate conventions more precisely than broad adjectives such as “clean” or “professional.” Do not provide a flawed pattern merely because it is nearby.
+
+### 5. Acceptance checks
+
+Define how completion will be evaluated: expected behaviour, edge cases, tests, accessibility, performance or error handling. Acceptance criteria turn a subjective request into a checkable task.
+
+<OfficialScreenshot src="/images/github-copilot/official-custom-instructions.webp" alt="GitHub Copilot references showing a repository copilot instructions file" sourceUrl="https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions" note="GitHub Docs demonstrates that repository instructions can appear in the references used for a Copilot response." />
+
+## Real project scenario
+
+<Scenario title="Add an order cancellation endpoint">
+
+A developer asks Copilot to add `POST /orders/:id/cancel`. Without context, it may directly update the status. The real system requires ownership validation, a cancellable-state check, inventory restoration, an audit event and idempotency.
+
+The useful prompt references the existing refund endpoint, order state machine, authorization middleware and integration tests. It asks for a plan first and requires Copilot to list assumptions. Context changes the task from “write an endpoint” to “extend this system safely.”
+
+</Scenario>
+
+## Copy-and-paste context prompt
+
+<PromptBox label="Five-part Copilot task brief">
+
+Goal: Add [observable capability] for [user or system].
+
+Relevant context:
+- Read [file/module] for the current flow.
+- Follow the pattern in [good example].
+- Respect [architecture/security/version constraints].
+
+Acceptance criteria:
+1. [Expected behaviour]
+2. [Important edge case]
+3. [Required automated check]
+
+Before editing, list missing information and assumptions. Then propose a file-by-file plan.
+
+</PromptBox>
+
+## Context quality checklist
+
+- Does every referenced file affect the decision?
+- Are version and framework constraints explicit?
+- Is there a trusted example of the desired pattern?
+- Are authorization and data boundaries visible?
+- Can another developer verify the acceptance criteria?
+- Did Copilot state what it could not determine?
+
+## Common mistakes
+
+<Mistakes>
+
+- Attaching the whole repository when five files explain the task.
+- Storing temporary task details in permanent repository instructions.
+- Writing conflicting instructions at different scopes.
+- Using “best practice” without naming operational constraints.
+- Forgetting that referenced documentation can become outdated.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How do you improve GitHub Copilot output?" badge="CAREER">
+
+I improve the input context before changing the wording repeatedly. I provide a measurable goal, relevant files, stable repository conventions, one trusted example and acceptance criteria. I ask Copilot to identify missing information and assumptions, then review the plan before allowing broad edits.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Context engineering is more important than decorative prompt language.
+- The smallest relevant context is usually better than the largest available context.
+- Repository instructions are for stable, shared conventions.
+- Acceptance criteria make generated work testable.
+- Explicit uncertainty is safer than silent assumption.
+
+</Takeaways>
+
+## Official references
+
+- [GitHub Docs: Concepts for prompting GitHub Copilot](https://docs.github.com/en/copilot/concepts/prompting)
+- [GitHub Docs: Add repository custom instructions](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions)
+

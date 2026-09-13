@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    { "source": "/category/software-engineering/", "destination": "/software-engineering/", "permanent": true },
+    { "source": "/software-engineering/61-software-engineering-in-ai-era/", "destination": "/software-engineering/62-how-developers-use-ai-tools/", "permanent": true },
+    { "source": "/software-engineering/65-app-flow-understanding/", "destination": "/software-engineering/62-how-developers-use-ai-tools/", "permanent": true },
+    { "source": "/software-engineering/68-clean-code-with-ai/", "destination": "/software-engineering/63-api-first-thinking/", "permanent": true },
+    { "source": "/software-engineering/70-git-ai-workflows/", "destination": "/software-engineering/63-api-first-thinking/", "permanent": true },
+    { "source": "/software-engineering/67-building-apps-using-ai-apis/", "destination": "/software-engineering/66-ai-assisted-coding-workflow/", "permanent": true },
+    { "source": "/software-engineering/74-ai-devops-integration/", "destination": "/software-engineering/66-ai-assisted-coding-workflow/", "permanent": true },
+    { "source": "/software-engineering/69-testing-ai-generated-code/", "destination": "/software-engineering/64-debugging-ai-generated-code/", "permanent": true },
+    { "source": "/software-engineering/71-ai-system-design-basics/", "destination": "/software-engineering/64-debugging-ai-generated-code/", "permanent": true },
+    { "source": "/software-engineering/72-scalable-ai-apps/", "destination": "/software-engineering/75-secure-ai-coding/", "permanent": true },
+    { "source": "/software-engineering/73-microservices-ai/", "destination": "/software-engineering/75-secure-ai-coding/", "permanent": true }
+  ]
+}

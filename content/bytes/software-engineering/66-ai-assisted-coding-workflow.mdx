@@ -1,0 +1,106 @@
+---
+title: "Build a Feature with GitHub Copilot"
+slug: "66-ai-assisted-coding-workflow"
+summary: "Follow a disciplined GitHub Copilot workflow from requirement and plan to small code changes, automated checks and human-reviewed pull request."
+category: "software-engineering"
+tags: ["GitHub Copilot workflow", "agent mode", "plan mode", "feature development"]
+level: "intermediate"
+duration: "22 min"
+updatedAt: "2026-09-13"
+order: 66
+isPopular: true
+---
+
+<ThemeCard title="What you will learn" badge="HANDBOOK 03">
+
+You will learn a repeatable feature-delivery workflow that separates understanding, planning, implementation and review. The objective is not maximum code generation; it is faster progress with visible engineering control.
+
+</ThemeCard>
+
+<CopilotHandbookVisual variant="feature" />
+
+## Start with a thin vertical slice
+
+A good first Copilot task is small enough to inspect yet complete enough to create user value. Instead of “build an e-commerce platform,” choose “allow an authenticated customer to save one product to a wishlist.” A thin slice crosses the necessary layers without hiding dozens of decisions inside one prompt.
+
+## Step 1: establish the current system
+
+Use Ask mode to trace the existing request flow. Confirm entry points, data ownership, authentication, error conventions and test strategy. Ask for evidence from specific files. If the explanation conflicts with the code, trust the code and investigate.
+
+## Step 2: create and challenge the plan
+
+Ask Plan mode for affected files, schema changes, API contract, UI states, tests and rollout concerns. Then challenge the plan: What could break? Which assumption is unverified? Can the change be smaller? A plan is valuable because it makes disagreement inexpensive—before code is changed.
+
+## Step 3: implement in reviewable increments
+
+Give Agent mode a bounded portion of the approved plan. Let it inspect files and propose edits, but review tool calls and diffs. Run checks after each meaningful increment rather than waiting until the end of a large change.
+
+## Step 4: test behaviour, not only syntax
+
+Compilation confirms structure; it does not confirm the user outcome. Test the success path, unauthorized access, invalid input, duplicate actions and failure recovery. Verify that tests can fail for the right reason before trusting a green result.
+
+## Step 5: inspect the final diff
+
+Remove unrelated changes. Check data migrations, logging, secrets, dependencies and generated boilerplate. Ensure the pull-request description explains the problem, approach, evidence and risk—not merely the files changed.
+
+<OfficialScreenshot src="/images/github-copilot/official-copilot-chat.webp" alt="GitHub Copilot Chat icon in the Visual Studio Code interface" sourceUrl="https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide" note="GitHub’s IDE guide shows the Copilot Chat entry point; available modes and placement can vary by editor and version." />
+
+## Worked scenario: wishlist feature
+
+<Scenario title="One feature through five engineering gates">
+
+The team wants signed-in users to save products. First, Copilot traces how authentication and product IDs currently work. Next, it plans one database table, two API operations, optimistic UI feedback and tests. The developer rejects an unnecessary new service and keeps the change inside the existing module.
+
+Agent mode implements the API contract first. Tests reveal that repeated requests create duplicates, so the schema and handler gain an idempotency constraint. Only after backend behaviour is stable does the UI change proceed. The final diff is understandable because each step remained bounded.
+
+</Scenario>
+
+## Copy-and-paste implementation prompt
+
+<PromptBox label="Implement one approved plan step">
+
+Implement only Step [number] from the approved plan.
+
+Boundaries:
+- Modify only the files required for this step.
+- Follow the existing pattern in [reference file].
+- Do not add dependencies or change public contracts without asking.
+- Include tests for success, invalid input and unauthorized access.
+
+After editing:
+1. Run the relevant checks.
+2. Summarize changed behaviour.
+3. List unresolved risks and assumptions.
+4. Stop before the next plan step.
+
+</PromptBox>
+
+## When Agent mode is the wrong starting point
+
+Do not start with broad autonomous edits when the requirement is disputed, the repository cannot run locally, production data is involved, the change affects security boundaries or the team lacks a way to validate the result. Use Ask or Plan first and reduce the scope.
+
+## Interview bit
+
+<ThemeCard title="How would you use Copilot to build a feature safely?" badge="CAREER">
+
+I begin by understanding the existing flow and converting the request into acceptance criteria. I use Plan mode to expose affected components and assumptions, then implement a thin slice in small increments. I run behaviour-focused tests, inspect every diff and keep human approval at architecture, security and release gates.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Small vertical slices are easier to generate, test and review.
+- Plan before editing when a feature crosses boundaries.
+- Give Agent mode a bounded task and explicit stopping point.
+- Run checks throughout the workflow, not only at the end.
+- A clean pull request is part of the engineering result.
+
+</Takeaways>
+
+## Official references
+
+- [GitHub Docs: Asking Copilot questions in your IDE](https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide)
+- [GitHub Docs: GitHub Copilot features](https://docs.github.com/en/copilot/get-started/features)
+

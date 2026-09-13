@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { ByteMetadata, Byte } from './types';
-import { legacyByte, legacyBytes } from './legacy-content';
+import { byteTopics, topicPreview } from './topic-catalog';
+import { SEO_URL_PLAN } from '@/data/seo-url-plan';
 
 const contentDirectory = path.join(process.cwd(), 'content/bytes');
 
@@ -38,7 +39,7 @@ function getAllMdxFiles(dir: string): string[] {
 }
 
 export async function getAllBytes(): Promise<ByteMetadata[]> {
-  if (!ensureContentDirectory()) return legacyBytes;
+  if (!ensureContentDirectory()) return byteTopics;
 
   const mdxFiles = getAllMdxFiles(contentDirectory);
 
@@ -61,7 +62,7 @@ export async function getAllBytes(): Promise<ByteMetadata[]> {
   });
 
   // Sort by category order, then by byte order
-  const sourceBytes = legacyBytes.map((legacy) => bytes.find((byte) => byte.slug === legacy.slug) || legacy);
+  const sourceBytes = byteTopics.map((topic) => bytes.find((byte) => byte.slug === topic.slug) || topic);
   return sourceBytes.sort((a, b) => {
     if (a.category === b.category) {
       return a.order - b.order;
@@ -71,7 +72,7 @@ export async function getAllBytes(): Promise<ByteMetadata[]> {
 }
 
 export async function getByteBySlug(slug: string): Promise<Byte | null> {
-  if (!ensureContentDirectory()) return legacyBytes.find((item) => item.slug === slug) ? legacyByte(legacyBytes.find((item) => item.slug === slug)!.category, slug) : null;
+  if (!ensureContentDirectory()) return byteTopics.find((item) => item.slug === slug) ? topicPreview(byteTopics.find((item) => item.slug === slug)!.category, slug) : null;
 
   const mdxFiles = getAllMdxFiles(contentDirectory);
 
@@ -96,14 +97,19 @@ export async function getByteBySlug(slug: string): Promise<Byte | null> {
     }
   }
 
-  const metadata = legacyBytes.find((item) => item.slug === slug);
-  return metadata ? legacyByte(metadata.category, slug) : null;
+  const metadata = byteTopics.find((item) => item.slug === slug);
+  return metadata ? topicPreview(metadata.category, slug) : null;
 }
 
 export async function getBytesByCategory(category: string): Promise<ByteMetadata[]> {
   const allBytes = await getAllBytes();
+  const handbook = SEO_URL_PLAN.find((plan) => plan.category === category);
+  const canonicalSlugs = handbook
+    ? new Set(handbook.chapters.map((chapter) => chapter.canonical.split('/').filter(Boolean).at(-1)))
+    : null;
+
   return allBytes
-    .filter((byte) => byte.category === category)
+    .filter((byte) => byte.category === category && (!canonicalSlugs || canonicalSlugs.has(byte.slug)))
     .sort((a, b) => a.order - b.order);
 }
 
