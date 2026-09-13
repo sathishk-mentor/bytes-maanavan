@@ -28,7 +28,9 @@ export function sortBytes(bytes: ByteMetadata[], sortBy: SortOption): ByteMetada
 
   switch (sortBy) {
     case 'order':
-      return bytesCopy.sort((a, b) => a.order - b.order);
+      // Category pages receive the editorial handbook sequence from getBytesByCategory.
+      // Preserve that sequence instead of re-sorting by retired SEO route numbers.
+      return bytesCopy;
 
     case 'title':
       return bytesCopy.sort((a, b) => a.title.localeCompare(b.title));
