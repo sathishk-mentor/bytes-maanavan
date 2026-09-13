@@ -11,17 +11,17 @@ export default async function HomePage() {
       <div className="hero-aurora hero-aurora-one"/><div className="hero-aurora hero-aurora-two"/>
       <div className="container-custom bytes-hero-layout">
         <div className="bytes-hero-copy">
-          <p className="eyebrow"><Sparkles/> MaanavaN Bytes · Visual learning library</p>
-          <h1>Learn the concept.<br/><span>See how it works.</span></h1>
-          <p>Premium, bite-sized technology handbooks built with clear explanations, real developer scenarios, animated workflows, official screenshots and interview-ready insight.</p>
+          <p className="eyebrow"><Sparkles/> MaanavaN Bytes · Visual technology handbooks</p>
+          <h1>Understand technology.<br/><span>One visual Byte at a time.</span></h1>
+          <p>Start with a clear mental model, explore the workflow visually, apply it to a real scenario and finish ready to explain the concept with confidence.</p>
           <div className="bytes-hero-actions"><Link className="primary-cta" href="#bytes-library">Explore Bytes Library <ArrowRight/></Link><Link className="ghost-cta" href="/software-engineering/">Open Copilot Handbook</Link></div>
           <div className="bytes-hero-trust"><span><CheckCircle2/>Personally reviewed</span><span><CheckCircle2/>Primary-source research</span><span><CheckCircle2/>Free to learn</span></div>
         </div>
-        <div className="hero-learning-console" aria-label="Animated GitHub Copilot learning workflow">
-          <header><span><i/><i/><i/></span><small>MAANAVAN / VISUAL EXPLAINER</small><b>LIVE</b></header>
-          <div className="console-prompt"><small>LEARNER QUESTION</small><p>How should I verify AI-generated code?</p></div>
-          <div className="console-flow"><div><span><Code2/></span><small>01</small><b>Generate</b></div><i/><div><span><Eye/></span><small>02</small><b>Inspect</b></div><i/><div><span><SearchCheck/></span><small>03</small><b>Test</b></div><i/><div><span><ShieldCheck/></span><small>04</small><b>Approve</b></div></div>
-          <footer><span><i/></span><div><small>ENGINEERING PRINCIPLE</small><strong>AI proposes. The developer remains responsible.</strong></div></footer>
+        <div className="hero-learning-console" aria-label="Animated MaanavaN Bytes learning approach">
+          <header><span><i/><i/><i/></span><small>MAANAVAN / HOW A BYTE WORKS</small><b>LEARNING FLOW</b></header>
+          <div className="console-question"><span>01</span><div><small>DISCOVER</small><strong>Start with one important question</strong><p>What is the concept—and why does it matter?</p></div></div>
+          <div className="console-learning-track"><i/><div><span><Eye/></span><small>VISUAL</small><b>See the workflow</b></div><div><span><Code2/></span><small>APPLY</small><b>Try a real example</b></div><div><span><SearchCheck/></span><small>DECIDE</small><b>Explain the trade-off</b></div></div>
+          <footer><span><ShieldCheck/></span><div><small>DEEP DIVE → DELIVER</small><strong>Analogy · Architecture · Prompt · Interview insight</strong></div></footer>
         </div>
       </div>
       <div className="bytes-learning-promise"><div className="container-custom">
