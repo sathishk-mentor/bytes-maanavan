@@ -12,6 +12,7 @@ export function generateStaticParams() {
 
 const handbookDetails = {
   'software-engineering': {
+    searchTitle: 'GitHub Copilot Handbook for Developers',
     eyebrow: 'AI-ASSISTED SOFTWARE ENGINEERING',
     intro: 'A practical five-part guide to using GitHub Copilot with better context, smaller changes, stronger testing and responsible engineering judgement.',
     audience: 'Developers learning AI-assisted delivery',
@@ -20,6 +21,7 @@ const handbookDetails = {
     keywords: ['GitHub Copilot handbook', 'GitHub Copilot tutorial', 'AI coding assistant', 'Copilot for developers', 'AI-assisted software engineering'],
   },
   'forward-deployed-engineer': {
+    searchTitle: 'Forward Deployed Engineer (FDE) Handbook',
     eyebrow: 'CUSTOMER PROBLEM TO PRODUCTION',
     intro: 'A practical five-part guide to discovering real workflow problems, designing a thin production slice, deploying safely and converting field learning into product value.',
     audience: 'Engineers, consultants and solution leaders',
@@ -35,7 +37,7 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
   const detail = handbookDetails[params.categorySlug as PublishedCategory];
   if (!category || !detail) return { title: 'Handbook moved', robots: { index: false, follow: true } };
   return {
-    title: `${category.title}: 5 Practical Bytes`,
+    title: detail.searchTitle,
     description: detail.intro,
     keywords: [...detail.keywords],
     alternates: { canonical: `/${params.categorySlug}/` },
@@ -73,20 +75,15 @@ export default async function TrackPage({ params }: { params: { categorySlug: st
   const lessons = await getBytesByCategory(category.slug);
   if (!lessons.length) permanentRedirect('/handbooks/');
 
-  const schema = {
-    '@context': 'https://schema.org', '@type': 'CollectionPage', name: category.title,
-    description: detail.intro, url: `https://bytes.maanavan.com/${params.categorySlug}/`,
-    isPartOf: { '@type': 'WebSite', name: 'MaanavaN Bytes', url: 'https://bytes.maanavan.com/' },
-    hasPart: lessons.map((lesson, index) => ({
-      '@type': 'LearningResource', position: index + 1, name: lesson.title,
-      description: lesson.summary, educationalLevel: lesson.level, timeRequired: lesson.duration,
-      url: `https://bytes.maanavan.com/${lesson.category}/${lesson.slug}/`,
-    })),
-  };
+  const canonical = `https://bytes.maanavan.com/${params.categorySlug}/`;
+  const schema = {'@context':'https://schema.org','@graph':[
+    {'@type':'CollectionPage','@id':`${canonical}#collection`,name:category.title,description:detail.intro,url:canonical,isPartOf:{'@id':'https://bytes.maanavan.com/#website'},audience:{'@type':'Audience',audienceType:detail.audience},mainEntity:{'@type':'ItemList',itemListElement:lessons.map((lesson,index)=>({'@type':'ListItem',position:index+1,url:`https://bytes.maanavan.com/${lesson.category}/${lesson.slug}/`,name:lesson.title}))}},
+    {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'MaanavaN Bytes',item:'https://bytes.maanavan.com/'},{'@type':'ListItem',position:2,name:category.title,item:canonical}]}
+  ]};
 
   return <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}/>
-    <main>
+    <div>
       <section className={`track-hero track-hero-${params.categorySlug}`}><div className="container-custom track-hero-inner">
         <div className="track-hero-copy"><p className="eyebrow"><Sparkles/>{detail.eyebrow}</p><h1>{category.title}</h1><p>{detail.intro}</p>
           <div className="track-hero-points"><span><BookOpenCheck/>Connected learning path</span><span>Beginner-friendly</span><span>Real project scenarios</span></div>
@@ -113,6 +110,6 @@ export default async function TrackPage({ params }: { params: { categorySlug: st
         <div className="container-custom"><header><div><p className="eyebrow dark">CONNECTED LEARNING PATH</p><h2>Learn in the order the work happens.</h2><p>Complete one focused concept at a time. Every chapter includes practical guidance you can use immediately.</p></div><span><CheckCircle2/>Complete handbook</span></header></div>
         <CategoryPageClient bytes={lessons}/>
       </section>
-    </main>
+    </div>
   </>;
 }
