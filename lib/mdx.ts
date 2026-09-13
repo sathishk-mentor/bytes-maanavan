@@ -2,8 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { ByteMetadata, Byte } from './types';
-import { byteTopics, topicPreview } from './topic-catalog';
-import { SEO_URL_PLAN } from '@/data/seo-url-plan';
+import { handbooks } from './handbooks';
 
 const contentDirectory = path.join(process.cwd(), 'content/bytes');
 
@@ -39,7 +38,7 @@ function getAllMdxFiles(dir: string): string[] {
 }
 
 export async function getAllBytes(): Promise<ByteMetadata[]> {
-  if (!ensureContentDirectory()) return byteTopics;
+  if (!ensureContentDirectory()) return [];
 
   const mdxFiles = getAllMdxFiles(contentDirectory);
 
@@ -72,7 +71,7 @@ export async function getAllBytes(): Promise<ByteMetadata[]> {
 }
 
 export async function getByteBySlug(slug: string): Promise<Byte | null> {
-  if (!ensureContentDirectory()) return byteTopics.find((item) => item.slug === slug) ? topicPreview(byteTopics.find((item) => item.slug === slug)!.category, slug) : null;
+  if (!ensureContentDirectory()) return null;
 
   const mdxFiles = getAllMdxFiles(contentDirectory);
 
@@ -97,20 +96,22 @@ export async function getByteBySlug(slug: string): Promise<Byte | null> {
     }
   }
 
-  const metadata = byteTopics.find((item) => item.slug === slug);
-  return metadata ? topicPreview(metadata.category, slug) : null;
+  return null;
 }
 
 export async function getBytesByCategory(category: string): Promise<ByteMetadata[]> {
   const allBytes = await getAllBytes();
-  const handbook = SEO_URL_PLAN.find((plan) => plan.category === category);
-  const canonicalSlugs = handbook
-    ? new Set(handbook.chapters.map((chapter) => chapter.canonical.split('/').filter(Boolean).at(-1)))
-    : null;
+  const handbook = handbooks.find((item) =>
+    item.chapters.some((chapter) => chapter.href.startsWith(`/${category}/`))
+  );
+  const chapterOrder = new Map(handbook?.chapters.map((chapter, index) => [
+    chapter.href.split('/').filter(Boolean).at(-1),
+    index,
+  ]));
 
   return allBytes
-    .filter((byte) => byte.category === category && (!canonicalSlugs || canonicalSlugs.has(byte.slug)))
-    .sort((a, b) => handbook ? handbook.chapters.findIndex((chapter) => chapter.canonical.includes(`/${a.slug}/`)) - handbook.chapters.findIndex((chapter) => chapter.canonical.includes(`/${b.slug}/`)) : a.order - b.order);
+    .filter((byte) => byte.category === category)
+    .sort((a, b) => (chapterOrder.get(a.slug) ?? a.order) - (chapterOrder.get(b.slug) ?? b.order));
 }
 
 export async function getPopularBytes(): Promise<ByteMetadata[]> {
