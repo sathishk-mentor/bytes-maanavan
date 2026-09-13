@@ -34,11 +34,10 @@ function TopicHeroVisual({ slug }: { slug: string }) {
   </aside>;
 }
 
-export function ByteHeader({ byte }: { byte: ByteMetadata }) {
+export function ByteHeader({ byte, chapterNumber }: { byte: ByteMetadata; chapterNumber: number }) {
   const category = getCategoryBySlug(byte.category);
-  const chapter = byte.order;
   return <header className="byte-editorial-hero"><div className="byte-hero-inner">
-    <nav aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href={`/${byte.category}/`}>{category?.title}</Link><span>/</span><b>Chapter {chapter > 0 ? chapter : byte.order}</b></nav>
+    <nav aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href={`/${byte.category}/`}>{category?.title}</Link><span>/</span><b>Chapter {chapterNumber}</b></nav>
     <div className="byte-hero-grid"><div><p className="byte-eyebrow"><Sparkles/>{category?.title} · PRACTICAL GUIDE</p><h1>{byte.title}</h1><p className="byte-deck">{byte.summary}</p><div className="byte-byline"><span><Clock3/>{byte.duration} read</span><time dateTime={byte.updatedAt}>Updated {byte.updatedAt}</time><span>Free learning guide</span></div></div>
     <TopicHeroVisual slug={byte.slug} /></div>
   </div></header>;
