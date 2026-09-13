@@ -17,6 +17,15 @@ export function generateMetadata(): Metadata {
   return { title: 'This handbook has moved | MaanavaN Bytes', robots: { index: false, follow: true } };
 }
 
-export default function RetiredHandbookPage() {
-  permanentRedirect('/handbooks/');
+export default function RetiredHandbookPage({params}:{params:{slug:string}}) {
+  const destinations:Record<string,string>={
+    'generative-ai':'https://www.maanavan.com/courses/generative-ai',
+    'ai-agents':'https://www.maanavan.com/courses/ai-agents-automation',
+    'agentic-ai':'https://www.maanavan.com/courses/ai-agents-automation',
+    agi:'https://www.maanavan.com/courses/generative-ai',
+    'ai-foundations-non-tech':'https://www.maanavan.com/courses/generative-ai',
+    'devops-ai-era':'https://www.maanavan.com/courses/cloud-devops',
+    'claude-code':'https://www.maanavan.com/courses/generative-ai',
+  };
+  permanentRedirect(destinations[params.slug] || '/handbooks/');
 }
