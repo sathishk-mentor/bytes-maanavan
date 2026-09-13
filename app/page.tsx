@@ -1,11 +1,10 @@
 import Link from 'next/link';
 import { ArrowRight, BookOpen, BriefcaseBusiness, GraduationCap, Sparkles, Users } from 'lucide-react';
-import { byteTopics } from '@/lib/topic-catalog';
 import { BytesLibrary } from '@/components/home/BytesLibrary';
+import { getBytesByCategory } from '@/lib/mdx';
 
-export default function HomePage() {
-  const chapterOrder = ['62-how-developers-use-ai-tools', '63-api-first-thinking', '66-ai-assisted-coding-workflow', '64-debugging-ai-generated-code', '75-secure-ai-coding'];
-  const chapters = byteTopics.filter((item) => item.category === 'software-engineering' && chapterOrder.includes(item.slug)).sort((a, b) => chapterOrder.indexOf(a.slug) - chapterOrder.indexOf(b.slug));
+export default async function HomePage() {
+  const chapters = await getBytesByCategory('software-engineering');
   return <>
     <section className="hero-grid overflow-hidden">
       <div className="container-custom grid gap-12 py-20 lg:grid-cols-[1.2fr_.8fr] lg:py-28">
