@@ -23,6 +23,19 @@ interface BytePageProps {
   };
 }
 
+const searchTitles:Record<string,string>={
+  '62-how-developers-use-ai-tools':'GitHub Copilot Explained for Developers',
+  '63-api-first-thinking':'Give GitHub Copilot Better Context',
+  '66-ai-assisted-coding-workflow':'Build a Feature with GitHub Copilot',
+  '64-debugging-ai-generated-code':'Debug and Test with GitHub Copilot',
+  '75-secure-ai-coding':'Responsible GitHub Copilot Use',
+  '01-what-does-a-forward-deployed-engineer-do':'Forward Deployed Engineer Role Explained',
+  '02-problem-discovery-and-workflow-mapping':'FDE Problem Discovery and Workflow Mapping',
+  '03-design-thin-production-slice':'FDE Thin Production Slice Architecture',
+  '04-deploy-observe-and-improve':'FDE Production Feedback Loop',
+  '05-turn-field-learning-into-product':'FDE Field Learning to Product Strategy',
+};
+
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
@@ -41,7 +54,17 @@ export async function generateStaticParams() {
 }
 
 function legacyDestination(categorySlug: string) {
-  return '/handbooks/';
+  const destinations: Record<string,string> = {
+    'software-engineering':'/software-engineering/',
+    'forward-deployed-engineer':'/forward-deployed-engineer/',
+    genai:'https://www.maanavan.com/courses/generative-ai',
+    'ai-agents':'https://www.maanavan.com/courses/ai-agents-automation',
+    'data-engineering':'https://www.maanavan.com/courses/data-engineering',
+    'cloud-devops':'https://www.maanavan.com/courses/cloud-devops',
+    cybersecurity:'https://www.maanavan.com/courses/cybersecurity',
+    'case-studies':'/forward-deployed-engineer/',
+  };
+  return destinations[categorySlug] || '/handbooks/';
 }
 
 export async function generateMetadata({ params }: BytePageProps): Promise<Metadata> {
@@ -52,15 +75,19 @@ export async function generateMetadata({ params }: BytePageProps): Promise<Metad
   }
 
   return {
-    title: `${byte.title} | MaanavaN Bytes`,
+    title: searchTitles[byte.slug] || byte.title,
     description: byte.summary,
     keywords: byte.tags,
+    authors: [{name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'}],
+    alternates: { canonical: `/${byte.category}/${byte.slug}/` },
     openGraph: {
       title: byte.title,
       description: byte.summary,
       type: 'article',
-      publishedTime: byte.updatedAt,
+      url: `/${byte.category}/${byte.slug}/`,
+      modifiedTime: byte.updatedAt,
     },
+    twitter: {card:'summary_large_image',title:byte.title,description:byte.summary},
   };
 }
 
@@ -82,9 +109,16 @@ export default async function BytePage({ params }: BytePageProps) {
   // Extract headings for accordion navigation
   const headings = extractHeadings(byte.content);
 
+  const canonical=`https://bytes.maanavan.com/${categorySlug}/${byteSlug}/`;
+  const minutes=Number.parseInt(byte.duration,10) || 10;
+  const schema={'@context':'https://schema.org','@graph':[
+    {'@type':['Article','LearningResource'],'@id':`${canonical}#learning-resource`,headline:byte.title,name:byte.title,description:byte.summary,url:canonical,dateModified:byte.updatedAt,author:{'@type':'Person',name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'},publisher:{'@id':'https://www.maanavan.com/#organization'},isPartOf:{'@id':`https://bytes.maanavan.com/${categorySlug}/#collection`},educationalLevel:byte.level,learningResourceType:'Tutorial',timeRequired:`PT${minutes}M`,inLanguage:'en-IN',audience:{'@type':'Audience',audienceType:'Tamil-speaking technology learners'}},
+    {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'MaanavaN Bytes',item:'https://bytes.maanavan.com/'},{'@type':'ListItem',position:2,name:category?.title,item:`https://bytes.maanavan.com/${categorySlug}/`},{'@type':'ListItem',position:3,name:byte.title,item:canonical}]}
+  ]};
   return (
     <>
-      <ByteHeader byte={byte} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema)}}/>
+      <ByteHeader byte={byte} chapterNumber={chapterNumber} />
 
       <div className="byte-reading-canvas">
         <div className="byte-reading-layout">
