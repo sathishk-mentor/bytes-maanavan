@@ -20,7 +20,7 @@ export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
 
   return <section className="bytes-library" id="bytes-library">
     <div className="container-custom">
-      <div className="library-heading"><div><p className="eyebrow dark">BYTE LIBRARY</p><h2>Find the exact concept you need.</h2><p>Search the library or choose a handbook from the category sidebar.</p></div></div>
+      <div className="library-heading"><div><p className="eyebrow dark">BYTE LIBRARY</p><h2>Find the exact concept you need.</h2><p>Search the library or choose a subject from the category sidebar.</p></div></div>
       <div className="library-search-row">
         <label className="library-search"><Search/><span className="sr-only">Search Bytes</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search FDE, Copilot, workflow, debugging…" />{query && <button onClick={() => setQuery('')} aria-label="Clear search"><X/></button>}</label>
       </div>
