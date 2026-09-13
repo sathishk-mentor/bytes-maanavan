@@ -31,6 +31,6 @@ export function ByteLibraryCard({ chapter, chapterNumber }: { chapter: ByteMetad
       <p className="byte-card-description">{chapter.summary}</p>
       <small className="byte-card-handbook">{handbook}</small>
     </div>
-    <footer><b>Read <ArrowRight/></b></footer>
+    <footer><b>Start Learning <ArrowRight/></b></footer>
   </Link>;
 }
