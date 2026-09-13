@@ -89,7 +89,7 @@ export default async function TrackPage({ params }: { params: { categorySlug: st
     <main>
       <section className={`track-hero track-hero-${params.categorySlug}`}><div className="container-custom track-hero-inner">
         <div className="track-hero-copy"><p className="eyebrow"><Sparkles/>{detail.eyebrow}</p><h1>{category.title}</h1><p>{detail.intro}</p>
-          <div className="track-hero-points"><span><BookOpenCheck/>5 connected Bytes</span><span>Beginner-friendly</span><span>Real project scenarios</span></div>
+          <div className="track-hero-points"><span><BookOpenCheck/>Connected learning path</span><span>Beginner-friendly</span><span>Real project scenarios</span></div>
           <a href="#handbook-learning-path">Start with Byte 01 <ArrowDown/></a>
         </div>
         <HandbookHeroVisual categorySlug={params.categorySlug as PublishedCategory}/>
@@ -110,7 +110,7 @@ export default async function TrackPage({ params }: { params: { categorySlug: st
       </div></section>
 
       <section id="handbook-learning-path" className="handbook-learning-path">
-        <div className="container-custom"><header><div><p className="eyebrow dark">5-BYTE LEARNING PATH</p><h2>Learn in the order the work happens.</h2><p>Complete one focused concept at a time. Every chapter includes practical guidance you can use immediately.</p></div><span><CheckCircle2/>5 of 5 published</span></header></div>
+        <div className="container-custom"><header><div><p className="eyebrow dark">CONNECTED LEARNING PATH</p><h2>Learn in the order the work happens.</h2><p>Complete one focused concept at a time. Every chapter includes practical guidance you can use immediately.</p></div><span><CheckCircle2/>Complete handbook</span></header></div>
         <CategoryPageClient bytes={lessons}/>
       </section>
     </main>
