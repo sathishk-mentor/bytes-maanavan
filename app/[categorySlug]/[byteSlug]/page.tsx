@@ -25,10 +25,8 @@ interface BytePageProps {
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return byteTopics.filter((byte) => byte.category === 'software-engineering' && [
-    '62-how-developers-use-ai-tools', '63-api-first-thinking', '64-debugging-ai-generated-code',
-    '66-ai-assisted-coding-workflow', '75-secure-ai-coding',
-  ].includes(byte.slug)).map((byte) => ({
+  const bytes = await getAllBytes();
+  return bytes.filter((byte) => ['software-engineering','forward-deployed-engineer'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
@@ -82,7 +80,7 @@ export default async function BytePage({ params }: BytePageProps) {
           <div className="byte-main-column">
             <ReadingReveal><ByteContent content={byte.content} /><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
-          <aside className="byte-trust-rail"><div className="byte-progress-card"><span>LEARNING PROGRESS</span><h3>Chapter {Math.max(1, ['62-how-developers-use-ai-tools','63-api-first-thinking','66-ai-assisted-coding-workflow','64-debugging-ai-generated-code','75-secure-ai-coding'].indexOf(byte.slug) + 1)} of 5</h3><p>{category?.title}</p><div className="byte-progress-track"><i style={{width:`${Math.max(20,(['62-how-developers-use-ai-tools','63-api-first-thinking','66-ai-assisted-coding-workflow','64-debugging-ai-generated-code','75-secure-ai-coding'].indexOf(byte.slug) + 1)*20)}%`}} /></div><small>{byte.duration} focused reading</small></div><div className="byte-review-card"><span>INSIDE THIS BYTE</span><h3>Learn it visually</h3><p>Workflow · example · practical takeaway</p><small>Designed for focused, self-paced learning</small></div></aside>
+          <aside className="byte-trust-rail"><div className="byte-progress-card"><span>LEARNING PROGRESS</span><h3>Chapter {Math.max(1, byte.order)} of 5</h3><p>{category?.title}</p><div className="byte-progress-track"><i style={{width:`${Math.max(20,byte.order*20)}%`}} /></div><small>{byte.duration} focused reading</small></div><div className="byte-review-card"><span>INSIDE THIS BYTE</span><h3>Learn it visually</h3><p>Workflow · example · practical takeaway</p><small>Designed for focused, self-paced learning</small></div></aside>
         </div>
       </div>
     </>

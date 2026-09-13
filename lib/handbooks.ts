@@ -84,15 +84,15 @@ export const handbooks: Handbook[] = [
     ],
   },
   {
-    slug: 'forward-deployed-engineer', title: 'Forward Deployed Engineer Handbook', shortTitle: 'FDE', audience: 'Engineers · Consultants', tone: 'orange', status: 'in-development',
+    slug: 'forward-deployed-engineer', title: 'Forward Deployed Engineer Handbook', shortTitle: 'FDE', audience: 'Engineers · Consultants', tone: 'orange', status: 'available',
     description: 'Connect customer problems, product capability and production delivery in one field-facing engineering role.',
     promise: 'Understand the job through discovery, architecture, delivery and measurable adoption.',
     chapters: [
-      { title: 'What an FDE actually does', outcome: 'Distinguish FDE from consultant and product engineer.' },
-      { title: 'Problem discovery in the field', outcome: 'Turn ambiguity into testable requirements.' },
-      { title: 'Design the thin production slice', outcome: 'Choose the smallest valuable architecture.' },
-      { title: 'Deploy, observe and adapt', outcome: 'Learn from real users and system evidence.' },
-      { title: 'From delivery to reusable product', outcome: 'Convert field learning into product leverage.' },
+      { title: 'What an FDE actually does', outcome: 'Distinguish FDE from consultant and product engineer.', href: '/forward-deployed-engineer/01-what-does-a-forward-deployed-engineer-do/' },
+      { title: 'Problem discovery in the field', outcome: 'Turn ambiguity into testable requirements.', href: '/forward-deployed-engineer/02-problem-discovery-and-workflow-mapping/' },
+      { title: 'Design the thin production slice', outcome: 'Choose the smallest valuable architecture.', href: '/forward-deployed-engineer/03-design-thin-production-slice/' },
+      { title: 'Deploy, observe and adapt', outcome: 'Learn from real users and system evidence.', href: '/forward-deployed-engineer/04-deploy-observe-and-improve/' },
+      { title: 'From delivery to reusable product', outcome: 'Convert field learning into product leverage.', href: '/forward-deployed-engineer/05-turn-field-learning-into-product/' },
     ],
   },
   {

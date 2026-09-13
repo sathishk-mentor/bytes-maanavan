@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import {
-  Bot, Braces, Bug, CheckCircle2, ChevronRight, Clock3, Code2,
-  FileCode2, GitPullRequestArrow, ScanSearch, ShieldCheck, Sparkles, TestTube2,
+  Blocks, Bot, Braces, BriefcaseBusiness, Bug, CheckCircle2, ChevronRight, Clock3, Code2,
+  FileCode2, Gauge, GitPullRequestArrow, Network, Rocket, ScanSearch, Search, ShieldCheck, Sparkles, TestTube2, Users,
 } from 'lucide-react';
 import { ByteMetadata } from '@/lib/types';
 import { getCategoryBySlug } from '@/lib/categories';
@@ -12,6 +12,11 @@ const handbookHeroes = {
   '66-ai-assisted-coding-workflow': { label: 'FEATURE DELIVERY', icon: GitPullRequestArrow, steps: [[FileCode2, 'Define task'], [Sparkles, 'Generate change'], [TestTube2, 'Run checks'], [GitPullRequestArrow, 'Review diff']] },
   '64-debugging-ai-generated-code': { label: 'DEBUGGING LOOP', icon: Bug, steps: [[Bug, 'Reproduce'], [ScanSearch, 'Collect evidence'], [Sparkles, 'Test hypothesis'], [CheckCircle2, 'Verify fix']] },
   '75-secure-ai-coding': { label: 'TRUST GATE', icon: ShieldCheck, steps: [[Sparkles, 'AI output'], [ScanSearch, 'Security review'], [TestTube2, 'Automated tests'], [ShieldCheck, 'Human approval']] },
+  '01-what-does-a-forward-deployed-engineer-do': { label: 'FDE OUTCOME LOOP', icon: BriefcaseBusiness, steps: [[Users, 'Customer reality'], [Search, 'Problem frame'], [Code2, 'Build'], [Rocket, 'Production']] },
+  '02-problem-discovery-and-workflow-mapping': { label: 'DISCOVERY MAP', icon: Search, steps: [[Users, 'Observe users'], [Search, 'Map workflow'], [Network, 'Trace systems'], [Gauge, 'Define success']] },
+  '03-design-thin-production-slice': { label: 'THIN SLICE', icon: Network, steps: [[Gauge, 'Real trigger'], [Network, 'Governed context'], [Code2, 'Bounded build'], [CheckCircle2, 'Approval']] },
+  '04-deploy-observe-and-improve': { label: 'LEARNING LOOP', icon: Gauge, steps: [[Rocket, 'Release'], [Gauge, 'Observe'], [Bug, 'Diagnose'], [TestTube2, 'Improve']] },
+  '05-turn-field-learning-into-product': { label: 'PRODUCT LOOP', icon: Blocks, steps: [[Users, 'Field evidence'], [Search, 'Find pattern'], [Blocks, 'Productise'], [CheckCircle2, 'Handoff']] },
 } as const;
 
 function TopicHeroVisual({ slug }: { slug: string }) {
@@ -25,13 +30,13 @@ function TopicHeroVisual({ slug }: { slug: string }) {
         {index < visual.steps.length - 1 && <ChevronRight className="topic-hero-arrow" />}
       </div>)}
     </div>
-    <footer><span></span>Developer remains responsible at every stage</footer>
+    <footer><span></span>Evidence and accountable ownership guide every stage</footer>
   </aside>;
 }
 
 export function ByteHeader({ byte }: { byte: ByteMetadata }) {
   const category = getCategoryBySlug(byte.category);
-  const chapter = Object.keys(handbookHeroes).indexOf(byte.slug) + 1;
+  const chapter = byte.order;
   return <header className="byte-editorial-hero"><div className="byte-hero-inner">
     <nav aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href={`/${byte.category}/`}>{category?.title}</Link><span>/</span><b>Chapter {chapter > 0 ? chapter : byte.order}</b></nav>
     <div className="byte-hero-grid"><div><p className="byte-eyebrow"><Sparkles/>{category?.title} · PRACTICAL GUIDE</p><h1>{byte.title}</h1><p className="byte-deck">{byte.summary}</p><div className="byte-byline"><span><Clock3/>{byte.duration} read</span><time dateTime={byte.updatedAt}>Updated {byte.updatedAt}</time><span>Free learning guide</span></div></div>

@@ -1,0 +1,136 @@
+---
+title: "Deploy, Observe and Improve: The FDE Production Feedback Loop"
+slug: "04-deploy-observe-and-improve"
+summary: "Launch safely, combine technical and user signals, diagnose failures and improve an AI system without confusing activity with outcomes."
+category: "forward-deployed-engineer"
+tags: ["production AI", "observability", "FDE", "evaluation", "adoption"]
+level: "intermediate"
+duration: "18 min"
+updatedAt: "2026-09-13"
+order: 4
+isPopular: false
+---
+
+<ThemeCard title="What you will learn" badge="FDE HANDBOOK 04">
+
+You will learn how to release a customer-facing system safely, observe technical and workflow behaviour, classify failures and run an evidence-driven improvement loop.
+
+</ThemeCard>
+
+<FDEJourneyVisual variant="feedback" />
+
+## Deployment is where assumptions become evidence
+
+Before release, the team knows what the system did on selected tests. After release, it learns whether people use it, whether integrations survive real traffic, whether outputs support decisions and whether exceptions are handled safely.
+
+An FDE treats deployment as a controlled learning system—not the end of implementation.
+
+## Four layers of evidence
+
+### 1. System health
+
+Track availability, latency, errors, timeouts, dependency failures and queue depth. These signals answer whether the service functions.
+
+### 2. AI quality
+
+Track task-specific correctness, groundedness, tool success, refusal behaviour and critical failure cases. One generic “accuracy” score is rarely enough.
+
+### 3. Workflow outcome
+
+Track time saved, rework, resolution quality, throughput or another metric tied to the discovered problem.
+
+### 4. Adoption and trust
+
+Track active use, abandonment, overrides, escalation and qualitative feedback. Low adoption may indicate poor fit, slow response, missing evidence or lack of trust—not user resistance.
+
+## Real-time scenario: support response assistant
+
+<Scenario title="Fast responses, disappointing outcome">
+
+A support assistant has excellent uptime and produces replies in two seconds. Yet agents use only 20% of suggestions. Session review shows the answer is often correct but lacks the account-specific evidence agents need before sending it. The team adds cited account context and a clear uncertainty state rather than changing the model.
+
+Adoption rises because the system now fits the decision process. Technical health alone could not reveal this gap.
+
+</Scenario>
+
+## Classify before fixing
+
+| Failure class | Example | Likely response |
+|---|---|---|
+| Requirement | Correct system, wrong user need | Return to workflow discovery |
+| Data | Missing, stale or unauthorized evidence | Repair source and governance |
+| Model | Poor reasoning or generation | Improve prompt, model or evaluation |
+| Tool | Incorrect API selection or arguments | Tighten tool contract and validation |
+| Product | Output hard to inspect or correct | Improve interaction design |
+| Operations | Latency, outage or excessive cost | Engineer reliability and capacity |
+| Adoption | Workflow or incentive mismatch | Redesign rollout and enablement |
+
+Without classification, teams repeatedly tune prompts for problems caused by data, product design or workflow fit.
+
+## Run a safe improvement loop
+
+1. Capture the event, inputs, decision and outcome with appropriate privacy controls.
+2. Reproduce the failure using a protected test case.
+3. Name the failure class and root-cause hypothesis.
+4. Add the case to an evaluation set when appropriate.
+5. Change one meaningful variable.
+6. Test offline, then release to a limited cohort.
+7. Compare technical, quality, outcome and adoption signals.
+
+<PromptBox label="Production issue triage">
+
+Classify this production issue without jumping to a prompt change.
+
+Expected behaviour: [describe]
+Observed behaviour: [describe]
+Available evidence: [logs, user feedback, inputs, outputs]
+Impact: [users and workflow]
+
+Return:
+1. Most likely failure class
+2. Evidence supporting and contradicting it
+3. Missing evidence
+4. Safe reproduction plan
+5. Immediate containment
+6. Candidate correction
+7. Regression evaluation to add
+
+</PromptBox>
+
+## Common mistakes
+
+<Mistakes>
+
+- Monitoring infrastructure while ignoring task and business quality.
+- Treating thumbs-up feedback as a complete evaluation system.
+- Logging sensitive prompts and customer data without a retention policy.
+- Changing several prompts, models and tools at once.
+- Scaling the rollout while critical failure cases remain unexplained.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How do you know an FDE deployment is successful?" badge="CAREER">
+
+**Strong answer:** I use four connected layers: system reliability, task-specific AI quality, workflow outcome and user adoption. I define these before launch, segment them by important cases and keep risk guardrails visible. If adoption is low, I inspect workflow evidence instead of assuming the model is the problem. A successful deployment produces a measurable outcome and a system the customer can operate safely.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Deployment converts assumptions into operational evidence.
+- System health and AI quality are necessary but not sufficient.
+- Failure classification prevents endless prompt tuning.
+- Every important production failure should improve future evaluation.
+- Rollout decisions should combine outcome, adoption and risk.
+
+</Takeaways>
+
+## Primary sources
+
+- [OpenAI: Evaluation best practices](https://platform.openai.com/docs/guides/evals)
+- [Google: Site Reliability Engineering](https://sre.google/sre-book/table-of-contents/)
+- [Anthropic: Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)

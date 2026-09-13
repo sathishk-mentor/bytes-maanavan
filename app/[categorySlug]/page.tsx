@@ -5,7 +5,7 @@ import { getCategoryBySlug } from '@/lib/categories';
 import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
-export function generateStaticParams() { return [{ categorySlug: 'software-engineering' }]; }
+export function generateStaticParams() { return [{ categorySlug: 'software-engineering' }, { categorySlug: 'forward-deployed-engineer' }]; }
 
 export async function generateMetadata({ params }: { params: { categorySlug: string } }): Promise<Metadata> {
   const category = getCategoryBySlug(params.categorySlug);

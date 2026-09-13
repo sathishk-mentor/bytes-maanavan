@@ -6,8 +6,9 @@ export const CATEGORIES: Category[] = [
   { slug: 'data-engineering', title: 'Data Engineering', description: 'Learn pipelines, warehouses, streaming and dependable data systems.', icon: 'Database', color: 'blue', order: 3, heroLine: 'Turn raw data into trusted, useful products' },
   { slug: 'cloud-devops', title: 'Cloud & DevOps', description: 'Ship software with cloud, containers, automation and observability.', icon: 'Cloud', color: 'green', order: 4, heroLine: 'Build, deploy and operate with confidence' },
   { slug: 'software-engineering', title: 'The GitHub Copilot Handbook', description: 'Use GitHub Copilot across context, feature delivery, debugging, testing and responsible review.', icon: 'Code2', color: 'orange', order: 5, heroLine: 'From code suggestions to disciplined agent-assisted engineering' },
-  { slug: 'cybersecurity', title: 'Cybersecurity', description: 'Develop security fundamentals through threats and practical defenses.', icon: 'ShieldCheck', color: 'red', order: 6, heroLine: 'Think like an attacker and defend like an engineer' },
-  { slug: 'case-studies', title: 'Real-world Case Studies', description: 'Connect concepts through architecture decisions and industry scenarios.', icon: 'BriefcaseBusiness', color: 'purple', order: 7, heroLine: 'See how technology choices work in the real world' },
+  { slug: 'forward-deployed-engineer', title: 'The Forward Deployed Engineer Handbook', description: 'Move from customer ambiguity to production systems, adoption and reusable product learning.', icon: 'Workflow', color: 'violet', order: 6, heroLine: 'Bridge customer reality, engineering delivery and measurable outcomes' },
+  { slug: 'cybersecurity', title: 'Cybersecurity', description: 'Develop security fundamentals through threats and practical defenses.', icon: 'ShieldCheck', color: 'red', order: 7, heroLine: 'Think like an attacker and defend like an engineer' },
+  { slug: 'case-studies', title: 'Real-world Case Studies', description: 'Connect concepts through architecture decisions and industry scenarios.', icon: 'BriefcaseBusiness', color: 'purple', order: 8, heroLine: 'See how technology choices work in the real world' },
 ];
 
 export function getAllCategories(): Category[] { return [...CATEGORIES].sort((a, b) => a.order - b.order); }

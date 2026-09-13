@@ -62,7 +62,7 @@ export async function getAllBytes(): Promise<ByteMetadata[]> {
   });
 
   // Sort by category order, then by byte order
-  const sourceBytes = byteTopics.map((topic) => bytes.find((byte) => byte.slug === topic.slug) || topic);
+  const sourceBytes = bytes;
   return sourceBytes.sort((a, b) => {
     if (a.category === b.category) {
       return a.order - b.order;

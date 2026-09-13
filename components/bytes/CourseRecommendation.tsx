@@ -8,6 +8,7 @@ const courseLinks: Record<string,string> = {
   'data-engineering': 'https://www.maanavan.com/courses/data-engineering',
   'cloud-devops': 'https://www.maanavan.com/courses/cloud-devops',
   'software-engineering': 'https://www.maanavan.com/courses/software-engineering',
+  'forward-deployed-engineer': 'https://www.maanavan.com/course-library',
   cybersecurity: 'https://www.maanavan.com/courses/cybersecurity',
   'case-studies': 'https://www.maanavan.com/course-library',
 };

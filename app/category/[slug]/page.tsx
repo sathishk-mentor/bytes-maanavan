@@ -13,7 +13,7 @@ interface CategoryPageProps {
 }
 
 export async function generateStaticParams() {
-  return [{ slug: 'software-engineering' }];
+  return [{ slug: 'software-engineering' }, { slug: 'forward-deployed-engineer' }];
 }
 
 export const dynamicParams = false;

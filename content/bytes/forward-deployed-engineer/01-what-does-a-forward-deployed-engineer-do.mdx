@@ -1,0 +1,124 @@
+---
+title: "What Does a Forward Deployed Engineer Actually Do?"
+slug: "01-what-does-a-forward-deployed-engineer-do"
+summary: "Understand the FDE role, its end-to-end delivery loop and how it differs from software engineering, consulting and solutions architecture."
+category: "forward-deployed-engineer"
+tags: ["Forward Deployed Engineer", "FDE role", "Applied AI", "customer engineering", "AI careers"]
+level: "beginner"
+duration: "16 min"
+updatedAt: "2026-09-13"
+order: 1
+isPopular: true
+---
+
+<ThemeCard title="What you will learn" badge="FDE HANDBOOK 01">
+
+You will be able to explain the Forward Deployed Engineer role, describe its delivery loop, distinguish it from adjacent roles and identify when an organisation genuinely needs forward-deployed engineering.
+
+</ThemeCard>
+
+<FDEJourneyVisual variant="role" />
+
+## The 60-second explanation
+
+A **Forward Deployed Engineer (FDE)** is a software engineer who works close to a customer’s real operations and owns the technical journey from an unclear business problem to a working production outcome. The role combines discovery, architecture, hands-on implementation, integration, deployment, evaluation and knowledge transfer.
+
+The word *forward* signals proximity to the operating environment. *Deployed* means the engineer is placed where product assumptions meet real users, data, policies and constraints. The engineer still writes production-quality software; customer proximity changes where the engineering evidence comes from.
+
+Current OpenAI FDE descriptions span technical discovery, architecture, implementation, evaluation, productionisation and handoff. Anthropic describes FDEs as embedding with strategic customers, shipping production AI applications and codifying repeatable deployment patterns for product and engineering teams.
+
+## The FDE outcome loop
+
+An FDE repeatedly moves through five questions:
+
+1. **What is really happening?** Observe the workflow, users, systems and constraints.
+2. **What outcome matters?** Define a measurable change, not an impressive demo.
+3. **What is the smallest production slice?** Integrate only what is needed to test value safely.
+4. **What did real usage teach us?** Inspect quality, adoption, failures, latency and cost.
+5. **What should become reusable?** Feed recurring patterns back into the product.
+
+This is not a linear consulting engagement. Evidence from deployment can change the requirement, architecture or even the original problem statement.
+
+## Real-time analogy: the engineer at a hospital bedside
+
+<Scenario title="A clinical system that works in the meeting but fails on the ward">
+
+A hospital asks for an AI assistant that summarises patient notes. A remote team could build a polished summary demo. An FDE spends time with nurses and discovers that notes arrive from three systems, abbreviations vary by department, access depends on role and the useful summary must be ready before shift handover.
+
+The FDE does not merely “customise the model.” They map the workflow, connect permitted data, define evaluation cases with clinicians, design approval boundaries, deploy a narrow version and watch how it behaves during handover. The job is successful only when the system is safe, usable and adopted in the real workflow.
+
+</Scenario>
+
+## FDE versus nearby roles
+
+| Role | Primary centre of gravity | Typical output | Relationship to customer |
+|---|---|---|---|
+| Product software engineer | Reusable product capability | Product features and platform services | Learns through product channels |
+| Solutions architect | Technical fit and target design | Architecture and integration plan | Advises customer teams |
+| Consultant | Business change and recommendations | Analysis, operating model or programme | Guides stakeholders |
+| Sales engineer | Pre-sale technical confidence | Demo, proof of concept and solution fit | Supports buying decision |
+| Forward Deployed Engineer | Production customer outcome plus product learning | Working integrated system | Builds alongside users and engineers |
+
+These boundaries vary by company. The reliable test is ownership: **Does the role stay accountable through implementation, production evidence and handoff?**
+
+## When forward deployment is useful
+
+FDE work is valuable when the problem contains high ambiguity, important domain knowledge, fragmented data, difficult integration or rapidly changing AI capability. It is less appropriate when the requirement is standard, the product already supports it cleanly and a normal implementation path is enough.
+
+<PromptBox label="FDE role-fit assessment">
+
+Act as a delivery lead. Assess whether this customer problem needs a Forward Deployed Engineer.
+
+Problem: [describe the workflow and desired outcome]
+Users: [who performs the work]
+Systems and data: [known applications and sources]
+Constraints: [security, compliance, time, access]
+
+Return:
+1. Unknowns that require field discovery
+2. Integration and production risks
+3. What can use the standard product
+4. What requires engineering
+5. A recommendation: standard onboarding, solutions support or FDE engagement
+
+Do not recommend an FDE merely because AI is involved.
+
+</PromptBox>
+
+## Common mistakes
+
+<Mistakes>
+
+- Treating the FDE as permanent custom-development capacity.
+- Starting with a model demo before understanding the operating workflow.
+- Measuring shipped features instead of user and business outcomes.
+- Building around one vocal stakeholder instead of observing actual users.
+- Keeping field knowledge inside one engineer instead of transferring and productising it.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How is an FDE different from a traditional software engineer?" badge="CAREER">
+
+**Strong answer:** Both need strong software engineering fundamentals. An FDE works closer to the customer’s operating environment and usually owns more of discovery, integration, deployment and adoption. The FDE uses production evidence to shape the solution and sends repeatable learning back into the core product. The role is not weaker engineering with more meetings; it is engineering under customer, domain and operational constraints.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- An FDE owns the bridge between customer reality and production engineering.
+- The outcome matters more than the demo.
+- Customer proximity is a source of engineering evidence, not a substitute for rigour.
+- The strongest FDEs reduce one-off work by creating reusable patterns.
+- Not every integration problem needs forward deployment.
+
+</Takeaways>
+
+## Primary sources
+
+- [OpenAI Careers: Forward Deployed Engineer, Healthcare](https://openai.com/careers/forward-deployed-engineer-fde-healthcare-sf/)
+- [Anthropic Careers: Forward Deployed Engineer](https://job-boards.greenhouse.io/anthropic/jobs/5302966008)
+- [Palantir: Dev versus Delta—demystifying engineering roles](https://blog.palantir.com/dev-versus-delta-demystifying-engineering-roles-at-palantir-ad44c2a28b4e)
