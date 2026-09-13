@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, BookOpen, CheckCircle2, Code2, Eye, SearchCheck, ShieldCheck, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, BookOpen, CheckCircle2, Code2, Eye, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { BytesLibrary } from '@/components/home/BytesLibrary';
 import { PublishedHandbooks } from '@/components/home/PublishedHandbooks';
 import { HomeMotion } from '@/components/home/HomeMotion';
@@ -20,11 +20,11 @@ export default async function HomePage() {
           <div className="bytes-hero-actions"><Link className="primary-cta" href="#bytes-library">Explore Bytes Library <ArrowRight/></Link><Link className="ghost-cta" href="/handbooks/">Browse Handbooks</Link></div>
           <div className="bytes-hero-trust"><span><CheckCircle2/>Visual-first explanations</span><span><CheckCircle2/>Primary-source research</span><span><CheckCircle2/>Free to learn</span></div>
         </div>
-        <div className="hero-learning-console" aria-label="Animated MaanavaN Bytes learning approach">
-          <header><span><i/><i/><i/></span><small>MAANAVAN / HOW A BYTE WORKS</small><b>LEARNING FLOW</b></header>
-          <div className="console-question"><span>01</span><div><small>DISCOVER</small><strong>Start with one important question</strong><p>What is the concept—and why does it matter?</p></div></div>
-          <div className="console-learning-track"><i/><div><span><Eye/></span><small>VISUAL</small><b>See the workflow</b></div><div><span><Code2/></span><small>APPLY</small><b>Try a real example</b></div><div><span><SearchCheck/></span><small>DECIDE</small><b>Explain the trade-off</b></div></div>
-          <footer><span><ShieldCheck/></span><div><small>DEEP DIVE → DELIVER</small><strong>Analogy · Architecture · Prompt · Interview insight</strong></div></footer>
+        <div className="hero-learning-console hero-byte-demo" aria-label="Animated example showing how a MaanavaN Byte teaches one concept">
+          <header><span><i/><i/><i/></span><small>ONE BYTE · ONE CLEAR OUTCOME</small><b>LIVE LEARNING FLOW</b></header>
+          <div className="demo-question"><small>START WITH A REAL QUESTION</small><strong>Why does Copilot need context?</strong><p>A beginner should understand the reason before learning the feature.</p></div>
+          <div className="demo-flow"><span><i>01</i><b>Understand</b><small>Simple explanation</small></span><em>→</em><span><i>02</i><b>Visualise</b><small>See the workflow</small></span><em>→</em><span><i>03</i><b>Apply</b><small>Real scenario</small></span><em>→</em><span><i>04</i><b>Explain</b><small>Interview insight</small></span></div>
+          <footer><span><CheckCircle2/></span><div><small>LEARNING OUTCOME</small><strong>“I understand it, can apply it and can explain my decision.”</strong></div></footer>
         </div>
       </div>
       <div className="bytes-learning-promise"><div className="container-custom">
