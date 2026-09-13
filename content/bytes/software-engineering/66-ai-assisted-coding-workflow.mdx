@@ -45,7 +45,11 @@ Remove unrelated changes. Check data migrations, logging, secrets, dependencies 
 
 <OfficialScreenshot src="/images/github-copilot/official-copilot-chat.webp" alt="GitHub Copilot Chat icon in the Visual Studio Code interface" sourceUrl="https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide" note="GitHub’s IDE guide shows the Copilot Chat entry point; available modes and placement can vary by editor and version." />
 
-## Worked scenario: wishlist feature
+## Simple analogy: build one usable room first
+
+When constructing a house, completing one safe, usable room teaches more than half-building every room. A thin vertical slice does the same for software: one small user journey passes through the interface, logic, data and tests before the team expands it.
+
+## Real-time scenario: a wishlist feature
 
 <Scenario title="One feature through five engineering gates">
 
@@ -78,6 +82,18 @@ After editing:
 ## When Agent mode is the wrong starting point
 
 Do not start with broad autonomous edits when the requirement is disputed, the repository cannot run locally, production data is involved, the change affects security boundaries or the team lacks a way to validate the result. Use Ask or Plan first and reduce the scope.
+
+## Common mistakes
+
+<Mistakes>
+
+- Asking Copilot to build the entire feature before agreeing on acceptance checks.
+- Mixing unrelated changes into one large, difficult-to-review diff.
+- Accepting generated tests that only confirm the implementation’s assumptions.
+- Skipping the final diff review because the application appears to run.
+- Using Agent mode before understanding repository rules and system boundaries.
+
+</Mistakes>
 
 ## Interview bit
 
