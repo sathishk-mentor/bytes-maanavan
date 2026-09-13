@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
+import legacyRoutes from '@/data/legacy-routes.json';
 import { ByteHeader } from '@/components/bytes/ByteHeader';
 import { ByteContent } from '@/components/bytes/ByteContent';
 import { PrevNextNav } from '@/components/bytes/PrevNextNav';
@@ -26,19 +27,31 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  return bytes.filter((byte) => ['software-engineering','forward-deployed-engineer'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
+  const legacy = legacyRoutes
+    .map((route) => route.split('/').filter(Boolean))
+    .filter((parts) => parts.length === 2)
+    .map(([categorySlug, byteSlug]) => ({ categorySlug, byteSlug }));
+
+  return [...published, ...legacy, { categorySlug: 'ai-agents', byteSlug: 'introduction-to-ai-agents' }]
+    .filter((route, index, routes) => routes.findIndex((item) => item.categorySlug === route.categorySlug && item.byteSlug === route.byteSlug) === index);
+}
+
+function legacyDestination(categorySlug: string) {
+  if (categorySlug === 'genai') return '/handbooks/generative-ai/';
+  if (categorySlug === 'ai-agents') return '/handbooks/ai-agents/';
+  if (categorySlug === 'cloud-devops') return '/handbooks/devops-ai-era/';
+  return '/handbooks/';
 }
 
 export async function generateMetadata({ params }: BytePageProps): Promise<Metadata> {
   const byte = await getByteBySlug(params.byteSlug) || topicPreview(params.categorySlug, params.byteSlug);
 
   if (!byte || byte.category !== params.categorySlug) {
-    return {
-      title: 'Byte Not Found',
-    };
+    return { title: 'This Byte has moved | MaanavaN Bytes', robots: { index: false, follow: true } };
   }
 
   return {
@@ -61,7 +74,7 @@ export default async function BytePage({ params }: BytePageProps) {
   const byte = await getByteBySlug(byteSlug) || topicPreview(categorySlug, byteSlug);
 
   if (!byte || byte.category !== categorySlug) {
-    notFound();
+    permanentRedirect(legacyDestination(categorySlug));
   }
 
   const category = getCategoryBySlug(byte.category);
