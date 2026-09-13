@@ -9,10 +9,10 @@ import {
   getAllBytes,
   getByteBySlug,
   getAdjacentBytes,
+  getBytesByCategory,
   extractHeadings,
 } from '@/lib/mdx';
 import { getCategoryBySlug } from '@/lib/categories';
-import { byteTopics, topicPreview } from '@/lib/topic-catalog';
 import { CourseRecommendation } from '@/components/bytes/CourseRecommendation';
 import { ReadingReveal } from '@/components/bytes/ReadingReveal';
 
@@ -41,14 +41,11 @@ export async function generateStaticParams() {
 }
 
 function legacyDestination(categorySlug: string) {
-  if (categorySlug === 'genai') return '/handbooks/generative-ai/';
-  if (categorySlug === 'ai-agents') return '/handbooks/ai-agents/';
-  if (categorySlug === 'cloud-devops') return '/handbooks/devops-ai-era/';
   return '/handbooks/';
 }
 
 export async function generateMetadata({ params }: BytePageProps): Promise<Metadata> {
-  const byte = await getByteBySlug(params.byteSlug) || topicPreview(params.categorySlug, params.byteSlug);
+  const byte = await getByteBySlug(params.byteSlug);
 
   if (!byte || byte.category !== params.categorySlug) {
     return { title: 'This Byte has moved | MaanavaN Bytes', robots: { index: false, follow: true } };
@@ -71,7 +68,7 @@ export default async function BytePage({ params }: BytePageProps) {
   const { categorySlug, byteSlug } = params;
 
   // Get byte and validate category matches
-  const byte = await getByteBySlug(byteSlug) || topicPreview(categorySlug, byteSlug);
+  const byte = await getByteBySlug(byteSlug);
 
   if (!byte || byte.category !== categorySlug) {
     permanentRedirect(legacyDestination(categorySlug));
@@ -79,6 +76,8 @@ export default async function BytePage({ params }: BytePageProps) {
 
   const category = getCategoryBySlug(byte.category);
   const { prev, next } = await getAdjacentBytes(byteSlug);
+  const handbookBytes = await getBytesByCategory(categorySlug);
+  const chapterNumber = handbookBytes.findIndex((item) => item.slug === byteSlug) + 1;
 
   // Extract headings for accordion navigation
   const headings = extractHeadings(byte.content);
@@ -93,7 +92,7 @@ export default async function BytePage({ params }: BytePageProps) {
           <div className="byte-main-column">
             <ReadingReveal><ByteContent content={byte.content} /><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
-          <aside className="byte-trust-rail"><div className="byte-progress-card"><span>LEARNING PROGRESS</span><h3>Chapter {Math.max(1, byte.order)} of 5</h3><p>{category?.title}</p><div className="byte-progress-track"><i style={{width:`${Math.max(20,byte.order*20)}%`}} /></div><small>{byte.duration} focused reading</small></div><div className="byte-review-card"><span>INSIDE THIS BYTE</span><h3>Learn it visually</h3><p>Workflow · example · practical takeaway</p><small>Designed for focused, self-paced learning</small></div></aside>
+          <aside className="byte-trust-rail"><div className="byte-progress-card"><span>LEARNING PROGRESS</span><h3>Chapter {chapterNumber} of {handbookBytes.length}</h3><p>{category?.title}</p><div className="byte-progress-track"><i style={{width:`${chapterNumber * 20}%`}} /></div><small>{byte.duration} focused reading</small></div><div className="byte-review-card"><span>INSIDE THIS BYTE</span><h3>Learn it visually</h3><p>Workflow · example · practical takeaway</p><small>Designed for focused, self-paced learning</small></div></aside>
         </div>
       </div>
     </>
