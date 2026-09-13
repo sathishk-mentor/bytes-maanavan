@@ -34,7 +34,7 @@ export function ByteHeader({ byte }: { byte: ByteMetadata }) {
   const chapter = Object.keys(handbookHeroes).indexOf(byte.slug) + 1;
   return <header className="byte-editorial-hero"><div className="byte-hero-inner">
     <nav aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href={`/${byte.category}/`}>{category?.title}</Link><span>/</span><b>Chapter {chapter > 0 ? chapter : byte.order}</b></nav>
-    <div className="byte-hero-grid"><div><p className="byte-eyebrow"><Sparkles/>{category?.title} · PRACTICAL GUIDE</p><h1>{byte.title}</h1><p className="byte-deck">{byte.summary}</p><div className="byte-byline"><span><Clock3/>{byte.duration} read</span><time dateTime={byte.updatedAt}>Personally reviewed by Sathish Kumar</time><span>Free learning guide</span></div></div>
+    <div className="byte-hero-grid"><div><p className="byte-eyebrow"><Sparkles/>{category?.title} · PRACTICAL GUIDE</p><h1>{byte.title}</h1><p className="byte-deck">{byte.summary}</p><div className="byte-byline"><span><Clock3/>{byte.duration} read</span><time dateTime={byte.updatedAt}>Updated {byte.updatedAt}</time><span>Free learning guide</span></div></div>
     <TopicHeroVisual slug={byte.slug} /></div>
   </div></header>;
 }

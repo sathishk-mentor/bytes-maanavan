@@ -15,7 +15,7 @@ export default async function HomePage() {
           <h1>Understand technology.<br/><span>One visual Byte at a time.</span></h1>
           <p>Start with a clear mental model, explore the workflow visually, apply it to a real scenario and finish ready to explain the concept with confidence.</p>
           <div className="bytes-hero-actions"><Link className="primary-cta" href="#bytes-library">Explore Bytes Library <ArrowRight/></Link><Link className="ghost-cta" href="/software-engineering/">Open Copilot Handbook</Link></div>
-          <div className="bytes-hero-trust"><span><CheckCircle2/>Personally reviewed</span><span><CheckCircle2/>Primary-source research</span><span><CheckCircle2/>Free to learn</span></div>
+          <div className="bytes-hero-trust"><span><CheckCircle2/>Visual-first explanations</span><span><CheckCircle2/>Primary-source research</span><span><CheckCircle2/>Free to learn</span></div>
         </div>
         <div className="hero-learning-console" aria-label="Animated MaanavaN Bytes learning approach">
           <header><span><i/><i/><i/></span><small>MAANAVAN / HOW A BYTE WORKS</small><b>LEARNING FLOW</b></header>
@@ -31,7 +31,7 @@ export default async function HomePage() {
       </div></div>
     </section>
     <section id="tracks" className="handbook-showcase home-motion-section"><div className="container-custom"><div className="handbook-card">
-      <div className="handbook-card-copy"><p className="eyebrow dark">Featured Handbook · 01</p><h2>The GitHub Copilot Handbook</h2><p>One connected learning path for developers—not scattered AI tips. Understand how Copilot uses context, supports feature delivery, assists debugging and fits inside a responsible engineering workflow.</p><div className="handbook-outcomes"><span><b>5</b> practical chapters</span><span><b>5</b> animated explainers</span><span><b>Personally</b> reviewed by Sathish Kumar</span></div><Link href="/software-engineering/">Explore the Handbook <ArrowRight/></Link></div>
+      <div className="handbook-card-copy"><p className="eyebrow dark">Featured Handbook · 01</p><h2>The GitHub Copilot Handbook</h2><p>One connected learning path for developers—not scattered AI tips. Understand how Copilot uses context, supports feature delivery, assists debugging and fits inside a responsible engineering workflow.</p><div className="handbook-outcomes"><span><b>5</b> practical chapters</span><span><b>5</b> animated explainers</span><span><b>Real</b> workflow examples</span></div><Link href="/software-engineering/">Explore the Handbook <ArrowRight/></Link></div>
       <div className="handbook-map" aria-label="Five chapter GitHub Copilot learning path">{chapters.map((chapter,index)=><Link href={`/${chapter.category}/${chapter.slug}/`} key={chapter.slug}><span>0{index+1}</span><div><small>CHAPTER</small><strong>{chapter.title}</strong></div><ArrowRight/></Link>)}</div>
     </div></div></section>
     <div className="home-motion-section"><BytesLibrary chapters={chapters} /></div>
