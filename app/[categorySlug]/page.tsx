@@ -12,9 +12,6 @@ export function generateStaticParams() {
 }
 
 function legacyDestination(categorySlug: string) {
-  if (categorySlug === 'genai') return '/handbooks/generative-ai/';
-  if (categorySlug === 'ai-agents') return '/handbooks/ai-agents/';
-  if (categorySlug === 'cloud-devops') return '/handbooks/devops-ai-era/';
   return '/handbooks/';
 }
 
