@@ -1,5 +1,18 @@
 {
   "redirects": [
+    { "source": "/bytes/:path*", "destination": "/handbooks/", "permanent": true },
+    { "source": "/category/genai/", "destination": "/handbooks/generative-ai/", "permanent": true },
+    { "source": "/category/ai-agents/", "destination": "/handbooks/ai-agents/", "permanent": true },
+    { "source": "/category/data-engineering/", "destination": "/handbooks/", "permanent": true },
+    { "source": "/category/cloud-devops/", "destination": "/handbooks/devops-ai-era/", "permanent": true },
+    { "source": "/category/cybersecurity/", "destination": "/handbooks/", "permanent": true },
+    { "source": "/category/case-studies/", "destination": "/handbooks/", "permanent": true },
+    { "source": "/genai/:path*", "destination": "/handbooks/generative-ai/", "permanent": true },
+    { "source": "/ai-agents/:path*", "destination": "/handbooks/ai-agents/", "permanent": true },
+    { "source": "/data-engineering/:path*", "destination": "/handbooks/", "permanent": true },
+    { "source": "/cloud-devops/:path*", "destination": "/handbooks/devops-ai-era/", "permanent": true },
+    { "source": "/cybersecurity/:path*", "destination": "/handbooks/", "permanent": true },
+    { "source": "/case-studies/:path*", "destination": "/handbooks/", "permanent": true },
     { "source": "/category/software-engineering/", "destination": "/software-engineering/", "permanent": true },
     { "source": "/software-engineering/61-software-engineering-in-ai-era/", "destination": "/software-engineering/62-how-developers-use-ai-tools/", "permanent": true },
     { "source": "/software-engineering/65-app-flow-understanding/", "destination": "/software-engineering/62-how-developers-use-ai-tools/", "permanent": true },
