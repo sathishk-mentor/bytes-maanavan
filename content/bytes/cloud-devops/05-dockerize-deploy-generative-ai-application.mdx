@@ -1,0 +1,204 @@
+---
+title: "Dockerize and Deploy a Generative AI Application"
+slug: "05-dockerize-deploy-generative-ai-application"
+summary: "Containerize a practical LLM service, keep API keys outside the image, add production checks and prepare the same artifact for cloud deployment."
+category: "cloud-devops"
+tags: ["Docker Generative AI", "LLM deployment", "AI application container", "Docker secrets", "cloud container deployment"]
+level: "beginner"
+duration: "24 min"
+updatedAt: "2026-09-13"
+order: 5
+isPopular: true
+---
+
+<ThemeCard title="Capstone outcome" badge="DOCKER HANDBOOK 05">
+
+You will package an API-based Generative AI service without embedding its provider key, understand the production request path and use a deployment checklist covering health, security, cost and observability.
+
+</ThemeCard>
+
+<DockerFlowVisual variant="aiDeploy" />
+
+## The application boundary
+
+Consider a small FastAPI service with one endpoint. It receives a user question, validates the input, calls an LLM provider and returns a bounded answer. The container should package application code and dependencies. The deployment environment should supply the API key and environment-specific values.
+
+```python
+import os
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class AskRequest(BaseModel):
+    question: str
+
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
+
+@app.post("/ask")
+def ask(request: AskRequest):
+    api_key = os.getenv("LLM_API_KEY")
+    if not api_key:
+        raise HTTPException(500, "LLM provider is not configured")
+    # Call the approved provider client here.
+    return {"answer": f"Demo response for: {request.question}"}
+```
+
+The demo deliberately omits a real provider call so the container lesson does not become tied to one SDK version. In production, add authentication, input limits, timeouts, retry policy, output handling and provider-specific error mapping.
+
+## Build a production-minded image
+
+```dockerfile
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN addgroup --system app && adduser --system --ingroup app app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY --chown=app:app app.py .
+
+USER app
+EXPOSE 8000
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+Example `requirements.txt`:
+
+```text
+fastapi==0.116.1
+uvicorn==0.35.0
+```
+
+The image uses a small official Python base, installs dependencies before copying frequently changing source, runs as a non-root user and starts one foreground process.
+
+## Never bake the API key into the image
+
+Avoid these patterns:
+
+```dockerfile
+# Do not do this
+ENV LLM_API_KEY=real-secret-value
+COPY .env .
+```
+
+Image layers may be cached, inspected, pushed to a registry or shared with other environments. Deleting the line in a later layer does not reliably erase the earlier secret history.
+
+For local development, inject a value at runtime:
+
+```bash
+docker build -t genai-api:1.0 .
+docker run --rm -p 8000:8000 \
+  -e LLM_API_KEY="$LLM_API_KEY" \
+  genai-api:1.0
+```
+
+For production, use the cloud platform’s secret manager and workload identity or access policy. The platform should expose the value only to the running workload that needs it.
+
+## The real production request path
+
+```text
+User
+  ↓ HTTPS
+Load balancer / managed ingress
+  ↓ authenticated request
+GenAI API container
+  ├─→ approved secret provider
+  ├─→ LLM provider API
+  └─→ logs, metrics and traces
+```
+
+The container is only one part of the system. TLS termination, authentication, request limits, autoscaling, secret access, monitoring and rollback are normally provided by the surrounding platform and application design.
+
+## Real-time scenario: a college course assistant
+
+<Scenario title="A useful assistant must survive more than a demo">
+
+A college deploys an assistant that explains course concepts. The local demo works with one developer’s API key. In production, hundreds of learners may ask questions together, submit very long prompts or trigger provider rate limits.
+
+The team deploys one versioned image, injects the key from a secret manager, caps input size, sets provider timeouts, records latency and error categories, and limits initial traffic. A health endpoint checks whether the web process can serve requests; a separate readiness strategy verifies dependencies without generating expensive model calls every few seconds.
+
+The production question is no longer “Does the container start?” It is “Can the complete system serve learners safely, predictably and within cost?”
+
+</Scenario>
+
+## Health, readiness and AI-specific checks
+
+| Check | Question answered | Avoid |
+|---|---|---|
+| Liveness | Is the application process alive? | Calling the paid LLM on every probe |
+| Readiness | Should this instance receive traffic? | Returning ready before required setup completes |
+| Functional evaluation | Are answers meeting expected quality? | Using only one happy-path prompt |
+| Cost metric | What does usage cost per request or learner? | Monitoring tokens without business context |
+| Safety signal | Are blocked or risky requests handled correctly? | Logging sensitive prompt content indiscriminately |
+
+## Before cloud deployment
+
+1. Tag the image with an immutable version or commit identifier.
+2. Scan dependencies and the built image for known vulnerabilities.
+3. Confirm the process runs without root privileges.
+4. Supply secrets through the platform, never the image.
+5. Configure CPU, memory, concurrency, timeout and scaling boundaries.
+6. Define health and readiness endpoints.
+7. Capture structured errors, latency, provider usage and model cost.
+8. Run an evaluation set covering normal, edge and unsafe inputs.
+9. Release to a limited audience and keep a rollback path.
+
+## Troubleshooting map
+
+| Symptom | Evidence to inspect | Possible cause |
+|---|---|---|
+| Container repeatedly restarts | platform events and application logs | startup command, missing variable or memory limit |
+| Requests time out | latency trace by dependency | provider delay, network, concurrency or timeout mismatch |
+| `401` from provider | provider error category and secret version | invalid, expired or unauthorized key |
+| Local works, cloud fails | bind address, port and platform contract | wrong listening port or `localhost` binding |
+| Cost suddenly rises | request count, token usage and retry metrics | unbounded input, retry storm or abuse |
+| Answers degrade after release | evaluation results by version | prompt, model, retrieval or data change |
+
+## Common mistakes
+
+<Mistakes>
+
+- Copying a provider key into the Dockerfile or build context.
+- Using a paid model request as a frequent liveness probe.
+- Deploying an unversioned image tag with no rollback evidence.
+- Logging full prompts and outputs without privacy controls.
+- Retrying every provider error and creating a cost-amplifying retry storm.
+- Measuring infrastructure uptime while ignoring answer quality and user outcome.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How would you containerize and deploy an LLM application safely?" badge="CAREER">
+
+**Strong answer:** I build one minimal, versioned image that runs as a non-root user and contains no secrets. The deployment platform injects the provider key from its secret manager. I separate liveness from expensive functional evaluation, configure resource and concurrency limits, capture latency, errors and cost, test a representative evaluation set, and release gradually with rollback available.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Package code and dependencies in the image; inject secrets at runtime.
+- A healthy container does not prove a useful or safe AI application.
+- AI deployments need quality, latency, safety and cost evidence together.
+- Immutable image versions make rollout and rollback understandable.
+- Cloud runtime features complete the system around the container.
+
+</Takeaways>
+
+## Official references
+
+- [Docker Docs: Build best practices](https://docs.docker.com/build/building/best-practices/)
+- [Docker Docs: Build secrets](https://docs.docker.com/build/building/secrets/)
+- [Docker Docs: Docker Scout image analysis](https://docs.docker.com/scout/)
+- [Docker Docs: Run containers](https://docs.docker.com/engine/containers/run/)

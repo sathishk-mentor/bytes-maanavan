@@ -24,7 +24,7 @@ export default function RetiredHandbookPage({params}:{params:{slug:string}}) {
     'agentic-ai':'https://www.maanavan.com/courses/ai-agents-automation',
     agi:'https://www.maanavan.com/courses/generative-ai',
     'ai-foundations-non-tech':'https://www.maanavan.com/courses/generative-ai',
-    'devops-ai-era':'https://www.maanavan.com/courses/cloud-devops',
+    'devops-ai-era':'/cloud-devops/',
     'claude-code':'https://www.maanavan.com/courses/generative-ai',
   };
   permanentRedirect(destinations[params.slug] || '/handbooks/');

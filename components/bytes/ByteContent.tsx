@@ -12,6 +12,7 @@ import { LLMAnswerFlow } from './mdx/LLMAnswerFlow';
 import { ContextAssemblyVisual, GroundedAnswerVisual, ProductVsModelVisual, TokenisationVisual } from './mdx/LLMConceptVisuals';
 import { CopilotHandbookVisual, OfficialScreenshot } from './mdx/CopilotHandbookVisuals';
 import { FDEJourneyVisual } from './mdx/FDEVisuals';
+import { DockerCommand, DockerFlowVisual } from './mdx/DockerVisuals';
 import { slugify } from '@/lib/mdx';
 
 const components = {
@@ -28,7 +29,7 @@ const components = {
   table: ({children,...props}:any)=><div className="byte-table-wrap"><table {...props}>{children}</table></div>,
   th: ({children,...props}:any)=><th {...props}>{children}</th>, td: ({children,...props}:any)=><td {...props}>{children}</td>,
   code: ({children,...props}:any)=><code className="byte-code" {...props}>{children}</code>,
-  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual,
+  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual,
 };
 
 export function ByteContent({content}:{content:string}) { return <article className="byte-article"><MDXRemote source={content} components={components}/></article>; }

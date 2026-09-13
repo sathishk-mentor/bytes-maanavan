@@ -31,6 +31,19 @@ export const handbooks: Handbook[] = [
       { title: 'From delivery to reusable product', outcome: 'Convert field learning into product leverage.', href: '/forward-deployed-engineer/05-turn-field-learning-into-product/' },
     ],
   },
+  {
+    slug: 'docker', title: 'The Docker Handbook', shortTitle: 'Docker',
+    audience: 'Beginners · Developers', tone: 'cyan', status: 'available',
+    description: 'Understand containers, package a Python application, manage runtime configuration and deploy a practical Generative AI service.',
+    promise: 'Move from “works on my machine” to a repeatable container workflow you can explain and troubleshoot.',
+    chapters: [
+      { title: 'What is Docker?', outcome: 'Distinguish images, containers and virtual machines.', href: '/cloud-devops/01-what-is-docker-containers-explained/' },
+      { title: 'Dockerize a Python application', outcome: 'Write a Dockerfile, build an image and run it.', href: '/cloud-devops/02-dockerize-first-python-application/' },
+      { title: 'Ports, volumes and environment variables', outcome: 'Connect, persist and configure containers.', href: '/cloud-devops/03-docker-ports-volumes-environment-variables/' },
+      { title: 'Multi-container apps with Compose', outcome: 'Run connected services from one configuration.', href: '/cloud-devops/04-multi-container-applications-docker-compose/' },
+      { title: 'Deploy a Generative AI application', outcome: 'Package, protect and prepare an LLM app for cloud.', href: '/cloud-devops/05-dockerize-deploy-generative-ai-application/' },
+    ],
+  },
 ];
 
 export function getHandbook(slug: string) { return handbooks.find((handbook) => handbook.slug === slug); }

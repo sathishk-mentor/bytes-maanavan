@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { ArrowDown, BookOpenCheck, CheckCircle2, Code2, Compass, Layers3, Sparkles, Workflow } from 'lucide-react';
+import { ArrowDown, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, Layers3, Network, Rocket, Sparkles, Workflow } from 'lucide-react';
 import { CategoryPageClient } from '@/components/category/CategoryPageClient';
 import { getCategoryBySlug } from '@/lib/categories';
 import { getBytesByCategory } from '@/lib/mdx';
@@ -29,6 +29,15 @@ const handbookDetails = {
     result: 'A customer → discovery → production → product framework',
     keywords: ['Forward Deployed Engineer handbook', 'FDE role explained', 'FDE tutorial', 'customer engineering', 'AI solution delivery'],
   },
+  'cloud-devops': {
+    searchTitle: 'Docker Handbook for Beginners',
+    eyebrow: 'CONTAINERS TO CLOUD',
+    intro: 'A practical five-part Docker guide covering containers, Python application packaging, ports, volumes, environment variables, Compose and Generative AI deployment.',
+    audience: 'Beginners, developers and AI builders',
+    prerequisite: 'Basic command-line awareness',
+    result: 'A build → run → connect → compose → deploy workflow',
+    keywords: ['Docker handbook', 'Docker tutorial for beginners', 'Docker Python tutorial', 'Docker Compose tutorial', 'Docker Generative AI application'],
+  },
 } as const;
 type PublishedCategory = keyof typeof handbookDetails;
 
@@ -55,6 +64,15 @@ function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory 
         <div className="code-scan"/>
       </div>
       <div className="workflow-chips"><span>Context</span><i>→</i><span>Plan</span><i>→</i><span>Build</span><i>→</i><span>Verify</span></div>
+    </div>;
+  }
+  if (categorySlug === 'cloud-devops') {
+    return <div className="handbook-hero-visual docker-hero-visual" aria-label="Animated Docker build and deployment workflow">
+      <div className="docker-pipeline">
+        <header><Container/><span><small>DOCKER WORKFLOW</small><strong>Package once. Run consistently.</strong></span><i>READY</i></header>
+        <div><span><Code2/><small>Source</small></span><b>→</b><span><Box/><small>Image</small></span><b>→</b><span><Container/><small>Container</small></span><b>→</b><span><Rocket/><small>Cloud</small></span></div>
+        <footer><Network/><span>Portable runtime with explicit configuration</span></footer>
+      </div>
     </div>;
   }
   return <div className="handbook-hero-visual fde-hero-visual" aria-label="Animated Forward Deployed Engineer outcome loop">

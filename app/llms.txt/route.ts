@@ -11,6 +11,7 @@ export async function GET() {
 
 - [The GitHub Copilot Handbook](https://bytes.maanavan.com/software-engineering/): AI-assisted software engineering from context to responsible review.
 - [The Forward Deployed Engineer Handbook](https://bytes.maanavan.com/forward-deployed-engineer/): Customer discovery, thin production slices, deployment and product learning.
+- [The Docker Handbook](https://bytes.maanavan.com/cloud-devops/): Containers, Python application packaging, Compose and Generative AI deployment.
 
 ## Published Bytes
 

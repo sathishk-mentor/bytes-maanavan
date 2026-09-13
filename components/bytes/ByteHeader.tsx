@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import {
-  Blocks, Bot, Braces, BriefcaseBusiness, Bug, CheckCircle2, ChevronRight, Clock3, Code2,
-  FileCode2, Gauge, GitPullRequestArrow, Network, Rocket, ScanSearch, Search, ShieldCheck, Sparkles, TestTube2, Users,
+  Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, CheckCircle2, ChevronRight, Clock3, Code2,
+  Container, Database, FileCode2, Gauge, GitPullRequestArrow, HardDrive, KeyRound, Network, Rocket, ScanSearch, Search, Server, ShieldCheck, Sparkles, TestTube2, Users,
 } from 'lucide-react';
 import { ByteMetadata } from '@/lib/types';
 import { getCategoryBySlug } from '@/lib/categories';
@@ -17,6 +17,11 @@ const handbookHeroes = {
   '03-design-thin-production-slice': { label: 'THIN SLICE', icon: Network, steps: [[Gauge, 'Real trigger'], [Network, 'Governed context'], [Code2, 'Bounded build'], [CheckCircle2, 'Approval']] },
   '04-deploy-observe-and-improve': { label: 'LEARNING LOOP', icon: Gauge, steps: [[Rocket, 'Release'], [Gauge, 'Observe'], [Bug, 'Diagnose'], [TestTube2, 'Improve']] },
   '05-turn-field-learning-into-product': { label: 'PRODUCT LOOP', icon: Blocks, steps: [[Users, 'Field evidence'], [Search, 'Find pattern'], [Blocks, 'Productise'], [CheckCircle2, 'Handoff']] },
+  '01-what-is-docker-containers-explained': { label: 'CONTAINER MENTAL MODEL', icon: Container, steps: [[Code2, 'Application'], [Box, 'Image'], [Container, 'Container'], [Server, 'Any host']] },
+  '02-dockerize-first-python-application': { label: 'BUILD AND RUN', icon: Box, steps: [[FileCode2, 'Dockerfile'], [Box, 'Build image'], [Container, 'Run container'], [CheckCircle2, 'Test app']] },
+  '03-docker-ports-volumes-environment-variables': { label: 'RUNTIME CONNECTIONS', icon: HardDrive, steps: [[Network, 'Publish port'], [HardDrive, 'Mount volume'], [KeyRound, 'Inject config'], [Gauge, 'Inspect']] },
+  '04-multi-container-applications-docker-compose': { label: 'COMPOSE APPLICATION', icon: Network, steps: [[Code2, 'Frontend'], [Server, 'API'], [Database, 'Database'], [Bot, 'AI service']] },
+  '05-dockerize-deploy-generative-ai-application': { label: 'AI DEPLOYMENT PATH', icon: Rocket, steps: [[Code2, 'LLM app'], [ShieldCheck, 'Protect key'], [Container, 'Package'], [Rocket, 'Deploy']] },
 } as const;
 
 function TopicHeroVisual({ slug }: { slug: string }) {

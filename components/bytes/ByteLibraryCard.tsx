@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Blocks, Bot, Braces, BriefcaseBusiness, Bug, Clock3, Gauge, GitPullRequestArrow, Network, Search, ShieldCheck, Workflow } from 'lucide-react';
+import { ArrowRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, Clock3, Container, Gauge, GitPullRequestArrow, HardDrive, Network, Rocket, Search, Server, ShieldCheck, Workflow } from 'lucide-react';
 import type { ByteMetadata } from '@/lib/types';
 
 const cardVisuals = {
@@ -13,14 +13,20 @@ const cardVisuals = {
   '03-design-thin-production-slice': { icon: Network, label: 'Solution Architecture', tone: 'indigo' },
   '04-deploy-observe-and-improve': { icon: Gauge, label: 'Production Learning', tone: 'emerald' },
   '05-turn-field-learning-into-product': { icon: Blocks, label: 'Product Loop', tone: 'blue' },
+  '01-what-is-docker-containers-explained': { icon: Container, label: 'Docker Foundations', tone: 'blue' },
+  '02-dockerize-first-python-application': { icon: Box, label: 'Build an Image', tone: 'teal' },
+  '03-docker-ports-volumes-environment-variables': { icon: HardDrive, label: 'Container Runtime', tone: 'indigo' },
+  '04-multi-container-applications-docker-compose': { icon: Network, label: 'Docker Compose', tone: 'violet' },
+  '05-dockerize-deploy-generative-ai-application': { icon: Rocket, label: 'AI Deployment', tone: 'emerald' },
 } as const;
 
 export function ByteLibraryCard({ chapter, chapterNumber }: { chapter: ByteMetadata; chapterNumber: number }) {
   const visual = cardVisuals[chapter.slug as keyof typeof cardVisuals] || { icon: Workflow, label: 'Technology Guide', tone: 'blue' };
   const Icon = visual.icon;
   const isFde = chapter.category === 'forward-deployed-engineer';
-  const category = isFde ? 'Technology Careers' : 'Software Engineering';
-  const handbook = isFde ? 'FDE Handbook' : 'GitHub Copilot Handbook';
+  const isDocker = chapter.category === 'cloud-devops';
+  const category = isFde ? 'Technology Careers' : isDocker ? 'Cloud & DevOps' : 'Software Engineering';
+  const handbook = isFde ? 'FDE Handbook' : isDocker ? 'Docker Handbook' : 'GitHub Copilot Handbook';
 
   return <Link className={`library-byte-card tone-${visual.tone}`} href={`/${chapter.category}/${chapter.slug}/`}>
     <div className="byte-card-cover"><span>MAANAVAN BYTE</span><Icon/><i>BYTE {String(chapterNumber).padStart(2, '0')}</i></div>

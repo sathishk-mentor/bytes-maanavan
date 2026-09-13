@@ -8,7 +8,7 @@ import { getAllBytes, getBytesByCategory } from '@/lib/mdx';
 
 export const metadata: Metadata = {
   title: 'Free Visual AI & Technology Tutorials',
-  description: 'Learn GitHub Copilot and Forward Deployed Engineering through beginner-friendly visual Bytes, real project scenarios, practical workflows and interview insights.',
+  description: 'Learn Docker, GitHub Copilot and Forward Deployed Engineering through beginner-friendly visual Bytes, practical workflows, examples and interview insights.',
   alternates: { canonical: '/' },
   openGraph: { title: 'MaanavaN Bytes | Visual Technology Learning', description: 'Beginner-friendly visual handbooks, real scenarios and practical technology workflows.', url: '/', type: 'website' },
 };
@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const chapters = await getBytesByCategory('software-engineering');
   const fdeChapters = await getBytesByCategory('forward-deployed-engineer');
+  const dockerChapters = await getBytesByCategory('cloud-devops');
   const allBytes = await getAllBytes();
   const schema = {'@context':'https://schema.org','@graph':[
     {'@type':'CollectionPage','@id':'https://bytes.maanavan.com/#collection',name:'MaanavaN Bytes',url:'https://bytes.maanavan.com/',description:'A visual library of practical technology learning Bytes.',isPartOf:{'@id':'https://bytes.maanavan.com/#website'},mainEntity:{'@type':'ItemList',itemListElement:allBytes.map((byte,index)=>({'@type':'ListItem',position:index+1,url:`https://bytes.maanavan.com/${byte.category}/${byte.slug}/`,name:byte.title}))}},
@@ -45,7 +46,7 @@ export default async function HomePage() {
         <div><span><ShieldCheck/></span><p><b>Learn with confidence</b><small>Clear explanations grounded in practical evidence.</small></p></div>
       </div></div>
     </section>
-    <div id="tracks" className="home-motion-section"><PublishedHandbooks handbooks={[{slug:'software-engineering',title:'The GitHub Copilot Handbook',label:'AI-ASSISTED SOFTWARE ENGINEERING',description:'Use Copilot across context, feature delivery, debugging, testing and responsible engineering decisions.',chapters},{slug:'forward-deployed-engineer',title:'The Forward Deployed Engineer Handbook',label:'CUSTOMER TO PRODUCTION',description:'Move from customer ambiguity to production systems, adoption evidence and reusable product learning.',chapters:fdeChapters}]} /></div>
+    <div id="tracks" className="home-motion-section"><PublishedHandbooks handbooks={[{slug:'software-engineering',title:'The GitHub Copilot Handbook',label:'AI-ASSISTED SOFTWARE ENGINEERING',description:'Use Copilot across context, feature delivery, debugging, testing and responsible engineering decisions.',chapters},{slug:'forward-deployed-engineer',title:'The Forward Deployed Engineer Handbook',label:'CUSTOMER TO PRODUCTION',description:'Move from customer ambiguity to production systems, adoption evidence and reusable product learning.',chapters:fdeChapters},{slug:'cloud-devops',title:'The Docker Handbook',label:'CONTAINERS TO CLOUD',description:'Understand containers, package Python applications and prepare a practical Generative AI service for deployment.',chapters:dockerChapters}]} /></div>
     <div className="home-motion-section"><BytesLibrary chapters={allBytes} /></div>
     <section id="interview-prep" className="interview-section home-motion-section"><div className="container-custom interview-inner"><div><p className="eyebrow">Interview-ready learning</p><h2>Understand the concept well enough to explain your decisions.</h2><p>Every published Byte connects the mental model to a practical scenario, common mistakes and a concise interview answer.</p><Link className="primary-cta" href="/handbooks/">Explore all handbooks <ArrowRight/></Link></div><div className="interview-card"><span>INTERVIEW BIT</span><h3>“How would you move an AI solution from customer request to production?”</h3><p>Discover the workflow, define the outcome, build a thin production slice, observe evidence and improve deliberately.</p><small>Practical framework · Stronger answer</small></div></div></section>
     <section className="course-bridge home-motion-section"><div className="container-custom course-bridge-inner"><div><p className="eyebrow dark">From awareness to outcomes</p><h2>Learn the concept free. Build the complete skill with MaanavaN.</h2><p>Bytes give you focused explanations. The Course Library gives you structured learning, guided practice and project-based progression.</p><div className="bridge-steps"><span><b>01</b>Understand with Bytes</span><span><b>02</b>Practise in a course</span><span><b>03</b>Build practical evidence</span></div></div><div className="bridge-actions"><a className="bridge-primary" href="https://www.maanavan.com/course-library"><BookOpen/>Explore Course Library <ArrowRight/></a><a className="bridge-membership" href="https://aiupskills.maanavan.com/memberships/6a20ef646786ea4efcafb247"><Users/>All-Access Membership<span>Learn across eligible courses with continued guidance.</span></a></div></div></section>

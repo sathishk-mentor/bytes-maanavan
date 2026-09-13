@@ -34,13 +34,18 @@ const searchTitles:Record<string,string>={
   '03-design-thin-production-slice':'FDE Thin Production Slice Architecture',
   '04-deploy-observe-and-improve':'FDE Production Feedback Loop',
   '05-turn-field-learning-into-product':'FDE Field Learning to Product Strategy',
+  '01-what-is-docker-containers-explained':'What Is Docker? Containers Explained',
+  '02-dockerize-first-python-application':'Dockerize Your First Python Application',
+  '03-docker-ports-volumes-environment-variables':'Docker Ports, Volumes and Environment Variables',
+  '04-multi-container-applications-docker-compose':'Docker Compose Multi-Container Tutorial',
+  '05-dockerize-deploy-generative-ai-application':'Dockerize and Deploy a Generative AI App',
 };
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));

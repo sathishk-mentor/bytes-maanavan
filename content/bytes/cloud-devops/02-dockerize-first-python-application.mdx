@@ -1,0 +1,181 @@
+---
+title: "Dockerize Your First Python Application"
+slug: "02-dockerize-first-python-application"
+summary: "Create a production-minded Dockerfile, build an image and run a small Python web application inside a repeatable container environment."
+category: "cloud-devops"
+tags: ["Docker Python", "Dockerfile tutorial", "Python container", "docker build", "docker run"]
+level: "beginner"
+duration: "18 min"
+updatedAt: "2026-09-13"
+order: 2
+isPopular: false
+---
+
+<ThemeCard title="What you will build" badge="DOCKER HANDBOOK 02">
+
+A tiny Flask health service packaged in a Docker image. You will understand every Dockerfile instruction, build the image, run the container, test it and inspect failures instead of copying commands blindly.
+
+</ThemeCard>
+
+<DockerFlowVisual variant="buildRun" />
+
+## Start with the application contract
+
+Our application must listen on all container network interfaces, not only `localhost`. It also needs an explicit dependency file so the image build is repeatable.
+
+Create `app.py`:
+
+```python
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.get("/health")
+def health():
+    return jsonify(status="healthy", service="maanavan-demo")
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
+
+Create `requirements.txt`:
+
+```text
+Flask==3.1.2
+```
+
+Pinning a version improves reproducibility. In a real project, use your team’s dependency-locking and vulnerability-update process rather than leaving dependencies permanently frozen.
+
+## Write the Dockerfile
+
+Create a file named exactly `Dockerfile`:
+
+```dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app.py .
+
+EXPOSE 8000
+CMD ["python", "app.py"]
+```
+
+### Read it from top to bottom
+
+| Instruction | Decision it records |
+|---|---|
+| `FROM` | The starting runtime and filesystem |
+| `WORKDIR` | The default directory for later instructions and runtime |
+| first `COPY` | Add the dependency definition before frequently changing code |
+| `RUN` | Install dependencies while building the image |
+| second `COPY` | Add the application source |
+| `EXPOSE` | Document the port the application expects to use |
+| `CMD` | Set the default process when a container starts |
+
+Copying `requirements.txt` before `app.py` helps Docker reuse the dependency layer when only application code changes. This is a practical use of the build cache.
+
+## Add a `.dockerignore`
+
+```text
+__pycache__/
+*.pyc
+.venv/
+.git/
+.env
+```
+
+The build context is the set of files sent to the builder. A `.dockerignore` keeps irrelevant, large or sensitive local files out of that context. It is not your only secret-control mechanism, but it reduces accidental inclusion.
+
+## Build, run and test
+
+Run these commands from the directory containing the Dockerfile:
+
+```bash
+docker build -t python-health:1.0 .
+docker run --rm --name python-health -p 8000:8000 python-health:1.0
+```
+
+Open `http://localhost:8000/health` or run:
+
+```bash
+curl http://localhost:8000/health
+```
+
+The expected response is a JSON object with `status` set to `healthy`. `-p 8000:8000` publishes host port 8000 to container port 8000. `--rm` removes the stopped container, not the image.
+
+## Real-time analogy: preparing a repeatable lab kit
+
+<Scenario title="Every learner receives the same kit">
+
+Imagine a Python workshop where every learner installs tools manually. Some use different Python versions, others miss a library and several have old configuration. The trainer spends the session repairing laptops.
+
+The image is a prepared lab kit: runtime, dependency and application versions are assembled once. Each container opens a fresh instance of that kit. Learners can still have host-level differences, but the application environment is much more predictable.
+
+</Scenario>
+
+## Troubleshoot with evidence
+
+| Symptom | Check | Likely cause |
+|---|---|---|
+| Build cannot find a file | `docker build` output and current directory | Wrong build context or `.dockerignore` rule |
+| Container exits immediately | `docker ps -a` then `docker logs python-health` | Main process completed or crashed |
+| Browser cannot connect | port mapping and application bind address | Missing `-p` or app bound only to `127.0.0.1` |
+| Code change not visible | image creation time and tag | Image was not rebuilt |
+| Dependency install fails | version, network and package logs | Invalid or unavailable package version |
+
+Useful inspection commands:
+
+```bash
+docker image ls
+docker ps -a
+docker logs python-health
+docker inspect python-health
+```
+
+## Improve it for production
+
+The development server in this learning example is not a production server. A production Python web service should normally use a suitable application server, run as a non-root user, expose a health endpoint, receive configuration at runtime and use a deliberately selected base-image version.
+
+Also avoid installing editors and debugging utilities “just in case.” Smaller, purpose-built images reduce attack surface and transfer time.
+
+## Common mistakes
+
+<Mistakes>
+
+- Using `COPY . .` before dependency installation and invalidating the build cache on every edit.
+- Confusing `EXPOSE 8000` with publishing a host port; `docker run -p` performs the publishing.
+- Binding the Python app to `127.0.0.1` inside the container.
+- Copying `.env`, credentials or a local virtual environment into the image.
+- Debugging by rebuilding randomly instead of reading build output and container logs.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="What happens during docker build and docker run?" badge="CAREER">
+
+**Strong answer:** `docker build` processes a Dockerfile and build context to produce a layered image. `docker run` creates a container from that image, adds runtime configuration such as ports and environment variables, and starts the configured process. Build-time decisions belong in the image; environment-specific configuration belongs at runtime.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Begin with a working application and an explicit dependency contract.
+- Order Dockerfile instructions to improve clarity and cache reuse.
+- Use `.dockerignore` to control the build context.
+- `EXPOSE` documents a port; `-p` publishes it.
+- Logs and inspection commands should guide troubleshooting.
+
+</Takeaways>
+
+## Official references
+
+- [Docker Docs: Containerize a Python application](https://docs.docker.com/guides/python/containerize/)
+- [Docker Docs: Dockerfile overview](https://docs.docker.com/build/concepts/dockerfile/)
+- [Docker Docs: Build best practices](https://docs.docker.com/build/building/best-practices/)

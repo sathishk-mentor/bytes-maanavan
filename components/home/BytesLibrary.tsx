@@ -9,6 +9,7 @@ const filters = [
   {label:'All Bytes',value:'all'},
   {label:'Software Engineering',value:'software-engineering'},
   {label:'Technology Careers',value:'forward-deployed-engineer'},
+  {label:'Cloud & DevOps',value:'cloud-devops'},
 ];
 export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
   const [query, setQuery] = useState('');

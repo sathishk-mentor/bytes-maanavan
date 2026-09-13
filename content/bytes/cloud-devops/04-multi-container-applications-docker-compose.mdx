@@ -1,0 +1,179 @@
+---
+title: "Run Multi-Container Applications with Docker Compose"
+slug: "04-multi-container-applications-docker-compose"
+summary: "Define and run a frontend, backend, database and AI service as one connected application using a readable Docker Compose configuration."
+category: "cloud-devops"
+tags: ["Docker Compose", "multi-container application", "compose.yaml", "Docker networking", "AI application architecture"]
+level: "beginner"
+duration: "21 min"
+updatedAt: "2026-09-13"
+order: 4
+isPopular: true
+---
+
+<ThemeCard title="What you will build mentally" badge="DOCKER HANDBOOK 04">
+
+A four-service application model: browser-facing frontend, backend API, PostgreSQL database and internal AI service. You will learn service discovery, startup dependencies, health checks, volumes and configuration boundaries.
+
+</ThemeCard>
+
+<DockerFlowVisual variant="compose" />
+
+## Why Compose exists
+
+Real applications rarely run as one container. A frontend may call a backend, the backend may use a database and an AI service may handle model-specific work. Starting each container with a long `docker run` command is difficult to reproduce and review.
+
+Docker Compose lets you declare the application in `compose.yaml`. The file describes services, images or build contexts, networks, volumes, ports, health checks and runtime configuration. `docker compose up` reconciles that definition into running containers.
+
+## The application architecture
+
+```text
+Browser
+  ↓ localhost:3000
+Frontend container
+  ↓ http://backend:8000
+Backend container ─────→ AI service:9000
+  ↓ postgres:5432
+Database container
+  ↓
+Named volume
+```
+
+Only the frontend must be public in this simple architecture. The backend can be published during local development, but internal services can communicate on the Compose network by service name.
+
+## Read a practical `compose.yaml`
+
+```yaml
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      API_BASE_URL: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://app:app@postgres:5432/app
+      AI_SERVICE_URL: http://ai-service:9000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ai-service:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ai-service:
+    build: ./ai-service
+    environment:
+      MODEL_NAME: local-demo-model
+
+volumes:
+  postgres-data:
+```
+
+This is a learning configuration, not a production-ready security policy. Never use the example database password in a real environment.
+
+## The most important networking rule
+
+Inside the frontend container, `localhost` means **the frontend container itself**. It does not mean the backend container. Compose service discovery lets the frontend reach `http://backend:8000` and the backend reach `postgres:5432`.
+
+This single idea solves many beginner connection failures.
+
+## `depends_on` is not business readiness
+
+Starting a database process does not mean it is ready to accept queries. A health check can give Compose a stronger readiness signal, and `depends_on` can wait for that condition. Your application should still handle temporary unavailability with bounded retries and clear errors because services can fail after startup.
+
+## Operate the stack
+
+```bash
+docker compose up --build
+docker compose ps
+docker compose logs -f backend
+docker compose exec backend sh
+docker compose down
+```
+
+Use `docker compose down -v` only when you intentionally want to remove named volumes declared by the project. That can delete database data and should not be a casual cleanup command.
+
+## Real-time analogy: a restaurant team
+
+<Scenario title="One customer experience, several specialised stations">
+
+A restaurant is one customer experience but contains a host desk, kitchen, pantry and billing station. Each has a separate responsibility and communicates through known handoffs. A manager does not combine every role into one person merely to simplify the floor plan.
+
+Compose is the operating plan: which stations exist, how they are reached, what supplies persist and which station must be ready first. The analogy stops at runtime resilience—software services still need timeouts, retries, monitoring and failure isolation.
+
+</Scenario>
+
+## A disciplined debugging sequence
+
+1. Run `docker compose config` to inspect the resolved configuration.
+2. Run `docker compose ps` to check service and health states.
+3. Read logs for the service receiving the failed request.
+4. Confirm it uses service names, not `localhost`, for container-to-container calls.
+5. Test connectivity from the calling container.
+6. Check configuration, credentials and database migrations.
+
+Do not restart every service immediately; restarts can hide the first useful failure evidence.
+
+## Common mistakes
+
+<Mistakes>
+
+- Using `localhost` to call another container.
+- Publishing every internal service port to the host.
+- Assuming startup order guarantees application readiness.
+- Storing production passwords directly in `compose.yaml`.
+- Running stateful databases without a volume and backup strategy.
+- Treating local Compose as a complete production orchestration design.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How do services communicate in Docker Compose?" badge="CAREER">
+
+**Strong answer:** Compose creates a default network for the application, and services can reach one another using service names as DNS names. Internal traffic uses the container port, while published ports are for access through the host. I use health checks and application-level retry behaviour instead of assuming a started container is ready.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Compose describes a multi-container application as version-controlled configuration.
+- A service name—not `localhost`—addresses another Compose service.
+- Publish only the services that need host access.
+- Health checks improve startup coordination but do not replace runtime resilience.
+- Local Compose architecture must still be adapted for production operations.
+
+</Takeaways>
+
+## Official references
+
+- [Docker Docs: Compose quickstart](https://docs.docker.com/compose/gettingstarted/)
+- [Docker Docs: How Compose works](https://docs.docker.com/compose/intro/compose-application-model/)
+- [Docker Docs: Control startup and shutdown order](https://docs.docker.com/compose/how-tos/startup-order/)

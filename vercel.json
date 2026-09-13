@@ -22,7 +22,7 @@
     },
     {
       "source": "/category/cloud-devops/",
-      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "destination": "/cloud-devops/",
       "permanent": true
     },
     {
@@ -286,11 +286,6 @@
       "permanent": true
     },
     {
-      "source": "/cloud-devops/",
-      "destination": "https://www.maanavan.com/courses/cloud-devops",
-      "permanent": true
-    },
-    {
       "source": "/cloud-devops/46-what-is-cloud-ai-apps/",
       "destination": "https://www.maanavan.com/courses/cloud-devops",
       "permanent": true
@@ -317,7 +312,7 @@
     },
     {
       "source": "/cloud-devops/51-docker-for-ai-apps/",
-      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "destination": "/cloud-devops/05-dockerize-deploy-generative-ai-application/",
       "permanent": true
     },
     {
@@ -602,7 +597,7 @@
     },
     {
       "source": "/handbooks/devops-ai-era/",
-      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "destination": "/cloud-devops/",
       "permanent": true
     },
     {
