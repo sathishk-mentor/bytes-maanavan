@@ -21,8 +21,8 @@ export function Header() {
         <a href={membership}>Membership</a>
       </nav>
       <a className="header-course-cta" href={courseLibrary}><BookOpen/>Explore Courses <ArrowRight/></a>
-      <button className="mobile-menu-button" onClick={()=>setOpen(!open)} aria-label="Toggle navigation">{open?<X/>:<Menu/>}</button>
+      <button className="mobile-menu-button" onClick={()=>setOpen(!open)} aria-label="Toggle navigation" aria-expanded={open} aria-controls="mobile-navigation">{open?<X/>:<Menu/>}</button>
     </div>
-    {open&&<nav className="mobile-nav container-custom" aria-label="Mobile navigation"><Link href="/" onClick={()=>setOpen(false)}>Bytes Home</Link><Link href="/handbooks/" onClick={()=>setOpen(false)}>Handbooks</Link><Link href="/#interview-prep" onClick={()=>setOpen(false)}>Interview Prep</Link><a href={courseLibrary}>Course Library</a><a href={membership}>All-Access Membership</a><a className="mobile-course-cta" href={courseLibrary}>Explore Course Library <ArrowRight/></a></nav>}
+    {open&&<nav id="mobile-navigation" className="mobile-nav container-custom" aria-label="Mobile navigation"><Link href="/" onClick={()=>setOpen(false)}>Bytes Home</Link><Link href="/handbooks/" onClick={()=>setOpen(false)}>Handbooks</Link><Link href="/#interview-prep" onClick={()=>setOpen(false)}>Interview Prep</Link><a href={courseLibrary}>Course Library</a><a href={membership}>All-Access Membership</a><a className="mobile-course-cta" href={courseLibrary}>Explore Course Library <ArrowRight/></a></nav>}
   </header>;
 }
