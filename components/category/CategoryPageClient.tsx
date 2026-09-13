@@ -55,12 +55,6 @@ export function CategoryPageClient({ bytes }: CategoryPageClientProps) {
           </div>
         </div>
 
-        {/* Results Count */}
-        <p className="category-results">
-          Showing <span className="font-medium">{filteredBytes.length}</span> of{' '}
-          <span className="font-medium">{bytes.length}</span> bytes
-        </p>
-
         {/* Bytes List */}
         <div className="library-grid category-byte-grid">
           {filteredBytes.map((byte) => (
