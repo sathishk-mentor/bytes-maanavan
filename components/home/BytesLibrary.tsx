@@ -1,28 +1,15 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import Link from 'next/link';
-import { ArrowRight, Blocks, Bot, Braces, BriefcaseBusiness, Bug, Clock3, Gauge, GitPullRequestArrow, Network, Search, ShieldCheck, Workflow, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import type { ByteMetadata } from '@/lib/types';
+import { ByteLibraryCard } from '@/components/bytes/ByteLibraryCard';
 
 const filters = [
   {label:'All Bytes',value:'all'},
   {label:'GitHub Copilot',value:'software-engineering'},
   {label:'Forward Deployed Engineer',value:'forward-deployed-engineer'},
 ];
-const cardVisuals = {
-  '62-how-developers-use-ai-tools': { icon: Bot, label: 'Copilot Foundations', tone: 'blue' },
-  '63-api-first-thinking': { icon: Braces, label: 'Context Engineering', tone: 'teal' },
-  '66-ai-assisted-coding-workflow': { icon: GitPullRequestArrow, label: 'Feature Workflow', tone: 'indigo' },
-  '64-debugging-ai-generated-code': { icon: Bug, label: 'Debug & Test', tone: 'violet' },
-  '75-secure-ai-coding': { icon: ShieldCheck, label: 'Responsible Coding', tone: 'emerald' },
-  '01-what-does-a-forward-deployed-engineer-do': { icon: BriefcaseBusiness, label: 'FDE Foundations', tone: 'violet' },
-  '02-problem-discovery-and-workflow-mapping': { icon: Search, label: 'Problem Discovery', tone: 'teal' },
-  '03-design-thin-production-slice': { icon: Network, label: 'Solution Architecture', tone: 'indigo' },
-  '04-deploy-observe-and-improve': { icon: Gauge, label: 'Production Learning', tone: 'emerald' },
-  '05-turn-field-learning-into-product': { icon: Blocks, label: 'Product Loop', tone: 'blue' },
-} as const;
-
 export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('all');
@@ -39,15 +26,8 @@ export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
         <div className="library-tags" aria-label="Filter Bytes by handbook">{filters.map((item) => <button key={item.value} className={filter === item.value ? 'active' : ''} onClick={() => setFilter(item.value)}>{item.label}</button>)}</div>
       </div>
       <div className="library-grid">{results.map((chapter) => {
-        const visual = cardVisuals[chapter.slug as keyof typeof cardVisuals] || {icon:Workflow,label:'Technology Guide',tone:'blue'};
-        const Icon = visual.icon;
         const chapterNumber = chapters.filter((item)=>item.category===chapter.category).findIndex((item)=>item.slug===chapter.slug)+1;
-        return <Link className={`library-byte-card tone-${visual.tone}`} href={`/${chapter.category}/${chapter.slug}/`} key={chapter.slug}>
-          <div className="byte-card-cover"><span>{chapter.category==='forward-deployed-engineer'?'FDE HANDBOOK':'GITHUB COPILOT HANDBOOK'}</span><Icon/><i>{String(chapterNumber).padStart(2,'0')}</i></div>
-          <div className="byte-card-title-tab"><span><Icon/></span><div><small>{visual.label}</small><h3>{chapter.title}</h3></div></div>
-          <p className="byte-card-description">{chapter.summary}</p>
-          <footer><div><i>{chapter.level}</i><i><Clock3/>{chapter.duration}</i></div><b>Read <ArrowRight/></b></footer>
-        </Link>;
+        return <ByteLibraryCard chapter={chapter} chapterNumber={chapterNumber} key={chapter.slug}/>;
       })}</div>
       {results.length === 0 && <div className="library-empty"><Search/><h3>No matching Byte found</h3><p>Try another keyword or choose “All Bytes”.</p><button onClick={() => { setQuery(''); setFilter('all'); }}>Reset library</button></div>}
     </div>
