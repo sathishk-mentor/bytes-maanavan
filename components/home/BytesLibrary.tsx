@@ -7,8 +7,8 @@ import { ByteLibraryCard } from '@/components/bytes/ByteLibraryCard';
 
 const filters = [
   {label:'All Bytes',value:'all'},
-  {label:'GitHub Copilot',value:'software-engineering'},
-  {label:'Forward Deployed Engineer',value:'forward-deployed-engineer'},
+  {label:'Software Engineering',value:'software-engineering'},
+  {label:'Technology Careers',value:'forward-deployed-engineer'},
 ];
 export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
   const [query, setQuery] = useState('');
@@ -25,7 +25,7 @@ export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
         <label className="library-search"><Search/><span className="sr-only">Search Bytes</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search FDE, Copilot, workflow, debugging…" />{query && <button onClick={() => setQuery('')} aria-label="Clear search"><X/></button>}</label>
       </div>
       <div className="library-with-sidebar">
-        <aside className="library-category-sidebar"><p>HANDBOOK CATEGORIES</p><nav aria-label="Filter Bytes by handbook">{filters.map((item) => <button key={item.value} className={filter === item.value ? 'active' : ''} onClick={() => setFilter(item.value)}><span>{item.label}</span><i>›</i></button>)}</nav><small>Choose a learning path to narrow the library.</small></aside>
+        <aside className="library-category-sidebar"><p>BYTE CATEGORIES</p><nav aria-label="Filter Bytes by category">{filters.map((item) => <button key={item.value} className={filter === item.value ? 'active' : ''} onClick={() => setFilter(item.value)}><span>{item.label}</span><i>›</i></button>)}</nav><small>Choose a subject area to narrow the library.</small></aside>
         <div><div className="library-grid">{results.map((chapter) => {
         const chapterNumber = chapters.filter((item)=>item.category===chapter.category).findIndex((item)=>item.slug===chapter.slug)+1;
         return <ByteLibraryCard chapter={chapter} chapterNumber={chapterNumber} key={chapter.slug}/>;
