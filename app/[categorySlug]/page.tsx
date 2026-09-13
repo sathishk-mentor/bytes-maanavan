@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CategoryPageClient } from '@/components/category/CategoryPageClient';
-import { getAllCategories, getCategoryBySlug } from '@/lib/categories';
+import { getCategoryBySlug } from '@/lib/categories';
 import { getBytesByCategory } from '@/lib/mdx';
 
-export function generateStaticParams() { return getAllCategories().map(({ slug }) => ({ categorySlug: slug })); }
+export const dynamicParams = false;
+export function generateStaticParams() { return [{ categorySlug: 'software-engineering' }]; }
 
 export async function generateMetadata({ params }: { params: { categorySlug: string } }): Promise<Metadata> {
   const category = getCategoryBySlug(params.categorySlug);

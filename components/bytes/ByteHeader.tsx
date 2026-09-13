@@ -1,15 +1,40 @@
 import Link from 'next/link';
-import { BookOpenCheck, CheckCircle2, ChevronRight, Clock3, Sparkles, UserRoundCheck, BrainCircuit } from 'lucide-react';
+import {
+  Bot, Braces, Bug, CheckCircle2, ChevronRight, Clock3, Code2,
+  FileCode2, GitPullRequestArrow, ScanSearch, ShieldCheck, Sparkles, TestTube2,
+} from 'lucide-react';
 import { ByteMetadata } from '@/lib/types';
 import { getCategoryBySlug } from '@/lib/categories';
 
-export function ByteHeader({ byte }: { byte: ByteMetadata; breadcrumbItems?: {label:string;href:string}[] }) {
-  const category=getCategoryBySlug(byte.category);
-  const isTokenGuide=byte.slug==='02-how-chatgpt-gemini-think-simple-flow';
+const handbookHeroes = {
+  '62-how-developers-use-ai-tools': { label: 'COPILOT WORKFLOW', icon: Bot, steps: [[FileCode2, 'Your context'], [Sparkles, 'Copilot suggests'], [ScanSearch, 'You inspect'], [CheckCircle2, 'You decide']] },
+  '63-api-first-thinking': { label: 'CONTEXT ENGINE', icon: Braces, steps: [[FileCode2, 'Instructions'], [Code2, 'Open files'], [Braces, 'Codebase context'], [Sparkles, 'Grounded answer']] },
+  '66-ai-assisted-coding-workflow': { label: 'FEATURE DELIVERY', icon: GitPullRequestArrow, steps: [[FileCode2, 'Define task'], [Sparkles, 'Generate change'], [TestTube2, 'Run checks'], [GitPullRequestArrow, 'Review diff']] },
+  '64-debugging-ai-generated-code': { label: 'DEBUGGING LOOP', icon: Bug, steps: [[Bug, 'Reproduce'], [ScanSearch, 'Collect evidence'], [Sparkles, 'Test hypothesis'], [CheckCircle2, 'Verify fix']] },
+  '75-secure-ai-coding': { label: 'TRUST GATE', icon: ShieldCheck, steps: [[Sparkles, 'AI output'], [ScanSearch, 'Security review'], [TestTube2, 'Automated tests'], [ShieldCheck, 'Human approval']] },
+} as const;
+
+function TopicHeroVisual({ slug }: { slug: string }) {
+  const visual = handbookHeroes[slug as keyof typeof handbookHeroes] || handbookHeroes['62-how-developers-use-ai-tools'];
+  const VisualIcon = visual.icon;
+  return <aside className="topic-hero-visual" aria-label={`${visual.label} animated visual`}>
+    <header><span><VisualIcon /></span><div><small>ANIMATED EXPLAINER</small><strong>{visual.label}</strong></div><i>LIVE</i></header>
+    <div className="topic-hero-flow">
+      {visual.steps.map(([Icon, label], index) => <div className="topic-hero-step-wrap" key={label}>
+        <div className="topic-hero-step" style={{'--step': index} as React.CSSProperties}><span><Icon /></span><strong>{label}</strong><small>0{index + 1}</small></div>
+        {index < visual.steps.length - 1 && <ChevronRight className="topic-hero-arrow" />}
+      </div>)}
+    </div>
+    <footer><span></span>Developer remains responsible at every stage</footer>
+  </aside>;
+}
+
+export function ByteHeader({ byte }: { byte: ByteMetadata }) {
+  const category = getCategoryBySlug(byte.category);
+  const chapter = Object.keys(handbookHeroes).indexOf(byte.slug) + 1;
   return <header className="byte-editorial-hero"><div className="byte-hero-inner">
-    <nav aria-label="Breadcrumb"><Link href="/">Bytes</Link><ChevronRight/><Link href={`/${byte.category}/`}>{category?.title}</Link><ChevronRight/><span>Lesson {String(byte.order).padStart(2,'0')}</span></nav>
-    <div className="byte-hero-grid"><div><p className="byte-eyebrow"><Sparkles/>{category?.title} · BEGINNER GUIDE</p><h1>{byte.title}</h1><p className="byte-deck">{byte.summary}</p><div className="byte-byline"><span><Clock3/>{byte.duration} read</span><time dateTime={byte.updatedAt}>Reviewed 12 September 2026</time><span>Free learning guide</span></div></div>
-    {isTokenGuide ? <aside className="hero-token-visual"><div className="hero-visual-top"><span className="hero-visual-icon"><BrainCircuit/></span><div><small>VISUAL EXPLAINER</small><strong>How an answer is generated</strong></div></div><div className="hero-visual-label"><span></span>LIVE CONCEPT FLOW</div><div className="hero-prompt-chip">Explain cloud simply</div><div className="hero-token-row"><i>Explain</i><i>cloud</i><i>simply</i></div><div className="hero-model-orbit"><b>LLM</b><span></span><span></span></div><div className="hero-output-line"><em></em><strong>Cloud computing lets you…</strong></div><p>Prompt <ChevronRight/> Tokens <ChevronRight/> Model <ChevronRight/> Answer</p></aside> :
-    <aside className="byte-hero-proof"><div className="proof-icon"><BookOpenCheck/></div><small>MAANAVAN LEARNING STANDARD</small><h2>Understand. Apply. Explain.</h2><ul><li><CheckCircle2/>Simple English</li><li><CheckCircle2/>Practical examples</li><li><CheckCircle2/>Interview insight</li></ul><p><UserRoundCheck/>Personally reviewed learning guidance</p></aside>}</div>
+    <nav aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href={`/${byte.category}/`}>{category?.title}</Link><span>/</span><b>Chapter {chapter > 0 ? chapter : byte.order}</b></nav>
+    <div className="byte-hero-grid"><div><p className="byte-eyebrow"><Sparkles/>{category?.title} · PRACTICAL GUIDE</p><h1>{byte.title}</h1><p className="byte-deck">{byte.summary}</p><div className="byte-byline"><span><Clock3/>{byte.duration} read</span><time dateTime={byte.updatedAt}>Personally reviewed by Sathish Kumar</time><span>Free learning guide</span></div></div>
+    <TopicHeroVisual slug={byte.slug} /></div>
   </div></header>;
 }

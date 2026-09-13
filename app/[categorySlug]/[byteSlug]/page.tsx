@@ -21,8 +21,13 @@ interface BytePageProps {
   };
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
-  return byteTopics.map((byte) => ({
+  return byteTopics.filter((byte) => byte.category === 'software-engineering' && [
+    '62-how-developers-use-ai-tools', '63-api-first-thinking', '64-debugging-ai-generated-code',
+    '66-ai-assisted-coding-workflow', '75-secure-ai-coding',
+  ].includes(byte.slug)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
@@ -66,16 +71,9 @@ export default async function BytePage({ params }: BytePageProps) {
   // Extract headings for accordion navigation
   const headings = extractHeadings(byte.content);
 
-  const breadcrumbItems = [
-    {
-      label: category?.title || byte.category,
-      href: `/category/${byte.category}`,
-    },
-  ];
-
   return (
     <>
-      <ByteHeader byte={byte} breadcrumbItems={breadcrumbItems} />
+      <ByteHeader byte={byte} />
 
       <div className="byte-reading-canvas">
         <div className="byte-reading-layout">

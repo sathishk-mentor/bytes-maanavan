@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { CategoryHeader } from '@/components/category/CategoryHeader';
 import { CategoryPageClient } from '@/components/category/CategoryPageClient';
-import { getAllCategories, getCategoryBySlug } from '@/lib/categories';
+import { getCategoryBySlug } from '@/lib/categories';
 import { getBytesByCategory, getBeginnerBytesCount } from '@/lib/mdx';
 
 interface CategoryPageProps {
@@ -13,12 +13,10 @@ interface CategoryPageProps {
 }
 
 export async function generateStaticParams() {
-  const categories = getAllCategories();
-
-  return categories.map((category) => ({
-    slug: category.slug,
-  }));
+  return [{ slug: 'software-engineering' }];
 }
+
+export const dynamicParams = false;
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const category = getCategoryBySlug(params.slug);
