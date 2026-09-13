@@ -1,36 +1,614 @@
 {
   "redirects": [
-    { "source": "/bytes/:path*", "destination": "/handbooks/", "permanent": true },
-    { "source": "/category/genai/", "destination": "https://www.maanavan.com/courses/generative-ai", "permanent": true },
-    { "source": "/category/ai-agents/", "destination": "https://www.maanavan.com/courses/ai-agents-automation", "permanent": true },
-    { "source": "/category/data-engineering/", "destination": "https://www.maanavan.com/courses/data-engineering", "permanent": true },
-    { "source": "/category/cloud-devops/", "destination": "https://www.maanavan.com/courses/cloud-devops", "permanent": true },
-    { "source": "/category/cybersecurity/", "destination": "https://www.maanavan.com/courses/cybersecurity", "permanent": true },
-    { "source": "/category/case-studies/", "destination": "/forward-deployed-engineer/", "permanent": true },
-    { "source": "/genai/:path*", "destination": "https://www.maanavan.com/courses/generative-ai", "permanent": true },
-    { "source": "/ai-agents/:path*", "destination": "https://www.maanavan.com/courses/ai-agents-automation", "permanent": true },
-    { "source": "/data-engineering/:path*", "destination": "https://www.maanavan.com/courses/data-engineering", "permanent": true },
-    { "source": "/cloud-devops/:path*", "destination": "https://www.maanavan.com/courses/cloud-devops", "permanent": true },
-    { "source": "/cybersecurity/:path*", "destination": "https://www.maanavan.com/courses/cybersecurity", "permanent": true },
-    { "source": "/case-studies/:path*", "destination": "/forward-deployed-engineer/", "permanent": true },
-    { "source": "/handbooks/generative-ai/", "destination": "https://www.maanavan.com/courses/generative-ai", "permanent": true },
-    { "source": "/handbooks/ai-agents/", "destination": "https://www.maanavan.com/courses/ai-agents-automation", "permanent": true },
-    { "source": "/handbooks/agentic-ai/", "destination": "https://www.maanavan.com/courses/ai-agents-automation", "permanent": true },
-    { "source": "/handbooks/agi/", "destination": "https://www.maanavan.com/courses/generative-ai", "permanent": true },
-    { "source": "/handbooks/ai-foundations-non-tech/", "destination": "https://www.maanavan.com/courses/generative-ai", "permanent": true },
-    { "source": "/handbooks/devops-ai-era/", "destination": "https://www.maanavan.com/courses/cloud-devops", "permanent": true },
-    { "source": "/handbooks/claude-code/", "destination": "https://www.maanavan.com/courses/generative-ai", "permanent": true },
-    { "source": "/category/software-engineering/", "destination": "/software-engineering/", "permanent": true },
-    { "source": "/category/forward-deployed-engineer/", "destination": "/forward-deployed-engineer/", "permanent": true },
-    { "source": "/software-engineering/61-software-engineering-in-ai-era/", "destination": "/software-engineering/62-how-developers-use-ai-tools/", "permanent": true },
-    { "source": "/software-engineering/65-app-flow-understanding/", "destination": "/software-engineering/62-how-developers-use-ai-tools/", "permanent": true },
-    { "source": "/software-engineering/68-clean-code-with-ai/", "destination": "/software-engineering/63-api-first-thinking/", "permanent": true },
-    { "source": "/software-engineering/70-git-ai-workflows/", "destination": "/software-engineering/63-api-first-thinking/", "permanent": true },
-    { "source": "/software-engineering/67-building-apps-using-ai-apis/", "destination": "/software-engineering/66-ai-assisted-coding-workflow/", "permanent": true },
-    { "source": "/software-engineering/74-ai-devops-integration/", "destination": "/software-engineering/66-ai-assisted-coding-workflow/", "permanent": true },
-    { "source": "/software-engineering/69-testing-ai-generated-code/", "destination": "/software-engineering/64-debugging-ai-generated-code/", "permanent": true },
-    { "source": "/software-engineering/71-ai-system-design-basics/", "destination": "/software-engineering/64-debugging-ai-generated-code/", "permanent": true },
-    { "source": "/software-engineering/72-scalable-ai-apps/", "destination": "/software-engineering/75-secure-ai-coding/", "permanent": true },
-    { "source": "/software-engineering/73-microservices-ai/", "destination": "/software-engineering/75-secure-ai-coding/", "permanent": true }
+    {
+      "source": "/bytes/:path*",
+      "destination": "/handbooks/",
+      "permanent": true
+    },
+    {
+      "source": "/category/genai/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/category/ai-agents/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/category/data-engineering/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/category/cloud-devops/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/category/cybersecurity/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/category/case-studies/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/category/software-engineering/",
+      "destination": "/software-engineering/",
+      "permanent": true
+    },
+    {
+      "source": "/category/forward-deployed-engineer/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/genai/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/01-what-is-generative-ai-real-examples/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/02-how-chatgpt-gemini-think-simple-flow/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/03-what-is-llm-brain-analogy/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/04-prompt-vs-normal-question-difference/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/05-first-prompt-your-first-ai-output/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/06-prompt-types-zero-few-chain-of-thought/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/07-writing-structured-prompts-templates/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/08-ai-tools-ecosystem-text-image-video/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/09-ai-mistakes-hallucination/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/10-using-ai-for-daily-work/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/11-rag-ai-with-your-data/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/12-fine-tuning-vs-prompting/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/13-ai-agents-intro/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/14-building-ai-apps-using-apis/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/genai/15-ai-cost-performance-optimization/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/16-what-is-ai-agent/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/17-agent-vs-chatbot/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/18-automation-using-ai/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/19-single-vs-multi-agent/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/20-what-is-agentic-ai/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/21-agent-workflow-input-thinking-output/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/22-memory-in-agents/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/23-ai-task-automation/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/24-agent-communication-basics/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/25-using-apis-inside-agents/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/26-multi-agent-architecture/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/27-mcp-model-context-protocol/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/28-autonomous-agents/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/29-ai-workflow-pipelines/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/ai-agents/30-enterprise-use-cases/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/31-what-is-data-engineering-ai-view/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/32-data-types-structured-unstructured/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/33-data-flow-in-ai-apps/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/34-what-is-etl/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/35-batch-vs-real-time/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/36-data-pipelines/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/37-data-lakes-vs-warehouses/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/38-preparing-data-for-ai/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/39-sql-for-ai-apps/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/40-data-cleaning-basics/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/41-real-time-data-systems/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/42-kafka-basics/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/43-airflow-orchestration/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/44-data-governance/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/data-engineering/45-ai-data-architecture/",
+      "destination": "https://www.maanavan.com/courses/data-engineering",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/46-what-is-cloud-ai-apps/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/47-aws-vs-azure-vs-gcp/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/48-hosting-ai-apps/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/49-what-is-devops/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/50-cicd-basics/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/51-docker-for-ai-apps/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/52-kubernetes-basics/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/53-deploy-ai-app/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/54-infrastructure-as-code/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/55-monitoring-ai-apps/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/56-scalable-ai-architecture/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/57-load-balancing-auto-scaling/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/58-multi-cloud-ai-systems/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/59-devsecops/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/cloud-devops/60-cloud-cost-optimization/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/software-engineering/61-software-engineering-in-ai-era/",
+      "destination": "/software-engineering/62-how-developers-use-ai-tools/",
+      "permanent": true
+    },
+    {
+      "source": "/software-engineering/65-app-flow-understanding/",
+      "destination": "/software-engineering/62-how-developers-use-ai-tools/",
+      "permanent": true
+    },
+    {
+      "source": "/software-engineering/67-building-apps-using-ai-apis/",
+      "destination": "/software-engineering/66-ai-assisted-coding-workflow/",
+      "permanent": true
+    },
+    {
+      "source": "/software-engineering/68-clean-code-with-ai/",
+      "destination": "/software-engineering/63-api-first-thinking/",
+      "permanent": true
+    },
+    {
+      "source": "/software-engineering/69-testing-ai-generated-code/",
+      "destination": "/software-engineering/64-debugging-ai-generated-code/",
+      "permanent": true
+    },
+    {
+      "source": "/software-engineering/70-git-ai-workflows/",
+      "destination": "/software-engineering/63-api-first-thinking/",
+      "permanent": true
+    },
+    {
+      "source": "/software-engineering/71-ai-system-design-basics/",
+      "destination": "/software-engineering/64-debugging-ai-generated-code/",
+      "permanent": true
+    },
+    {
+      "source": "/software-engineering/72-scalable-ai-apps/",
+      "destination": "/software-engineering/75-secure-ai-coding/",
+      "permanent": true
+    },
+    {
+      "source": "/software-engineering/73-microservices-ai/",
+      "destination": "/software-engineering/75-secure-ai-coding/",
+      "permanent": true
+    },
+    {
+      "source": "/software-engineering/74-ai-devops-integration/",
+      "destination": "/software-engineering/66-ai-assisted-coding-workflow/",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/76-what-is-cybersecurity/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/77-common-cyber-attacks/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/78-iam-basics/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/79-password-security/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/80-network-basics/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/81-ai-in-cybersecurity/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/82-threat-detection-systems/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/83-encryption-basics/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/84-cloud-security/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/85-vulnerability-scanning/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/86-zero-trust-architecture/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/87-ai-based-cyber-attacks/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/88-securing-ai-applications/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/89-incident-response-systems/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/cybersecurity/90-enterprise-security-design/",
+      "destination": "https://www.maanavan.com/courses/cybersecurity",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/100-ai-content-creation-workflow/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/101-full-ai-product-breakdown/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/102-startup-architecture-case-study/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/103-scaling-ai-systems/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/104-ai-ethics/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/105-future-of-ai-jobs/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/91-student-using-chatgpt/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/92-ai-in-agriculture/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/93-ai-in-education/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/94-ai-in-daily-apps/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/95-simple-ai-startup-story/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/96-ai-in-companies/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/97-ai-in-healthcare/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/98-ai-in-finance/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/99-ai-in-e-commerce/",
+      "destination": "/forward-deployed-engineer/",
+      "permanent": true
+    },
+    {
+      "source": "/handbooks/generative-ai/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/handbooks/ai-agents/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/handbooks/agentic-ai/",
+      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
+      "permanent": true
+    },
+    {
+      "source": "/handbooks/agi/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/handbooks/ai-foundations-non-tech/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    },
+    {
+      "source": "/handbooks/devops-ai-era/",
+      "destination": "https://www.maanavan.com/courses/cloud-devops",
+      "permanent": true
+    },
+    {
+      "source": "/handbooks/claude-code/",
+      "destination": "https://www.maanavan.com/courses/generative-ai",
+      "permanent": true
+    }
   ]
 }
