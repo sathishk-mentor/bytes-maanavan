@@ -22,7 +22,7 @@ const handbookHeroes = {
 function TopicHeroVisual({ slug }: { slug: string }) {
   const visual = handbookHeroes[slug as keyof typeof handbookHeroes] || handbookHeroes['62-how-developers-use-ai-tools'];
   const VisualIcon = visual.icon;
-  return <aside className="topic-hero-visual" aria-label={`${visual.label} animated visual`}>
+  return <aside className={`topic-hero-visual visual-${slug}`} aria-label={`${visual.label} animated visual`}>
     <header><span><VisualIcon /></span><div><small>ANIMATED EXPLAINER</small><strong>{visual.label}</strong></div><i>LIVE</i></header>
     <div className="topic-hero-flow">
       {visual.steps.map(([Icon, label], index) => <div className="topic-hero-step-wrap" key={label}>
