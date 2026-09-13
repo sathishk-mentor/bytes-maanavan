@@ -35,6 +35,7 @@ export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
         return <Link className={`library-byte-card tone-${visual.tone}`} href={`/${chapter.category}/${chapter.slug}/`} key={chapter.slug}>
           <div className="byte-card-cover"><span>MAANAVAN HANDBOOK</span><Icon/><i>0{chapters.indexOf(chapter) + 1}</i></div>
           <div className="byte-card-title-tab"><span><Icon/></span><div><small>{visual.label}</small><h3>{chapter.title}</h3></div></div>
+          <p className="byte-card-description">{chapter.summary}</p>
           <footer><div><i>{chapter.level}</i><i><Clock3/>{chapter.duration}</i></div><b>Read <ArrowRight/></b></footer>
         </Link>;
       })}</div>

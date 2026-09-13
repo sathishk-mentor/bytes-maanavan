@@ -24,7 +24,11 @@ export default async function HomePage() {
           <footer><span><i/></span><div><small>ENGINEERING PRINCIPLE</small><strong>AI proposes. The developer remains responsible.</strong></div></footer>
         </div>
       </div>
-      <div className="bytes-impact-strip"><div className="container-custom"><span><b>5</b>In-depth chapters</span><span><b>25+</b>Visual explainers</span><span><b>15+</b>Copy-ready prompts</span><span><b>Official</b>Source credits</span></div></div>
+      <div className="bytes-learning-promise"><div className="container-custom">
+        <div><span><Eye/></span><p><b>Understand visually</b><small>Animated flows make the concept easier to see.</small></p></div>
+        <div><span><Code2/></span><p><b>Apply immediately</b><small>Use practical examples and copy-ready prompts.</small></p></div>
+        <div><span><ShieldCheck/></span><p><b>Learn with confidence</b><small>Official sources and human review support every guide.</small></p></div>
+      </div></div>
     </section>
     <section id="tracks" className="handbook-showcase home-motion-section"><div className="container-custom"><div className="handbook-card">
       <div className="handbook-card-copy"><p className="eyebrow dark">Featured Handbook · 01</p><h2>The GitHub Copilot Handbook</h2><p>One connected learning path for developers—not scattered AI tips. Understand how Copilot uses context, supports feature delivery, assists debugging and fits inside a responsible engineering workflow.</p><div className="handbook-outcomes"><span><b>5</b> practical chapters</span><span><b>5</b> animated explainers</span><span><b>100%</b> human reviewed</span></div><Link href="/software-engineering/">Explore the Handbook <ArrowRight/></Link></div>
