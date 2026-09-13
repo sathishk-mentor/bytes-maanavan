@@ -1,13 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import Link from 'next/link';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
 import { SearchInput } from '@/components/ui/SearchInput';
+import { ByteLibraryCard } from '@/components/bytes/ByteLibraryCard';
 import { ByteMetadata, Level, SortOption } from '@/lib/types';
 import { applyFilters } from '@/lib/search';
-import { Clock, ArrowRight } from 'lucide-react';
 
 interface CategoryPageClientProps {
   bytes: ByteMetadata[];
@@ -23,10 +20,10 @@ export function CategoryPageClient({ bytes }: CategoryPageClientProps) {
   }, [bytes, searchQuery, levelFilter, sortBy]);
 
   return (
-    <div className="bg-white py-12">
+    <div className="category-library">
       <div className="container-custom">
         {/* Filters */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="category-library-tools">
           <SearchInput
             value={searchQuery}
             onChange={setSearchQuery}
@@ -59,43 +56,15 @@ export function CategoryPageClient({ bytes }: CategoryPageClientProps) {
         </div>
 
         {/* Results Count */}
-        <p className="mb-6 text-sm text-gray-600">
+        <p className="category-results">
           Showing <span className="font-medium">{filteredBytes.length}</span> of{' '}
           <span className="font-medium">{bytes.length}</span> bytes
         </p>
 
         {/* Bytes List */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="library-grid category-byte-grid">
           {filteredBytes.map((byte) => (
-            <Link key={byte.slug} href={`/${byte.category}/${byte.slug}`}>
-              <Card hover className="h-full">
-                <div className="flex items-start justify-between">
-                  <Badge variant="level" level={byte.level}>
-                    {byte.level}
-                  </Badge>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <Clock className="mr-1 h-4 w-4" />
-                    {byte.duration}
-                  </div>
-                </div>
-
-                <h3 className="mt-4 font-bold text-gray-900">{byte.title}</h3>
-
-                <p className="mt-2 text-sm text-gray-600 line-clamp-2">{byte.summary}</p>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {byte.tags.slice(0, 2).map((tag) => (
-                    <Badge key={tag} variant="tag">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-
-                <p className="mt-4 flex items-center text-sm font-medium text-primary-600">
-                  Read <ArrowRight className="ml-1 h-4 w-4" />
-                </p>
-              </Card>
-            </Link>
+            <ByteLibraryCard key={byte.slug} chapter={byte} chapterNumber={bytes.findIndex((item) => item.slug === byte.slug) + 1}/>
           ))}
         </div>
 
