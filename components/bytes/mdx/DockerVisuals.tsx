@@ -1,4 +1,4 @@
-import { ArrowRight, Box, CheckCircle2, Cloud, Code2, Container, Database, FileCode2, Globe2, HardDrive, KeyRound, Network, Rocket, Server, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowDown, ArrowRight, Box, CheckCircle2, Cloud, Code2, Container, Database, ExternalLink, FileCode2, Globe2, HardDrive, KeyRound, Network, PackageOpen, Play, Rocket, Server, ShieldCheck, Sparkles, UploadCloud } from 'lucide-react';
 
 const visuals = {
   mentalModel: {
@@ -35,4 +35,38 @@ export function DockerFlowVisual({variant}:{variant:keyof typeof visuals}) {
 
 export function DockerCommand({label,children}:{label:string;children:React.ReactNode}) {
   return <div className="docker-command"><header><span><i/><i/><i/></span><small>{label}</small><b>TERMINAL</b></header><pre><code>{children}</code></pre></div>;
+}
+
+export function DockerObjectArchitecture() {
+  return <figure className="docker-object-architecture">
+    <header><div><small>BUILD, SHARE AND RUN</small><strong>One application. Four Docker objects. Two different paths.</strong></div><span><i /> ANIMATED MODEL</span></header>
+    <div className="docker-object-stage">
+      <section className="docker-build-lane">
+        <p><b>01</b> BUILD PATH <span>happens when the code changes</span></p>
+        <div className="docker-object-flow">
+          <article><span><Code2 /></span><div><b>Application</b><small>Code + dependencies</small></div></article>
+          <i><em>+</em></i>
+          <article><span><FileCode2 /></span><div><b>Dockerfile</b><small>Build instructions</small></div></article>
+          <ArrowRight />
+          <article className="docker-action"><span><PackageOpen /></span><div><b>docker build</b><small>Executes the recipe</small></div></article>
+          <ArrowRight />
+          <article className="docker-image-object"><span><Box /></span><div><b>Image</b><small>Immutable, versioned package</small></div></article>
+        </div>
+      </section>
+      <div className="docker-object-branches"><ArrowDown /><b>The image can now be shared or run</b></div>
+      <section className="docker-use-lanes">
+        <article><header><UploadCloud /><b>SHARE PATH</b></header><div><strong>docker push</strong><ArrowRight/><span><Cloud/>Registry<small>stores images</small></span><ArrowRight/><strong>docker pull</strong></div></article>
+        <article><header><Play /><b>RUN PATH</b></header><div><strong>docker run</strong><ArrowRight/><span><Container/>Container A<small>running process</small></span><span><Container/>Container B<small>same image, separate process</small></span></div></article>
+      </section>
+    </div>
+    <figcaption><CheckCircle2/><span><b>The key distinction:</b> a registry stores images—not running containers. One image can create many independent containers.</span></figcaption>
+  </figure>;
+}
+
+export function OfficialDockerDiagram() {
+  return <figure className="official-docker-diagram">
+    <header><div><small>OFFICIAL DOCKER DIAGRAM</small><strong>Docker client, daemon, registry, images and containers</strong></div><a href="https://docs.docker.com/get-started/docker-overview/#docker-architecture" target="_blank" rel="noreferrer">Docker Docs <ExternalLink/></a></header>
+    <div><img src="/images/docker/docker-architecture-official.webp" alt="Official Docker architecture showing the Docker client communicating with the Docker daemon and registry" /></div>
+    <figcaption>Source: Docker Docs, “What is Docker?” The original diagram is preserved for technical accuracy.</figcaption>
+  </figure>;
 }

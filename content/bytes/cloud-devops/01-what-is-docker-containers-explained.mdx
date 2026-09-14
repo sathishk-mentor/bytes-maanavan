@@ -1,12 +1,12 @@
 ---
 title: "What Is Docker? Containers Explained Simply"
 slug: "01-what-is-docker-containers-explained"
-summary: "Understand Docker images and containers through a simple delivery analogy—and see exactly how Docker solves the ‘works on my machine’ problem."
+summary: "Learn Docker from first principles: trace code through a Dockerfile, image, registry and running container with visual architecture and practical commands."
 category: "cloud-devops"
 tags: ["Docker", "containers", "Docker images", "containerization", "Docker for beginners"]
 level: "beginner"
-duration: "15 min"
-updatedAt: "2026-09-13"
+duration: "18 min"
+updatedAt: "2026-09-14"
 order: 1
 isPopular: true
 ---
@@ -41,19 +41,29 @@ Docker moves important runtime decisions into version-controlled instructions:
 
 The resulting image carries that filesystem and configuration between environments.
 
-## Image, container, registry and Dockerfile
+## How the four Docker objects work together
 
-<HandbookLearningVisual variant="dockerObjects" />
+<DockerObjectArchitecture />
 
-| Term | Think of it as | What it does |
-|---|---|---|
-| Dockerfile | A build recipe | Describes how to create an image |
-| Image | A sealed application package | Contains filesystem layers and startup metadata |
-| Container | A running image instance | Executes the application as isolated processes |
-| Registry | A package warehouse | Stores and distributes images |
-| Volume | Durable storage | Keeps selected data outside a container’s writable layer |
+Imagine that you have built a Python course-catalog API. These Docker objects do different jobs at different moments:
 
-One image can create many containers. Each container gets its own writable layer and process boundary, while the underlying image layers can be reused.
+1. **The Dockerfile is an input to the build.** It records decisions such as the Python version, dependency installation and startup command. A Dockerfile does not contain your running application.
+2. **`docker build` produces an image.** The image is an immutable, layered package. Give it a meaningful name and tag such as `course-api:1.0` so you know exactly which build you are testing.
+3. **A registry distributes the image.** `docker push` uploads the tagged image; another machine can use `docker pull` to retrieve it. Docker Hub is one registry, but teams can use private registries too.
+4. **`docker run` creates a container from the image.** The container is the live process boundary. Runtime settings—ports, environment variables, volumes and resource limits—are attached when it is created or started.
+
+The order is important: **source code + Dockerfile → image → registry or container**. A registry never stores the running process, and a Dockerfile is not the deployable artifact. The image is the artefact that moves between environments.
+
+### Trace one change without memorising definitions
+
+Suppose you change the API response from `v1` to `v2`:
+
+- The existing container does not change automatically.
+- You rebuild the image and give the new build a new tag.
+- You stop or replace the old container.
+- You start a new container from the new image.
+
+This is why production systems treat containers as **replaceable**. They deploy a known image rather than manually editing a running server.
 
 ## Real-time analogy: a standard shipping container
 
@@ -92,6 +102,19 @@ docker ps
 ```
 
 `docker build` produces an image. `docker run` creates and starts a container. `docker ps` shows running containers. The name and tag make the artifact easier to identify; they do not change its contents.
+
+### What Docker is doing behind the command
+
+The `docker` command is the client. It sends a request to the Docker daemon, which builds images, creates networks and volumes, and starts containers. When an image is not available locally, the daemon can pull it from a registry before creating the container.
+
+<OfficialDockerDiagram />
+
+Read the official diagram from left to right:
+
+1. You enter `docker build`, `docker pull` or `docker run` through the Docker client.
+2. The Docker daemon performs the requested work.
+3. The daemon exchanges images with a registry when required.
+4. The daemon stores images locally and creates running containers from them.
 
 ## When Docker helps—and when it does not
 
