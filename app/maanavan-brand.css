@@ -451,3 +451,4 @@
 
 /* GFM table rendering: preserve headings and meaning on narrow screens */
 @media(max-width:800px){.byte-table-wrap{overflow-x:auto}.byte-table-wrap table{display:table;min-width:42rem;width:100%}.byte-table-wrap thead{display:table-header-group}.byte-table-wrap tbody{display:table-row-group}.byte-table-wrap tr{display:table-row;border:0;padding:0}.byte-table-wrap th,.byte-table-wrap td{display:table-cell;border-bottom:1px solid #dce7e4;padding:.85rem;vertical-align:top}.byte-table-wrap td:first-child{color:#126d60;font-weight:750}}
+.docker-use-lanes>article>div>span small{display:none}
