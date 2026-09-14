@@ -138,18 +138,29 @@ export default async function TrackPage({ params }: { params: { categorySlug: st
         <HandbookHeroVisual categorySlug={params.categorySlug as PublishedCategory}/>
       </div></section>
 
-      <section className="handbook-overview"><div className="container-custom handbook-overview-grid">
-        <div className="handbook-overview-intro"><p className="eyebrow dark">HANDBOOK OVERVIEW</p><h2>Understand the complete workflow—not isolated tips.</h2><p>Each Byte builds on the previous chapter. Understand the mental model, then apply it through an analogy, a real-time scenario, a visual explainer and an interview-ready decision.</p></div>
-        <div className="handbook-facts">
-          <article><Code2/><div><small>WHO THIS IS FOR</small><strong>{detail.audience}</strong></div></article>
-          <article><Compass/><div><small>PREREQUISITE</small><strong>{detail.prerequisite}</strong></div></article>
-          <article><Layers3/><div><small>YOUR OUTCOME</small><strong>{detail.result}</strong></div></article>
+      <section className={`handbook-overview handbook-overview-${params.categorySlug}`}><div className="container-custom">
+        <div className="handbook-overview-shell">
+          <div className="handbook-overview-grid">
+            <div className="handbook-overview-intro">
+              <p className="eyebrow dark"><span/>HANDBOOK OVERVIEW</p>
+              <h2>See the whole system.<br/><em>Then master each decision.</em></h2>
+              <p>This is a connected learning path—not a collection of isolated tips. Every Byte builds the mental model, makes the workflow visible and applies it to a situation you could meet in a real project.</p>
+              <div className="overview-learning-promise"><CheckCircle2/><span><b>Designed for practical understanding</b><small>Finish ready to recognise, apply and explain the concept.</small></span></div>
+            </div>
+            <div className="handbook-facts" aria-label="Handbook learning details">
+              <article><span><Code2/></span><div><small>WHO THIS IS FOR</small><strong>{detail.audience}</strong></div><i>01</i></article>
+              <article><span><Compass/></span><div><small>STARTING POINT</small><strong>{detail.prerequisite}</strong></div><i>02</i></article>
+              <article><span><Layers3/></span><div><small>WHAT YOU WILL BUILD</small><strong>{detail.result}</strong></div><i>03</i></article>
+            </div>
+          </div>
+          <div className="handbook-method-heading"><div><small>THE MAANAVAN LEARNING METHOD</small><strong>One clear progression in every Byte</strong></div><p>Move from first understanding to confident explanation.</p></div>
+          <div className="handbook-method">
+            <span><i><BookOpenCheck/></i><b>UNDERSTAND</b><strong>Build the mental model</strong><small>Start with plain language and a familiar analogy.</small></span>
+            <span><i><Network/></i><b>VISUALISE</b><strong>Follow the workflow</strong><small>See how each component connects and why it matters.</small></span>
+            <span><i><Workflow/></i><b>APPLY</b><strong>Enter a real scenario</strong><small>Use the concept in a practical project situation.</small></span>
+            <span><i><CheckCircle2/></i><b>EXPLAIN</b><strong>Make the decision clear</strong><small>Finish with mistakes, takeaways and an interview answer.</small></span>
+          </div>
         </div>
-      </div><div className="container-custom handbook-method">
-        <span><b>01</b><strong>Understand</strong><small>Plain-English mental model</small></span>
-        <span><b>02</b><strong>Visualise</strong><small>Workflow and architecture</small></span>
-        <span><b>03</b><strong>Apply</strong><small>Real project situation</small></span>
-        <span><b>04</b><strong>Explain</strong><small>Interview-ready takeaway</small></span>
       </div></section>
 
       <section id="handbook-learning-path" className="handbook-learning-path">
