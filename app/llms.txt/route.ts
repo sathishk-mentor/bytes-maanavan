@@ -13,6 +13,7 @@ export async function GET() {
 - [The Forward Deployed Engineer Handbook](https://bytes.maanavan.com/forward-deployed-engineer/): Customer discovery, thin production slices, deployment and product learning.
 - [The Docker Handbook](https://bytes.maanavan.com/cloud-devops/): Containers, Python application packaging, Compose and Generative AI deployment.
 - [LangChain for GenAI and AI Agents Handbook](https://bytes.maanavan.com/langchain/): Practical model integration, RAG, agents, memory, observability and Docker deployment with Python.
+- [The RAG Application Engineering Handbook](https://bytes.maanavan.com/rag-application-engineering/): Document preparation, semantic retrieval, cited answers, evaluation, security and deployment.
 
 ## Published Bytes
 

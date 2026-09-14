@@ -11,6 +11,7 @@ const filters = [
   {label:'Technology Careers',value:'forward-deployed-engineer'},
   {label:'Cloud & DevOps',value:'cloud-devops'},
   {label:'Generative AI & Agents',value:'langchain'},
+  {label:'RAG Application Engineering',value:'rag-application-engineering'},
 ];
 export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
   const [query, setQuery] = useState('');

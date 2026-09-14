@@ -1,0 +1,169 @@
+---
+title: "What Is RAG? Give AI Access to Your Knowledge"
+slug: "01-what-is-rag-give-ai-access-to-your-knowledge"
+summary: "See how retrieval, context and generation turn private company documents into grounded answers without retraining an LLM."
+category: "rag-application-engineering"
+tags: ["RAG tutorial for beginners", "retrieval augmented generation", "LLM hallucination", "document assistant", "grounded AI"]
+level: "beginner"
+duration: "18 min"
+updatedAt: "2026-09-14"
+order: 1
+isPopular: true
+---
+
+<ThemeCard title="Your outcome" badge="RAG HANDBOOK 01">
+
+You will understand exactly where RAG fits, trace one question from a user to a cited answer, and recognise when retrieval is—and is not—the right solution.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="ragFoundation" />
+
+## Start with the business problem
+
+Imagine a new employee asks an AI assistant: **“Can I carry unused annual leave into next year?”** A general-purpose LLM may answer fluently, but it has not seen your current HR policy. Its training data may be old, generic or unrelated to your company.
+
+The application needs a way to find the correct policy passage *before* asking the model to write. Retrieval-Augmented Generation, or **RAG**, adds that evidence step.
+
+> RAG is an application pattern that retrieves relevant external information and supplies it to a language model as context for an answer.
+
+RAG does not upload facts into the model’s memory. It assembles a temporary, evidence-backed prompt for each question.
+
+## Why an LLM can produce a wrong answer
+
+An LLM predicts a useful continuation from patterns learned during training. It is not a live database and does not automatically know:
+
+- your private documents;
+- policies published after its training;
+- which version of a document is authoritative;
+- what this particular user is permitted to see; or
+- whether evidence is missing.
+
+“Hallucination” is often treated as one problem, but an application can fail in different places:
+
+| Failure | What happened | Better engineering response |
+|---|---|---|
+| Knowledge gap | The model never had the company policy | Retrieve current policy content |
+| Retrieval miss | The correct passage was not found | Improve ingestion, query or ranking |
+| Unsupported synthesis | The model went beyond the evidence | Tighten the answer contract and test groundedness |
+| Access failure | A restricted document was retrieved | Enforce permission filters before generation |
+
+## R, A and G—one request at a time
+
+### 1. Retrieval
+
+The system searches an index and returns small passages, usually called **chunks**. For the leave question it might retrieve “Annual Leave Policy → Carry-over → Section 4.2”.
+
+### 2. Augmentation
+
+Application code constructs a prompt containing the user’s question, answer rules and the retrieved evidence. This is the “augmented” context.
+
+### 3. Generation
+
+The LLM writes an answer based on that context. The application attaches citations using the source metadata returned by retrieval.
+
+```text
+Question: Can I carry unused annual leave into next year?
+
+Retrieved evidence:
+[POLICY-2026 §4.2] Employees may carry forward up to five days...
+
+Answer rule:
+Use only the supplied evidence. If it is insufficient, say so.
+```
+
+## Two pipelines, not one
+
+RAG becomes much easier to reason about when you separate the work that happens before a user asks anything from the work that happens for every question.
+
+| Indexing pipeline | Answer pipeline |
+|---|---|
+| Load approved documents | Accept user question |
+| Clean and split the content | Apply identity and access scope |
+| Create embeddings | Retrieve and rerank candidates |
+| Store text, vectors and metadata | Build grounded prompt |
+| Refresh changed content | Generate answer and validate citations |
+
+If an updated policy is missing from the index, better prompting cannot fix it. If retrieval returns the right passage but the answer contradicts it, re-chunking may not fix it. Diagnose the failing pipeline.
+
+## Real-time analogy: the reference librarian
+
+<Scenario title="The librarian does not memorise every book">
+
+A good librarian hears your question, searches the catalogue, selects trustworthy pages and places them on the desk. You read those pages and answer. The catalogue is the index, selected pages are retrieved chunks, the desk is the model’s context window, and the final explanation is generation.
+
+If the librarian selects the wrong edition, the answer can still be polished and wrong. RAG improves access to evidence; it does not make evidence selection infallible.
+
+</Scenario>
+
+## When RAG is a strong fit
+
+- A company assistant must answer from changing policies, manuals or product documentation.
+- Answers should cite sources that a user can inspect.
+- Knowledge is too large to include in every prompt.
+- Different users have different document permissions.
+- Updating the knowledge base should not require model retraining.
+
+## When RAG is not the whole solution
+
+Use a database query or API when the user needs an exact live value such as an account balance. Use a tool-calling workflow when the system must take an action. Consider fine-tuning when you need consistent behaviour, style or task performance rather than access to changing facts.
+
+Many useful systems combine them: RAG finds policy evidence, an API fetches the employee’s current leave balance, and application logic calculates the permitted carry-over.
+
+## The answer contract
+
+A beginner project often returns only a string. A dependable assistant should expose evidence and uncertainty:
+
+```python
+from pydantic import BaseModel
+
+class Citation(BaseModel):
+    source_id: str
+    section: str
+
+class GroundedAnswer(BaseModel):
+    answer: str
+    citations: list[Citation]
+    insufficient_evidence: bool
+```
+
+Application code must verify that every citation refers to a retrieved source. Never ask the model to invent citation URLs.
+
+## Common mistakes
+
+<Mistakes>
+
+- Treating RAG as “chat with a PDF” instead of an evidence system.
+- Believing retrieval removes hallucination rather than reducing one source of it.
+- Mixing indexing failures and generation failures during debugging.
+- Sending every retrieved chunk to the model without checking relevance or permissions.
+- Returning a confident answer when the evidence is missing or conflicting.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="Explain RAG in one strong answer" badge="CAREER">
+
+RAG is an application architecture that retrieves relevant external evidence at request time, adds it to the model context and asks the LLM to generate a grounded response. I separate offline indexing from online answering, preserve source and access metadata, validate citations in application code, and evaluate retrieval quality separately from answer quality.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- RAG retrieves context; it does not retrain the model.
+- A RAG system has an indexing pipeline and a query-time answer pipeline.
+- The application—not the LLM—must own permissions and citation validation.
+- A fluent answer is not evidence that retrieval worked.
+- The right outcome is a traceable answer or an honest “insufficient evidence”.
+
+</Takeaways>
+
+## Primary sources
+
+- [Microsoft: What is retrieval-augmented generation?](https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/what-is-retrieval-augmented-generation-rag)
+- [Microsoft Learn: RAG solution design and evaluation guide](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide)
+- [LangChain retrieval documentation](https://docs.langchain.com/oss/python/langchain/retrieval)
+

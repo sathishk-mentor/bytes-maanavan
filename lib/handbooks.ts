@@ -57,6 +57,19 @@ export const handbooks: Handbook[] = [
       { title: 'Deploy a production application', outcome: 'Add contracts, traces, security and Docker packaging.', href: '/langchain/05-production-ready-langchain-application/' },
     ],
   },
+  {
+    slug: 'rag-application-engineering', title: 'The RAG Application Engineering Handbook', shortTitle: 'RAG Engineering',
+    audience: 'Beginners · AI Builders', tone: 'purple', status: 'available',
+    description: 'Give AI governed access to private knowledge—from document preparation and semantic retrieval to cited answers, evaluation and deployment.',
+    promise: 'Build a complete RAG mental model and a production-minded document assistant you can explain, test and improve.',
+    chapters: [
+      { title: 'What is RAG?', outcome: 'Understand retrieval, context and grounded generation.', href: '/rag-application-engineering/01-what-is-rag-give-ai-access-to-your-knowledge/' },
+      { title: 'Prepare documents for RAG', outcome: 'Load, clean, chunk and label useful evidence.', href: '/rag-application-engineering/02-prepare-documents-loading-cleaning-chunking/' },
+      { title: 'Embeddings and semantic search', outcome: 'Retrieve by meaning, filters and hybrid search.', href: '/rag-application-engineering/03-embeddings-vector-databases-semantic-search/' },
+      { title: 'Build a complete RAG application', outcome: 'Connect ingestion, retrieval, prompting and citations.', href: '/rag-application-engineering/04-build-complete-rag-application-python-langchain/' },
+      { title: 'Production RAG', outcome: 'Evaluate, secure, observe and deploy the system.', href: '/rag-application-engineering/05-production-rag-evaluation-security-deployment/' },
+    ],
+  },
 ];
 
 export function getHandbook(slug: string) { return handbooks.find((handbook) => handbook.slug === slug); }

@@ -1,0 +1,191 @@
+---
+title: "Prepare Documents for RAG: Loading, Cleaning and Chunking"
+slug: "02-prepare-documents-loading-cleaning-chunking"
+summary: "Turn PDF, Word and web content into clean, self-contained chunks with metadata that retrieval and citations can trust."
+category: "rag-application-engineering"
+tags: ["RAG document ingestion", "RAG chunking strategy", "LangChain document loaders", "PDF RAG", "document metadata"]
+level: "beginner"
+duration: "22 min"
+updatedAt: "2026-09-14"
+order: 2
+isPopular: false
+---
+
+<ThemeCard title="Your outcome" badge="RAG HANDBOOK 02">
+
+You will turn messy source files into retrievable evidence and choose a chunking strategy by document structure and question type—not by copying one magic number.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="ragDocuments" />
+
+## Why document preparation controls answer quality
+
+A retriever cannot return information that ingestion lost. If a PDF parser scrambles a table, a header disappears, or one chunk mixes three unrelated sections, the model receives damaged evidence.
+
+Think of ingestion as a data product. Its output is not “some text”; it is a collection of traceable evidence units.
+
+```text
+source file → parse → normalise → structure → chunk → enrich → validate → index
+```
+
+## Step 1: load the source faithfully
+
+Different formats hide different problems:
+
+| Source | Common issue | Validation check |
+|---|---|---|
+| PDF | Reading order, headers and tables are scrambled | Compare extracted text with several rendered pages |
+| Word | Heading hierarchy and lists are flattened | Preserve heading and paragraph relationships |
+| Web | Navigation, cookie text and duplicate templates enter content | Keep main article content and canonical URL |
+| Scanned PDF | There is no machine-readable text | Run OCR and record confidence/page numbers |
+
+```python
+from langchain_community.document_loaders import PyPDFLoader
+
+pages = PyPDFLoader("employee-handbook.pdf", mode="page").load()
+print(pages[0].page_content[:300])
+print(pages[0].metadata)
+```
+
+Do not assume successful parsing means correct parsing. Sample the beginning, middle, tables and final pages. Record parser version and a checksum so changed files can be reprocessed deliberately.
+
+## Step 2: clean without deleting meaning
+
+Remove repeated page furniture, invisible characters and accidental whitespace. Preserve headings, list boundaries, table labels, warnings and units.
+
+```python
+import re
+
+def clean_text(text: str) -> str:
+    text = text.replace("\u00ad", "")       # soft hyphen
+    text = re.sub(r"[ \t]+", " ", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
+```
+
+A dangerous cleaner removes every short line and accidentally deletes headings such as “Eligibility” or “Exceptions”. Keep transformations small, logged and testable.
+
+## Step 3: make chunks answerable
+
+A **chunk** is the smallest unit the retriever can return. It should contain enough context to answer a likely question without carrying unrelated material.
+
+Consider this policy:
+
+```text
+4.2 Carry-over
+Permanent employees may carry five unused days into the next year.
+Contract staff are not eligible. Approval must be recorded by 15 December.
+```
+
+Splitting after the first sentence loses the exception and deadline. Keeping the entire 70-page handbook as one chunk makes retrieval imprecise and expensive.
+
+### Choose structure before size
+
+1. Split at strong boundaries: article, heading, section or record.
+2. Split oversized sections by paragraph or sentence.
+3. Add modest overlap only when meaning genuinely crosses the boundary.
+4. Test chunks against real questions.
+
+```python
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=900,
+    chunk_overlap=120,
+    separators=["\n## ", "\n### ", "\n\n", "\n", ". ", " "],
+)
+chunks = splitter.split_documents(pages)
+```
+
+The values above are a starting experiment, not a universal rule. Measure whether important answers are self-contained and retrieved.
+
+## Chunking strategy by content
+
+| Content | Useful starting boundary | Why |
+|---|---|---|
+| Policy or manual | Heading/section | Keeps rule, exception and scope together |
+| FAQ | One question-answer pair | Matches likely queries directly |
+| API documentation | Endpoint or symbol | Preserves signature, parameters and example |
+| Support tickets | One issue-resolution record | Keeps symptom and fix connected |
+| Transcript | Speaker turn or topic window | Preserves conversational context |
+
+## Step 4: metadata makes evidence governable
+
+Store metadata beside every chunk:
+
+```python
+metadata = {
+    "source_id": "hr-policy-2026",
+    "title": "Employee Handbook",
+    "section": "4.2 Carry-over",
+    "page": 18,
+    "version": "2026.1",
+    "effective_date": "2026-04-01",
+    "department": "people",
+    "access_groups": ["employees"],
+    "canonical_url": "https://intranet/policies/hr-2026",
+}
+```
+
+This enables citation, filtering, expiry, deletion and permission checks. Do not place secrets in metadata simply because users cannot see the vector database interface.
+
+## Real-time analogy: preparing a legal case file
+
+<Scenario title="Every exhibit needs context and provenance">
+
+A lawyer does not cut every case file into equal-sized strips. Evidence is organised by document, section, date and source. Relevant passages remain understandable, and every claim can be traced to an exhibit. RAG ingestion should create the same chain of custody for knowledge.
+
+</Scenario>
+
+## Build an ingestion quality gate
+
+Before indexing, reject or quarantine a document when:
+
+- extracted text is empty or suspiciously short;
+- required source, owner or access metadata is missing;
+- the file type is unsupported;
+- malware or active content is detected;
+- duplicate checksums indicate repeated content; or
+- parsing produced an abnormal number of broken chunks.
+
+Keep ingestion status visible: `received → scanned → parsed → validated → indexed`. A user should not see a new document as searchable until the full pipeline succeeds.
+
+## Common mistakes
+
+<Mistakes>
+
+- Choosing chunk size only by tokens and ignoring document structure.
+- Using large overlap that duplicates evidence and increases cost.
+- Stripping headings, page numbers and source identity.
+- Indexing a new version without retiring or labelling the old one.
+- Mixing access-controlled documents before permissions are designed.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How do you choose a chunking strategy?" badge="CAREER">
+
+I begin with document structure and the questions users will ask. I preserve semantic units such as policy sections or FAQ pairs, split only oversized units, and add limited overlap where meaning crosses boundaries. Then I evaluate retrieval on representative questions and adjust size, boundaries and metadata from evidence rather than relying on one default.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Parsing quality places an upper bound on retrieval quality.
+- A chunk should be independently useful evidence, not an arbitrary slice.
+- Structure-aware chunking is usually a better starting point than fixed-size splitting.
+- Metadata supports citation, freshness, filtering, deletion and authorisation.
+- Validate ingestion before making content searchable.
+
+</Takeaways>
+
+## Primary sources
+
+- [LangChain document loader integrations](https://docs.langchain.com/oss/python/integrations/document_loaders)
+- [LangChain text splitter integrations](https://docs.langchain.com/oss/python/integrations/splitters)
+- [Microsoft Learn: RAG data preparation considerations](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide)
+

@@ -45,13 +45,18 @@ const searchTitles:Record<string,string>={
   '03-build-rag-applications-with-your-documents':'LangChain RAG Tutorial with Your Documents',
   '04-build-ai-agents-with-tools-and-memory':'LangChain AI Agents with Tools and Memory',
   '05-production-ready-langchain-application':'Production-Ready LangChain Application',
+  '01-what-is-rag-give-ai-access-to-your-knowledge':'What Is RAG? Retrieval-Augmented Generation Explained',
+  '02-prepare-documents-loading-cleaning-chunking':'RAG Document Loading, Cleaning and Chunking',
+  '03-embeddings-vector-databases-semantic-search':'Embeddings, Vector Databases and Semantic Search',
+  '04-build-complete-rag-application-python-langchain':'Build a RAG Application with Python and LangChain',
+  '05-production-rag-evaluation-security-deployment':'Production RAG Evaluation, Security and Deployment',
 };
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops','langchain'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
@@ -73,6 +78,7 @@ function legacyDestination(categorySlug: string) {
     'data-engineering':'https://www.maanavan.com/courses/data-engineering',
     'cloud-devops':'https://www.maanavan.com/courses/cloud-devops',
     langchain:'/langchain/',
+    'rag-application-engineering':'/rag-application-engineering/',
     cybersecurity:'https://www.maanavan.com/courses/cybersecurity',
     'case-studies':'/forward-deployed-engineer/',
   };

@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { ArrowDown, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, Database, Layers3, Network, Rocket, Sparkles, Workflow } from 'lucide-react';
+import { ArrowDown, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, Database, FileSearch, Layers3, Network, Rocket, SearchCheck, Sparkles, Workflow } from 'lucide-react';
 import { CategoryPageClient } from '@/components/category/CategoryPageClient';
 import { getCategoryBySlug } from '@/lib/categories';
 import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
@@ -46,6 +46,15 @@ const handbookDetails = {
     prerequisite: 'Basic Python; no LangChain experience required',
     result: 'A model → RAG → agent → production learning path',
     keywords: ['LangChain tutorial', 'LangChain Python', 'LangChain RAG', 'LangChain agents', 'LangChain for beginners', 'GenAI application development'],
+  },
+  'rag-application-engineering': {
+    searchTitle: 'RAG Application Engineering Handbook for Beginners',
+    eyebrow: 'PRIVATE KNOWLEDGE TO GROUNDED ANSWERS',
+    intro: 'Build reliable Retrieval-Augmented Generation applications—from loading and chunking documents to semantic search, cited answers, evaluation, security and deployment.',
+    audience: 'Beginners, Python developers and AI builders',
+    prerequisite: 'Basic Python; no RAG experience required',
+    result: 'An ingest → retrieve → ground → evaluate → deploy workflow',
+    keywords: ['RAG tutorial for beginners', 'Retrieval Augmented Generation handbook', 'RAG application with Python', 'LangChain RAG tutorial', 'vector database semantic search', 'production RAG evaluation'],
   },
 } as const;
 type PublishedCategory = keyof typeof handbookDetails;
@@ -87,6 +96,11 @@ function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory 
   if (categorySlug === 'langchain') {
     return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated LangChain application workflow">
       <div className="langchain-orchestrator"><header><Network/><span><small>LANGCHAIN APPLICATION</small><strong>Compose the right capabilities</strong></span><i>RUNNING</i></header><div><span><Code2/><small>Python</small></span><b>→</b><span><Sparkles/><small>Model</small></span><b>→</b><span><Database/><small>Knowledge</small></span><b>→</b><span><Workflow/><small>Tools</small></span></div><footer><CheckCircle2/><span>Grounded · stateful · observable</span></footer></div>
+    </div>;
+  }
+  if (categorySlug === 'rag-application-engineering') {
+    return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated retrieval augmented generation application workflow">
+      <div className="langchain-orchestrator"><header><FileSearch/><span><small>RAG APPLICATION</small><strong>Retrieve evidence before answering</strong></span><i>GROUNDED</i></header><div><span><Database/><small>Knowledge</small></span><b>→</b><span><SearchCheck/><small>Retrieve</small></span><b>→</b><span><Layers3/><small>Context</small></span><b>→</b><span><Sparkles/><small>Cited answer</small></span></div><footer><CheckCircle2/><span>Relevant · authorised · traceable</span></footer></div>
     </div>;
   }
   return <div className="handbook-hero-visual fde-hero-visual" aria-label="Animated Forward Deployed Engineer outcome loop">

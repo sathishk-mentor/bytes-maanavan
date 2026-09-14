@@ -72,6 +72,26 @@ const visuals = {
     {icon:FileSearch,title:'Inspect diff',note:'Every change'}, {icon:TestTube2,title:'Verify behaviour',note:'Expected + edge'},
     {icon:ShieldCheck,title:'Review risk',note:'Security + privacy'}, {icon:BadgeCheck,title:'Approve release',note:'Named owner'},
   ], remember:'Copilot can suggest and review; the accountable developer decides what reaches users.' },
+  ragFoundation: { eyebrow:'THE RAG REQUEST PATH', title:'The model answers only after the application finds evidence', steps:[
+    {icon:MessageSquareText,title:'Question',note:'User intent'}, {icon:SearchCheck,title:'Retrieve',note:'Relevant chunks'},
+    {icon:Layers3,title:'Augment',note:'Question + evidence'}, {icon:Sparkles,title:'Generate',note:'Grounded answer'},
+  ], remember:'RAG changes the context supplied to the model; it does not retrain the model.' },
+  ragDocuments: { eyebrow:'KNOWLEDGE PREPARATION', title:'Turn messy files into retrievable evidence', steps:[
+    {icon:FileSearch,title:'Load',note:'PDF · DOCX · web'}, {icon:Wrench,title:'Clean',note:'Remove noise'},
+    {icon:Layers3,title:'Chunk',note:'Preserve meaning'}, {icon:BadgeCheck,title:'Label',note:'Source + access'},
+  ], remember:'A useful chunk is a self-contained unit of evidence with traceable metadata.' },
+  ragSearch: { eyebrow:'SEMANTIC RETRIEVAL', title:'Search meaning, then improve precision with constraints', steps:[
+    {icon:Braces,title:'Embed query',note:'Meaning as numbers'}, {icon:Database,title:'Vector search',note:'Nearest candidates'},
+    {icon:FileSearch,title:'Filter + hybrid',note:'Scope + keywords'}, {icon:Radar,title:'Rerank',note:'Best evidence first'},
+  ], remember:'Similarity finds candidates; filters, hybrid search and reranking make them more useful.' },
+  ragApplication: { eyebrow:'END-TO-END RAG', title:'Keep the evidence chain visible from source to answer', steps:[
+    {icon:Database,title:'Indexed knowledge',note:'Text + metadata'}, {icon:SearchCheck,title:'Authorised retrieval',note:'Top evidence'},
+    {icon:MessageSquareText,title:'Grounded prompt',note:'Rules + context'}, {icon:BadgeCheck,title:'Answer + citations',note:'Validated sources'},
+  ], remember:'Application code owns retrieval, permissions and citations; the model writes within that boundary.' },
+  ragProduction: { eyebrow:'PRODUCTION QUALITY LOOP', title:'Measure every layer instead of trusting fluent answers', steps:[
+    {icon:TestTube2,title:'Evaluate',note:'Retrieval + answer'}, {icon:ShieldCheck,title:'Protect',note:'Data + instructions'},
+    {icon:Eye,title:'Observe',note:'Latency + cost'}, {icon:Repeat2,title:'Improve',note:'Evidence-driven'},
+  ], remember:'A production RAG system must be relevant, grounded, authorised, observable and recoverable.' },
 } satisfies Record<string, Visual>;
 
 export type HandbookLearningVisualVariant = keyof typeof visuals;

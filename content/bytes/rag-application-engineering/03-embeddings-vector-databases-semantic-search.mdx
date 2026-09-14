@@ -1,0 +1,179 @@
+---
+title: "Embeddings, Vector Databases and Semantic Search"
+slug: "03-embeddings-vector-databases-semantic-search"
+summary: "Understand embeddings without mathematics overload and improve retrieval with metadata filters, hybrid search and reranking."
+category: "rag-application-engineering"
+tags: ["embeddings explained", "vector database tutorial", "semantic search", "hybrid search RAG", "RAG retrieval"]
+level: "beginner"
+duration: "21 min"
+updatedAt: "2026-09-14"
+order: 3
+isPopular: true
+---
+
+<ThemeCard title="Your outcome" badge="RAG HANDBOOK 03">
+
+You will understand what embeddings and vector databases actually do, then design a retrieval pipeline that balances meaning, exact terms, permissions and ranking.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="ragSearch" />
+
+## Search by meaning, not only matching words
+
+A keyword engine may struggle when the document says **“carry forward unused leave”** and the user asks **“Can remaining vacation days move to next year?”** The wording differs, but the intent is similar.
+
+An **embedding model** converts text into a fixed-length vector—a list of numbers that represents aspects of meaning. Similar ideas tend to occupy nearby regions in that model’s vector space.
+
+```text
+"carry forward unused leave"  ┐
+                               ├── close in vector space
+"move vacation to next year" ┘
+```
+
+Embeddings are not summaries and individual numbers are not human-readable facts. Their value comes from comparing vectors created by the same compatible model.
+
+## What a vector database stores
+
+For each chunk, a vector store typically keeps:
+
+- a vector used for similarity search;
+- original chunk text used as evidence;
+- metadata used for filters and citations; and
+- a stable identifier used for update and deletion.
+
+At query time the application embeds the question, searches for nearby chunk vectors and returns the top candidates.
+
+```python
+from langchain_openai import OpenAIEmbeddings
+from langchain_core.vectorstores import InMemoryVectorStore
+
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+store = InMemoryVectorStore(embeddings)
+store.add_documents(chunks)
+
+results = store.similarity_search(
+    "Can unused vacation move to next year?",
+    k=5,
+)
+```
+
+An in-memory store is useful for learning. Production selection should consider scale, latency, durability, filtering, backup, data location, encryption and operational skill.
+
+## Similarity score is not truth
+
+A search score describes closeness according to a model and search configuration. It does not prove the passage is correct, current, authorised or sufficient.
+
+The nearest chunks may fail because:
+
+- the source wording is highly domain-specific;
+- exact identifiers matter more than semantic similarity;
+- several chunks repeat the same general statement;
+- an old policy is semantically closer than the current one; or
+- the query combines multiple intents.
+
+## Add the missing precision controls
+
+### Metadata filtering
+
+Filter candidate evidence before it reaches the model:
+
+```python
+retriever = store.as_retriever(
+    search_kwargs={
+        "k": 6,
+        "filter": {"department": "people", "version": "2026.1"},
+    }
+)
+```
+
+In real systems, the server derives access filters from authenticated identity. Never trust a user prompt such as “show finance-only documents” as permission.
+
+### Hybrid search
+
+Hybrid search combines semantic vector retrieval with lexical or keyword retrieval. It is especially useful when a query contains product codes, error messages, names or exact policy identifiers that embeddings may blur.
+
+| Query | Semantic search helps | Keyword search helps |
+|---|---|---|
+| “moving leave to next year” | Understands paraphrase | Less important |
+| “POL-HR-042” | May miss exact identifier | Exact match |
+| “Timeout E1042 after upgrade” | Finds related explanations | Preserves error code |
+
+### Reranking
+
+Initial retrieval is designed to find candidates quickly. A reranker applies a stronger relevance model to the smaller candidate set and places the most useful evidence first.
+
+```text
+large index → retrieve 20 candidates → rerank → send best 5 to LLM
+```
+
+### Diversity
+
+If five results repeat the same paragraph, the model sees less evidence. Diversity-aware retrieval can trade a little similarity for broader coverage.
+
+## Real-time analogy: finding a song
+
+<Scenario title="Meaning, exact clues and a final shortlist">
+
+You remember a song as “a calm Tamil melody about rain” but not its title. Semantic search finds songs with that mood and theme. If you remember an exact lyric or catalogue code, keyword search becomes valuable. A curator then reranks the shortlist using your language, year and artist preferences. Good RAG retrieval uses the same combination of meaning, exact clues and constraints.
+
+</Scenario>
+
+## Design retrieval as a testable function
+
+Keep retrieval independent from answer generation:
+
+```python
+def retrieve_evidence(question: str, access_scope: dict):
+    candidates = hybrid_search(question, filters=access_scope, limit=20)
+    ranked = rerank(question, candidates)
+    return ranked[:5]
+```
+
+Now you can inspect the evidence without involving an LLM. For each test question, label which chunks are relevant and measure whether retrieval returns them.
+
+Useful retrieval checks include:
+
+- **Recall@k:** did the top *k* results contain needed evidence?
+- **Precision@k:** how much of the returned set was relevant?
+- **MRR:** how early did the first relevant result appear?
+- **Filter correctness:** were unauthorised or outdated chunks excluded?
+
+## Common mistakes
+
+<Mistakes>
+
+- Changing embedding models without rebuilding compatible vectors.
+- Sending similarity scores to users as confidence percentages.
+- Using semantic search alone for IDs, names and error codes.
+- Retrieving first and checking permissions later.
+- Tuning `k` without measuring recall, duplication and context cost.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="Semantic search versus hybrid search" badge="CAREER">
+
+Semantic search retrieves passages with similar meaning even when wording differs. Keyword search preserves exact terms such as product IDs and error codes. Hybrid search combines both candidate sets, then filters and often reranks them. I choose the mix using a labelled query set and measure retrieval quality before evaluating the final answer.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Embeddings represent meaning for comparison; they are not facts or summaries.
+- A vector store must retain original text, metadata and stable IDs beside vectors.
+- Similarity produces candidates, not guaranteed evidence.
+- Filters enforce scope; hybrid retrieval preserves meaning and exact matches.
+- Evaluate retrieval independently before asking the LLM to generate.
+
+</Takeaways>
+
+## Primary sources
+
+- [LangChain embedding model integrations](https://docs.langchain.com/oss/python/integrations/embeddings)
+- [LangChain vector store integrations](https://docs.langchain.com/oss/python/integrations/vectorstores)
+- [Microsoft Learn: RAG retrieval design](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide)
+
