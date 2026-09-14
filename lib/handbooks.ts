@@ -45,7 +45,7 @@ export const handbooks: Handbook[] = [
     ],
   },
   {
-    slug: 'langchain', title: 'LangChain for GenAI and AI Agents', shortTitle: 'LangChain',
+    slug: 'langchain', title: 'LangChain for GenAI and AI Agents Handbook', shortTitle: 'LangChain',
     audience: 'Python Developers · AI Builders', tone: 'green', status: 'available',
     description: 'Build practical LLM, RAG and agentic AI applications with Python using current LangChain patterns.',
     promise: 'Move from a model call to a grounded, tool-using and observable AI application.',

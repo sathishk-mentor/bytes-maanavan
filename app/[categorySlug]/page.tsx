@@ -39,7 +39,7 @@ const handbookDetails = {
     keywords: ['Docker handbook', 'Docker tutorial for beginners', 'Docker Python tutorial', 'Docker Compose tutorial', 'Docker Generative AI application'],
   },
   'langchain': {
-    searchTitle: 'LangChain for GenAI and AI Agents',
+    searchTitle: 'LangChain for GenAI and AI Agents Handbook',
     eyebrow: 'LLM APPLICATION ENGINEERING',
     intro: 'Build practical LLM, RAG and agentic AI applications with Python—from model calls and structured responses to tools, memory, observability and Docker deployment.',
     audience: 'Python developers and practical AI builders',
