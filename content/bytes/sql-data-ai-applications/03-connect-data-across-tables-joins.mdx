@@ -1,0 +1,113 @@
+---
+title: "Connect Data Across Tables Using Joins"
+slug: "03-connect-data-across-tables-joins"
+summary: "Use keys, inner and left joins, subqueries and CTEs to connect customers, orders and courses without duplicating meaning."
+category: "sql-data-ai-applications"
+tags: ["SQL joins tutorial", "INNER JOIN LEFT JOIN", "SQL CTE", "primary key foreign key"]
+level: "beginner"
+duration: "25 min"
+updatedAt: "2026-09-14"
+order: 3
+---
+
+<ThemeCard title="Practical outcome" badge="SQL HANDBOOK 03">
+
+You will answer “Which courses generated the highest revenue?” by connecting course and order facts through trusted keys.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="sqlJoins" />
+
+## Why data lives in different tables
+
+Repeating course title and price in every customer record creates inconsistency. Relational design stores each concept once and connects it with keys.
+
+```sql
+SELECT
+    c.title,
+    SUM(o.amount) AS revenue
+FROM courses AS c
+JOIN orders AS o ON o.course_id = c.course_id
+WHERE o.status = 'PAID'
+GROUP BY c.course_id, c.title
+ORDER BY revenue DESC;
+```
+
+The `ON` clause explains the relationship. Without it, rows can multiply into a Cartesian product and produce believable but incorrect totals.
+
+## Choose the join by the question
+
+| Join | Rows preserved | Useful question |
+|---|---|---|
+| `INNER JOIN` | only matches | Which courses have paid orders? |
+| `LEFT JOIN` | every left row | Which courses have no orders? |
+
+```sql
+SELECT c.title, COUNT(o.order_id) AS order_count
+FROM courses c
+LEFT JOIN orders o
+  ON o.course_id = c.course_id AND o.status = 'PAID'
+GROUP BY c.course_id, c.title
+HAVING COUNT(o.order_id) = 0;
+```
+
+Placing the paid-status condition in `ON` preserves courses with no matching paid order. Putting it in `WHERE` would remove their `NULL` rows and accidentally behave like an inner join.
+
+## Use a CTE to name a reasoning step
+
+```sql
+WITH recent_paid_orders AS (
+  SELECT course_id, amount
+  FROM orders
+  WHERE status = 'PAID'
+    AND ordered_at >= CURRENT_DATE - INTERVAL '3 months'
+)
+SELECT c.title, SUM(r.amount) AS revenue
+FROM courses c
+JOIN recent_paid_orders r USING (course_id)
+GROUP BY c.course_id, c.title
+ORDER BY revenue DESC;
+```
+
+<Scenario title="Real-time analogy: matching receipts to a catalogue">
+
+A receipt contains a product code, not the full catalogue description. The code is the foreign key. Joining the receipt to the catalogue reveals the name and category while keeping one authoritative product record.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Joining on similar names instead of stable keys.
+- Missing an `ON` condition and multiplying rows.
+- Counting `*` after a left join when you mean to count matched IDs.
+- Filtering the right table in `WHERE` and unintentionally losing unmatched rows.
+- Using a CTE to hide rather than clarify a complex query.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="INNER JOIN versus LEFT JOIN?" badge="CAREER">
+
+An inner join returns only matched relationships. A left join preserves every row from the left side and fills missing right-side values with `NULL`. I choose based on whether unmatched left-side records are meaningful to the question.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Join on stable primary-key and foreign-key relationships.
+- Choose the join type from the business question.
+- Validate row counts before trusting aggregates.
+- Use CTEs to name meaningful reasoning stages.
+
+</Takeaways>
+
+## Primary sources
+
+- [PostgreSQL tutorial: joins](https://www.postgresql.org/docs/current/tutorial-join.html)
+- [PostgreSQL table expressions](https://www.postgresql.org/docs/current/queries-table-expressions.html)
+- [PostgreSQL WITH queries](https://www.postgresql.org/docs/current/queries-with.html)

@@ -13,15 +13,15 @@ export function PrevNextNav({ prev, next }: PrevNextNavProps) {
   }
 
   return (
-    <nav className="byte-prev-next" aria-label="Continue learning">
+    <nav className={`byte-prev-next ${!prev ? 'only-next' : ''} ${!next ? 'only-prev' : ''}`} aria-label="Continue learning">
       {prev && (
         <Link
           href={`/${prev.category}/${prev.slug}`}
           className="byte-prev-card"
         >
-          <ArrowLeft />
+          <span className="byte-nav-arrow"><ArrowLeft /></span>
           <div>
-            <p>PREVIOUS BYTE</p>
+            <p><span>PREVIOUS</span> Continue the handbook</p>
             <strong>
               {prev.title}
             </strong>
@@ -35,12 +35,12 @@ export function PrevNextNav({ prev, next }: PrevNextNavProps) {
           className="byte-next-card"
         >
           <div>
-            <p>NEXT BYTE</p>
+            <p>Continue the handbook <span>NEXT</span></p>
             <strong>
               {next.title}
             </strong>
           </div>
-          <ArrowRight />
+          <span className="byte-nav-arrow"><ArrowRight /></span>
         </Link>
       )}
     </nav>

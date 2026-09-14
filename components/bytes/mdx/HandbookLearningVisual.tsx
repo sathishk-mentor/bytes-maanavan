@@ -116,6 +116,46 @@ const visuals = {
     {icon:MessageSquareText,title:'Goal',note:'Desired outcome'}, {icon:ListChecks,title:'Plan',note:'Choose next step'},
     {icon:Wrench,title:'Use tool',note:'Read or act'}, {icon:CheckCircle2,title:'Check',note:'Stop or continue'},
   ], remember:'A chatbot responds once; an agent can choose and repeat actions until the goal is complete or it must ask for help.' },
+  javaFoundation: { eyebrow:'MODERN JAVA MENTAL MODEL', title:'Turn a business rule into a readable domain model', steps:[
+    {icon:MessageSquareText,title:'Requirement',note:'Policy rule'}, {icon:Braces,title:'Types + records',note:'Model data'},
+    {icon:Code2,title:'Service method',note:'Apply behaviour'}, {icon:TestTube2,title:'Test + review',note:'Prove intent'},
+  ], remember:'Use AI to accelerate explanation and review; keep Java types, business rules and tests under developer control.' },
+  javaApi: { eyebrow:'SPRING REQUEST PATH', title:'Keep HTTP, business logic and errors in clear layers', steps:[
+    {icon:Users,title:'HTTP request',note:'JSON input'}, {icon:Server,title:'Controller',note:'Web contract'},
+    {icon:Layers3,title:'Service',note:'Business rule'}, {icon:BadgeCheck,title:'Response',note:'Status + JSON'},
+  ], remember:'Controllers translate HTTP; services own application behaviour.' },
+  javaData: { eyebrow:'PERSISTENCE PATH', title:'Map Java domain objects to durable relational data', steps:[
+    {icon:Server,title:'Service',note:'Use case'}, {icon:Layers3,title:'Repository',note:'Data boundary'},
+    {icon:Database,title:'JPA entity',note:'Mapping'}, {icon:HardDrive,title:'SQL database',note:'Durable state'},
+  ], remember:'JPA maps objects to tables; transactions protect a complete business operation.' },
+  javaRag: { eyebrow:'GROUNDED JAVA AI', title:'Retrieve authorised policy evidence before generation', steps:[
+    {icon:MessageSquareText,title:'Question',note:'User intent'}, {icon:SearchCheck,title:'Retrieve',note:'Relevant policy'},
+    {icon:Layers3,title:'Ground prompt',note:'Evidence + rules'}, {icon:BadgeCheck,title:'Cited answer',note:'Traceable output'},
+  ], remember:'Spring AI coordinates the model and retrieval; your application still owns access, evidence and citations.' },
+  javaProduction: { eyebrow:'ENTERPRISE RELEASE PATH', title:'Protect, prove and package the complete service', steps:[
+    {icon:ShieldCheck,title:'Secure',note:'Identity + roles'}, {icon:TestTube2,title:'Test',note:'Unit + integration'},
+    {icon:Eye,title:'Observe',note:'Logs + metrics'}, {icon:Rocket,title:'Containerise',note:'Deploy + recover'},
+  ], remember:'Production readiness is a set of evidence: secure access, passing tests, useful telemetry and repeatable deployment.' },
+  sqlFoundation: { eyebrow:'QUESTION → RESULT', title:'Translate a business question into a precise table query', steps:[
+    {icon:MessageSquareText,title:'Question',note:'What do we need?'}, {icon:Database,title:'Table',note:'Where is the data?'},
+    {icon:SearchCheck,title:'Filter + sort',note:'Which rows?'}, {icon:BadgeCheck,title:'Result',note:'Only useful columns'},
+  ], remember:'SELECT chooses columns; WHERE chooses rows; ORDER BY arranges them; LIMIT controls result size.' },
+  sqlAnalysis: { eyebrow:'BUSINESS ANALYSIS', title:'Move from individual rows to decision-ready measures', steps:[
+    {icon:Database,title:'Transactions',note:'Raw rows'}, {icon:Braces,title:'Calculate',note:'SUM + COUNT'},
+    {icon:Layers3,title:'Group',note:'Course + month'}, {icon:Gauge,title:'Explain',note:'Business insight'},
+  ], remember:'WHERE filters rows before grouping; HAVING filters groups after aggregation.' },
+  sqlJoins: { eyebrow:'RELATIONAL THINKING', title:'Follow keys to connect facts stored in different tables', steps:[
+    {icon:Users,title:'Customers',note:'Primary key'}, {icon:Network,title:'Orders',note:'Foreign key'},
+    {icon:Database,title:'Courses',note:'Referenced row'}, {icon:BadgeCheck,title:'Combined view',note:'Business meaning'},
+  ], remember:'A join condition explains the relationship; the join type decides which unmatched rows survive.' },
+  sqlAi: { eyebrow:'SAFE TEXT-TO-SQL', title:'Let AI propose a query without giving it uncontrolled execution', steps:[
+    {icon:MessageSquareText,title:'Question',note:'User intent'}, {icon:Sparkles,title:'Generate SQL',note:'Schema scoped'},
+    {icon:ShieldCheck,title:'Validate',note:'Read-only policy'}, {icon:BadgeCheck,title:'Execute + explain',note:'Bounded result'},
+  ], remember:'The model proposes SQL; deterministic controls decide whether and how it runs.' },
+  sqlProduction: { eyebrow:'PRODUCTION QUERY PATH', title:'Protect data while keeping queries fast and explainable', steps:[
+    {icon:ShieldCheck,title:'Parameterise',note:'Separate code + data'}, {icon:Gauge,title:'Optimise',note:'Plan + index'},
+    {icon:Repeat2,title:'Transact',note:'All or nothing'}, {icon:Eye,title:'Audit',note:'Who queried what'},
+  ], remember:'Production SQL must be correct, bounded, authorised, observable and efficient.' },
 } satisfies Record<string, Visual>;
 
 export type HandbookLearningVisualVariant = keyof typeof visuals;

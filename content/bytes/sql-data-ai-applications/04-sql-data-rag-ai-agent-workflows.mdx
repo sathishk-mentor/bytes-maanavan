@@ -1,0 +1,110 @@
+---
+title: "Use SQL in Data, RAG and AI-Agent Workflows"
+slug: "04-sql-data-rag-ai-agent-workflows"
+summary: "Connect Python to structured data and place validation, read-only access and result limits around LLM-generated SQL."
+category: "sql-data-ai-applications"
+tags: ["text to SQL tutorial", "SQL AI agent", "Python SQLAlchemy", "SQL for RAG", "LLM generated SQL safety"]
+level: "intermediate"
+duration: "28 min"
+updatedAt: "2026-09-14"
+order: 4
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="SQL HANDBOOK 04">
+
+You will design the safe request path for an AI-Powered Business Data Analyst—without giving the model direct database authority.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="sqlAi" />
+
+## The correct control boundary
+
+The model is a query **proposer**, not a database administrator.
+
+```text
+Question → approved schema context → draft SQL → deterministic validation
+         → read-only execution → bounded rows → business explanation
+```
+
+The application should reject multiple statements, write operations, unapproved tables, unrestricted results and queries that exceed time or cost limits.
+
+## Connect Python with bound parameters
+
+```python
+from sqlalchemy import create_engine, text
+
+engine = create_engine(database_url)
+
+statement = text("""
+    SELECT title, price
+    FROM courses
+    WHERE category = :category
+    ORDER BY price DESC
+    LIMIT :limit
+""")
+
+with engine.connect() as connection:
+    rows = connection.execute(
+        statement, {"category": "AI", "limit": 5}
+    ).mappings().all()
+```
+
+Bound parameters keep values separate from SQL structure. They do not make arbitrary LLM-generated SQL safe; structural validation and least-privilege execution are still required.
+
+## Structured data versus RAG
+
+Use SQL for exact structured questions such as revenue, count and status. Use document RAG for unstructured policy text. A combined application may retrieve policy passages and query authorised aggregates, then provide one answer with separate source types.
+
+## Agent safety checklist
+
+1. Expose only approved schema descriptions.
+2. Use a dedicated read-only database user.
+3. Parse and allow-list query structure.
+4. Enforce row, runtime and cost limits.
+5. Require approval for sensitive datasets.
+6. Log the question, proposed query, decision and execution outcome safely.
+
+<Scenario title="Real-time scenario: highest-revenue courses">
+
+The user asks, “Which courses generated the highest revenue in the last three months?” The model drafts a grouped query. The application confirms it is one read-only statement over approved tables, injects a row limit, executes with a restricted role and lets the model explain only the returned result.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Giving an agent owner-level database credentials.
+- Trusting a prompt instruction such as “generate SELECT only” as enforcement.
+- Exposing the complete production schema and sensitive column names.
+- Sending unlimited result sets back to the model.
+- Mixing calculated SQL facts with unsupported model interpretation.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How do you secure text-to-SQL?" badge="CAREER">
+
+I use defence in depth: limited schema context, parsed allow-list validation, a read-only database role, parameter binding for values, statement and row limits, timeouts, sensitive-data controls, audit logs and an approval gate where risk requires it.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- The LLM proposes; deterministic application controls authorise execution.
+- SQL serves structured facts while RAG serves unstructured evidence.
+- Read-only credentials and bounded results reduce impact.
+- Preserve a trace from question to query to result to explanation.
+
+</Takeaways>
+
+## Primary sources
+
+- [SQLAlchemy connections and transactions](https://docs.sqlalchemy.org/en/latest/core/connections.html)
+- [SQLAlchemy SELECT tutorial](https://docs.sqlalchemy.org/en/latest/tutorial/data_select.html)
+- [OWASP LLM Prompt Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html)

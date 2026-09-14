@@ -1,0 +1,104 @@
+---
+title: "Analyse Business Data with SQL"
+slug: "02-analyse-business-data-with-sql"
+summary: "Use aggregates, GROUP BY, HAVING, conditional logic and date boundaries to convert transactions into useful measures."
+category: "sql-data-ai-applications"
+tags: ["SQL aggregate functions", "GROUP BY HAVING", "SQL business analysis", "SQL date analysis"]
+level: "beginner"
+duration: "23 min"
+updatedAt: "2026-09-14"
+order: 2
+---
+
+<ThemeCard title="Practical outcome" badge="SQL HANDBOOK 02">
+
+You will calculate course revenue by month and category, then separate a correct number from a useful business explanation.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="sqlAnalysis" />
+
+## Rows become measures
+
+Aggregate functions summarise many rows:
+
+| Function | Business meaning |
+|---|---|
+| `COUNT(*)` | number of purchases |
+| `SUM(amount)` | total revenue |
+| `AVG(amount)` | average order value |
+| `MIN` / `MAX` | smallest or largest value |
+
+```sql
+SELECT
+    course_id,
+    COUNT(*) AS orders,
+    SUM(amount) AS revenue
+FROM orders
+WHERE ordered_at >= CURRENT_DATE - INTERVAL '3 months'
+GROUP BY course_id
+HAVING SUM(amount) > 10000
+ORDER BY revenue DESC;
+```
+
+`WHERE` removes individual rows before aggregation. `HAVING` removes completed groups after aggregation.
+
+## Make date boundaries explicit
+
+“Last three months” may mean a rolling 90-day window or three complete calendar months. Those are different questions. Confirm the definition before writing SQL and use half-open boundaries (`>= start` and `< end`) when possible.
+
+## Add business categories safely
+
+```sql
+SELECT
+  CASE
+    WHEN amount >= 2000 THEN 'High value'
+    WHEN amount >= 1000 THEN 'Mid value'
+    ELSE 'Entry value'
+  END AS value_band,
+  COUNT(*) AS purchases
+FROM orders
+GROUP BY value_band;
+```
+
+<Scenario title="Real-time analogy: a shop’s closing report">
+
+Individual bills are rows. The owner does not read every bill to make a decision; the report groups them by product or day and calculates totals. SQL aggregation performs that controlled summarisation without losing the ability to trace back to transactions.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Selecting a non-aggregated column that is not in `GROUP BY`.
+- Using `HAVING` for filters that belong in `WHERE`.
+- Ignoring refunds, currencies or cancelled orders in revenue.
+- Treating missing values as zero without a business rule.
+- Using an ambiguous definition of “month” or “recent.”
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="Why can two correct revenue queries disagree?" badge="CAREER">
+
+They may use different time boundaries, order statuses, refund treatment, currencies or grain. I confirm the metric definition and inspect the underlying rows before optimising the query.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Aggregates turn transactions into measures.
+- `GROUP BY` defines the reporting grain.
+- `WHERE` filters rows; `HAVING` filters groups.
+- A metric is incomplete without a clear business definition.
+
+</Takeaways>
+
+## Primary sources
+
+- [PostgreSQL aggregate functions](https://www.postgresql.org/docs/current/functions-aggregate.html)
+- [PostgreSQL date and time functions](https://www.postgresql.org/docs/current/functions-datetime.html)

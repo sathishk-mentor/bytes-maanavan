@@ -1,0 +1,118 @@
+---
+title: "Build and Deploy an Enterprise AI Application"
+slug: "05-build-deploy-enterprise-ai-application"
+summary: "Secure, test, observe, containerise and deploy the Enterprise Policy Assistant with explicit production controls."
+category: "modern-java-spring-boot-genai"
+tags: ["Spring Boot security", "Spring Boot Docker", "Java AI deployment", "Spring Boot testing", "production GenAI application"]
+level: "intermediate"
+duration: "27 min"
+updatedAt: "2026-09-14"
+order: 5
+---
+
+<ThemeCard title="Practical outcome" badge="JAVA HANDBOOK 05">
+
+You will turn the working assistant into a release candidate with identity, tests, telemetry, safe configuration and repeatable packaging.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="javaProduction" />
+
+## Production-ready means evidence, not confidence
+
+A successful local response proves only one path. Enterprise readiness requires evidence across several boundaries:
+
+| Boundary | Question to prove |
+|---|---|
+| Identity | Who is calling and what may they access? |
+| Contract | Are valid and invalid API behaviours tested? |
+| AI quality | Is the answer supported by retrieved policy evidence? |
+| Operations | Can we see latency, failures and model cost? |
+| Deployment | Can we reproduce, roll back and recover the service? |
+
+## Apply least-privilege access
+
+```java
+@Bean
+SecurityFilterChain security(HttpSecurity http) throws Exception {
+    return http
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/actuator/health").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/policies/**")
+                .hasRole("POLICY_ADMIN")
+            .anyRequest().authenticated())
+        .oauth2ResourceServer(oauth -> oauth.jwt())
+        .build();
+}
+```
+
+Endpoint permission is only the first gate. Retrieval must also filter policy chunks by the authenticated user’s scope.
+
+## Test the failure paths
+
+- Unit-test policy rules without Spring.
+- Slice-test controller validation and status codes.
+- Integration-test database mappings with a real compatible database.
+- Evaluate retrieval using known questions and expected sources.
+- Test model timeout, provider throttling and insufficient evidence.
+
+## Package the application
+
+```dockerfile
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY target/policy-assistant.jar app.jar
+USER 10001
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+Build the JAR outside this runtime stage or use a multi-stage build. Inject database and model credentials at runtime; never bake them into the image.
+
+## Observe the complete answer path
+
+Capture request ID, authenticated scope, retrieval duration, retrieved document IDs, model latency, token usage and final status. Avoid recording raw private policy text by default. Alerts should distinguish dependency failure from low retrieval quality.
+
+<Scenario title="Real-time scenario: a policy answer after a rule change">
+
+A travel policy changes on Friday. Ingestion creates new versioned chunks and retires the previous version. On Monday, an employee’s authorised query retrieves only the active policy, returns its source ID and produces a trace linking the API request, retrieval and model call. If the model provider times out, the API returns a controlled failure rather than an invented answer.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Protecting the endpoint but not filtering retrieved documents.
+- Testing only successful model responses.
+- Logging secrets, prompts or private evidence indiscriminately.
+- Running the container as root without a reason.
+- Deploying without health checks, timeouts or rollback criteria.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How would you productionise a Java RAG application?" badge="CAREER">
+
+I would secure both API and retrieval scopes, validate contracts, evaluate retrieval and grounded answers, add timeouts and controlled failure behaviour, capture privacy-aware traces and metrics, inject secrets at runtime, package a minimal non-root container and deploy with health checks and rollback support.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Security must cover the endpoint and the evidence retrieved behind it.
+- Test deterministic code, integration boundaries and AI quality separately.
+- Observability should follow one request from API to retrieval to model.
+- Docker creates a repeatable package; deployment still needs health and recovery controls.
+
+</Takeaways>
+
+## Primary sources
+
+- [Spring Security reference](https://docs.spring.io/spring-security/reference/)
+- [Spring Boot testing](https://docs.spring.io/spring-boot/reference/testing/)
+- [Spring Boot Actuator](https://docs.spring.io/spring-boot/reference/actuator/)
+- [Spring Boot container images](https://docs.spring.io/spring-boot/reference/packaging/container-images/)

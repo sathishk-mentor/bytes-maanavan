@@ -1,0 +1,114 @@
+---
+title: "Add Generative AI and RAG to a Java Application"
+slug: "04-add-generative-ai-rag-java"
+summary: "Use Spring AI to retrieve authorised policy evidence, construct a grounded prompt and return an answer with traceable sources."
+category: "modern-java-spring-boot-genai"
+tags: ["Spring AI tutorial", "Java RAG application", "Spring Boot Generative AI", "LangChain4j RAG", "Java document assistant"]
+level: "intermediate"
+duration: "28 min"
+updatedAt: "2026-09-14"
+order: 4
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="JAVA HANDBOOK 04">
+
+You will understand the complete RAG request path for an Enterprise Policy Assistant and implement a bounded Spring AI service.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="javaRag" />
+
+## Why a model alone is not enough
+
+The model was not trained on your latest private policies. Asking it directly may produce a fluent but unsupported answer. Retrieval-Augmented Generation finds relevant evidence at request time and places that evidence in the model context.
+
+```text
+Question → authorise → retrieve policy chunks → ground prompt → generate → attach citations
+```
+
+RAG does not retrain the model. Your Java application owns retrieval, permissions, prompt rules and source references.
+
+## Ingestion and answering are separate paths
+
+| Path | Happens when | Main work |
+|---|---|---|
+| Ingestion | A policy is published or changed | load, clean, chunk, embed, store metadata |
+| Answering | A user asks a question | authorise, retrieve, generate, cite |
+
+Store metadata such as policy ID, department, version, effective date and access group with every chunk. Retrieval must filter by the caller’s permissions before evidence reaches the model.
+
+## A bounded Spring AI service
+
+```java
+@Service
+class PolicyAssistant {
+    private final ChatClient chatClient;
+
+    PolicyAssistant(ChatClient.Builder builder) {
+        this.chatClient = builder.build();
+    }
+
+    PolicyAnswer ask(String question) {
+        String answer = chatClient.prompt()
+            .system("Answer only from retrieved company policy context. " +
+                    "If evidence is insufficient, say you do not know.")
+            .user(question)
+            .advisors(new QuestionAnswerAdvisor(vectorStore))
+            .call()
+            .content();
+
+        return new PolicyAnswer(answer);
+    }
+}
+```
+
+This shows the mental model, not a complete production contract. A real response should carry source identifiers collected from retrieval rather than asking the model to invent citations.
+
+## Spring AI or LangChain4j?
+
+Both provide Java abstractions for models, retrieval and tools. For this handbook, Spring AI is the primary path because the project already uses Spring Boot. Evaluate LangChain4j when its APIs, integrations or team experience better fit the system. Do not mix both merely to appear flexible.
+
+<Scenario title="Real-time analogy: an HR policy librarian">
+
+The librarian first checks which documents you may access, finds the relevant pages and places them on the desk. Only then is an explanation written, with the document IDs attached. The explanation is useful because the evidence path remains visible.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Sending the full policy library to the model for every question.
+- Retrieving first and checking permissions later.
+- Asking the model to create citations without preserving source metadata.
+- Treating a similar chunk as automatically sufficient evidence.
+- Logging private prompts and retrieved text without redaction controls.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="Where does RAG responsibility live?" badge="CAREER">
+
+The application owns ingestion, access control, retrieval, context construction, citations and evaluation. The model generates within the supplied context. This division keeps private knowledge governed and the answer traceable.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- RAG supplies current evidence without retraining the model.
+- Ingestion and request-time retrieval are different workflows.
+- Authorisation must constrain retrieval before model invocation.
+- Citations come from retrieved metadata, not model memory.
+
+</Takeaways>
+
+## Primary sources
+
+- [Spring AI reference](https://docs.spring.io/spring-ai/reference/)
+- [Spring AI Retrieval-Augmented Generation](https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html)
+- [Spring AI vector databases](https://docs.spring.io/spring-ai/reference/api/vectordbs.html)
+- [LangChain4j RAG tutorial](https://docs.langchain4j.dev/tutorials/rag)
