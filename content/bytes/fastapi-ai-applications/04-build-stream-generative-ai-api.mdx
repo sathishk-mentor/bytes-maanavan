@@ -1,0 +1,204 @@
+---
+title: "Build and Stream a Generative AI API"
+slug: "04-build-stream-generative-ai-api"
+summary: "Connect FastAPI to retrieval and an LLM, then stream grounded answer events and finish with validated citations."
+category: "fastapi-ai-applications"
+tags: ["FastAPI streaming response", "FastAPI GenAI API", "FastAPI LLM streaming", "RAG API Python", "server sent events FastAPI"]
+level: "beginner"
+duration: "27 min"
+updatedAt: "2026-09-14"
+order: 4
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="FASTAPI HANDBOOK 04">
+
+You will build the central `/assistant/stream` endpoint: validate a question, retrieve authorised company evidence, stream answer text and finish with server-validated citations.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fastapiStreaming" />
+
+## Why stream an AI response?
+
+An LLM may take several seconds to produce a complete answer. A normal JSON endpoint makes the client wait for the entire result. Streaming delivers small events as they become available, improving perceived responsiveness and allowing progress signals.
+
+Streaming does **not** make generation cheaper or automatically faster. It changes how output travels to the client.
+
+## Choose an event contract
+
+Do not stream anonymous text fragments without meaning. Define event types:
+
+```text
+meta      → request accepted, request ID
+token     → incremental answer text
+citation  → validated source metadata
+done      → stream completed
+error     → safe failure information
+```
+
+Server-Sent Events (SSE) is a practical one-way server-to-client format for web applications.
+
+```text
+event: token
+data: {"text":"Employees may carry"}
+
+event: citation
+data: {"source_id":"hr-2026-4.2","title":"Employee Handbook","page":18}
+```
+
+## Define the request
+
+```python
+from pydantic import BaseModel, Field
+
+class AssistantRequest(BaseModel):
+    question: str = Field(min_length=3, max_length=2000)
+    conversation_id: str | None = None
+```
+
+The user does not provide tenant, role or document filters. The server derives them from authenticated identity.
+
+## Build the event encoder
+
+```python
+import json
+
+def sse(event: str, payload: dict) -> str:
+    data = json.dumps(payload, ensure_ascii=False)
+    return f"event: {event}\ndata: {data}\n\n"
+```
+
+Never place raw untrusted newline content directly into the SSE protocol. Serialising JSON gives the client a predictable envelope.
+
+## Stream the grounded answer
+
+```python
+from collections.abc import AsyncIterator
+from fastapi.responses import StreamingResponse
+
+async def answer_events(payload, user) -> AsyncIterator[str]:
+    request_id = create_request_id()
+    yield sse("meta", {"request_id": request_id})
+
+    evidence = await retriever.search(
+        question=payload.question,
+        tenant_id=user.tenant_id,
+        access_groups=user.groups,
+    )
+
+    if not evidence:
+        yield sse("error", {
+            "code": "insufficient_evidence",
+            "message": "No authorised source can answer this question.",
+        })
+        return
+
+    allowed_ids = {item.source_id for item in evidence}
+
+    async for text in model.stream(
+        question=payload.question,
+        evidence=evidence,
+    ):
+        yield sse("token", {"text": text})
+
+    for item in evidence:
+        if item.source_id in allowed_ids:
+            yield sse("citation", item.public_metadata())
+
+    yield sse("done", {"request_id": request_id})
+```
+
+```python
+@app.post("/assistant/stream")
+async def stream_answer(payload: AssistantRequest, user: CurrentUser):
+    return StreamingResponse(
+        answer_events(payload, user),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache"},
+    )
+```
+
+This example teaches the boundary. In production, handle disconnects, provider cancellation, trace completion and safe partial results.
+
+## Keep citations outside generated prose
+
+The model may mention `[S1]`, but application code should map `S1` to a source actually retrieved for this request. Send citations as separate structured events so the interface can render safe titles and URLs.
+
+```text
+Model produces: answer text + source labels
+Server verifies: label ∈ retrieved source IDs
+Client receives: safe citation metadata owned by server
+```
+
+## Stream errors deliberately
+
+Once response headers are sent, changing the HTTP status may no longer be possible. Validate authentication, request shape and basic limits before creating the stream. For failures during streaming, send a defined `error` event, close cleanly and record the trace.
+
+| Failure moment | Recommended signal |
+|---|---|
+| Before stream starts | Normal HTTP status and JSON error |
+| During retrieval/provider call | SSE `error` event and clean close |
+| Client disconnects | Cancel downstream work where supported |
+| Partial answer fails validation | Do not send final citations or `done` success |
+
+## Real-time analogy: live sports commentary
+
+<Scenario title="Progress now, official record at the end">
+
+Commentary arrives as the match unfolds, but the final scorecard remains structured and authoritative. AI tokens are live commentary; validated citations and completion metadata are the scorecard. A dropped connection should not create a false final result.
+
+</Scenario>
+
+## Expose RAG and agents behind service interfaces
+
+The route should not know which vector database or agent framework is used. It depends on capabilities:
+
+```python
+class EvidenceRetriever:
+    async def search(self, question: str, tenant_id: str, access_groups: list[str]): ...
+
+class AnswerGenerator:
+    async def stream(self, question: str, evidence: list): ...
+```
+
+This lets you replace LangChain, provider SDKs or storage without breaking the public endpoint.
+
+## Common mistakes
+
+<Mistakes>
+
+- Streaming before authentication and request limits complete.
+- Treating generated URLs as trustworthy citations.
+- Ignoring client disconnects while the paid model call continues.
+- Sending inconsistent chunks that the frontend cannot parse.
+- Assuming streamed tokens are safe to pass directly into downstream tools.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How would you stream an LLM response safely?" badge="CAREER">
+
+I validate and authenticate before starting the stream, then use a versioned event envelope such as SSE with meta, token, citation, error and done events. Retrieval is scoped by verified identity. I bind citations to retrieved source IDs in server code, handle disconnect cancellation and trace partial failure because the HTTP status cannot reliably change after headers are sent.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Streaming improves delivery experience, not model accuracy or cost.
+- Define typed event semantics instead of sending unstructured token fragments.
+- Complete authentication and basic validation before response headers are sent.
+- Bind citations to server-owned retrieved evidence.
+- Handle mid-stream failure and client disconnect as first-class states.
+
+</Takeaways>
+
+## Primary sources
+
+- [FastAPI: Stream data](https://fastapi.tiangolo.com/advanced/custom-response/#streamingresponse)
+- [Starlette responses: StreamingResponse](https://www.starlette.io/responses/#streamingresponse)
+- [FastAPI: Response headers](https://fastapi.tiangolo.com/advanced/response-headers/)
+

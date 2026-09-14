@@ -70,6 +70,19 @@ export const handbooks: Handbook[] = [
       { title: 'Production RAG', outcome: 'Evaluate, secure, observe and deploy the system.', href: '/rag-application-engineering/05-production-rag-evaluation-security-deployment/' },
     ],
   },
+  {
+    slug: 'fastapi-ai-applications', title: 'FastAPI for AI Applications Handbook', shortTitle: 'FastAPI for AI',
+    audience: 'Python Developers · AI Builders', tone: 'teal', status: 'available',
+    description: 'Build, validate, stream, secure, test and deploy production-ready Python APIs for Generative AI, RAG and agent applications.',
+    promise: 'Turn one Python function into a dependable Enterprise AI Assistant API with clear contracts and production controls.',
+    chapters: [
+      { title: 'What is FastAPI?', outcome: 'Turn Python functions into documented HTTP endpoints.', href: '/fastapi-ai-applications/01-what-is-fastapi-turn-python-into-web-api/' },
+      { title: 'Validation and error handling', outcome: 'Build predictable REST contracts with Pydantic.', href: '/fastapi-ai-applications/02-rest-api-validation-error-handling/' },
+      { title: 'Databases and external services', outcome: 'Persist data, call services and protect configuration.', href: '/fastapi-ai-applications/03-databases-external-services-configuration/' },
+      { title: 'Build and stream a GenAI API', outcome: 'Expose grounded, cited AI responses as a stream.', href: '/fastapi-ai-applications/04-build-stream-generative-ai-api/' },
+      { title: 'Secure, test and deploy', outcome: 'Add authentication, limits, tests, Docker and operations.', href: '/fastapi-ai-applications/05-secure-test-deploy-production-fastapi/' },
+    ],
+  },
 ];
 
 export function getHandbook(slug: string) { return handbooks.find((handbook) => handbook.slug === slug); }

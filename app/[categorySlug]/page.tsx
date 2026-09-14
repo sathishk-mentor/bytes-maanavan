@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { ArrowDown, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, Database, FileSearch, Layers3, Network, Rocket, SearchCheck, Sparkles, Workflow } from 'lucide-react';
+import { ArrowDown, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, Database, FileSearch, Layers3, Network, Rocket, SearchCheck, Server, ShieldCheck, Sparkles, Workflow } from 'lucide-react';
 import { CategoryPageClient } from '@/components/category/CategoryPageClient';
 import { getCategoryBySlug } from '@/lib/categories';
 import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
@@ -56,6 +56,15 @@ const handbookDetails = {
     result: 'An ingest → retrieve → ground → evaluate → deploy workflow',
     keywords: ['RAG tutorial for beginners', 'Retrieval Augmented Generation handbook', 'RAG application with Python', 'LangChain RAG tutorial', 'vector database semantic search', 'production RAG evaluation'],
   },
+  'fastapi-ai-applications': {
+    searchTitle: 'FastAPI for AI Applications Handbook',
+    eyebrow: 'PYTHON TO PRODUCTION AI API',
+    intro: 'Build, secure and deploy production-ready GenAI APIs with Python—from endpoints and Pydantic validation to streamed RAG responses, authentication, testing and Docker.',
+    audience: 'Python developers and practical AI builders',
+    prerequisite: 'Basic Python; no web API experience required',
+    result: 'A request → validate → retrieve → stream → operate workflow',
+    keywords: ['FastAPI tutorial for beginners', 'FastAPI AI application', 'FastAPI GenAI API', 'FastAPI streaming response', 'FastAPI RAG API', 'production FastAPI Docker'],
+  },
 } as const;
 type PublishedCategory = keyof typeof handbookDetails;
 
@@ -101,6 +110,11 @@ function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory 
   if (categorySlug === 'rag-application-engineering') {
     return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated retrieval augmented generation application workflow">
       <div className="langchain-orchestrator"><header><FileSearch/><span><small>RAG APPLICATION</small><strong>Retrieve evidence before answering</strong></span><i>GROUNDED</i></header><div><span><Database/><small>Knowledge</small></span><b>→</b><span><SearchCheck/><small>Retrieve</small></span><b>→</b><span><Layers3/><small>Context</small></span><b>→</b><span><Sparkles/><small>Cited answer</small></span></div><footer><CheckCircle2/><span>Relevant · authorised · traceable</span></footer></div>
+    </div>;
+  }
+  if (categorySlug === 'fastapi-ai-applications') {
+    return <div className="handbook-hero-visual docker-hero-visual" aria-label="Animated FastAPI request to streamed AI response workflow">
+      <div className="docker-pipeline"><header><Server/><span><small>ENTERPRISE AI ASSISTANT API</small><strong>Validate every request. Stream useful evidence.</strong></span><i>200 OK</i></header><div><span><Code2/><small>Client</small></span><b>→</b><span><ShieldCheck/><small>Validate</small></span><b>→</b><span><Database/><small>Retrieve</small></span><b>→</b><span><Sparkles/><small>Stream</small></span></div><footer><Network/><span>Typed · protected · observable</span></footer></div>
     </div>;
   }
   return <div className="handbook-hero-visual fde-hero-visual" aria-label="Animated Forward Deployed Engineer outcome loop">

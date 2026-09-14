@@ -50,13 +50,18 @@ const searchTitles:Record<string,string>={
   '03-embeddings-vector-databases-semantic-search':'Embeddings, Vector Databases and Semantic Search',
   '04-build-complete-rag-application-python-langchain':'Build a RAG Application with Python and LangChain',
   '05-production-rag-evaluation-security-deployment':'Production RAG Evaluation, Security and Deployment',
+  '01-what-is-fastapi-turn-python-into-web-api':'What Is FastAPI? Python Web APIs Explained',
+  '02-rest-api-validation-error-handling':'FastAPI Validation and Error Handling Tutorial',
+  '03-databases-external-services-configuration':'FastAPI Databases and External API Integration',
+  '04-build-stream-generative-ai-api':'Build and Stream a Generative AI API with FastAPI',
+  '05-secure-test-deploy-production-fastapi':'Secure, Test and Deploy FastAPI in Production',
 };
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
@@ -79,6 +84,7 @@ function legacyDestination(categorySlug: string) {
     'cloud-devops':'https://www.maanavan.com/courses/cloud-devops',
     langchain:'/langchain/',
     'rag-application-engineering':'/rag-application-engineering/',
+    'fastapi-ai-applications':'/fastapi-ai-applications/',
     cybersecurity:'https://www.maanavan.com/courses/cybersecurity',
     'case-studies':'/forward-deployed-engineer/',
   };

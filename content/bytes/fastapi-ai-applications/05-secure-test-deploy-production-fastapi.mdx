@@ -1,0 +1,224 @@
+---
+title: "Secure, Test and Deploy a Production FastAPI Application"
+slug: "05-secure-test-deploy-production-fastapi"
+summary: "Protect endpoints, limit expensive AI work, test success and failure paths, containerise the API and operate it safely in the cloud."
+category: "fastapi-ai-applications"
+tags: ["FastAPI authentication", "FastAPI testing", "FastAPI rate limiting", "FastAPI Docker deployment", "production AI API"]
+level: "beginner"
+duration: "28 min"
+updatedAt: "2026-09-14"
+order: 5
+isPopular: false
+---
+
+<ThemeCard title="Practical outcome" badge="FASTAPI HANDBOOK 05">
+
+You will add production boundaries around the Enterprise AI Assistant API and create a release checklist that proves security, contract behaviour and recoverability.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fastapiProduction" />
+
+## Production changes the question
+
+The prototype question is “Does it answer?” The production questions are:
+
+- Who is allowed to ask and which documents may they access?
+- What prevents one user from exhausting model cost?
+- Can success, refusal and provider failure be reproduced in tests?
+- Can the service be observed and rolled back?
+
+## Authenticate, then authorise
+
+Authentication proves identity. Authorisation decides what that identity may do.
+
+```python
+from typing import Annotated
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    claims = verify_token_signature_and_claims(token)
+    if claims is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+        )
+    return User.from_claims(claims)
+```
+
+Token verification should validate signature, issuer, audience, expiry and required claims. Do not merely decode a token and trust its content.
+
+Authorisation happens afterward:
+
+```python
+def require_permission(user: User, permission: str) -> None:
+    if permission not in user.permissions:
+        raise HTTPException(status_code=403, detail="Permission denied")
+```
+
+For RAG, use the verified tenant and groups to filter retrieval before the model sees evidence.
+
+## Limit cost and abuse
+
+AI endpoints can be expensive even when CPU usage is small. Control:
+
+- requests per identity and tenant;
+- concurrent generations;
+- maximum input length and retrieved context;
+- model/token budget per request;
+- upload size and document count; and
+- timeout and retry budget.
+
+Return `429 Too Many Requests` with safe retry guidance. Distributed deployments need a shared limiter rather than memory local to one process.
+
+## Log events, not secrets
+
+Use structured logs:
+
+```python
+logger.info("assistant_request_completed", extra={
+    "request_id": request_id,
+    "tenant_id": user.tenant_id,
+    "route": "/assistant/stream",
+    "latency_ms": latency_ms,
+    "retrieved_count": len(evidence),
+    "model": model_name,
+    "input_tokens": usage.input_tokens,
+    "output_tokens": usage.output_tokens,
+})
+```
+
+Do not log bearer tokens, API keys or complete private documents. Decide whether prompts and answers may be logged, how they are redacted and how long traces are retained.
+
+## Test the public contract
+
+```python
+from fastapi.testclient import TestClient
+from main import app
+
+client = TestClient(app)
+
+def test_health():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "healthy"}
+
+def test_question_rejects_empty_input():
+    response = client.post("/questions", json={"question": "  "})
+    assert response.status_code == 422
+```
+
+Override dependencies so tests do not call a live model:
+
+```python
+def fake_generator():
+    return StubGenerator(answer="Five days", source_ids=["hr-4.2"])
+
+app.dependency_overrides[get_generator] = fake_generator
+```
+
+Test more than the happy path:
+
+| Test | Evidence you need |
+|---|---|
+| Missing/expired token | `401`, no model call |
+| Wrong document scope | `403` or empty retrieval, no leaked text |
+| Oversized prompt | validation failure before provider call |
+| Provider timeout | safe retryable error and trace ID |
+| Invented citation | validator removes or rejects it |
+| Client disconnect | downstream work is cancelled where possible |
+
+## Containerise the application
+
+```dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app ./app
+
+RUN useradd --create-home apiuser
+USER apiuser
+
+EXPOSE 8000
+CMD ["fastapi", "run", "app/main.py", "--port", "8000"]
+```
+
+Pin tested dependency versions, use a small trusted base image, run as a non-root user and scan the final image. Inject secrets at runtime—never use `ENV MODEL_API_KEY=...` in the Dockerfile.
+
+## Deploy the right responsibilities
+
+```text
+load balancer → FastAPI replicas → database/vector store
+                               └→ model provider
+
+document upload → ingestion worker → versioned index
+```
+
+Keep interactive answering and document ingestion separate. A large file should not consume the request worker needed to stream answers.
+
+Configure readiness and liveness carefully. Liveness asks whether the process should be restarted. Readiness asks whether it can safely receive traffic. Do not make every health probe call the paid LLM provider.
+
+## Real-time scenario: a safe release
+
+<Scenario title="Deploy without gambling on production">
+
+CI builds the container, runs unit and API contract tests, scans dependencies and the image, and deploys a new version without immediately sending all traffic. Smoke tests verify health, authentication and a stubbed assistant path. Metrics and error rate are watched during gradual promotion. If quality or latency degrades, traffic returns to the previous version.
+
+</Scenario>
+
+## Production release gate
+
+1. Authentication and document-isolation tests pass.
+2. Request, response and SSE event contracts are versioned and tested.
+3. Provider timeout, retry and circuit behaviour are bounded.
+4. Secrets are injected at runtime and excluded from logs/images.
+5. Cost, latency, error and token metrics are visible.
+6. Container runs without root and passes scanning.
+7. Database/index migrations and rollback are tested.
+
+## Common mistakes
+
+<Mistakes>
+
+- Decoding a JWT without verifying signature and claims.
+- Rate limiting by process memory in a multi-replica deployment.
+- Calling real paid models from every automated test.
+- Baking `.env` files or credentials into the container image.
+- Using one health check that fails whenever any external provider is slow.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How would you productionise a FastAPI AI service?" badge="CAREER">
+
+I verify identity and authorise resource scope before retrieval, enforce request and cost limits, isolate external providers behind timeouts and controlled errors, and log structured operational evidence without secrets. I test contracts and failure paths with dependency overrides, package a non-root container, separate ingestion workers from serving, deploy gradually and keep a tested rollback path.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Authentication identifies; authorisation limits actions and data.
+- AI-specific limits must include concurrency, context and token cost.
+- Dependency overrides keep API tests deterministic and affordable.
+- Containers should receive secrets only at runtime and run without root.
+- Production deployment needs observability, gradual promotion and rollback.
+
+</Takeaways>
+
+## Primary sources
+
+- [FastAPI security tutorials](https://fastapi.tiangolo.com/tutorial/security/)
+- [FastAPI testing](https://fastapi.tiangolo.com/tutorial/testing/)
+- [FastAPI in containers](https://fastapi.tiangolo.com/deployment/docker/)
+- [FastAPI deployment concepts](https://fastapi.tiangolo.com/deployment/concepts/)
+

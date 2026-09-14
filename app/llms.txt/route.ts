@@ -14,6 +14,7 @@ export async function GET() {
 - [The Docker Handbook](https://bytes.maanavan.com/cloud-devops/): Containers, Python application packaging, Compose and Generative AI deployment.
 - [LangChain for GenAI and AI Agents Handbook](https://bytes.maanavan.com/langchain/): Practical model integration, RAG, agents, memory, observability and Docker deployment with Python.
 - [The RAG Application Engineering Handbook](https://bytes.maanavan.com/rag-application-engineering/): Document preparation, semantic retrieval, cited answers, evaluation, security and deployment.
+- [FastAPI for AI Applications Handbook](https://bytes.maanavan.com/fastapi-ai-applications/): Python APIs, validation, databases, streamed GenAI responses, authentication, testing and Docker deployment.
 
 ## Published Bytes
 

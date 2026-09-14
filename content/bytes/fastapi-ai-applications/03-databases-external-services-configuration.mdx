@@ -1,0 +1,187 @@
+---
+title: "Connect FastAPI with Databases and External Services"
+slug: "03-databases-external-services-configuration"
+summary: "Persist conversations, call model and retrieval services safely, and keep routes, dependencies, timeouts and secrets under control."
+category: "fastapi-ai-applications"
+tags: ["FastAPI database tutorial", "FastAPI dependency injection", "Python external API", "Pydantic settings", "FastAPI secrets"]
+level: "beginner"
+duration: "24 min"
+updatedAt: "2026-09-14"
+order: 3
+isPopular: false
+---
+
+<ThemeCard title="Practical outcome" badge="FASTAPI HANDBOOK 03">
+
+You will persist assistant conversations, call external AI services with bounded failure handling and keep configuration outside application code.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fastapiServices" />
+
+## Keep the route thin
+
+An early prototype often puts SQL, API calls, prompt construction and response formatting inside one route. It works until you need to test, retry or replace one dependency.
+
+A clearer design assigns one responsibility to each layer:
+
+```text
+route → application service → repository
+                         └──→ external provider client
+```
+
+- **Route:** HTTP input, dependency wiring and response.
+- **Service:** use-case workflow and business decisions.
+- **Repository:** persistent data operations.
+- **Provider client:** external API contract, timeout and error translation.
+
+## Configure the application safely
+
+```python
+from functools import lru_cache
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+class Settings(BaseSettings):
+    database_url: str
+    model_api_key: str
+    model_timeout_seconds: float = 20.0
+    environment: str = "development"
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
+```
+
+Use `.env` only for local development and exclude it from Git. In deployed environments, inject secrets through the platform or a secret manager.
+
+## Use dependencies to make boundaries visible
+
+```python
+from typing import Annotated
+from fastapi import Depends
+
+SettingsDep = Annotated[Settings, Depends(get_settings)]
+
+@app.get("/runtime")
+def runtime_info(settings: SettingsDep):
+    return {"environment": settings.environment}
+```
+
+Dependencies can provide settings, database sessions, authenticated users and services. They also make tests easier because FastAPI can override them.
+
+## Persist conversations through a repository
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Conversation:
+    id: str
+    user_id: str
+    title: str
+
+class ConversationRepository:
+    def create(self, conversation: Conversation) -> Conversation:
+        # Execute parameterised database work here.
+        return conversation
+
+    def find_for_user(self, conversation_id: str, user_id: str):
+        # Scope every query to the authorised user or tenant.
+        ...
+```
+
+The repository contract keeps storage decisions away from HTTP. Whether you use SQLAlchemy, SQLModel or a direct database driver, manage one session per request or explicit unit of work and close it reliably.
+
+## Call an external service with limits
+
+```python
+import httpx
+
+class ModelProvider:
+    def __init__(self, api_key: str, timeout: float):
+        self.api_key = api_key
+        self.timeout = timeout
+
+    async def generate(self, prompt: str) -> str:
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            response = await client.post(
+                "https://provider.example/v1/generate",
+                headers={"Authorization": f"Bearer {self.api_key}"},
+                json={"prompt": prompt},
+            )
+            response.raise_for_status()
+            return response.json()["text"]
+```
+
+Production clients normally reuse connection pools rather than creating a client per call. The important beginner mental model is explicit timeout, authentication, status check and controlled response parsing.
+
+## Translate provider failure at the boundary
+
+Do not leak a vendor’s error body to your API consumer. Translate it into your application language:
+
+| Provider failure | API decision |
+|---|---|
+| Timeout | Retry within a strict budget or return `503` |
+| Rate limit | Respect backoff; return `429` or `503` based on ownership |
+| Authentication rejected | Alert configuration owner; return safe `503` |
+| Invalid provider response | Record request ID; fail validation safely |
+
+Retry only operations that are safe to repeat. Use exponential backoff with jitter and a maximum attempt/time budget.
+
+## Real-time scenario: save before generating
+
+<Scenario title="A recoverable assistant request">
+
+The API validates a question, creates a request record with status `pending`, calls retrieval and the model, then stores the final answer and citation IDs. If the provider times out, the request becomes `failed_retryable` with a safe reason. The user receives a request ID instead of losing all evidence of the attempt.
+
+</Scenario>
+
+## Async does not make blocking work disappear
+
+Use `async def` when the libraries you call support awaiting network or database I/O. A blocking library inside an async route can still block the event loop. CPU-heavy document processing and long ingestion jobs usually belong in a worker rather than the request process.
+
+## Common mistakes
+
+<Mistakes>
+
+- Opening a new provider connection without timeout on every request.
+- Hardcoding database URLs or model keys in Python files.
+- Sharing one unrestricted database query across tenants.
+- Retrying every error, including invalid requests and non-idempotent writes.
+- Placing long PDF ingestion inside the interactive answer endpoint.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How do you structure a FastAPI service?" badge="CAREER">
+
+I keep route handlers focused on HTTP and inject application services. Services coordinate the use case, repositories own persistence and provider clients own external contracts, timeouts and error translation. Configuration comes from validated settings and deployed secrets. This separation makes failure handling, testing and provider replacement much safer.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Routes coordinate HTTP; services and adapters own application work.
+- Inject configuration and dependencies so they are explicit and replaceable.
+- Scope database operations by verified user or tenant identity.
+- Every external call needs a timeout and controlled error translation.
+- Move long-running ingestion or CPU work away from interactive requests.
+
+</Takeaways>
+
+## Primary sources
+
+- [FastAPI: Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/)
+- [FastAPI: SQL databases](https://fastapi.tiangolo.com/tutorial/sql-databases/)
+- [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
+- [HTTPX async support](https://www.python-httpx.org/async/)
+

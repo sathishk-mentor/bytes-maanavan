@@ -1,0 +1,176 @@
+---
+title: "What Is FastAPI? Turn Python into a Web API"
+slug: "01-what-is-fastapi-turn-python-into-web-api"
+summary: "Understand APIs, endpoints, HTTP methods, requests and responses by exposing a simple Python capability through FastAPI."
+category: "fastapi-ai-applications"
+tags: ["FastAPI tutorial for beginners", "Python web API", "FastAPI endpoints", "REST API basics", "AI backend Python"]
+level: "beginner"
+duration: "19 min"
+updatedAt: "2026-09-14"
+order: 1
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="FASTAPI HANDBOOK 01">
+
+You will understand the complete request-response journey and create the first endpoint for our **Enterprise AI Assistant API**.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fastapiFoundation" />
+
+## Start with a real product problem
+
+You have a useful Python function that answers a question. It works on your laptop, but a web interface, mobile app or another service cannot call a function inside your local file.
+
+A **web API** gives that capability a network-accessible contract. A client sends an HTTP request; the API validates it, runs Python code and returns an HTTP response.
+
+```text
+Web or mobile client → HTTP request → FastAPI → Python function → JSON response
+```
+
+FastAPI is a Python framework for building APIs using standard type hints. Those declarations power input parsing, validation, generated OpenAPI documentation and editor assistance.
+
+## The five parts of an endpoint
+
+| Part | Example | Meaning |
+|---|---|---|
+| Method | `GET` | What kind of operation is requested |
+| Path | `/health` | Which resource or capability |
+| Input | query, path, header or JSON body | Data supplied by the client |
+| Output | JSON body | Data returned by the server |
+| Status | `200 OK` | Machine-readable outcome |
+
+An **endpoint** is not only a Python function. It is this complete public contract.
+
+## Create the first application
+
+```bash
+python -m venv .venv
+# Activate the environment, then install:
+pip install "fastapi[standard]"
+```
+
+Create `main.py`:
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI(
+    title="Enterprise AI Assistant API",
+    version="0.1.0",
+)
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+```
+
+Run it locally:
+
+```bash
+fastapi dev main.py
+```
+
+Open `/docs` to see the interactive API documentation generated from the OpenAPI contract. Use it to explore during development—not as proof that the business logic is correct.
+
+## Trace the request precisely
+
+When the browser requests `GET /health`:
+
+1. The HTTP server receives the network request.
+2. FastAPI compares the method and path with registered routes.
+3. It calls `health_check()`.
+4. The returned dictionary is serialised as JSON.
+5. The server responds with status `200` and a JSON content type.
+
+```http
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"status":"healthy"}
+```
+
+## Add a path parameter
+
+```python
+@app.get("/documents/{document_id}")
+def get_document(document_id: int):
+    return {
+        "document_id": document_id,
+        "title": "Employee Handbook",
+    }
+```
+
+In `/documents/42`, `42` is part of the resource identity. Because the annotation is `int`, `/documents/abc` is rejected before your function runs.
+
+## Add a query parameter
+
+```python
+@app.get("/documents")
+def list_documents(limit: int = 10, department: str | None = None):
+    return {"limit": limit, "department": department, "items": []}
+```
+
+`/documents?limit=5&department=hr` filters or controls the collection. Query parameters are normally better for search, filtering, sorting and pagination than resource identity.
+
+## Choose the HTTP method by intent
+
+| Method | Typical intent | AI assistant example |
+|---|---|---|
+| `GET` | Read without changing state | Check health or fetch a conversation |
+| `POST` | Create or start work | Submit a question |
+| `PUT` | Replace a resource | Replace document metadata |
+| `PATCH` | Partially update | Rename a conversation |
+| `DELETE` | Remove | Delete an indexed document |
+
+Do not use `GET /ask?question=...` for private prompts. URLs can appear in browser history, proxy logs and analytics. A request body is still sensitive, but it avoids placing the prompt in the URL.
+
+## Real-time analogy: a restaurant counter
+
+<Scenario title="The menu is the API contract">
+
+The menu lists what you can order, the name of each item and what you receive. Your order is the request. The counter routes it to the correct kitchen station. The prepared dish is the response, and the receipt communicates the outcome.
+
+Walking into the kitchen and calling a private Python function directly would tightly couple the customer to internal operations. The counter creates a stable boundary even when the kitchen changes.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Treating a route function as the complete API contract.
+- Using `GET` for operations that create data or trigger expensive AI work.
+- Returning `200 OK` for every outcome, including failures.
+- Placing API keys, tokens or private prompts in URLs.
+- Assuming generated documentation replaces API tests.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="Why use FastAPI for an AI backend?" badge="CAREER">
+
+FastAPI lets me express HTTP contracts with standard Python type hints and integrates validation, dependency injection, OpenAPI documentation and asynchronous request handling. For AI applications, it provides a clear boundary around model, RAG and agent capabilities while allowing me to validate input, stream output and secure each endpoint.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- An API makes a capability available through a defined network contract.
+- An endpoint includes method, path, input, output, status and failure behaviour.
+- Type annotations help FastAPI parse and validate incoming values.
+- Paths identify resources; query parameters commonly filter or control reads.
+- A health endpoint proves reachability, not full application health.
+
+</Takeaways>
+
+## Primary sources
+
+- [FastAPI: First steps](https://fastapi.tiangolo.com/tutorial/first-steps/)
+- [FastAPI: Path parameters](https://fastapi.tiangolo.com/tutorial/path-params/)
+- [FastAPI: Query parameters](https://fastapi.tiangolo.com/tutorial/query-params/)
+

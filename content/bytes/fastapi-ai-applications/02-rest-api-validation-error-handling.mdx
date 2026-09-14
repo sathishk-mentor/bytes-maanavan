@@ -1,0 +1,193 @@
+---
+title: "Build REST APIs with Validation and Error Handling"
+slug: "02-rest-api-validation-error-handling"
+summary: "Create reliable GET and POST contracts with Pydantic validation, response models, HTTP status codes and useful errors."
+category: "fastapi-ai-applications"
+tags: ["FastAPI Pydantic validation", "FastAPI POST endpoint", "FastAPI error handling", "REST API status codes", "response model"]
+level: "beginner"
+duration: "23 min"
+updatedAt: "2026-09-14"
+order: 2
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="FASTAPI HANDBOOK 02">
+
+You will define a trustworthy `/questions` contract that rejects unsafe input, returns predictable output and explains recoverable errors to clients.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fastapiValidation" />
+
+## Every request is untrusted
+
+The client may send missing fields, the wrong type, an empty question or a document scope it should not control. Validation converts unknown network data into a known application object—or stops the request before business logic runs.
+
+## Define the request model
+
+```python
+from pydantic import BaseModel, Field
+
+class QuestionRequest(BaseModel):
+    question: str = Field(min_length=3, max_length=2000)
+    conversation_id: str | None = None
+    stream: bool = False
+```
+
+FastAPI reads JSON into this model. If validation succeeds, the route receives a `QuestionRequest`. If it fails, FastAPI returns a structured validation error.
+
+```python
+from fastapi import FastAPI, status
+
+app = FastAPI()
+
+@app.post("/questions", status_code=status.HTTP_202_ACCEPTED)
+def submit_question(payload: QuestionRequest):
+    return {
+        "request_id": "req_123",
+        "status": "accepted",
+        "question": payload.question,
+    }
+```
+
+## Validate meaning, not only data type
+
+A string containing spaces technically has the right type but no useful question.
+
+```python
+from pydantic import BaseModel, Field, field_validator
+
+class QuestionRequest(BaseModel):
+    question: str = Field(min_length=3, max_length=2000)
+    conversation_id: str | None = None
+
+    @field_validator("question")
+    @classmethod
+    def question_must_have_content(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("question must contain visible text")
+        return cleaned
+```
+
+Validation should establish format and safe boundaries. Authorisation and domain decisions still belong in application services.
+
+## Control the response contract
+
+```python
+class Citation(BaseModel):
+    source_id: str
+    title: str
+    page: int | None = None
+
+class AnswerResponse(BaseModel):
+    request_id: str
+    answer: str
+    citations: list[Citation]
+    insufficient_evidence: bool
+
+@app.post("/answers", response_model=AnswerResponse)
+def answer_question(payload: QuestionRequest):
+    return build_answer(payload)
+```
+
+A response model documents the output and prevents accidental fields from escaping. For example, a database object may include internal notes or provider payloads that clients should never receive.
+
+## Use status codes to communicate outcomes
+
+| Status | Meaning in this project |
+|---|---|
+| `200 OK` | Answer returned successfully |
+| `201 Created` | New conversation or document created |
+| `202 Accepted` | Long-running ingestion accepted |
+| `400 Bad Request` | Request is syntactically valid but violates a business rule |
+| `401 Unauthorized` | Authentication is missing or invalid |
+| `403 Forbidden` | Identity is known but lacks permission |
+| `404 Not Found` | Requested resource does not exist in the caller’s scope |
+| `422 Unprocessable Content` | Request validation failed |
+| `429 Too Many Requests` | Rate or cost limit exceeded |
+| `503 Service Unavailable` | Required provider is temporarily unavailable |
+
+## Return useful application errors
+
+```python
+from fastapi import HTTPException, status
+
+@app.get("/conversations/{conversation_id}")
+def get_conversation(conversation_id: str):
+    conversation = repository.find(conversation_id)
+    if conversation is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "conversation_not_found",
+                "message": "The conversation could not be found.",
+            },
+        )
+    return conversation
+```
+
+Give clients a stable error code for program logic and a safe message for people. Do not expose stack traces, SQL statements, model prompts or provider secrets.
+
+## Create a consistent error envelope
+
+```json
+{
+  "error": {
+    "code": "insufficient_evidence",
+    "message": "No authorised source can answer this question.",
+    "request_id": "req_123",
+    "retryable": false
+  }
+}
+```
+
+The request ID connects the client’s error with server logs. `retryable` helps a client decide whether another attempt makes sense.
+
+## Real-time scenario: invalid AI question
+
+<Scenario title="Reject early, explain clearly">
+
+A mobile client sends a 12,000-character prompt and a field named `access_group: finance`. The Pydantic model rejects the oversized prompt. The server ignores caller-provided access claims and derives scope from authenticated identity. The API returns a clear validation error without calling retrieval or the LLM—saving cost and reducing risk.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Accepting unrestricted dictionaries instead of explicit request models.
+- Returning raw database or provider objects to the client.
+- Catching every exception and converting it to `200 OK`.
+- Sending internal exception messages and stack traces over the API.
+- Treating client-provided roles or tenant IDs as authorised identity.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="Pydantic validation versus business validation" badge="CAREER">
+
+Pydantic validates and parses the shape of incoming data: types, lengths and field rules. Business validation checks domain state, such as whether a conversation exists or a document is active. Authorisation checks whether this identity may perform the operation. I keep those concerns separate so errors and tests remain precise.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Validate untrusted network input before expensive AI work begins.
+- Request models define accepted input; response models define exposed output.
+- Use status codes and stable error codes to help clients recover.
+- Never leak internal exceptions or secret provider payloads.
+- Authentication claims must come from a verified identity, not the request body.
+
+</Takeaways>
+
+## Primary sources
+
+- [FastAPI: Request body](https://fastapi.tiangolo.com/tutorial/body/)
+- [FastAPI: Response model](https://fastapi.tiangolo.com/tutorial/response-model/)
+- [FastAPI: Handling errors](https://fastapi.tiangolo.com/tutorial/handling-errors/)
+- [Pydantic models](https://docs.pydantic.dev/latest/concepts/models/)
+

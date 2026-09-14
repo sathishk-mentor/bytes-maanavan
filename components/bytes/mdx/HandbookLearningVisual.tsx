@@ -92,6 +92,26 @@ const visuals = {
     {icon:TestTube2,title:'Evaluate',note:'Retrieval + answer'}, {icon:ShieldCheck,title:'Protect',note:'Data + instructions'},
     {icon:Eye,title:'Observe',note:'Latency + cost'}, {icon:Repeat2,title:'Improve',note:'Evidence-driven'},
   ], remember:'A production RAG system must be relevant, grounded, authorised, observable and recoverable.' },
+  fastapiFoundation: { eyebrow:'HTTP REQUEST LIFECYCLE', title:'FastAPI turns a typed Python function into a web contract', steps:[
+    {icon:Users,title:'Client request',note:'Method + URL'}, {icon:Network,title:'Route',note:'Match endpoint'},
+    {icon:ShieldCheck,title:'Validate',note:'Types + rules'}, {icon:Server,title:'JSON response',note:'Status + data'},
+  ], remember:'An endpoint is a public contract: method, path, input, output and failure behaviour.' },
+  fastapiValidation: { eyebrow:'SAFE REST CONTRACT', title:'Reject bad input before business logic runs', steps:[
+    {icon:MessageSquareText,title:'Request body',note:'Untrusted JSON'}, {icon:Braces,title:'Pydantic model',note:'Validate + parse'},
+    {icon:Wrench,title:'Service logic',note:'Perform work'}, {icon:BadgeCheck,title:'Typed response',note:'Predictable output'},
+  ], remember:'Validation protects the application boundary; meaningful errors help clients recover.' },
+  fastapiServices: { eyebrow:'APPLICATION BOUNDARIES', title:'Keep routes thin and dependencies explicit', steps:[
+    {icon:Users,title:'API route',note:'HTTP contract'}, {icon:Layers3,title:'Service',note:'Business logic'},
+    {icon:Database,title:'Repository',note:'Persistent data'}, {icon:Cloud,title:'External API',note:'Bounded call'},
+  ], remember:'The route coordinates work; it should not contain database, provider and configuration details.' },
+  fastapiStreaming: { eyebrow:'STREAMED AI RESPONSE', title:'Deliver useful progress without hiding the evidence contract', steps:[
+    {icon:MessageSquareText,title:'Question',note:'Validated input'}, {icon:SearchCheck,title:'Retrieve',note:'Grounding chunks'},
+    {icon:Sparkles,title:'LLM stream',note:'Incremental tokens'}, {icon:BadgeCheck,title:'Citations',note:'Final metadata'},
+  ], remember:'Streaming changes delivery timing, not authentication, retrieval or citation requirements.' },
+  fastapiProduction: { eyebrow:'PRODUCTION RELEASE PATH', title:'Protect and prove the API before deployment', steps:[
+    {icon:ShieldCheck,title:'Authenticate',note:'Identity + scope'}, {icon:Gauge,title:'Limit + observe',note:'Cost + reliability'},
+    {icon:TestTube2,title:'Test contract',note:'Success + failure'}, {icon:Rocket,title:'Docker deploy',note:'Repeatable runtime'},
+  ], remember:'A production API is secure, testable, observable and recoverable—not merely reachable.' },
 } satisfies Record<string, Visual>;
 
 export type HandbookLearningVisualVariant = keyof typeof visuals;
