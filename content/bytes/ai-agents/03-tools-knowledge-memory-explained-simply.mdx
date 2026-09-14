@@ -1,0 +1,166 @@
+---
+title: "Tools, Knowledge and Memory Explained Simply"
+slug: "03-tools-knowledge-memory-explained-simply"
+summary: "Understand how agents use tools, retrieve trusted knowledge, remember relevant information and stay within policy boundaries."
+category: "ai-agents"
+tags: ["AI agent tools", "AI agent memory", "AI agent knowledge", "RAG for agents", "MCP for beginners"]
+level: "beginner"
+duration: "17 min"
+updatedAt: "2026-09-14"
+order: 3
+---
+
+<ThemeCard title="What you will learn" badge="AI AGENTS HANDBOOK 03">
+
+You will be able to distinguish tools, knowledge and memory, explain why each needs a different control, and design the information boundaries for an agent without giving it unnecessary access.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="agentContext" />
+
+## The 60-second explanation
+
+An AI model can generate language, but an agent needs additional capabilities to complete real work:
+
+- **Tools** let it inspect or change something outside the model.
+- **Knowledge** gives it relevant, trusted evidence for the current task.
+- **Memory** preserves useful state across steps or conversations.
+- **Policy** decides what may be accessed, remembered or changed.
+
+These layers should remain separate. Connecting a tool does not make every operation safe. Retrieving a document does not make it true or current. Remembering information does not create permission to store it forever.
+
+## A simple workplace analogy
+
+Imagine a new project coordinator:
+
+| Agent layer | Workplace equivalent | Example |
+|---|---|---|
+| Tool | Application or equipment | Calendar, email, CRM, calculator |
+| Knowledge | Approved reference material | Policy, project plan, product catalogue |
+| Working memory | Notes for the current task | Which sources were checked |
+| Long-term memory | Retained preference or history | Preferred report format |
+| Policy | Role, access and operating rules | Read only; do not send without approval |
+
+The coordinator may know how to use the finance system but still lack permission to approve a payment. Agents need the same separation between capability and authority.
+
+## Tools: how an agent reaches the outside world
+
+A tool is a controlled interface to a system or function. Common agent tools include web search, file retrieval, database queries, calendars, email, ticketing systems, calculators and internal business applications.
+
+Tools should have narrow descriptions and validated inputs. “Manage email” is broad. Separate capabilities such as `search_approved_email`, `draft_reply` and `send_approved_reply` create clearer safety boundaries.
+
+<Scenario title="The calculator is safer than guessing">
+
+An agent preparing a sales summary should use a calculator or validated spreadsheet formula for totals rather than rely on language-model arithmetic. The model can explain the result; the deterministic tool should calculate it.
+
+</Scenario>
+
+## Knowledge: evidence provided when it is needed
+
+Knowledge may come from approved documents, a company wiki, a product catalogue, a database or a retrieval system. A common pattern is Retrieval-Augmented Generation (RAG):
+
+1. receive the question;
+2. search authorised sources;
+3. retrieve relevant passages;
+4. give those passages to the model;
+5. generate an answer with citations.
+
+Knowledge should carry source, date, ownership and access metadata. The agent must be able to say, “I could not find approved evidence,” instead of filling the gap with a plausible claim.
+
+## Memory: useful continuity, not unlimited recording
+
+Memory has several forms:
+
+- **Step memory:** the latest tool result needed for the next action.
+- **Session memory:** relevant context during one conversation or task.
+- **Long-term memory:** explicitly retained preferences or facts for future sessions.
+
+For a travel assistant, remembering the selected travel dates during the task is necessary. Keeping passport details indefinitely is a different and much riskier decision.
+
+Good memory design asks:
+
+- Is this information necessary for a future task?
+- Did the user expect it to be retained?
+- Is it sensitive or regulated?
+- How can the user inspect, correct or delete it?
+- When should it expire?
+
+**Simple Tanglish:** எல்லாத்தையும் memory-ல save பண்ணுவது smart அல்ல. தேவையான context மட்டும், clear permission-உடன் retain பண்ண வேண்டும்.
+
+## MCP in plain language
+
+The Model Context Protocol (MCP) is an open standard for connecting AI applications to external data sources and tools through a common interface. A simple analogy is a universal connector: instead of building a completely different integration pattern for every system, an application can discover and use capabilities exposed in a consistent way.
+
+MCP does not automatically make a connection safe. Identity, permission, input validation, approval and audit logging still belong to the application and the connected service.
+
+## Design the minimum access set
+
+For a Personal Workday Assistant that prepares a weekly update:
+
+| Need | Minimum capability | Avoid initially |
+|---|---|---|
+| Find completed work | Read approved task board | Edit or delete tasks |
+| Check decisions | Search selected meeting notes | Search every company document |
+| Prepare update | Create a draft | Publish directly to all channels |
+| Remember format | Store preferred headings | Retain confidential project content |
+
+Start with read-only access and draft output. Add write actions only after the narrow workflow is proven and the approval model is clear.
+
+## Prompt: create an access map
+
+<PromptBox label="Map tools, knowledge and memory">
+
+I want an AI agent to help with: [describe one workflow]
+
+Create a table with:
+- Required capability
+- Tool or data source
+- Read or write access
+- Information the agent may retrieve
+- Information it may remember during the task
+- Information it must never retain
+- Human approval required
+- Failure or access-denied behaviour
+
+Apply least privilege. Remove any access that is not necessary for the stated outcome.
+
+</PromptBox>
+
+## Common mistakes
+
+<Mistakes>
+
+- Giving one broad connector both read and destructive write access.
+- Treating retrieved text as trusted without checking its source and date.
+- Storing sensitive information because it “might be useful later.”
+- Mixing one user’s memory or documents with another user’s session.
+- Assuming MCP or any connector automatically provides business permission.
+- Letting the model invent tool names, parameters or successful results.
+
+</Mistakes>
+
+## Interview or discussion bit
+
+<ThemeCard title="How are tools, knowledge and memory different?" badge="BEGINNER ANSWER">
+
+**Strong answer:** Tools let an agent perform operations, knowledge supplies relevant evidence for the current task, and memory preserves useful state across steps or sessions. Policy controls which tools, sources and memories are permitted. Each layer needs separate access, validation and retention rules.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Tools create capability; permission determines authority.
+- Knowledge should be relevant, authorised, current and traceable.
+- Working memory and long-term memory solve different problems.
+- Retain the minimum information for the minimum necessary time.
+- MCP standardises connections but does not replace security or governance.
+
+</Takeaways>
+
+## Primary sources
+
+- [Model Context Protocol: Introduction](https://modelcontextprotocol.io/docs/getting-started/intro)
+- [Google Cloud: What is Retrieval-Augmented Generation?](https://cloud.google.com/use-cases/retrieval-augmented-generation)
+- [NIST: AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)

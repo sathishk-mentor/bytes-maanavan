@@ -116,6 +116,22 @@ const visuals = {
     {icon:MessageSquareText,title:'Goal',note:'Desired outcome'}, {icon:ListChecks,title:'Plan',note:'Choose next step'},
     {icon:Wrench,title:'Use tool',note:'Read or act'}, {icon:CheckCircle2,title:'Check',note:'Stop or continue'},
   ], remember:'A chatbot responds once; an agent can choose and repeat actions until the goal is complete or it must ask for help.' },
+  agentWorkflow: { eyebrow:'GOAL → VERIFIED OUTCOME', title:'The agent observes each result before choosing the next step', steps:[
+    {icon:MessageSquareText,title:'Understand goal',note:'Outcome + limits'}, {icon:ListChecks,title:'Choose step',note:'Reason from state'},
+    {icon:Wrench,title:'Act with tool',note:'Bounded operation'}, {icon:SearchCheck,title:'Observe + check',note:'Continue or stop'},
+  ], remember:'An agent should not follow a rigid plan blindly; every tool result changes what it knows and what it should do next.' },
+  agentContext: { eyebrow:'WHAT THE AGENT CAN USE', title:'Keep capability, evidence and continuity as separate layers', steps:[
+    {icon:Wrench,title:'Tools',note:'Read or act'}, {icon:FileSearch,title:'Knowledge',note:'Trusted evidence'},
+    {icon:Database,title:'Memory',note:'Relevant state'}, {icon:ShieldCheck,title:'Policy',note:'Permission boundary'},
+  ], remember:'A tool performs an operation, knowledge supports an answer, memory carries useful state, and policy limits all three.' },
+  agentNoCode: { eyebrow:'PERSONAL WORKDAY ASSISTANT', title:'Build one narrow workflow before adding more autonomy', steps:[
+    {icon:ClipboardCheck,title:'Define brief',note:'Goal + done'}, {icon:FileSearch,title:'Connect source',note:'Authorised data'},
+    {icon:MessageSquareText,title:'Draft result',note:'Structured output'}, {icon:Users,title:'Human approval',note:'Review before send'},
+  ], remember:'A reliable no-code agent starts with one repeatable outcome, one trusted source and one visible approval gate.' },
+  agentSafety: { eyebrow:'SAFE ACTION PATH', title:'Risk determines how much independence the agent receives', steps:[
+    {icon:KeyRound,title:'Limit access',note:'Least privilege'}, {icon:ShieldCheck,title:'Apply rules',note:'Allow + deny'},
+    {icon:Users,title:'Request approval',note:'High-impact action'}, {icon:Eye,title:'Log + review',note:'Trace outcome'},
+  ], remember:'The safest agent is not the one that never acts; it is the one whose actions are bounded, reviewable and reversible.' },
   javaFoundation: { eyebrow:'MODERN JAVA MENTAL MODEL', title:'Turn a business rule into a readable domain model', steps:[
     {icon:MessageSquareText,title:'Requirement',note:'Policy rule'}, {icon:Braces,title:'Types + records',note:'Model data'},
     {icon:Code2,title:'Service method',note:'Apply behaviour'}, {icon:TestTube2,title:'Test + review',note:'Prove intent'},

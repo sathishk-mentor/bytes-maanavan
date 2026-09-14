@@ -1,0 +1,169 @@
+---
+title: "How an AI Agent Works: Goal, Reasoning, Tools and Actions"
+slug: "02-how-an-ai-agent-works-goal-reasoning-tools-actions"
+summary: "Learn how an agent receives a goal, chooses steps, uses tools, performs actions and checks whether the work is complete."
+category: "ai-agents"
+tags: ["how AI agents work", "AI agent workflow", "agent reasoning", "AI agent tools", "agentic AI for beginners"]
+level: "beginner"
+duration: "16 min"
+updatedAt: "2026-09-14"
+order: 2
+isPopular: true
+---
+
+<ThemeCard title="What you will learn" badge="AI AGENTS HANDBOOK 02">
+
+You will be able to trace an agent from a user goal to a checked outcome, explain what “reasoning” means without treating it as magic, and identify the points where the agent should continue, retry, stop or ask a person.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="agentWorkflow" />
+
+## The 60-second explanation
+
+An AI agent works in a loop. It receives a **goal**, examines the information available, chooses a suitable **next step**, uses an authorised **tool**, observes the result and decides what to do next. The loop ends when the completion criteria are satisfied or a stopping rule is reached.
+
+This is different from a fixed automation. A traditional workflow may always execute steps A, B and C. An agent may choose B after A, retry A when data is missing, or ask a person when the result creates risk.
+
+The agent is not “thinking like a human.” It is using a model plus application rules and current evidence to select an action. Reliable agent design makes this process constrained and testable.
+
+## One request, six responsibilities
+
+Consider: **“Prepare tomorrow’s customer meeting brief using our approved project information.”**
+
+| Responsibility | Question the system must answer | Example |
+|---|---|---|
+| Goal | What outcome is expected? | A concise meeting brief |
+| Context | What limits and facts matter? | Customer name, meeting time, approved sources |
+| Reasoning | What is the best next step now? | Find the latest status update first |
+| Tool | Which capability can perform it? | Search project documents |
+| Action | What operation should run? | Read the latest authorised document |
+| Check | Is the result complete and acceptable? | Agenda, open issues and decisions are present |
+
+If no approved source contains the latest status, the agent should not invent it. It should mark the gap and request help.
+
+## Goal: define the outcome, not a vague activity
+
+“Help with my meeting” is too broad. A useful goal states the deliverable, boundaries and definition of done:
+
+> Prepare a one-page brief for tomorrow’s Acme review. Use only the approved account notes and project-status folder. Include the meeting objective, three recent developments, open risks and decisions required. Cite every source. Do not send the brief.
+
+The goal gives the agent room to organise work but removes unsafe ambiguity. It also makes evaluation possible.
+
+## Reasoning: choosing the next useful step
+
+In agent systems, reasoning means using the current goal and observations to select the next action. It may include:
+
+- breaking a large outcome into smaller tasks;
+- selecting the right source or tool;
+- comparing a result with the completion criteria;
+- recovering from an expected failure;
+- deciding that human input is required.
+
+Reasoning is not automatically reliable. The application should constrain the available actions, validate tool inputs and check results. For sensitive workflows, store a short action rationale rather than exposing or depending on hidden model reasoning.
+
+## Tools and actions are not the same
+
+A **tool** is a capability made available to the agent. An **action** is one specific use of that capability.
+
+| Tool | Possible read action | Possible write action |
+|---|---|---|
+| Calendar | Check availability | Create or cancel an event |
+| Email | Read an approved thread | Send a message |
+| Document service | Search policies | Edit or delete a file |
+| CRM | Read account status | Change an opportunity stage |
+
+Read and write operations must not share the same approval assumption. An agent allowed to inspect a calendar is not automatically allowed to book a meeting.
+
+## Observation turns an action into a loop
+
+After every tool call, the agent receives an observation: results, an error, a confirmation or an empty response. That observation changes the next step.
+
+<Scenario title="Appointment scheduling with changing information">
+
+The goal is to find a 30-minute appointment this week. The first calendar search returns no common slot. A good agent does not repeatedly run the same search. It may check whether the user allowed a wider time window, suggest two alternatives, or ask which constraint can change. If a slot becomes unavailable before confirmation, it must recheck rather than send an outdated option.
+
+**Simple Tanglish:** Result கிடைக்கவில்லை என்றால் agent guess பண்ணக் கூடாது. Constraint மாற்றலாமா என்று கேட்க வேண்டும்.
+
+</Scenario>
+
+## Completion and stopping rules
+
+An agent needs both a definition of **done** and reasons to **stop**.
+
+Completion criteria for the meeting brief could be:
+
+- the correct customer and meeting date are confirmed;
+- every required section is present;
+- factual claims are linked to approved sources;
+- missing information is visibly labelled;
+- the draft is saved but not sent.
+
+Stopping rules could be:
+
+- a required source is unavailable;
+- the user’s identity or permission cannot be verified;
+- tool calls fail repeatedly;
+- sources contradict each other;
+- the next action would send, pay, delete or change access without approval.
+
+## Prompt: turn a request into an agent workflow
+
+<PromptBox label="Design the goal-to-action loop">
+
+Convert the work request below into a safe beginner-friendly AI agent workflow.
+
+Work request: [paste the request]
+
+Return:
+1. Clear goal and definition of done
+2. Required information
+3. Steps the agent may choose
+4. Tool needed for each step
+5. Expected observation after each action
+6. Retry limit
+7. Human approval points
+8. Stop-and-ask conditions
+
+Do not assume access to any system that I have not explicitly authorised.
+
+</PromptBox>
+
+## Common mistakes
+
+<Mistakes>
+
+- Giving the agent a task but no completion criteria.
+- Treating the first generated plan as fixed even when observations change.
+- Allowing a tool call without validating its inputs and output.
+- Retrying forever when the source or service is unavailable.
+- Confusing a fluent explanation with evidence that an action succeeded.
+- Reporting “done” before checking the real external system.
+
+</Mistakes>
+
+## Interview or discussion bit
+
+<ThemeCard title="What is the basic AI agent loop?" badge="BEGINNER ANSWER">
+
+**Strong answer:** An agent receives a goal, uses the current context to choose a next step, calls an authorised tool, observes the result and checks progress. It repeats this loop until the completion criteria are satisfied or a stopping rule requires human help.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- A clear goal includes boundaries and a definition of done.
+- Reasoning selects the next step from current evidence; it is not magic.
+- A tool is a capability, while an action is a specific tool operation.
+- Observations determine whether the agent continues, retries or changes direction.
+- Every workflow needs completion checks, retry limits and stop rules.
+
+</Takeaways>
+
+## Primary sources
+
+- [Google Cloud: What are AI agents?](https://cloud.google.com/discover/what-are-ai-agents)
+- [Microsoft Azure Architecture Center: AI agent orchestration patterns](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns)
+- [Anthropic: Building effective agents](https://www.anthropic.com/research/building-effective-agents)

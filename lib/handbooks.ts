@@ -14,6 +14,10 @@ export const handbooks: Handbook[] = [
     promise: 'Learn what makes an agent different, how it works and where human approval belongs.',
     chapters: [
       { title: 'What is an AI agent?', outcome: 'Distinguish chatbots, copilots and agents.', href: '/ai-agents/01-what-is-an-ai-agent-from-answering-to-taking-action/' },
+      { title: 'How an AI agent works', outcome: 'Trace goals, reasoning, tools, actions and completion checks.', href: '/ai-agents/02-how-an-ai-agent-works-goal-reasoning-tools-actions/' },
+      { title: 'Tools, knowledge and memory', outcome: 'Understand how agents access systems, evidence and useful context.', href: '/ai-agents/03-tools-knowledge-memory-explained-simply/' },
+      { title: 'Build your first AI agent without coding', outcome: 'Create a bounded Personal Workday Assistant with human approval.', href: '/ai-agents/04-build-first-ai-agent-without-coding/' },
+      { title: 'Use AI agents safely and responsibly', outcome: 'Apply permissions, privacy, validation, logs and stop rules.', href: '/ai-agents/05-use-ai-agents-safely-responsibly/' },
     ],
   },
   {
