@@ -1,13 +1,15 @@
 export type Handbook = {
   slug: string; title: string; shortTitle: string; audience: string;
   description: string; promise: string; tone: string; status: 'available';
+  category: 'ai-application-engineering' | 'cloud-devops' | 'software-engineering' | 'technology-careers';
+  label: string;
   chapters: { title: string; outcome: string; href: string }[];
 };
 
 export const handbooks: Handbook[] = [
   {
     slug: 'github-copilot', title: 'The GitHub Copilot Handbook', shortTitle: 'GitHub Copilot',
-    audience: 'Developers', tone: 'blue', status: 'available',
+    audience: 'Developers', tone: 'blue', status: 'available', category: 'software-engineering', label: 'AI-ASSISTED SOFTWARE ENGINEERING',
     description: 'Use Copilot as an engineering partner—from context and feature work to debugging, testing and safer delivery.',
     promise: 'Move beyond code completion and build a repeatable AI-assisted engineering workflow.',
     chapters: [
@@ -20,7 +22,7 @@ export const handbooks: Handbook[] = [
   },
   {
     slug: 'forward-deployed-engineer', title: 'The Forward Deployed Engineer Handbook', shortTitle: 'FDE',
-    audience: 'Engineers · Consultants', tone: 'orange', status: 'available',
+    audience: 'Engineers · Consultants', tone: 'orange', status: 'available', category: 'technology-careers', label: 'CUSTOMER TO PRODUCTION',
     description: 'Connect customer problems, product capability and production delivery in one field-facing engineering role.',
     promise: 'Understand the job through discovery, architecture, delivery and measurable adoption.',
     chapters: [
@@ -33,7 +35,7 @@ export const handbooks: Handbook[] = [
   },
   {
     slug: 'docker', title: 'The Docker Handbook', shortTitle: 'Docker',
-    audience: 'Beginners · Developers', tone: 'cyan', status: 'available',
+    audience: 'Beginners · Developers', tone: 'cyan', status: 'available', category: 'cloud-devops', label: 'CONTAINERS TO CLOUD',
     description: 'Understand containers, package a Python application, manage runtime configuration and deploy a practical Generative AI service.',
     promise: 'Move from “works on my machine” to a repeatable container workflow you can explain and troubleshoot.',
     chapters: [
@@ -46,7 +48,7 @@ export const handbooks: Handbook[] = [
   },
   {
     slug: 'langchain', title: 'LangChain for GenAI and AI Agents Handbook', shortTitle: 'LangChain',
-    audience: 'Python Developers · AI Builders', tone: 'green', status: 'available',
+    audience: 'Python Developers · AI Builders', tone: 'green', status: 'available', category: 'ai-application-engineering', label: 'LLM APPLICATION ENGINEERING',
     description: 'Build practical LLM, RAG and agentic AI applications with Python using current LangChain patterns.',
     promise: 'Move from a model call to a grounded, tool-using and observable AI application.',
     chapters: [
@@ -59,7 +61,7 @@ export const handbooks: Handbook[] = [
   },
   {
     slug: 'rag-application-engineering', title: 'The RAG Application Engineering Handbook', shortTitle: 'RAG Engineering',
-    audience: 'Beginners · AI Builders', tone: 'purple', status: 'available',
+    audience: 'Beginners · AI Builders', tone: 'purple', status: 'available', category: 'ai-application-engineering', label: 'PRIVATE KNOWLEDGE TO GROUNDED ANSWERS',
     description: 'Give AI governed access to private knowledge—from document preparation and semantic retrieval to cited answers, evaluation and deployment.',
     promise: 'Build a complete RAG mental model and a production-minded document assistant you can explain, test and improve.',
     chapters: [
@@ -72,7 +74,7 @@ export const handbooks: Handbook[] = [
   },
   {
     slug: 'fastapi-ai-applications', title: 'FastAPI for AI Applications Handbook', shortTitle: 'FastAPI for AI',
-    audience: 'Python Developers · AI Builders', tone: 'teal', status: 'available',
+    audience: 'Python Developers · AI Builders', tone: 'teal', status: 'available', category: 'ai-application-engineering', label: 'PYTHON TO PRODUCTION AI API',
     description: 'Build, validate, stream, secure, test and deploy production-ready Python APIs for Generative AI, RAG and agent applications.',
     promise: 'Turn one Python function into a dependable Enterprise AI Assistant API with clear contracts and production controls.',
     chapters: [
