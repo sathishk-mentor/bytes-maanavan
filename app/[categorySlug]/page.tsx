@@ -11,6 +11,15 @@ export function generateStaticParams() {
 }
 
 const handbookDetails = {
+  'ai-agents': {
+    searchTitle: 'AI Agents Handbook for Everyone',
+    eyebrow: 'FROM ANSWERING TO TAKING ACTION',
+    intro: 'A beginner-friendly guide to AI agents using familiar examples—understand goals, decisions, tools, actions and human approval without needing to code.',
+    audience: 'Non-technical beginners, professionals and educators',
+    prerequisite: 'No coding or AI background required',
+    result: 'A goal → plan → tool → action → check mental model',
+    keywords: ['AI agents for beginners', 'what is an AI agent', 'AI agent examples', 'agentic AI explained', 'chatbot vs copilot vs agent'],
+  },
   'software-engineering': {
     searchTitle: 'GitHub Copilot Handbook for Developers',
     eyebrow: 'AI-ASSISTED SOFTWARE ENGINEERING',
@@ -82,6 +91,11 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
 }
 
 function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory }) {
+  if (categorySlug === 'ai-agents') {
+    return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated AI agent goal to action workflow">
+      <div className="langchain-orchestrator"><header><Sparkles/><span><small>AI AGENT</small><strong>Turn a goal into checked action</strong></span><i>READY</i></header><div><span><Compass/><small>Goal</small></span><b>→</b><span><Workflow/><small>Plan</small></span><b>→</b><span><Layers3/><small>Tools</small></span><b>→</b><span><CheckCircle2/><small>Check</small></span></div><footer><ShieldCheck/><span>Authorised · bounded · human-reviewed</span></footer></div>
+    </div>;
+  }
   if (categorySlug === 'software-engineering') {
     return <div className="handbook-hero-visual copilot-hero-visual" aria-label="Animated GitHub Copilot development workflow">
       <div className="copilot-window">

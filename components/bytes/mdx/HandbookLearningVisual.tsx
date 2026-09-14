@@ -112,6 +112,10 @@ const visuals = {
     {icon:ShieldCheck,title:'Authenticate',note:'Identity + scope'}, {icon:Gauge,title:'Limit + observe',note:'Cost + reliability'},
     {icon:TestTube2,title:'Test contract',note:'Success + failure'}, {icon:Rocket,title:'Docker deploy',note:'Repeatable runtime'},
   ], remember:'A production API is secure, testable, observable and recoverable—not merely reachable.' },
+  agentFoundation: { eyebrow:'THE AGENT LOOP', title:'A goal becomes a sequence of checked actions', steps:[
+    {icon:MessageSquareText,title:'Goal',note:'Desired outcome'}, {icon:ListChecks,title:'Plan',note:'Choose next step'},
+    {icon:Wrench,title:'Use tool',note:'Read or act'}, {icon:CheckCircle2,title:'Check',note:'Stop or continue'},
+  ], remember:'A chatbot responds once; an agent can choose and repeat actions until the goal is complete or it must ask for help.' },
 } satisfies Record<string, Visual>;
 
 export type HandbookLearningVisualVariant = keyof typeof visuals;

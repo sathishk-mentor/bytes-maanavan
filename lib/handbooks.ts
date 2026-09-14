@@ -8,6 +8,15 @@ export type Handbook = {
 
 export const handbooks: Handbook[] = [
   {
+    slug: 'ai-agents', title: 'AI Agents Handbook for Everyone', shortTitle: 'AI Agents',
+    audience: 'Non-technical Beginners · Professionals', tone: 'violet', status: 'available', category: 'ai-application-engineering', label: 'FROM ANSWERING TO TAKING ACTION',
+    description: 'Understand AI agents through familiar work and life scenarios—without coding or unnecessary technical language.',
+    promise: 'Learn what makes an agent different, how it works and where human approval belongs.',
+    chapters: [
+      { title: 'What is an AI agent?', outcome: 'Distinguish chatbots, copilots and agents.', href: '/ai-agents/01-what-is-an-ai-agent-from-answering-to-taking-action/' },
+    ],
+  },
+  {
     slug: 'github-copilot', title: 'The GitHub Copilot Handbook', shortTitle: 'GitHub Copilot',
     audience: 'Developers', tone: 'blue', status: 'available', category: 'software-engineering', label: 'AI-ASSISTED SOFTWARE ENGINEERING',
     description: 'Use Copilot as an engineering partner—from context and feature work to debugging, testing and safer delivery.',

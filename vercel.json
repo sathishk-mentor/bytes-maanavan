@@ -126,11 +126,6 @@
       "permanent": true
     },
     {
-      "source": "/ai-agents/",
-      "destination": "https://www.maanavan.com/courses/ai-agents-automation",
-      "permanent": true
-    },
-    {
       "source": "/ai-agents/16-what-is-ai-agent/",
       "destination": "https://www.maanavan.com/courses/ai-agents-automation",
       "permanent": true

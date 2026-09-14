@@ -25,6 +25,7 @@ interface BytePageProps {
 }
 
 const searchTitles:Record<string,string>={
+  '01-what-is-an-ai-agent-from-answering-to-taking-action':'What Is an AI Agent? A Beginner-Friendly Explanation',
   '62-how-developers-use-ai-tools':'GitHub Copilot Explained for Developers',
   '63-api-first-thinking':'Give GitHub Copilot Better Context',
   '66-ai-assisted-coding-workflow':'Build a Feature with GitHub Copilot',
@@ -61,7 +62,7 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['ai-agents','software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));

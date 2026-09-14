@@ -23,6 +23,7 @@ const cardVisuals = {
   '03-build-rag-applications-with-your-documents': { icon: FileText, label: 'RAG Architecture', tone: 'blue' },
   '04-build-ai-agents-with-tools-and-memory': { icon: Wrench, label: 'Agents & Tools', tone: 'violet' },
   '05-production-ready-langchain-application': { icon: ShieldCheck, label: 'Production AI', tone: 'indigo' },
+  '01-what-is-an-ai-agent-from-answering-to-taking-action': { icon: Bot, label: 'Agent Foundations', tone: 'violet' },
 } as const;
 
 export function ByteLibraryCard({ chapter, chapterNumber }: { chapter: ByteMetadata; chapterNumber: number }) {
@@ -31,8 +32,9 @@ export function ByteLibraryCard({ chapter, chapterNumber }: { chapter: ByteMetad
   const isFde = chapter.category === 'forward-deployed-engineer';
   const isDocker = chapter.category === 'cloud-devops';
   const isLangChain = chapter.category === 'langchain';
-  const category = isFde ? 'Technology Careers' : isDocker ? 'Cloud & DevOps' : isLangChain ? 'Generative AI & Agents' : 'Software Engineering';
-  const handbook = isFde ? 'FDE Handbook' : isDocker ? 'Docker Handbook' : isLangChain ? 'LangChain Handbook' : 'GitHub Copilot Handbook';
+  const isAgent = chapter.category === 'ai-agents';
+  const category = isFde ? 'Technology Careers' : isDocker ? 'Cloud & DevOps' : isLangChain || isAgent ? 'Generative AI & Agents' : 'Software Engineering';
+  const handbook = isFde ? 'FDE Handbook' : isDocker ? 'Docker Handbook' : isLangChain ? 'LangChain Handbook' : isAgent ? 'AI Agents Handbook' : 'GitHub Copilot Handbook';
 
   return <Link className={`library-byte-card tone-${visual.tone}`} href={`/${chapter.category}/${chapter.slug}/`}>
     <div className="byte-card-cover"><span>MAANAVAN BYTE</span><Icon/><i>BYTE {String(chapterNumber).padStart(2, '0')}</i></div>

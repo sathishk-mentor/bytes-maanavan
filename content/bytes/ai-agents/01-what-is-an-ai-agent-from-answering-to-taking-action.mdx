@@ -1,0 +1,138 @@
+---
+title: "What Is an AI Agent? From Answering to Taking Action"
+slug: "01-what-is-an-ai-agent-from-answering-to-taking-action"
+summary: "Understand the difference between chatbots, copilots and AI agents through familiar examples such as travel planning and appointment scheduling."
+category: "ai-agents"
+tags: ["AI agents for beginners", "what is an AI agent", "chatbot vs AI agent", "agentic AI", "AI agent examples"]
+level: "beginner"
+duration: "14 min"
+updatedAt: "2026-09-14"
+order: 1
+isPopular: true
+---
+
+<ThemeCard title="What you will learn" badge="AI AGENTS HANDBOOK 01">
+
+You will be able to explain an AI agent in plain language, distinguish it from a chatbot and copilot, trace its basic action loop and recognise where human approval is necessary.
+
+</ThemeCard>
+
+<AgentCapabilityVisual />
+
+## The 60-second explanation
+
+An **AI agent is a software system that uses AI to pursue a goal and complete tasks on a user’s behalf**. It can decide what to do next, use authorised tools, observe the result and continue until the goal is complete—or until it reaches a boundary where it must ask a person.
+
+A chatbot usually responds to one message. A copilot helps while a person remains in control of the workflow. An agent can take responsibility for a bounded outcome, such as finding suitable meeting times, preparing a comparison or collecting information for a report.
+
+“Agent” does not mean unlimited independence. A useful agent has a clear goal, limited permissions, completion rules and human approval for important actions.
+
+## The simplest agent loop
+
+<HandbookLearningVisual variant="agentFoundation" />
+
+Imagine the request: **“Find three suitable times for a project review next week.”**
+
+1. **Goal:** Understand the desired outcome, attendees and time window.
+2. **Plan:** Decide to inspect calendars and identify overlaps.
+3. **Tool:** Read only the calendars the user has authorised.
+4. **Action:** Prepare three options with time-zone information.
+5. **Check:** Confirm that every required attendee is available.
+
+The agent should stop before sending invitations unless the user has explicitly allowed that action. Reading availability and creating an invitation have different consequences, so they should have different permission boundaries.
+
+## Chatbot, copilot and agent
+
+| System | What you ask | What it normally does | Who drives the next step? |
+|---|---|---|---|
+| Chatbot | “What should a project review agenda contain?” | Produces an answer | The person |
+| Copilot | “Help me prepare this review agenda.” | Suggests and edits alongside you | The person |
+| AI agent | “Prepare the review using the latest authorised project information.” | Plans, reads sources, prepares the result and checks completeness | The agent within human-set limits |
+
+The boundary is not always sharp. Products may call the same feature an assistant, copilot or agent. Focus on behaviour: **Can the system choose actions, use tools and continue toward a goal?**
+
+## Real-time scenario: planning a business trip
+
+<Scenario title="From travel question to travel outcome">
+
+A chatbot can answer, “What is the best way to travel from Bengaluru to Chennai?” A copilot can help compare a list of trains and flights you provide. A travel agent can search authorised services, compare options against your timing and budget, prepare an itinerary and ask for approval before any booking or payment.
+
+The valuable shift is from producing information to coordinating work. The safety boundary is equally important: the agent may prepare options, but payment should remain behind explicit human confirmation.
+
+</Scenario>
+
+## Where agents are useful
+
+Agents are most useful when a task has a clear outcome but the exact steps may change based on what the system discovers.
+
+- Prepare a weekly status report from authorised project sources.
+- Find appointment options across several calendars.
+- Review incoming support requests and draft suitable responses.
+- Compare approved suppliers against a defined checklist.
+- Monitor an application and prepare an incident summary when a threshold is crossed.
+
+If every step is fixed and predictable, normal automation may be simpler. If the task only needs an explanation, a chatbot may be enough.
+
+## Autonomy needs boundaries
+
+<AgentBoundaryVisual />
+
+A practical design separates low-risk preparation from consequential action. An agent may search, read, organise and draft within its permission. Sending a message, spending money, deleting data, changing access or making a high-impact decision should require stronger controls and often direct human approval.
+
+## A no-code thinking exercise
+
+<PromptBox label="Turn a work request into a safe agent brief">
+
+I want an AI agent to help with this outcome:
+[describe the result]
+
+Create a beginner-friendly agent brief with:
+1. The goal
+2. Information it may read
+3. Tools it may use
+4. Actions it may take automatically
+5. Actions that require my approval
+6. Completion checks
+7. Situations where it must stop and ask for help
+
+Do not assume access or permission that I have not provided.
+
+</PromptBox>
+
+## Common mistakes
+
+<Mistakes>
+
+- Calling every chatbot an agent even when it cannot use tools or pursue a goal.
+- Giving a broad goal without defining what “complete” means.
+- Allowing write, send, purchase or delete actions without an approval boundary.
+- Connecting many tools before proving that the basic workflow is useful.
+- Assuming a confident action is a correct action without checking the result.
+
+</Mistakes>
+
+## Interview or discussion bit
+
+<ThemeCard title="How is an AI agent different from a chatbot?" badge="BEGINNER ANSWER">
+
+**Strong answer:** A chatbot mainly produces a response to a message. An AI agent works toward a defined goal: it can choose a next step, use authorised tools, observe results and repeat the loop. Its autonomy should be bounded by permissions, completion criteria and human approval for consequential actions.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- An agent is goal-oriented, not merely conversational.
+- Tools allow an agent to read information or take action in another system.
+- The agent loop is goal → plan → tool → action → check.
+- More autonomy requires clearer permissions, checks and stopping rules.
+- Use a chatbot, copilot, automation or agent according to the work—not the trend.
+
+</Takeaways>
+
+## Primary sources
+
+- [Google Cloud: What are AI agents?](https://cloud.google.com/discover/what-are-ai-agents)
+- [Microsoft: AI agents—what they are and how they will change work](https://news.microsoft.com/source/features/ai/ai-agents-what-they-are-and-how-theyll-change-the-way-we-work/)
+- [Model Context Protocol: What is MCP?](https://modelcontextprotocol.io/docs/getting-started/intro)

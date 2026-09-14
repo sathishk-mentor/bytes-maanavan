@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, Box, Code2, FileSearch, Network, Search, Server, Workflow, X } from 'lucide-react';
+import { ArrowRight, BookOpen, Bot, Box, Code2, FileSearch, Network, Search, Server, Workflow, X } from 'lucide-react';
 import type { Handbook } from '@/lib/handbooks';
 
 const filters = [
@@ -20,6 +20,7 @@ function handbookHref(slug: string) {
 }
 
 function handbookVisual(slug: string) {
+  if (slug === 'ai-agents') return { Icon: Bot, tone: 'agents' };
   if (slug === 'github-copilot') return { Icon: Code2, tone: 'copilot' };
   if (slug === 'docker') return { Icon: Box, tone: 'docker' };
   if (slug === 'langchain') return { Icon: Network, tone: 'langchain' };
@@ -53,7 +54,7 @@ export function PublishedHandbooks({ handbooks, variant = 'home' }: { handbooks:
 
   return <section className={`published-handbooks handbook-collection handbook-collection-${variant}`}><div className="container-custom">
     <header className="published-heading"><div><p className="eyebrow dark">PUBLISHED HANDBOOKS</p><h2>{variant === 'home' ? 'Choose a path. Learn one connected chapter at a time.' : 'Find the handbook for your next practical skill.'}</h2><p>Search by skill or choose a subject area. Every handbook connects visual explanations, real scenarios and practical engineering decisions.</p></div>{variant === 'home' && <Link href="/handbooks/">View complete library <ArrowRight/></Link>}</header>
-    <div className="handbook-discovery-panel"><label className="handbook-search"><Search/><span className="sr-only">Search handbooks</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search FastAPI, RAG, Docker, Copilot…"/>{query && <button aria-label="Clear handbook search" onClick={() => setQuery('')}><X/></button>}</label><div className="handbook-filter-row" aria-label="Filter handbooks by category">{filters.map((item) => <button className={filter === item.value ? 'active' : ''} onClick={() => setFilter(item.value)} key={item.value}>{item.label}</button>)}</div></div>
+    <div className="handbook-discovery-panel"><label className="handbook-search"><Search/><span className="sr-only">Search handbooks</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search AI Agents, FastAPI, RAG, Docker…"/>{query && <button aria-label="Clear handbook search" onClick={() => setQuery('')}><X/></button>}</label><div className="handbook-filter-row" aria-label="Filter handbooks by category">{filters.map((item) => <button className={filter === item.value ? 'active' : ''} onClick={() => setFilter(item.value)} key={item.value}>{item.label}</button>)}</div></div>
     <div className="handbook-result-summary"><span><BookOpen/>Showing <b>{results.length}</b> matching {results.length === 1 ? 'handbook' : 'handbooks'}</span>{(query || filter !== 'all') && <button onClick={() => { setQuery(''); setFilter('all'); }}>Clear filters</button>}</div>
     <div className="published-handbook-grid">{results.map((handbook) => <HandbookCard handbook={handbook} key={handbook.slug}/>)}</div>
     {!results.length && <div className="handbook-empty"><Search/><h3>No matching handbook</h3><p>Try a broader skill or view all subject areas.</p><button onClick={() => { setQuery(''); setFilter('all'); }}>View all handbooks</button></div>}
