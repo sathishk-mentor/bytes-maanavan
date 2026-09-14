@@ -29,15 +29,17 @@ Modern LangChain centres on composable primitives. You can call a chat model dir
 
 ## The five building blocks
 
-| Building block | Responsibility | Simple example |
-|---|---|---|
-| Model | Generates or reasons over content | Summarise a support ticket |
-| Messages | Carry role and conversation context | System, user and AI messages |
-| Prompt | Defines the task and constraints | “Return three risks with evidence” |
-| Structured output | Constrains the response to a schema | A typed `TicketResult` object |
-| Application harness | Coordinates model, tools, state and middleware | A support-triage agent |
+<LangChainBuildingBlocks />
+
+Read the visual from left to right. **Messages** preserve roles. The **prompt** defines the job. The **model** produces content or selects an action. **Structured output** makes the result usable by software. The **harness** coordinates the extra capabilities needed for a complete application.
 
 Older tutorials may emphasise “output parsers.” They remain useful when parsing text or composing custom pipelines, but for new applications prefer a provider-supported structured-output interface when available. The result is easier to validate than free-form text.
+
+## Official architecture: model and harness
+
+<OfficialLangChainDiagram variant="agent-harness" />
+
+The official diagram makes one distinction easy to remember: the model sits at the centre, while prompts, context, memory and tools belong to the surrounding harness. A basic application may use only the model and messages; add the other pieces only when the use case needs them.
 
 ## Real-time analogy: restaurant service
 

@@ -25,6 +25,10 @@ A fixed workflow follows steps chosen by the developer. An agent uses a model to
 
 “Autonomous” does not mean unlimited. A dependable agent has a narrow purpose, carefully described tools, access checks, iteration limits and human approval for consequential actions.
 
+<OfficialLangChainDiagram variant="agent-loop" />
+
+Read the official loop clockwise: a request reaches the model; the model either returns a result or selects an action; the tool executes; its observation returns to the model. The loop continues only until the task is complete or your application’s limit is reached.
+
 ## Define a bounded tool
 
 ```python

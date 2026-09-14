@@ -13,7 +13,7 @@ import { ContextAssemblyVisual, GroundedAnswerVisual, ProductVsModelVisual, Toke
 import { CopilotHandbookVisual, OfficialScreenshot } from './mdx/CopilotHandbookVisuals';
 import { FDEJourneyVisual } from './mdx/FDEVisuals';
 import { DockerCommand, DockerFlowVisual } from './mdx/DockerVisuals';
-import { LangChainFlowVisual } from './mdx/LangChainVisuals';
+import { LangChainBuildingBlocks, LangChainFlowVisual, OfficialLangChainDiagram } from './mdx/LangChainVisuals';
 import { SyntaxCode } from './SyntaxCode';
 import { slugify } from '@/lib/mdx';
 
@@ -32,7 +32,7 @@ const components = {
   th: ({children,...props}:any)=><th {...props}>{children}</th>, td: ({children,...props}:any)=><td {...props}>{children}</td>,
   pre: ({children}:any)=>{const child=children as any;const code=child?.props?.children?.toString?.()||'';const language=(child?.props?.className||'').replace('language-','')||'text';return <SyntaxCode code={code} language={language}/>;},
   code: ({children,...props}:any)=><code className="byte-code" {...props}>{children}</code>,
-  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual, LangChainFlowVisual,
+  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual, LangChainFlowVisual, LangChainBuildingBlocks, OfficialLangChainDiagram,
 };
 
 export function ByteContent({content}:{content:string}) { return <article className="byte-article"><MDXRemote source={content} components={components}/></article>; }

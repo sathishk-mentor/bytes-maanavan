@@ -12,3 +12,13 @@ export function LangChainFlowVisual({variant}:{variant:keyof typeof flows}) {
   const flow=flows[variant];
   return <figure className={`langchain-flow langchain-flow-${variant}`}><header><span><Network/></span><div><small>VISUAL EXPLAINER</small><strong>{flow.label}</strong></div><i>LANGCHAIN</i></header><div className="langchain-flow-steps">{flow.steps.map(([Icon,title,note],index)=><section key={title}><span><Icon/></span><div><b>{title}</b><small>{note}</small></div>{index<flow.steps.length-1&&<ArrowRight/>}</section>)}</div><figcaption>{flow.caption}</figcaption></figure>;
 }
+
+export function LangChainBuildingBlocks() {
+  const blocks=[[MessageSquareText,'Messages','Who said what—and in which role'],[Sparkles,'Prompt','Task, context and boundaries'],[Bot,'Model','Generates or chooses an action'],[Braces,'Structured output','Returns a predictable data shape'],[Network,'Harness','Coordinates tools, state and middleware']] as const;
+  return <figure className="langchain-blocks"><header><small>BEGINNER MENTAL MODEL</small><strong>One request, five clear responsibilities</strong></header><div>{blocks.map(([Icon,title,note],index)=><section key={title}><i>0{index+1}</i><span><Icon/></span><b>{title}</b><small>{note}</small>{index<blocks.length-1&&<ArrowRight/>}</section>)}</div><figcaption><b>Remember:</b> the model produces the intelligence; LangChain helps your application organise the work around it.</figcaption></figure>;
+}
+
+export function OfficialLangChainDiagram({variant}:{variant:'agent-loop'|'agent-harness'}) {
+  const agentLoop=variant==='agent-loop';
+  return <figure className="official-langchain-diagram"><header><div><small>OFFICIAL LANGCHAIN DIAGRAM</small><strong>{agentLoop?'The core agent loop':'Agent = model + harness'}</strong></div><a href="https://docs.langchain.com/oss/python/langchain/agents" target="_blank" rel="noreferrer">View official source <ArrowRight/></a></header><img src={`/images/langchain/${agentLoop?'core-agent-loop-official.svg':'agent-model-harness-official.svg'}`} alt={agentLoop?'Official LangChain diagram showing a request entering a model, the model choosing tools, observations returning to the model and a final result':'Official LangChain diagram showing the model surrounded by the agent harness: memory, skills, tools, context, subagents and system prompt'} loading="lazy"/><figcaption>Source: LangChain official documentation. Displayed without redesign so learners can recognise the original architecture.</figcaption></figure>;
+}
