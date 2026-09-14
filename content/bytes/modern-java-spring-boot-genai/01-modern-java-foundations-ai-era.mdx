@@ -1,0 +1,118 @@
+---
+title: "Modern Java Foundations for the AI Era"
+slug: "01-modern-java-foundations-ai-era"
+summary: "Learn the Java building blocks that still matter when AI can generate code, using an enterprise policy domain rather than disconnected syntax exercises."
+category: "modern-java-spring-boot-genai"
+tags: ["modern Java tutorial", "Java for beginners", "Java AI-assisted coding", "Java records", "enterprise Java"]
+level: "beginner"
+duration: "22 min"
+updatedAt: "2026-09-14"
+order: 1
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="JAVA HANDBOOK 01">
+
+You will model a company policy, evaluate whether it is active and explain which work AI can accelerate—and which decisions remain yours.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="javaFoundation" />
+
+## Why learn Java when AI can write code?
+
+AI can produce syntax quickly. It cannot accept responsibility for an unclear business rule, an unsafe data model or a change that silently breaks production. Modern Java remains valuable because its types, mature ecosystem and explicit structure help teams make large applications understandable.
+
+Think of AI as a fast junior pair programmer: it can draft, explain and suggest tests. You still define the rule, inspect the code and prove the behaviour.
+
+## Start with one domain object
+
+Our continuous project is an **Enterprise Policy Assistant**. The first object is a policy:
+
+```java
+import java.time.LocalDate;
+import java.util.List;
+
+public record Policy(
+    Long id,
+    String title,
+    String department,
+    LocalDate effectiveFrom,
+    List<String> tags
+) {
+    public boolean isActiveOn(LocalDate date) {
+        return !effectiveFrom.isAfter(date);
+    }
+}
+```
+
+A `record` is useful for a data-focused value because Java supplies the constructor, accessors, equality and string representation. A normal class is better when identity, mutable state or richer lifecycle behaviour is required.
+
+## Connect the foundations to real work
+
+| Foundation | Policy-assistant use | Engineering decision |
+|---|---|---|
+| Variable | Hold a department name | Choose a meaningful type and name |
+| Condition | Check whether a policy is active | Make the business rule explicit |
+| Loop/stream | Filter matching policies | Prefer clarity over cleverness |
+| Method | `isActiveOn(date)` | Keep one focused responsibility |
+| Class/record | Represent a policy | Protect valid state |
+| Collection | Store policy tags | Choose ordering and uniqueness intentionally |
+
+```java
+var activeSecurityPolicies = policies.stream()
+    .filter(policy -> policy.department().equalsIgnoreCase("Security"))
+    .filter(policy -> policy.isActiveOn(LocalDate.now()))
+    .toList();
+```
+
+## A safe AI-assisted workflow
+
+1. Write the behaviour in plain language.
+2. Ask AI for two possible Java designs and their trade-offs.
+3. Select the smallest understandable design.
+4. Ask for edge cases, not only implementation.
+5. Run tests and inspect every generated line.
+
+<Scenario title="Real-time analogy: an office policy register">
+
+The register is not useful because it contains words; it is useful because each policy has an owner, effective date and classification. Java types are the labelled fields. Methods are the approved rules for interpreting them. AI may help the clerk draft an entry, but the organisation still validates and approves it.
+
+</Scenario>
+
+## Interview bit
+
+<ThemeCard title="What changes about Java development in the AI era?" badge="CAREER">
+
+AI reduces time spent recalling syntax and producing boilerplate. The developer’s value shifts toward domain modelling, context, architecture, verification, security and maintainability. Strong Java fundamentals make generated code easier to evaluate rather than less necessary.
+
+</ThemeCard>
+
+## Common mistakes
+
+<Mistakes>
+
+- Learning isolated syntax without connecting it to a domain.
+- Accepting AI-generated dependencies or APIs without checking official documentation.
+- Using `var` when it hides meaning rather than removing repetition.
+- Putting every rule into one large class or method.
+- Treating compilation as proof that the business behaviour is correct.
+
+</Mistakes>
+
+## Key takeaways
+
+<Takeaways>
+
+- Modern Java fundamentals are tools for expressing and protecting business intent.
+- Records work well for concise, data-focused models.
+- Collections and methods should make domain behaviour readable.
+- AI accelerates drafting; tests and human review establish trust.
+
+</Takeaways>
+
+## Primary sources
+
+- [Oracle Java language updates](https://docs.oracle.com/en/java/javase/21/language/java-language-changes.html)
+- [Java records](https://docs.oracle.com/en/java/javase/21/language/records.html)
+- [Java Stream API](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html)

@@ -55,13 +55,18 @@ const searchTitles:Record<string,string>={
   '03-databases-external-services-configuration':'FastAPI Databases and External API Integration',
   '04-build-stream-generative-ai-api':'Build and Stream a Generative AI API with FastAPI',
   '05-secure-test-deploy-production-fastapi':'Secure, Test and Deploy FastAPI in Production',
+  '01-modern-java-foundations-ai-era':'Modern Java Foundations for the AI Era',
+  '02-build-rest-apis-java-spring-boot':'Build REST APIs with Java and Spring Boot',
+  '03-connect-spring-boot-database':'Connect Spring Boot with a Database',
+  '04-add-generative-ai-rag-java':'Add Generative AI and RAG to a Java Application',
+  '05-build-deploy-enterprise-ai-application':'Build and Deploy an Enterprise Java AI Application',
 };
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications','modern-java-spring-boot-genai'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
@@ -85,6 +90,7 @@ function legacyDestination(categorySlug: string) {
     langchain:'/langchain/',
     'rag-application-engineering':'/rag-application-engineering/',
     'fastapi-ai-applications':'/fastapi-ai-applications/',
+    'modern-java-spring-boot-genai':'/modern-java-spring-boot-genai/',
     cybersecurity:'https://www.maanavan.com/courses/cybersecurity',
     'case-studies':'/forward-deployed-engineer/',
   };

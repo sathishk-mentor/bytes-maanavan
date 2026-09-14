@@ -1,0 +1,123 @@
+---
+title: "Build REST APIs with Java and Spring Boot"
+slug: "02-build-rest-apis-java-spring-boot"
+summary: "Build a maintainable policy API with controllers, services, dependency injection, validation and meaningful error responses."
+category: "modern-java-spring-boot-genai"
+tags: ["Spring Boot REST API", "Java REST API tutorial", "Spring validation", "dependency injection", "Spring Boot beginners"]
+level: "beginner"
+duration: "24 min"
+updatedAt: "2026-09-14"
+order: 2
+---
+
+<ThemeCard title="Practical outcome" badge="JAVA HANDBOOK 02">
+
+You will expose the policy domain through a REST contract while keeping HTTP concerns separate from business behaviour.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="javaApi" />
+
+## The boundary your clients depend on
+
+A REST API is not simply a controller method. It is a contract covering the HTTP method, path, request shape, validation, response shape, status codes and failures.
+
+```text
+Client → Controller → Service → Repository
+       ← HTTP response ← result
+```
+
+## Create a clear request model
+
+```java
+public record CreatePolicyRequest(
+    @jakarta.validation.constraints.NotBlank String title,
+    @jakarta.validation.constraints.NotBlank String department,
+    @jakarta.validation.constraints.NotNull LocalDate effectiveFrom
+) {}
+```
+
+The API request is different from the database entity. This prevents external callers from controlling internal fields such as IDs, audit data or approval status.
+
+## Keep the controller thin
+
+```java
+@RestController
+@RequestMapping("/api/policies")
+class PolicyController {
+    private final PolicyService service;
+
+    PolicyController(PolicyService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    ResponseEntity<PolicyResponse> create(
+        @Valid @RequestBody CreatePolicyRequest request) {
+        var created = service.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+}
+```
+
+Constructor injection makes the dependency visible and easy to replace in a test. The controller translates HTTP; `PolicyService` owns the use case.
+
+## Return errors clients can act on
+
+```java
+@RestControllerAdvice
+class ApiExceptionHandler {
+    @ExceptionHandler(PolicyNotFoundException.class)
+    ResponseEntity<ProblemDetail> notFound(PolicyNotFoundException ex) {
+        var problem = ProblemDetail.forStatusAndDetail(
+            HttpStatus.NOT_FOUND, ex.getMessage());
+        problem.setTitle("Policy not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+    }
+}
+```
+
+Use predictable error bodies. Do not leak stack traces, SQL details or secrets.
+
+<Scenario title="Real-time analogy: a bank service counter">
+
+The counter checks the form, routes valid work to the right team and returns a receipt. It does not contain the vault or rewrite the bank’s rules. A controller should behave the same way: validate and translate at the boundary, then delegate.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Returning persistence entities directly from public endpoints.
+- Writing database and AI-provider logic inside controllers.
+- Using `200 OK` for creation, validation failure and missing resources alike.
+- Catching every exception and hiding the real failure.
+- Treating generated OpenAPI documentation as a substitute for tests.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="Why separate controller and service layers?" badge="CAREER">
+
+The controller owns transport concerns such as HTTP input, status and serialisation. The service owns the application use case and business rules. This separation improves testing, reuse and changeability, and prevents web-framework details from spreading across the domain.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Design the HTTP contract before filling in implementation details.
+- Validate untrusted data at the application boundary.
+- Use constructor injection and focused services.
+- Make failure responses predictable and safe.
+
+</Takeaways>
+
+## Primary sources
+
+- [Spring guide: Building a RESTful Web Service](https://spring.io/guides/gs/rest-service)
+- [Spring Framework validation](https://docs.spring.io/spring-framework/reference/core/validation/beanvalidation.html)
+- [Spring MVC annotated controllers](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller.html)

@@ -112,6 +112,26 @@ const visuals = {
     {icon:ShieldCheck,title:'Authenticate',note:'Identity + scope'}, {icon:Gauge,title:'Limit + observe',note:'Cost + reliability'},
     {icon:TestTube2,title:'Test contract',note:'Success + failure'}, {icon:Rocket,title:'Docker deploy',note:'Repeatable runtime'},
   ], remember:'A production API is secure, testable, observable and recoverable—not merely reachable.' },
+  javaFoundation: { eyebrow:'MODERN JAVA MENTAL MODEL', title:'Turn a business rule into a readable domain model', steps:[
+    {icon:MessageSquareText,title:'Requirement',note:'Policy rule'}, {icon:Braces,title:'Types + records',note:'Model data'},
+    {icon:Code2,title:'Service method',note:'Apply behaviour'}, {icon:TestTube2,title:'Test + review',note:'Prove intent'},
+  ], remember:'Use AI to accelerate explanation and review; keep Java types, business rules and tests under developer control.' },
+  javaApi: { eyebrow:'SPRING REQUEST PATH', title:'Keep HTTP, business logic and errors in clear layers', steps:[
+    {icon:Users,title:'HTTP request',note:'JSON input'}, {icon:Server,title:'Controller',note:'Web contract'},
+    {icon:Layers3,title:'Service',note:'Business rule'}, {icon:BadgeCheck,title:'Response',note:'Status + JSON'},
+  ], remember:'Controllers translate HTTP; services own application behaviour.' },
+  javaData: { eyebrow:'PERSISTENCE PATH', title:'Map Java domain objects to durable relational data', steps:[
+    {icon:Server,title:'Service',note:'Use case'}, {icon:Layers3,title:'Repository',note:'Data boundary'},
+    {icon:Database,title:'JPA entity',note:'Mapping'}, {icon:HardDrive,title:'SQL database',note:'Durable state'},
+  ], remember:'JPA maps objects to tables; transactions protect a complete business operation.' },
+  javaRag: { eyebrow:'GROUNDED JAVA AI', title:'Retrieve authorised policy evidence before generation', steps:[
+    {icon:MessageSquareText,title:'Question',note:'User intent'}, {icon:SearchCheck,title:'Retrieve',note:'Relevant policy'},
+    {icon:Layers3,title:'Ground prompt',note:'Evidence + rules'}, {icon:BadgeCheck,title:'Cited answer',note:'Traceable output'},
+  ], remember:'Spring AI coordinates the model and retrieval; your application still owns access, evidence and citations.' },
+  javaProduction: { eyebrow:'ENTERPRISE RELEASE PATH', title:'Protect, prove and package the complete service', steps:[
+    {icon:ShieldCheck,title:'Secure',note:'Identity + roles'}, {icon:TestTube2,title:'Test',note:'Unit + integration'},
+    {icon:Eye,title:'Observe',note:'Logs + metrics'}, {icon:Rocket,title:'Containerise',note:'Deploy + recover'},
+  ], remember:'Production readiness is a set of evidence: secure access, passing tests, useful telemetry and repeatable deployment.' },
 } satisfies Record<string, Visual>;
 
 export type HandbookLearningVisualVariant = keyof typeof visuals;

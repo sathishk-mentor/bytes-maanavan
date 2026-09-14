@@ -7,7 +7,7 @@ import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
@@ -65,6 +65,15 @@ const handbookDetails = {
     result: 'A request → validate → retrieve → stream → operate workflow',
     keywords: ['FastAPI tutorial for beginners', 'FastAPI AI application', 'FastAPI GenAI API', 'FastAPI streaming response', 'FastAPI RAG API', 'production FastAPI Docker'],
   },
+  'modern-java-spring-boot-genai': {
+    searchTitle: 'Modern Java with Spring Boot and GenAI Handbook',
+    eyebrow: 'ENTERPRISE JAVA IN THE AI ERA',
+    intro: 'Build an enterprise Java application from modern language foundations and Spring Boot APIs to JPA persistence, grounded Generative AI, security, testing and Docker deployment.',
+    audience: 'Java beginners and enterprise application developers',
+    prerequisite: 'Basic programming awareness; no Spring experience required',
+    result: 'A Java → API → database → RAG → production workflow',
+    keywords: ['modern Java tutorial', 'Spring Boot tutorial for beginners', 'Spring AI RAG tutorial', 'Java Generative AI application', 'Spring Boot REST API', 'enterprise Java AI application'],
+  },
 } as const;
 type PublishedCategory = keyof typeof handbookDetails;
 
@@ -115,6 +124,11 @@ function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory 
   if (categorySlug === 'fastapi-ai-applications') {
     return <div className="handbook-hero-visual docker-hero-visual" aria-label="Animated FastAPI request to streamed AI response workflow">
       <div className="docker-pipeline"><header><Server/><span><small>ENTERPRISE AI ASSISTANT API</small><strong>Validate every request. Stream useful evidence.</strong></span><i>200 OK</i></header><div><span><Code2/><small>Client</small></span><b>→</b><span><ShieldCheck/><small>Validate</small></span><b>→</b><span><Database/><small>Retrieve</small></span><b>→</b><span><Sparkles/><small>Stream</small></span></div><footer><Network/><span>Typed · protected · observable</span></footer></div>
+    </div>;
+  }
+  if (categorySlug === 'modern-java-spring-boot-genai') {
+    return <div className="handbook-hero-visual docker-hero-visual" aria-label="Animated Java enterprise AI application workflow">
+      <div className="docker-pipeline"><header><Code2/><span><small>ENTERPRISE POLICY ASSISTANT</small><strong>Build dependable Java systems with grounded AI.</strong></span><i>SPRING</i></header><div><span><Code2/><small>Java</small></span><b>→</b><span><Server/><small>REST API</small></span><b>→</b><span><Database/><small>Policies</small></span><b>→</b><span><Sparkles/><small>Grounded AI</small></span></div><footer><ShieldCheck/><span>Typed · secure · testable · deployable</span></footer></div>
     </div>;
   }
   return <div className="handbook-hero-visual fde-hero-visual" aria-label="Animated Forward Deployed Engineer outcome loop">

@@ -1,0 +1,129 @@
+---
+title: "Connect Spring Boot with a Database"
+slug: "03-connect-spring-boot-database"
+summary: "Persist policies with Spring Data JPA, relational modelling, transactions and configuration that keeps secrets outside source code."
+category: "modern-java-spring-boot-genai"
+tags: ["Spring Data JPA tutorial", "Spring Boot database", "Java CRUD application", "JPA relationships", "Spring transactions"]
+level: "beginner"
+duration: "25 min"
+updatedAt: "2026-09-14"
+order: 3
+---
+
+<ThemeCard title="Practical outcome" badge="JAVA HANDBOOK 03">
+
+You will store policy metadata in a relational database and understand the boundary between entity, repository, transaction and API response.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="javaData" />
+
+## Four objects beginners often mix up
+
+| Object | Responsibility | Should it cross the API boundary? |
+|---|---|---|
+| Entity | Maps application state to a table | Usually no |
+| Repository | Loads and saves entities | No |
+| Service | Coordinates a business transaction | No |
+| Response DTO | Presents approved fields to clients | Yes |
+
+## Map the policy table
+
+```java
+@Entity
+@Table(name = "policies")
+class PolicyEntity {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String department;
+
+    @Column(nullable = false)
+    private LocalDate effectiveFrom;
+
+    protected PolicyEntity() {}
+    // focused constructor and accessors
+}
+```
+
+```java
+interface PolicyRepository extends JpaRepository<PolicyEntity, Long> {
+    List<PolicyEntity> findByDepartmentIgnoreCase(String department);
+}
+```
+
+Spring Data implements the repository interface, but you still own the query semantics, indexes and transaction boundary.
+
+## Make one use case one transaction
+
+```java
+@Service
+class PolicyService {
+    @Transactional
+    public PolicyResponse create(CreatePolicyRequest request) {
+        var entity = new PolicyEntity(
+            request.title(), request.department(), request.effectiveFrom());
+        return PolicyResponse.from(repository.save(entity));
+    }
+}
+```
+
+A transaction should protect a complete business operation. Avoid keeping it open while waiting for a slow LLM or external network call.
+
+## Keep configuration outside code
+
+```properties
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.jpa.hibernate.ddl-auto=validate
+```
+
+Use schema migrations for controlled environments. `ddl-auto=create` is convenient for experiments but dangerous for durable data.
+
+<Scenario title="Real-time analogy: a governed records room">
+
+The repository is the records clerk, not the records room. It accepts a precise request and retrieves or stores an approved record. The service decides why that operation is allowed, while the database preserves it durably.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Returning JPA entities from controllers.
+- Using eager relationships everywhere and triggering oversized queries.
+- Assuming generated repository methods remove the need to understand SQL.
+- Placing passwords in `application.properties` committed to Git.
+- Calling external AI services inside long database transactions.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="What does `@Transactional` provide?" badge="CAREER">
+
+It defines a transaction boundary so related database operations succeed or fail as one unit. I place it around an application use case, keep the boundary focused and avoid slow external calls inside it.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Entities model persistence; DTOs model the external contract.
+- Repositories provide a data-access boundary, not business policy.
+- Transactions protect complete state changes.
+- Database credentials belong in runtime configuration or a secret manager.
+
+</Takeaways>
+
+## Primary sources
+
+- [Spring guide: Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa)
+- [Spring Data JPA reference](https://docs.spring.io/spring-data/jpa/reference/)
+- [Spring transaction management](https://docs.spring.io/spring-framework/reference/data-access/transaction.html)

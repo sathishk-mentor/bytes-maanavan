@@ -20,33 +20,20 @@ function handbookHref(slug: string) {
 }
 
 function handbookVisual(slug: string) {
-  if (slug === 'github-copilot') return { Icon: Code2, tone: 'copilot', nodes: ['Context', 'Copilot', 'Review'] };
-  if (slug === 'docker') return { Icon: Box, tone: 'docker', nodes: ['Image', 'Container', 'Cloud'] };
-  if (slug === 'langchain') return { Icon: Network, tone: 'langchain', nodes: ['Prompt', 'Tools', 'Answer'] };
-  if (slug === 'rag-application-engineering') return { Icon: FileSearch, tone: 'rag', nodes: ['Knowledge', 'Retrieve', 'Ground'] };
-  if (slug === 'fastapi-ai-applications') return { Icon: Server, tone: 'fastapi', nodes: ['Client', 'FastAPI', 'AI'] };
-  return { Icon: Workflow, tone: 'fde', nodes: ['Discover', 'Deploy', 'Learn'] };
-}
-
-function HandbookCoverVisual({ nodes, Icon }: { nodes: string[]; Icon: typeof Code2 }) {
-  return <div className="handbook-cover-visual" aria-hidden="true">
-    <span className="cover-orbit cover-orbit-one"/><span className="cover-orbit cover-orbit-two"/>
-    <div className="cover-flow-line"/>
-    {nodes.map((node, index) => <div className={`cover-node cover-node-${index + 1}`} key={node}>
-      <span>{index === 1 ? <Icon/> : String(index + 1).padStart(2, '0')}</span><b>{node}</b>
-    </div>)}
-  </div>;
+  if (slug === 'github-copilot') return { Icon: Code2, tone: 'copilot' };
+  if (slug === 'docker') return { Icon: Box, tone: 'docker' };
+  if (slug === 'langchain') return { Icon: Network, tone: 'langchain' };
+  if (slug === 'rag-application-engineering') return { Icon: FileSearch, tone: 'rag' };
+  if (slug === 'fastapi-ai-applications') return { Icon: Server, tone: 'fastapi' };
+  if (slug === 'modern-java-spring-boot-genai') return { Icon: Code2, tone: 'java' };
+  return { Icon: Workflow, tone: 'fde' };
 }
 
 function HandbookCard({ handbook }: { handbook: Handbook }) {
-  const { Icon, tone, nodes } = handbookVisual(handbook.slug);
+  const { Icon, tone } = handbookVisual(handbook.slug);
   return <article className={`published-handbook-card published-${tone}`}>
     <div className="published-card-intro">
-      <span className="handbook-book-spine"><i>MAANAVAN</i><b>HANDBOOK</b></span>
-      <div className="handbook-page-edges"><i/><i/><i/></div>
-      <div className="published-cover-top"><span className="published-card-icon"><Icon/></span><small>MAANAVAN · PRACTICAL HANDBOOK</small></div>
-      <HandbookCoverVisual nodes={nodes} Icon={Icon}/>
-      <small className="handbook-cover-category">{handbook.label}</small>
+      <span className="published-card-icon"><Icon/></span><small>{handbook.label}</small>
       <h3>{handbook.title}</h3><p>{handbook.description}</p>
       <div className="handbook-card-focus"><b>VISUAL LEARNING PATH</b><span>Concept → workflow → application</span></div>
       <Link className="handbook-card-cta" href={handbookHref(handbook.slug)}>Explore handbook <ArrowRight/></Link>

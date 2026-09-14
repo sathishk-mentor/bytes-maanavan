@@ -85,6 +85,19 @@ export const handbooks: Handbook[] = [
       { title: 'Secure, test and deploy', outcome: 'Add authentication, limits, tests, Docker and operations.', href: '/fastapi-ai-applications/05-secure-test-deploy-production-fastapi/' },
     ],
   },
+  {
+    slug: 'modern-java-spring-boot-genai', title: 'Modern Java with Spring Boot and GenAI Handbook', shortTitle: 'Java, Spring Boot & GenAI',
+    audience: 'Java Beginners · Enterprise Developers', tone: 'orange', status: 'available', category: 'software-engineering', label: 'ENTERPRISE JAVA IN THE AI ERA',
+    description: 'Build enterprise applications with modern Java, Spring Boot, databases, grounded Generative AI and production deployment.',
+    promise: 'Build an Enterprise Policy Assistant from Java foundations to a secure, cited and containerised AI application.',
+    chapters: [
+      { title: 'Modern Java foundations for the AI era', outcome: 'Model application behaviour with readable Java and AI-assisted review.', href: '/modern-java-spring-boot-genai/01-modern-java-foundations-ai-era/' },
+      { title: 'Build REST APIs with Spring Boot', outcome: 'Create clear controller, service, validation and error boundaries.', href: '/modern-java-spring-boot-genai/02-build-rest-apis-java-spring-boot/' },
+      { title: 'Connect Spring Boot with a database', outcome: 'Persist policies safely with JPA, SQL and configuration.', href: '/modern-java-spring-boot-genai/03-connect-spring-boot-database/' },
+      { title: 'Add Generative AI and RAG', outcome: 'Retrieve policy evidence and generate grounded answers.', href: '/modern-java-spring-boot-genai/04-add-generative-ai-rag-java/' },
+      { title: 'Build and deploy the enterprise application', outcome: 'Secure, test, observe, containerise and deploy the service.', href: '/modern-java-spring-boot-genai/05-build-deploy-enterprise-ai-application/' },
+    ],
+  },
 ];
 
 export function getHandbook(slug: string) { return handbooks.find((handbook) => handbook.slug === slug); }
