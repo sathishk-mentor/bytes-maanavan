@@ -26,11 +26,11 @@ export const handbooks: Handbook[] = [
     description: 'Use Copilot as an engineering partner—from context and feature work to debugging, testing and safer delivery.',
     promise: 'Move beyond code completion and build a repeatable AI-assisted engineering workflow.',
     chapters: [
-      { title: 'How developers use AI tools', outcome: 'Choose the right mode for the task.', href: '/software-engineering/62-how-developers-use-ai-tools/' },
-      { title: 'Context engineering', outcome: 'Give Copilot the information it needs.', href: '/software-engineering/63-api-first-thinking/' },
-      { title: 'AI-assisted feature workflow', outcome: 'Plan, build and verify a feature.', href: '/software-engineering/66-ai-assisted-coding-workflow/' },
-      { title: 'Debug, test and refactor', outcome: 'Use evidence to find and fix problems.', href: '/software-engineering/64-debugging-ai-generated-code/' },
-      { title: 'Responsible AI coding', outcome: 'Protect security, quality and ownership.', href: '/software-engineering/75-secure-ai-coding/' },
+      { title: 'GitHub Copilot for developers', outcome: 'Choose the right mode for the task.', href: '/software-engineering/01-github-copilot-for-developers/' },
+      { title: 'Give Copilot better context', outcome: 'Supply the goal, files, rules and acceptance checks.', href: '/software-engineering/02-give-github-copilot-better-context/' },
+      { title: 'Debug, test and refactor', outcome: 'Use evidence to find and verify corrections.', href: '/software-engineering/03-debug-test-refactor-with-github-copilot/' },
+      { title: 'Build a feature with Copilot', outcome: 'Plan, implement and verify a focused change.', href: '/software-engineering/04-build-feature-with-github-copilot/' },
+      { title: 'Use Copilot responsibly', outcome: 'Protect security, quality and ownership.', href: '/software-engineering/05-use-github-copilot-responsibly/' },
     ],
   },
   {

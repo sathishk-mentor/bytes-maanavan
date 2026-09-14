@@ -31,18 +31,18 @@ function handbookVisual(slug: string) {
   return { Icon: Workflow, tone: 'fde' };
 }
 
-function HandbookCard({ handbook }: { handbook: Handbook }) {
+function HandbookCard({ handbook, compact = false }: { handbook: Handbook; compact?: boolean }) {
   const { Icon, tone } = handbookVisual(handbook.slug);
-  return <article className={`published-handbook-card published-${tone}`}>
+  return <article className={`published-handbook-card published-${tone} ${compact ? 'published-handbook-compact' : ''}`}>
     <div className="published-card-intro">
-      <span className="published-card-icon"><Icon/></span><small>{handbook.label}</small>
+      <div className="published-card-topline"><span className="published-card-icon"><Icon/></span>{compact && <b>{handbook.chapters.length} BYTES</b>}</div><small>{handbook.label}</small>
       <h3>{handbook.title}</h3><p>{handbook.description}</p>
-      <div className="handbook-card-focus"><b>VISUAL LEARNING PATH</b><span>Concept → workflow → application</span></div>
+      <div className="handbook-card-focus"><b>{compact ? handbook.audience : 'VISUAL LEARNING PATH'}</b><span>{compact ? handbook.promise : 'Concept → workflow → application'}</span></div>
       <Link className="handbook-card-cta" href={handbookHref(handbook.slug)}>Explore handbook <ArrowRight/></Link>
     </div>
-    <nav aria-label={`${handbook.title} chapters`}>{handbook.chapters.map((chapter, index) => <Link href={chapter.href} key={chapter.href}>
+    {!compact && <nav aria-label={`${handbook.title} chapters`}>{handbook.chapters.map((chapter, index) => <Link href={chapter.href} key={chapter.href}>
       <span>{String(index + 1).padStart(2, '0')}</span><div><small>BYTE {index + 1}</small><strong>{chapter.title}</strong></div><span className="chapter-link-icon" aria-hidden="true"><ArrowRight/></span>
-    </Link>)}</nav>
+    </Link>)}</nav>}
   </article>;
 }
 
@@ -58,7 +58,7 @@ export function PublishedHandbooks({ handbooks, variant = 'home' }: { handbooks:
     <header className="published-heading"><div><p className="eyebrow dark">PUBLISHED HANDBOOKS</p><h2>{variant === 'home' ? 'Choose a path. Learn one connected chapter at a time.' : 'Find the handbook for your next practical skill.'}</h2><p>Search by skill or choose a subject area. Every handbook connects visual explanations, real scenarios and practical engineering decisions.</p></div>{variant === 'home' && <Link href="/handbooks/">View complete library <ArrowRight/></Link>}</header>
     <div className="handbook-discovery-panel"><label className="handbook-search"><Search/><span className="sr-only">Search handbooks</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search AI Agents, FastAPI, RAG, Docker…"/>{query && <button aria-label="Clear handbook search" onClick={() => setQuery('')}><X/></button>}</label><div className="handbook-filter-row" aria-label="Filter handbooks by category">{filters.map((item) => <button className={filter === item.value ? 'active' : ''} onClick={() => setFilter(item.value)} key={item.value}>{item.label}</button>)}</div></div>
     <div className="handbook-result-summary"><span><BookOpen/>Showing <b>{results.length}</b> matching {results.length === 1 ? 'handbook' : 'handbooks'}</span>{(query || filter !== 'all') && <button onClick={() => { setQuery(''); setFilter('all'); }}>Clear filters</button>}</div>
-    <div className="published-handbook-grid">{results.map((handbook) => <HandbookCard handbook={handbook} key={handbook.slug}/>)}</div>
+    <div className="published-handbook-grid">{results.map((handbook) => <HandbookCard handbook={handbook} compact={variant === 'home'} key={handbook.slug}/>)}</div>
     {!results.length && <div className="handbook-empty"><Search/><h3>No matching handbook</h3><p>Try a broader skill or view all subject areas.</p><button onClick={() => { setQuery(''); setFilter('all'); }}>View all handbooks</button></div>}
   </div></section>;
 }
