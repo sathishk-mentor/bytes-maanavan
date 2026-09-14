@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import {
   Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, CheckCircle2, ChevronRight, Clock3, Code2,
-  Container, Database, FileCode2, Gauge, GitPullRequestArrow, HardDrive, KeyRound, Network, Rocket, ScanSearch, Search, Server, ShieldCheck, Sparkles, TestTube2, Users,
+  Container, Database, FileCode2, FileText, Gauge, GitPullRequestArrow, HardDrive, KeyRound, MessageSquareText, Network, Rocket, ScanSearch, Search, Server, ShieldCheck, Sparkles, TestTube2, Users, Wrench,
 } from 'lucide-react';
 import { ByteMetadata } from '@/lib/types';
 import { getCategoryBySlug } from '@/lib/categories';
@@ -22,6 +22,11 @@ const handbookHeroes = {
   '03-docker-ports-volumes-environment-variables': { label: 'RUNTIME CONNECTIONS', icon: HardDrive, steps: [[Network, 'Publish port'], [HardDrive, 'Mount volume'], [KeyRound, 'Inject config'], [Gauge, 'Inspect']] },
   '04-multi-container-applications-docker-compose': { label: 'COMPOSE APPLICATION', icon: Network, steps: [[Code2, 'Frontend'], [Server, 'API'], [Database, 'Database'], [Bot, 'AI service']] },
   '05-dockerize-deploy-generative-ai-application': { label: 'AI DEPLOYMENT PATH', icon: Rocket, steps: [[Code2, 'LLM app'], [ShieldCheck, 'Protect key'], [Container, 'Package'], [Rocket, 'Deploy']] },
+  '01-what-is-langchain-build-llm-applications': { label: 'LANGCHAIN APP MODEL', icon: Network, steps: [[MessageSquareText, 'Messages'], [Bot, 'Model'], [Braces, 'Structure'], [Code2, 'Application']] },
+  '02-connect-python-with-llms-using-langchain': { label: 'MODEL INTEGRATION', icon: MessageSquareText, steps: [[KeyRound, 'Secret config'], [MessageSquareText, 'Messages'], [Bot, 'Model call'], [Braces, 'Typed result']] },
+  '03-build-rag-applications-with-your-documents': { label: 'RAG PIPELINE', icon: FileText, steps: [[FileText, 'Documents'], [Blocks, 'Chunks'], [Database, 'Vectors'], [Search, 'Evidence']] },
+  '04-build-ai-agents-with-tools-and-memory': { label: 'AGENT LOOP', icon: Wrench, steps: [[Users, 'Goal'], [Bot, 'Decide'], [Wrench, 'Use tool'], [Network, 'Update state']] },
+  '05-production-ready-langchain-application': { label: 'PRODUCTION GATES', icon: ShieldCheck, steps: [[Braces, 'Contract'], [ShieldCheck, 'Controls'], [Gauge, 'Observe'], [Rocket, 'Release']] },
 } as const;
 
 function TopicHeroVisual({ slug }: { slug: string }) {

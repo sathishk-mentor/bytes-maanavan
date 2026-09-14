@@ -1,0 +1,156 @@
+---
+title: "Create and Deploy a Production-Ready LangChain Application"
+slug: "05-production-ready-langchain-application"
+summary: "Turn a working LangChain prototype into an operable service with output contracts, failure handling, traces, security controls and Docker packaging."
+category: "langchain"
+tags: ["production LangChain", "LangSmith observability", "LangChain deployment", "Docker LLM app", "LLM application security"]
+level: "intermediate"
+duration: "25 min"
+updatedAt: "2026-09-14"
+order: 5
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="LANGCHAIN HANDBOOK 05">
+
+You will define a production readiness path for an LLM service: contract, resilience, observability, evaluation, security and one immutable Docker image promoted between environments.
+
+</ThemeCard>
+
+<LangChainFlowVisual variant="production" />
+
+## A demo proves possibility, not reliability
+
+A notebook that answers one question proves that an API call works. Production must handle simultaneous users, timeouts, rate limits, invalid output, unsafe input, changing models, cost limits, private data and releases that need rollback.
+
+Production readiness is therefore a system property. LangChain can provide model and agent abstractions; LangSmith can trace and evaluate runs; your API, infrastructure and organisational controls must complete the design.
+
+## Start with an explicit service contract
+
+```python
+from pydantic import BaseModel, Field
+
+class Answer(BaseModel):
+    response: str
+    source_ids: list[str] = Field(default_factory=list)
+    needs_review: bool
+```
+
+Validate inputs before the model call and outputs before returning them. Set maximum lengths, allowed file types and business-specific rules. For high-impact decisions, return a recommendation and evidence—not an automatically executed action.
+
+## Make failures visible and controlled
+
+Plan for provider timeouts, throttling, malformed output, empty retrieval and tool failures. Use bounded retries only for transient failures. Retrying authentication errors or invalid requests wastes time and money.
+
+Return a safe public error with a request identifier. Record the internal cause in protected telemetry. Add idempotency when a retry might otherwise duplicate a side effect.
+
+## Observe the full run
+
+An LLM trace should help answer:
+
+- Which model, prompt version and configuration ran?
+- What documents were retrieved?
+- Which tools were called and how long did they take?
+- How many tokens and how much latency did the request consume?
+- Where did an error or unexpected decision occur?
+
+LangSmith tracing can inspect model calls, tool calls and state transitions. Traces are operational data and may contain user content; apply redaction, access control and retention policies before enabling them broadly.
+
+## Evaluate before and after release
+
+Create a versioned dataset of representative requests, difficult edge cases and expected behaviours. Run offline evaluation before deployment and monitor sampled production outcomes after release. Track task-specific measures such as groundedness, tool selection, resolution rate, latency and cost.
+
+Averages can hide dangerous failures. Segment by request type, language, document set and model version.
+
+## Package the service with Docker
+
+```dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app ./app
+RUN useradd --create-home appuser
+USER appuser
+
+EXPOSE 8000
+CMD ["uvicorn", "app.main:api", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+```bash
+docker build -t course-assistant:1.0.0 .
+docker run --rm -p 8000:8000 --env-file .env course-assistant:1.0.0
+```
+
+The image contains code and dependencies. Secrets enter at runtime. Pin dependencies, scan the image, run as a non-root user, expose a health endpoint and use the same tested image in staging and production.
+
+## Production architecture
+
+```text
+client
+  ↓ authenticated HTTPS
+API service → validation → LangChain application → model provider
+                    ↘ retriever / approved tools
+                    ↘ protected traces + metrics
+```
+
+Place authentication and rate limiting before expensive model work. Keep private data access behind authorised services. Add queues for long tasks and time budgets for agent loops.
+
+## Real-time scenario: model provider slowdown
+
+<Scenario title="A production response is more than a retry">
+
+The provider begins timing out during enrolment season. A bounded retry handles brief network faults, but repeated retries increase queue depth and cost. The service opens a circuit, returns a clear temporary response, preserves a request ID and alerts operators. If a tested fallback model exists, routing follows an explicit quality policy rather than silently changing behaviour.
+
+</Scenario>
+
+## Release checklist
+
+- Input limits, output schema and business validation are enforced.
+- Secrets are injected at runtime and sensitive traces are redacted.
+- Timeout, retry, rate-limit and cost budgets are configured.
+- Representative evaluation datasets pass the release threshold.
+- Health checks, dashboards, alerts and rollback are tested.
+- The container runs without root and the image is scanned.
+
+## Common mistakes
+
+<Mistakes>
+
+- Treating LangSmith tracing as permission to store all prompts forever.
+- Deploying mutable dependencies without a tested lock file.
+- Retrying every failure and multiplying cost or side effects.
+- Switching models in production without re-running evaluations.
+- Reporting only uptime while ignoring answer quality and task outcomes.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How would you productionise a LangChain application?" badge="CAREER">
+
+**Strong answer:** I begin with validated input and structured output contracts, then add bounded retries, timeouts, rate and cost limits. I trace model, retrieval and tool behaviour with privacy controls, evaluate representative datasets before release and monitor quality in production. I package an immutable, non-root Docker image, inject secrets at runtime and maintain health checks, alerts and rollback.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Production readiness combines application, model, data and infrastructure controls.
+- Observability should reveal behaviour without unnecessarily retaining sensitive content.
+- Evaluation gates model, prompt and retrieval changes before release.
+- Docker packages the service; it does not replace security or operations.
+- Reliability includes quality, latency, cost and safe failure—not uptime alone.
+
+</Takeaways>
+
+## Primary sources
+
+- [LangChain overview](https://docs.langchain.com/oss/python/langchain/overview)
+- [LangSmith observability quickstart](https://docs.langchain.com/langsmith/observability-quickstart)
+- [LangSmith evaluation concepts](https://docs.langchain.com/langsmith/evaluation-concepts)
+- [Docker build best practices](https://docs.docker.com/build/building/best-practices/)
+- [OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/)

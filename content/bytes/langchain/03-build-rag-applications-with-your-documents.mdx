@@ -1,0 +1,141 @@
+---
+title: "Build RAG Applications with Your Own Documents"
+slug: "03-build-rag-applications-with-your-documents"
+summary: "Build the mental model for document loading, chunking, embeddings, vector search and grounded answers through a practical policy assistant."
+category: "langchain"
+tags: ["LangChain RAG tutorial", "retrieval augmented generation", "embeddings", "vector store", "document assistant"]
+level: "beginner"
+duration: "22 min"
+updatedAt: "2026-09-14"
+order: 3
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="LANGCHAIN HANDBOOK 03">
+
+You will understand the two phases of RAG and design a document assistant that answers from retrieved evidence instead of pretending the model already knows private content.
+
+</ThemeCard>
+
+<LangChainFlowVisual variant="rag" />
+
+## What RAG changes
+
+Retrieval-Augmented Generation gives the model selected external context at request time. It does not retrain the model. A useful RAG system first indexes documents, then retrieves relevant chunks for each question and asks the model to answer from those chunks.
+
+Without retrieval, a model cannot reliably know your current leave policy, internal course catalogue or private product manual. With retrieval, the application can supply the relevant passages and preserve links or document identifiers for citation.
+
+## Phase one: index the knowledge
+
+```text
+documents → load → split → embed → store vectors + text + metadata
+```
+
+1. **Load:** read supported sources such as PDF, HTML or text.
+2. **Split:** create chunks small enough to retrieve precisely but large enough to preserve meaning.
+3. **Embed:** convert each chunk into a numerical representation of semantic meaning.
+4. **Store:** save vectors alongside original text and metadata.
+
+Metadata should preserve source, section, version and access scope. A vector without its source context is difficult to cite, filter or govern.
+
+## Phase two: answer a question
+
+```text
+question → embed → similarity search → relevant chunks → model → cited answer
+```
+
+The retriever finds candidate chunks; the model synthesises an answer. Retrieval quality and generation quality are different problems. A fluent answer can still be wrong if the retriever selected irrelevant or outdated text.
+
+## A small semantic-search foundation
+
+```python
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_core.vectorstores import InMemoryVectorStore
+
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=800,
+    chunk_overlap=120,
+)
+chunks = splitter.split_documents(documents)
+
+vector_store = InMemoryVectorStore(OpenAIEmbeddings())
+vector_store.add_documents(chunks)
+
+retriever = vector_store.as_retriever(search_kwargs={"k": 4})
+evidence = retriever.invoke("How many casual leave days are available?")
+```
+
+An in-memory store is suitable for learning, not durable production storage. Choose a production vector store based on scale, filtering, latency, operations and data-governance requirements—not popularity alone.
+
+## Real-time analogy: an open-book examination
+
+<Scenario title="Find the right page before writing the answer">
+
+In an open-book examination, owning the textbook is not enough. You must locate the relevant page, read it and answer the question using that evidence. Indexing creates the searchable catalogue; retrieval opens the likely pages; generation writes the response. If the wrong page is opened, confident writing does not repair the evidence.
+
+</Scenario>
+
+## The production answer contract
+
+A document assistant should return more than prose:
+
+```python
+class GroundedAnswer(BaseModel):
+    answer: str
+    source_ids: list[str]
+    insufficient_evidence: bool
+```
+
+Instruct the system to say when evidence is insufficient. Then verify that returned source identifiers actually belong to retrieved chunks; never let the model invent a citation URL.
+
+## RAG quality checks
+
+Test the system at three layers:
+
+| Layer | Question | Useful measure |
+|---|---|---|
+| Retrieval | Did we find the evidence? | Recall at k |
+| Generation | Is the answer supported? | Faithfulness / citation check |
+| Product | Did the user complete the task? | Resolution or escalation rate |
+
+Also test adversarial documents, conflicting versions, empty retrieval, access-controlled content and questions that should be refused.
+
+## Common mistakes
+
+<Mistakes>
+
+- Splitting every document with one arbitrary chunk size.
+- Removing headings and source metadata during ingestion.
+- Mixing documents a user may access with documents they may not.
+- Asking the model to create citations that were not supplied by retrieval.
+- Evaluating only answer fluency instead of retrieval and evidence quality.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="Explain a RAG pipeline." badge="CAREER">
+
+**Strong answer:** I separate indexing from query-time retrieval. During indexing I load, chunk, embed and store text with source and access metadata. At query time I retrieve relevant chunks, give only authorised evidence to the model and require a grounded answer with validated source identifiers. I evaluate retrieval recall separately from answer faithfulness.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- RAG supplies external context at request time; it is not model training.
+- Chunking and metadata directly affect retrieval quality and governance.
+- Vector search returns candidates, not guaranteed truth.
+- Citations must be bound to retrieved sources by application code.
+- Evaluate retrieval, generation and product outcomes separately.
+
+</Takeaways>
+
+## Primary sources
+
+- [LangChain retrieval](https://docs.langchain.com/oss/python/langchain/retrieval)
+- [LangChain document loaders](https://docs.langchain.com/oss/python/integrations/document_loaders)
+- [LangChain text splitters](https://docs.langchain.com/oss/python/integrations/splitters)
+- [LangChain vector stores](https://docs.langchain.com/oss/python/integrations/vectorstores)

@@ -44,6 +44,19 @@ export const handbooks: Handbook[] = [
       { title: 'Deploy a Generative AI application', outcome: 'Package, protect and prepare an LLM app for cloud.', href: '/cloud-devops/05-dockerize-deploy-generative-ai-application/' },
     ],
   },
+  {
+    slug: 'langchain', title: 'LangChain for GenAI and AI Agents', shortTitle: 'LangChain',
+    audience: 'Python Developers · AI Builders', tone: 'green', status: 'available',
+    description: 'Build practical LLM, RAG and agentic AI applications with Python using current LangChain patterns.',
+    promise: 'Move from a model call to a grounded, tool-using and observable AI application.',
+    chapters: [
+      { title: 'What is LangChain?', outcome: 'Place models, messages and structured output in one mental model.', href: '/langchain/01-what-is-langchain-build-llm-applications/' },
+      { title: 'Connect Python with LLMs', outcome: 'Configure a model and validate its response.', href: '/langchain/02-connect-python-with-llms-using-langchain/' },
+      { title: 'Build RAG with your documents', outcome: 'Load, chunk, embed, retrieve and ground answers.', href: '/langchain/03-build-rag-applications-with-your-documents/' },
+      { title: 'Build agents with tools and memory', outcome: 'Create bounded tool use and thread-scoped state.', href: '/langchain/04-build-ai-agents-with-tools-and-memory/' },
+      { title: 'Deploy a production application', outcome: 'Add contracts, traces, security and Docker packaging.', href: '/langchain/05-production-ready-langchain-application/' },
+    ],
+  },
 ];
 
 export function getHandbook(slug: string) { return handbooks.find((handbook) => handbook.slug === slug); }

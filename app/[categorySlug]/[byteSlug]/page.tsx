@@ -15,6 +15,7 @@ import {
 import { getCategoryBySlug } from '@/lib/categories';
 import { CourseRecommendation } from '@/components/bytes/CourseRecommendation';
 import { ReadingReveal } from '@/components/bytes/ReadingReveal';
+import { AuthorCard } from '@/components/bytes/AuthorCard';
 
 interface BytePageProps {
   params: {
@@ -39,13 +40,18 @@ const searchTitles:Record<string,string>={
   '03-docker-ports-volumes-environment-variables':'Docker Ports, Volumes and Environment Variables',
   '04-multi-container-applications-docker-compose':'Docker Compose Multi-Container Tutorial',
   '05-dockerize-deploy-generative-ai-application':'Dockerize and Deploy a Generative AI App',
+  '01-what-is-langchain-build-llm-applications':'What Is LangChain? LLM Applications Explained',
+  '02-connect-python-with-llms-using-langchain':'Connect Python with LLMs Using LangChain',
+  '03-build-rag-applications-with-your-documents':'LangChain RAG Tutorial with Your Documents',
+  '04-build-ai-agents-with-tools-and-memory':'LangChain AI Agents with Tools and Memory',
+  '05-production-ready-langchain-application':'Production-Ready LangChain Application',
 };
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops','langchain'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
@@ -66,6 +72,7 @@ function legacyDestination(categorySlug: string) {
     'ai-agents':'https://www.maanavan.com/courses/ai-agents-automation',
     'data-engineering':'https://www.maanavan.com/courses/data-engineering',
     'cloud-devops':'https://www.maanavan.com/courses/cloud-devops',
+    langchain:'/langchain/',
     cybersecurity:'https://www.maanavan.com/courses/cybersecurity',
     'case-studies':'/forward-deployed-engineer/',
   };
@@ -129,7 +136,7 @@ export default async function BytePage({ params }: BytePageProps) {
         <div className="byte-reading-layout">
           <AccordionTableOfContents headings={headings} byteSlug={byte.slug} />
           <div className="byte-main-column">
-            <ReadingReveal><ByteContent content={byte.content} /><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
+            <ReadingReveal><ByteContent content={byte.content} /><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
           <aside className="byte-trust-rail"><div className="byte-progress-card"><span>LEARNING PROGRESS</span><h3>Chapter {chapterNumber} of {handbookBytes.length}</h3><p>{category?.title}</p><div className="byte-progress-track"><i style={{width:`${chapterNumber * 20}%`}} /></div><small>{byte.duration} focused reading</small></div><div className="byte-review-card"><span>INSIDE THIS BYTE</span><h3>Learn it visually</h3><p>Workflow · example · practical takeaway</p><small>Designed for focused, self-paced learning</small></div></aside>
         </div>

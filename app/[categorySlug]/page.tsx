@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { ArrowDown, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, Layers3, Network, Rocket, Sparkles, Workflow } from 'lucide-react';
+import { ArrowDown, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, Database, Layers3, Network, Rocket, Sparkles, Workflow } from 'lucide-react';
 import { CategoryPageClient } from '@/components/category/CategoryPageClient';
 import { getCategoryBySlug } from '@/lib/categories';
 import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
@@ -37,6 +37,15 @@ const handbookDetails = {
     prerequisite: 'Basic command-line awareness',
     result: 'A build → run → connect → compose → deploy workflow',
     keywords: ['Docker handbook', 'Docker tutorial for beginners', 'Docker Python tutorial', 'Docker Compose tutorial', 'Docker Generative AI application'],
+  },
+  'langchain': {
+    searchTitle: 'LangChain for GenAI and AI Agents',
+    eyebrow: 'LLM APPLICATION ENGINEERING',
+    intro: 'Build practical LLM, RAG and agentic AI applications with Python—from model calls and structured responses to tools, memory, observability and Docker deployment.',
+    audience: 'Python developers and practical AI builders',
+    prerequisite: 'Basic Python; no LangChain experience required',
+    result: 'A model → RAG → agent → production learning path',
+    keywords: ['LangChain tutorial', 'LangChain Python', 'LangChain RAG', 'LangChain agents', 'LangChain for beginners', 'GenAI application development'],
   },
 } as const;
 type PublishedCategory = keyof typeof handbookDetails;
@@ -73,6 +82,11 @@ function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory 
         <div><span><Code2/><small>Source</small></span><b>→</b><span><Box/><small>Image</small></span><b>→</b><span><Container/><small>Container</small></span><b>→</b><span><Rocket/><small>Cloud</small></span></div>
         <footer><Network/><span>Portable runtime with explicit configuration</span></footer>
       </div>
+    </div>;
+  }
+  if (categorySlug === 'langchain') {
+    return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated LangChain application workflow">
+      <div className="langchain-orchestrator"><header><Network/><span><small>LANGCHAIN APPLICATION</small><strong>Compose the right capabilities</strong></span><i>RUNNING</i></header><div><span><Code2/><small>Python</small></span><b>→</b><span><Sparkles/><small>Model</small></span><b>→</b><span><Database/><small>Knowledge</small></span><b>→</b><span><Workflow/><small>Tools</small></span></div><footer><CheckCircle2/><span>Grounded · stateful · observable</span></footer></div>
     </div>;
   }
   return <div className="handbook-hero-visual fde-hero-visual" aria-label="Animated Forward Deployed Engineer outcome loop">

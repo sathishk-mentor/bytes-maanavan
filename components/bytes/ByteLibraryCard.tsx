@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, Clock3, Container, Gauge, GitPullRequestArrow, HardDrive, Network, Rocket, Search, Server, ShieldCheck, Workflow } from 'lucide-react';
+import { ArrowRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, Clock3, Container, FileText, Gauge, GitPullRequestArrow, HardDrive, MessageSquareText, Network, Rocket, Search, ShieldCheck, Workflow, Wrench } from 'lucide-react';
 import type { ByteMetadata } from '@/lib/types';
 
 const cardVisuals = {
@@ -18,6 +18,11 @@ const cardVisuals = {
   '03-docker-ports-volumes-environment-variables': { icon: HardDrive, label: 'Container Runtime', tone: 'indigo' },
   '04-multi-container-applications-docker-compose': { icon: Network, label: 'Docker Compose', tone: 'violet' },
   '05-dockerize-deploy-generative-ai-application': { icon: Rocket, label: 'AI Deployment', tone: 'emerald' },
+  '01-what-is-langchain-build-llm-applications': { icon: Network, label: 'LangChain Foundations', tone: 'emerald' },
+  '02-connect-python-with-llms-using-langchain': { icon: MessageSquareText, label: 'Models & Messages', tone: 'teal' },
+  '03-build-rag-applications-with-your-documents': { icon: FileText, label: 'RAG Architecture', tone: 'blue' },
+  '04-build-ai-agents-with-tools-and-memory': { icon: Wrench, label: 'Agents & Tools', tone: 'violet' },
+  '05-production-ready-langchain-application': { icon: ShieldCheck, label: 'Production AI', tone: 'indigo' },
 } as const;
 
 export function ByteLibraryCard({ chapter, chapterNumber }: { chapter: ByteMetadata; chapterNumber: number }) {
@@ -25,8 +30,9 @@ export function ByteLibraryCard({ chapter, chapterNumber }: { chapter: ByteMetad
   const Icon = visual.icon;
   const isFde = chapter.category === 'forward-deployed-engineer';
   const isDocker = chapter.category === 'cloud-devops';
-  const category = isFde ? 'Technology Careers' : isDocker ? 'Cloud & DevOps' : 'Software Engineering';
-  const handbook = isFde ? 'FDE Handbook' : isDocker ? 'Docker Handbook' : 'GitHub Copilot Handbook';
+  const isLangChain = chapter.category === 'langchain';
+  const category = isFde ? 'Technology Careers' : isDocker ? 'Cloud & DevOps' : isLangChain ? 'Generative AI & Agents' : 'Software Engineering';
+  const handbook = isFde ? 'FDE Handbook' : isDocker ? 'Docker Handbook' : isLangChain ? 'LangChain Handbook' : 'GitHub Copilot Handbook';
 
   return <Link className={`library-byte-card tone-${visual.tone}`} href={`/${chapter.category}/${chapter.slug}/`}>
     <div className="byte-card-cover"><span>MAANAVAN BYTE</span><Icon/><i>BYTE {String(chapterNumber).padStart(2, '0')}</i></div>

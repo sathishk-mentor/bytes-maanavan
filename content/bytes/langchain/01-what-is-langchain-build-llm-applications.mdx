@@ -1,0 +1,109 @@
+---
+title: "What Is LangChain? Build LLM Applications"
+slug: "01-what-is-langchain-build-llm-applications"
+summary: "Understand models, messages, prompts and structured outputs—and where LangChain fits when a simple model call grows into a practical AI application."
+category: "langchain"
+tags: ["LangChain", "LLM applications", "LangChain Python", "prompts", "structured output"]
+level: "beginner"
+duration: "16 min"
+updatedAt: "2026-09-14"
+order: 1
+isPopular: true
+---
+
+<ThemeCard title="What you will learn" badge="LANGCHAIN HANDBOOK 01">
+
+You will understand what LangChain contributes, distinguish the model from the application around it and trace a request through messages, a chat model and a structured response.
+
+</ThemeCard>
+
+<LangChainFlowVisual variant="foundation" />
+
+## The 60-second explanation
+
+An LLM can generate text, but a useful application usually needs more: provider configuration, role-based messages, output contracts, tools, retrieval, state, retries and traces. **LangChain is an open-source framework that provides common interfaces and a configurable harness for these application concerns.**
+
+Think of the model as an engine. LangChain is not another engine; it is part of the vehicle around the engine—the controls, wiring and workflow that make the engine useful for a particular journey.
+
+Modern LangChain centres on composable primitives. You can call a chat model directly for a predictable task or use `create_agent` when the model must decide which tool to call. LangChain agents run on LangGraph, which supplies durable execution and persistence capabilities.
+
+## The five building blocks
+
+| Building block | Responsibility | Simple example |
+|---|---|---|
+| Model | Generates or reasons over content | Summarise a support ticket |
+| Messages | Carry role and conversation context | System, user and AI messages |
+| Prompt | Defines the task and constraints | “Return three risks with evidence” |
+| Structured output | Constrains the response to a schema | A typed `TicketResult` object |
+| Application harness | Coordinates model, tools, state and middleware | A support-triage agent |
+
+Older tutorials may emphasise “output parsers.” They remain useful when parsing text or composing custom pipelines, but for new applications prefer a provider-supported structured-output interface when available. The result is easier to validate than free-form text.
+
+## Real-time analogy: restaurant service
+
+<Scenario title="A chef alone is not a restaurant">
+
+The chef is like the model: skilled at transforming inputs into an output. A real restaurant also needs an order format, waiter, kitchen workflow, ingredient access and quality checks. LangChain helps organise those surrounding responsibilities. It does not guarantee the chef is correct, the ingredients are fresh or the final meal is safe—your application must still validate important outcomes.
+
+</Scenario>
+
+## Direct model call or LangChain?
+
+Use a provider SDK directly when your application makes one or two stable model calls and you value the smallest possible dependency surface. Consider LangChain when you need a standard interface across providers, structured output, retrieval, tools, agent state, middleware or tracing.
+
+Avoid adding an agent simply because it sounds advanced. If the steps are known in advance, ordinary application code is often clearer and safer. Agents become valuable when the model must choose dynamically among actions.
+
+## A minimal mental model in Python
+
+```python
+from langchain.chat_models import init_chat_model
+
+model = init_chat_model("provider:model-name")
+response = model.invoke([
+    {"role": "system", "content": "Explain concepts for a beginner."},
+    {"role": "user", "content": "Explain RAG using one analogy."},
+])
+
+print(response.content)
+```
+
+The provider and model name are configuration choices. `invoke` accepts messages and returns an AI message. Your application decides what happens next: display it, validate it, store it or feed it into another controlled step.
+
+## What LangChain does not solve automatically
+
+<Mistakes>
+
+- Assuming a framework prevents hallucinations.
+- Using an agent for a fixed sequence that ordinary code could express.
+- Hiding business rules inside a long prompt instead of enforcing them in code.
+- Treating a successful API response as a correct business answer.
+- Copying examples written for older LangChain releases without checking current documentation.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="Where does LangChain fit in an LLM application?" badge="CAREER">
+
+**Strong answer:** The model is the reasoning and generation engine. LangChain provides standard model interfaces and an application harness around it, including messages, structured output, retrieval, tools, state and middleware. I use only the abstractions the use case needs and keep validation, security and business rules in application code.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- LangChain is an application framework, not an LLM.
+- Start with a direct model call; add retrieval or agents only when the problem requires them.
+- Messages carry role-based context, while structured output creates a software-friendly contract.
+- Framework abstractions improve composition, not factual correctness by themselves.
+- Current documentation matters because LangChain APIs evolve quickly.
+
+</Takeaways>
+
+## Primary sources
+
+- [LangChain overview](https://docs.langchain.com/oss/python/langchain/overview)
+- [LangChain models](https://docs.langchain.com/oss/python/langchain/models)
+- [LangChain messages](https://docs.langchain.com/oss/python/langchain/messages)
+- [LangChain structured output](https://docs.langchain.com/oss/python/langchain/structured-output)

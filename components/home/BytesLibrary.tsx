@@ -10,6 +10,7 @@ const filters = [
   {label:'Software Engineering',value:'software-engineering'},
   {label:'Technology Careers',value:'forward-deployed-engineer'},
   {label:'Cloud & DevOps',value:'cloud-devops'},
+  {label:'Generative AI & Agents',value:'langchain'},
 ];
 export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
   const [query, setQuery] = useState('');

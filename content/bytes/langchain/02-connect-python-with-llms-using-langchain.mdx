@@ -1,0 +1,157 @@
+---
+title: "Connect Python with LLMs Using LangChain"
+slug: "02-connect-python-with-llms-using-langchain"
+summary: "Configure a chat model safely, send role-based messages and turn an AI response into validated data that a Python application can use."
+category: "langchain"
+tags: ["LangChain Python tutorial", "chat models", "API keys", "structured output", "LLM Python"]
+level: "beginner"
+duration: "19 min"
+updatedAt: "2026-09-14"
+order: 2
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="LANGCHAIN HANDBOOK 02">
+
+You will build a small support-ticket classifier while keeping the API key outside source code and validating the model response against a Python schema.
+
+</ThemeCard>
+
+<LangChainFlowVisual variant="model" />
+
+## The project: support-ticket triage
+
+A customer writes: “Payment succeeded, but the course is still locked.” Our application should return a category, urgency and short routing reason. Free-form prose is awkward for downstream code; a typed result is safer.
+
+## Set up the environment
+
+Create a virtual environment and install LangChain with the integration for your chosen provider. Provider packages are separate so applications do not install every integration.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -U "langchain[openai]" python-dotenv
+```
+
+Keep `.env` out of Git:
+
+```text
+OPENAI_API_KEY=replace_with_your_key
+```
+
+```text
+# .gitignore
+.env
+.venv/
+__pycache__/
+```
+
+Environment files improve local hygiene, but production secrets should come from the hosting platform’s secret manager. Never bake them into a Docker image or expose them to browser code.
+
+## Define an output contract
+
+```python
+from typing import Literal
+from pydantic import BaseModel, Field
+
+class TicketResult(BaseModel):
+    category: Literal["billing", "access", "technical", "other"]
+    urgency: Literal["low", "medium", "high"]
+    reason: str = Field(description="One short evidence-based reason")
+```
+
+The schema restricts shape and allowed values. It does not prove the classification is correct; it makes errors easier to detect and handle.
+
+## Initialise and call the model
+
+```python
+from dotenv import load_dotenv
+from langchain.chat_models import init_chat_model
+
+load_dotenv()
+
+model = init_chat_model(
+    "openai:gpt-4.1-mini",
+    temperature=0,
+    timeout=30,
+    max_retries=3,
+)
+
+classifier = model.with_structured_output(TicketResult)
+
+ticket = "Payment succeeded, but the course is still locked."
+result = classifier.invoke([
+    {"role": "system", "content": "Classify support tickets. Do not invent facts."},
+    {"role": "user", "content": ticket},
+])
+
+print(result.category, result.urgency, result.reason)
+```
+
+Use a currently supported model in your account; model availability and names change. The key design is provider-prefixed configuration, explicit parameters, role-based messages and a validated result.
+
+## Why messages matter
+
+The system message defines stable behaviour. The user message carries the current task. An AI message represents a previous model response, and tool messages return tool results. Keep trusted instructions separate from untrusted user content; concatenating everything into one string makes boundaries less clear.
+
+## Failure handling is part of the feature
+
+```python
+from pydantic import ValidationError
+
+try:
+    result = classifier.invoke(messages)
+except TimeoutError:
+    result = None  # retry later or show a temporary failure
+except ValidationError:
+    result = None  # log safely and request manual review
+```
+
+In a real API, map failures to controlled responses. Do not show provider stack traces or secret-bearing request data to users. Add request identifiers so operators can trace a failure without exposing private content.
+
+## Real-time scenario: routing without auto-closing
+
+<Scenario title="AI suggests; the workflow controls">
+
+The classifier routes the ticket to “access” with high urgency. It should not automatically refund a payment or change an account. The application can place the result in a review queue, show the evidence to an agent and execute account changes only through an authorised backend action.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Storing API keys in source code, notebooks, screenshots or frontend JavaScript.
+- Expecting temperature zero to make every response deterministic or correct.
+- Parsing important values from prose with fragile string splitting.
+- Catching every exception and silently returning a believable default.
+- Logging full prompts that contain personal or confidential information.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How would you integrate an LLM safely in Python?" badge="CAREER">
+
+**Strong answer:** I load credentials from environment-managed secrets, initialise the model with explicit timeout and retry settings, separate instructions from user content using messages and request structured output through a schema. I validate the result, handle provider and schema failures, avoid sensitive logs and keep consequential actions behind application-level authorisation.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Use the provider integration package and a standard chat-model interface.
+- Keep secrets outside code and outside the built artifact.
+- Prefer schemas when another program consumes the answer.
+- Treat retries, timeouts and validation failures as normal operating conditions.
+- A valid structure is not the same as a correct business decision.
+
+</Takeaways>
+
+## Primary sources
+
+- [LangChain models](https://docs.langchain.com/oss/python/langchain/models)
+- [LangChain messages](https://docs.langchain.com/oss/python/langchain/messages)
+- [LangChain structured output](https://docs.langchain.com/oss/python/langchain/structured-output)
+- [OWASP: Secrets Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
