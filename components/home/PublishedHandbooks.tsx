@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, Box, Code2, FileSearch, Network, Search, Server, Workflow, X } from 'lucide-react';
+import { ArrowRight, BookOpen, Box, Code2, Database, FileSearch, Network, Search, Server, Workflow, X } from 'lucide-react';
 import type { Handbook } from '@/lib/handbooks';
 
 const filters = [
@@ -26,6 +26,7 @@ function handbookVisual(slug: string) {
   if (slug === 'rag-application-engineering') return { Icon: FileSearch, tone: 'rag' };
   if (slug === 'fastapi-ai-applications') return { Icon: Server, tone: 'fastapi' };
   if (slug === 'modern-java-spring-boot-genai') return { Icon: Code2, tone: 'java' };
+  if (slug === 'sql-data-ai-applications') return { Icon: Database, tone: 'sql' };
   return { Icon: Workflow, tone: 'fde' };
 }
 

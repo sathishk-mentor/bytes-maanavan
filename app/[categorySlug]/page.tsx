@@ -7,7 +7,7 @@ import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
@@ -74,6 +74,15 @@ const handbookDetails = {
     result: 'A Java → API → database → RAG → production workflow',
     keywords: ['modern Java tutorial', 'Spring Boot tutorial for beginners', 'Spring AI RAG tutorial', 'Java Generative AI application', 'Spring Boot REST API', 'enterprise Java AI application'],
   },
+  'sql-data-ai-applications': {
+    searchTitle: 'SQL for Data and AI Applications Handbook',
+    eyebrow: 'DATA FOUNDATIONS FOR INTELLIGENT SYSTEMS',
+    intro: 'Learn SQL as a foundational capability for analytics, data engineering, RAG and AI agents—from first queries and joins to validated natural-language SQL and production security.',
+    audience: 'Beginners, analysts, data engineers and AI builders',
+    prerequisite: 'No database experience required',
+    result: 'A question → query → validate → execute → explain workflow',
+    keywords: ['SQL tutorial for beginners', 'SQL for data analysis', 'SQL for AI applications', 'text to SQL tutorial', 'SQL AI agent', 'production SQL security'],
+  },
 } as const;
 type PublishedCategory = keyof typeof handbookDetails;
 
@@ -129,6 +138,11 @@ function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory 
   if (categorySlug === 'modern-java-spring-boot-genai') {
     return <div className="handbook-hero-visual docker-hero-visual" aria-label="Animated Java enterprise AI application workflow">
       <div className="docker-pipeline"><header><Code2/><span><small>ENTERPRISE POLICY ASSISTANT</small><strong>Build dependable Java systems with grounded AI.</strong></span><i>SPRING</i></header><div><span><Code2/><small>Java</small></span><b>→</b><span><Server/><small>REST API</small></span><b>→</b><span><Database/><small>Policies</small></span><b>→</b><span><Sparkles/><small>Grounded AI</small></span></div><footer><ShieldCheck/><span>Typed · secure · testable · deployable</span></footer></div>
+    </div>;
+  }
+  if (categorySlug === 'sql-data-ai-applications') {
+    return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated business question to safe SQL answer workflow">
+      <div className="langchain-orchestrator"><header><Database/><span><small>AI-POWERED BUSINESS DATA ANALYST</small><strong>Turn questions into governed data answers.</strong></span><i>READ ONLY</i></header><div><span><Sparkles/><small>Question</small></span><b>→</b><span><Code2/><small>SQL</small></span><b>→</b><span><ShieldCheck/><small>Validate</small></span><b>→</b><span><Database/><small>Explain</small></span></div><footer><CheckCircle2/><span>Scoped · parameterised · audited</span></footer></div>
     </div>;
   }
   return <div className="handbook-hero-visual fde-hero-visual" aria-label="Animated Forward Deployed Engineer outcome loop">

@@ -1,0 +1,118 @@
+---
+title: "Write Production-Ready SQL"
+slug: "05-write-production-ready-sql"
+summary: "Make SQL efficient, transactional, least-privileged and injection-resistant with plans, indexes, parameters and audit evidence."
+category: "sql-data-ai-applications"
+tags: ["SQL query optimisation", "SQL indexes", "SQL transactions", "SQL injection prevention", "production SQL"]
+level: "intermediate"
+duration: "27 min"
+updatedAt: "2026-09-14"
+order: 5
+---
+
+<ThemeCard title="Practical outcome" badge="SQL HANDBOOK 05">
+
+You will create a production checklist for the Business Data Analyst covering performance, correctness, permissions, injection defence and auditability.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="sqlProduction" />
+
+## Correct is necessary—not sufficient
+
+A production query must also be bounded, efficient, authorised and observable. A correct query that scans millions of rows for every chat request can still make the application fail.
+
+## Read the plan before adding an index
+
+```sql
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT course_id, SUM(amount)
+FROM orders
+WHERE status = 'PAID'
+  AND ordered_at >= DATE '2026-06-01'
+GROUP BY course_id;
+```
+
+Use execution plans to see the work performed. An index can improve selective reads but adds storage and write cost. Design it around demonstrated access patterns—not every column.
+
+```sql
+CREATE INDEX idx_orders_paid_date_course
+ON orders (ordered_at, course_id)
+WHERE status = 'PAID';
+```
+
+## Protect values with parameterised queries
+
+Unsafe:
+
+```python
+sql = "SELECT * FROM customers WHERE email = '" + email + "'"
+```
+
+Safe values remain separate from SQL code:
+
+```python
+statement = text("SELECT customer_id FROM customers WHERE email = :email")
+connection.execute(statement, {"email": email})
+```
+
+OWASP recommends prepared statements with parameter binding because the database can distinguish code from data. Dynamic identifiers such as table names need a strict allow-list; they cannot be protected as ordinary values.
+
+## Transactions protect complete changes
+
+A payment record and its enrolment should either both commit or both roll back. Keep transactions focused, handle failures explicitly and avoid network calls to an LLM while locks remain open.
+
+## Production controls for AI-generated queries
+
+| Control | Purpose |
+|---|---|
+| Read-only role | Prevent mutation |
+| Table/column allow-list | Limit data exposure |
+| Query timeout | Bound resource use |
+| Mandatory limit | Bound returned rows |
+| Audit event | Preserve who asked and what ran |
+| Redaction | Protect sensitive values in logs and model context |
+
+<Scenario title="Real-time scenario: a popular analytics question">
+
+A dashboard and AI assistant both request three-month revenue. The team turns the validated calculation into a governed query, indexes the measured filter path, limits the service role to approved reporting views and monitors latency. The AI layer explains the returned facts; it does not redefine revenue.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Adding indexes without checking the execution plan and workload.
+- Building SQL by concatenating user or model-generated text.
+- Giving a reporting service write permissions.
+- Keeping transactions open during slow external API calls.
+- Logging sensitive parameters or complete result sets.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How do you optimise a slow SQL query?" badge="CAREER">
+
+I confirm the business result, reproduce with representative data, inspect the execution plan and row estimates, reduce unnecessary work, verify predicates and joins, then consider an index aligned to the measured access path. I compare before-and-after plans and check write-side cost.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Use evidence from execution plans before optimising.
+- Indexes trade faster reads for storage and write work.
+- Parameterisation keeps values separate from query structure.
+- Least privilege, limits and auditing are mandatory for AI-driven SQL.
+
+</Takeaways>
+
+## Primary sources
+
+- [PostgreSQL using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html)
+- [PostgreSQL indexes](https://www.postgresql.org/docs/current/indexes.html)
+- [PostgreSQL transaction tutorial](https://www.postgresql.org/docs/current/tutorial-transactions.html)
+- [OWASP SQL Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)

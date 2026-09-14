@@ -132,6 +132,26 @@ const visuals = {
     {icon:ShieldCheck,title:'Secure',note:'Identity + roles'}, {icon:TestTube2,title:'Test',note:'Unit + integration'},
     {icon:Eye,title:'Observe',note:'Logs + metrics'}, {icon:Rocket,title:'Containerise',note:'Deploy + recover'},
   ], remember:'Production readiness is a set of evidence: secure access, passing tests, useful telemetry and repeatable deployment.' },
+  sqlFoundation: { eyebrow:'QUESTION → RESULT', title:'Translate a business question into a precise table query', steps:[
+    {icon:MessageSquareText,title:'Question',note:'What do we need?'}, {icon:Database,title:'Table',note:'Where is the data?'},
+    {icon:SearchCheck,title:'Filter + sort',note:'Which rows?'}, {icon:BadgeCheck,title:'Result',note:'Only useful columns'},
+  ], remember:'SELECT chooses columns; WHERE chooses rows; ORDER BY arranges them; LIMIT controls result size.' },
+  sqlAnalysis: { eyebrow:'BUSINESS ANALYSIS', title:'Move from individual rows to decision-ready measures', steps:[
+    {icon:Database,title:'Transactions',note:'Raw rows'}, {icon:Braces,title:'Calculate',note:'SUM + COUNT'},
+    {icon:Layers3,title:'Group',note:'Course + month'}, {icon:Gauge,title:'Explain',note:'Business insight'},
+  ], remember:'WHERE filters rows before grouping; HAVING filters groups after aggregation.' },
+  sqlJoins: { eyebrow:'RELATIONAL THINKING', title:'Follow keys to connect facts stored in different tables', steps:[
+    {icon:Users,title:'Customers',note:'Primary key'}, {icon:Network,title:'Orders',note:'Foreign key'},
+    {icon:Database,title:'Courses',note:'Referenced row'}, {icon:BadgeCheck,title:'Combined view',note:'Business meaning'},
+  ], remember:'A join condition explains the relationship; the join type decides which unmatched rows survive.' },
+  sqlAi: { eyebrow:'SAFE TEXT-TO-SQL', title:'Let AI propose a query without giving it uncontrolled execution', steps:[
+    {icon:MessageSquareText,title:'Question',note:'User intent'}, {icon:Sparkles,title:'Generate SQL',note:'Schema scoped'},
+    {icon:ShieldCheck,title:'Validate',note:'Read-only policy'}, {icon:BadgeCheck,title:'Execute + explain',note:'Bounded result'},
+  ], remember:'The model proposes SQL; deterministic controls decide whether and how it runs.' },
+  sqlProduction: { eyebrow:'PRODUCTION QUERY PATH', title:'Protect data while keeping queries fast and explainable', steps:[
+    {icon:ShieldCheck,title:'Parameterise',note:'Separate code + data'}, {icon:Gauge,title:'Optimise',note:'Plan + index'},
+    {icon:Repeat2,title:'Transact',note:'All or nothing'}, {icon:Eye,title:'Audit',note:'Who queried what'},
+  ], remember:'Production SQL must be correct, bounded, authorised, observable and efficient.' },
 } satisfies Record<string, Visual>;
 
 export type HandbookLearningVisualVariant = keyof typeof visuals;

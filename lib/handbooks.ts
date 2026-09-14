@@ -98,6 +98,19 @@ export const handbooks: Handbook[] = [
       { title: 'Build and deploy the enterprise application', outcome: 'Secure, test, observe, containerise and deploy the service.', href: '/modern-java-spring-boot-genai/05-build-deploy-enterprise-ai-application/' },
     ],
   },
+  {
+    slug: 'sql-data-ai-applications', title: 'SQL for Data and AI Applications Handbook', shortTitle: 'SQL for Data & AI',
+    audience: 'Beginners · Data and AI Builders', tone: 'indigo', status: 'available', category: 'ai-application-engineering', label: 'DATA FOUNDATIONS FOR INTELLIGENT SYSTEMS',
+    description: 'Query, analyse and safely power analytics, data engineering, RAG and AI-agent applications with SQL.',
+    promise: 'Build an AI-Powered Business Data Analyst that converts questions into validated, read-only SQL and clear explanations.',
+    chapters: [
+      { title: 'SQL foundations: ask questions using data', outcome: 'Read tables with SELECT, filters, sorting and limits.', href: '/sql-data-ai-applications/01-sql-foundations-ask-questions-using-data/' },
+      { title: 'Analyse business data with SQL', outcome: 'Use aggregates, groups, conditions and dates for insight.', href: '/sql-data-ai-applications/02-analyse-business-data-with-sql/' },
+      { title: 'Connect data across tables using joins', outcome: 'Combine customers, orders and courses through reliable keys.', href: '/sql-data-ai-applications/03-connect-data-across-tables-joins/' },
+      { title: 'Use SQL in data, RAG and AI-agent workflows', outcome: 'Generate, validate and execute bounded SQL from natural language.', href: '/sql-data-ai-applications/04-sql-data-rag-ai-agent-workflows/' },
+      { title: 'Write production-ready SQL', outcome: 'Optimise, secure, audit and protect database operations.', href: '/sql-data-ai-applications/05-write-production-ready-sql/' },
+    ],
+  },
 ];
 
 export function getHandbook(slug: string) { return handbooks.find((handbook) => handbook.slug === slug); }

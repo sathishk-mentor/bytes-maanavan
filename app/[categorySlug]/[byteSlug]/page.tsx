@@ -60,13 +60,18 @@ const searchTitles:Record<string,string>={
   '03-connect-spring-boot-database':'Connect Spring Boot with a Database',
   '04-add-generative-ai-rag-java':'Add Generative AI and RAG to a Java Application',
   '05-build-deploy-enterprise-ai-application':'Build and Deploy an Enterprise Java AI Application',
+  '01-sql-foundations-ask-questions-using-data':'SQL Foundations: Ask Questions Using Data',
+  '02-analyse-business-data-with-sql':'Analyse Business Data with SQL',
+  '03-connect-data-across-tables-joins':'Connect Data Across Tables Using Joins',
+  '04-sql-data-rag-ai-agent-workflows':'Use SQL in Data, RAG and AI-Agent Workflows',
+  '05-write-production-ready-sql':'Write Production-Ready SQL',
 };
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications','modern-java-spring-boot-genai'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications','modern-java-spring-boot-genai','sql-data-ai-applications'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
@@ -91,6 +96,7 @@ function legacyDestination(categorySlug: string) {
     'rag-application-engineering':'/rag-application-engineering/',
     'fastapi-ai-applications':'/fastapi-ai-applications/',
     'modern-java-spring-boot-genai':'/modern-java-spring-boot-genai/',
+    'sql-data-ai-applications':'/sql-data-ai-applications/',
     cybersecurity:'https://www.maanavan.com/courses/cybersecurity',
     'case-studies':'/forward-deployed-engineer/',
   };
