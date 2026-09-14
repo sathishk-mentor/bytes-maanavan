@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { ArrowRight, BookOpen, CheckCircle2, Code2, Eye, ShieldCheck, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, BookOpen, Bot, CheckCircle2, Code2, Database, Eye, FileSearch, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { BytesLibrary } from '@/components/home/BytesLibrary';
 import { PublishedHandbooks } from '@/components/home/PublishedHandbooks';
 import { HomeMotion } from '@/components/home/HomeMotion';
@@ -8,8 +8,8 @@ import { getAllBytes } from '@/lib/mdx';
 import { handbooks } from '@/lib/handbooks';
 
 export const metadata: Metadata = {
-  title: 'Free Visual AI & Technology Tutorials',
-  description: 'Learn FastAPI, RAG, LangChain, Docker, GitHub Copilot and Forward Deployed Engineering through beginner-friendly visual Bytes and practical workflows.',
+  title: 'Free Visual AI & Technology Handbooks',
+  description: 'Learn AI Agents, Generative AI, RAG, LangChain, Java, SQL, FastAPI, Docker and software engineering through beginner-friendly visual Bytes and practical workflows.',
   alternates: { canonical: '/' },
   openGraph: { title: 'MaanavaN Bytes | Visual Technology Learning', description: 'Beginner-friendly visual handbooks, real scenarios and practical technology workflows.', url: '/', type: 'website' },
 };
@@ -21,27 +21,32 @@ export default async function HomePage() {
     {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'MaanavaN Bytes',item:'https://bytes.maanavan.com/'}]}
   ]};
   return <><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema)}}/><HomeMotion>
-    <section className="bytes-premium-hero">
+    <section className="bytes-premium-hero bytes-premium-hero-v2">
       <div className="hero-aurora hero-aurora-one"/><div className="hero-aurora hero-aurora-two"/>
       <div className="container-custom bytes-hero-layout">
         <div className="bytes-hero-copy">
-          <p className="eyebrow"><Sparkles/> MaanavaN Bytes · Visual technology handbooks</p>
-          <h1>Understand technology.<br/><span>One visual Byte at a time.</span></h1>
-          <p>Start with a clear mental model, explore the workflow visually, apply it to a real scenario and finish ready to explain the concept with confidence.</p>
-          <div className="bytes-hero-actions"><Link className="primary-cta" href="#bytes-library">Explore Bytes Library <ArrowRight/></Link><Link className="ghost-cta" href="/handbooks/">Browse Handbooks</Link></div>
-          <div className="bytes-hero-trust"><span><CheckCircle2/>Visual-first explanations</span><span><CheckCircle2/>Primary-source research</span><span><CheckCircle2/>Free to learn</span></div>
+          <p className="eyebrow"><Sparkles/> Free visual handbooks · Personally reviewed</p>
+          <h1>Build technology skills.<br/><span>One practical Byte at a time.</span></h1>
+          <p>Learn AI, software, data and cloud through simple explanations, visual workflows and real-world scenarios—designed for beginners and busy professionals.</p>
+          <div className="bytes-hero-actions"><Link className="primary-cta" href="#tracks">Start a learning path <ArrowRight/></Link><Link className="ghost-cta" href="#bytes-library">Search all Bytes</Link></div>
+          <div className="bytes-hero-trust"><span><CheckCircle2/>9 complete handbooks</span><span><CheckCircle2/>45 practical Bytes</span><span><CheckCircle2/>Free access</span></div>
         </div>
-        <div className="hero-learning-console hero-byte-demo" aria-label="Animated example showing how a MaanavaN Byte teaches one concept">
-          <header><span><i/><i/><i/></span><small>ONE BYTE · ONE CLEAR OUTCOME</small><b>LIVE LEARNING FLOW</b></header>
-          <div className="demo-question"><small>START WITH A REAL QUESTION</small><strong>Why does Copilot need context?</strong><p>A beginner should understand the reason before learning the feature.</p></div>
-          <div className="demo-flow"><span><i>01</i><b>Understand</b><small>Simple explanation</small></span><em>→</em><span><i>02</i><b>Visualise</b><small>See the workflow</small></span><em>→</em><span><i>03</i><b>Apply</b><small>Real scenario</small></span><em>→</em><span><i>04</i><b>Explain</b><small>Interview insight</small></span></div>
-          <footer><span><CheckCircle2/></span><div><small>LEARNING OUTCOME</small><strong>“I understand it, can apply it and can explain my decision.”</strong></div></footer>
+        <div className="hero-learning-console hero-path-console" aria-label="Animated MaanavaN Bytes learning-path preview">
+          <header><span><i/><i/><i/></span><small>MAANAVAN LEARNING PATH</small><b><i/> UPDATED</b></header>
+          <div className="hero-path-heading"><div><small>START HERE</small><strong>Choose the outcome you want</strong></div><span>9 paths</span></div>
+          <div className="hero-path-list">
+            <Link href="/ai-agents/"><span className="path-icon path-violet"><Bot/></span><div><small>BEGINNER · 5 BYTES</small><strong>Understand AI Agents</strong><em>From answering to taking action</em></div><ArrowRight/></Link>
+            <Link href="/modern-java-spring-boot-genai/"><span className="path-icon path-orange"><Code2/></span><div><small>BUILD · 5 BYTES</small><strong>Modern Java + GenAI</strong><em>From foundations to enterprise AI</em></div><ArrowRight/></Link>
+            <Link href="/sql-data-ai-applications/"><span className="path-icon path-blue"><Database/></span><div><small>DATA · 5 BYTES</small><strong>SQL for AI Applications</strong><em>From questions to safe workflows</em></div><ArrowRight/></Link>
+          </div>
+          <footer><span><FileSearch/></span><div><small>EVERY LEARNING PATH</small><strong>Concept → Visual → Scenario → Practice</strong></div><Link href="/handbooks/">View all</Link></footer>
         </div>
       </div>
+      <div className="hero-topic-ribbon"><div className="container-custom"><span><Bot/>AI Agents</span><i/><span><Code2/>Software Engineering</span><i/><span><Database/>Data & SQL</span><i/><span><ShieldCheck/>Cloud & DevOps</span><i/><span><Sparkles/>Generative AI</span></div></div>
       <div className="bytes-learning-promise"><div className="container-custom">
-        <div><span><Eye/></span><p><b>Understand visually</b><small>Animated flows make the concept easier to see.</small></p></div>
-        <div><span><Code2/></span><p><b>Apply immediately</b><small>Use practical examples and copy-ready prompts.</small></p></div>
-        <div><span><ShieldCheck/></span><p><b>Learn with confidence</b><small>Clear explanations grounded in practical evidence.</small></p></div>
+        <div><span><Eye/></span><p><b>See how it works</b><small>Professional diagrams turn complex systems into clear mental models.</small></p></div>
+        <div><span><Code2/></span><p><b>Use it in real work</b><small>Apply every concept through scenarios, prompts and practical projects.</small></p></div>
+        <div><span><ShieldCheck/></span><p><b>Explain with confidence</b><small>Remember key decisions, common mistakes and interview-ready answers.</small></p></div>
       </div></div>
     </section>
     <div id="tracks" className="home-motion-section"><PublishedHandbooks handbooks={handbooks} /></div>

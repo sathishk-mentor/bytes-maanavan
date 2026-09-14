@@ -16,6 +16,7 @@ import { getCategoryBySlug } from '@/lib/categories';
 import { CourseRecommendation } from '@/components/bytes/CourseRecommendation';
 import { ReadingReveal } from '@/components/bytes/ReadingReveal';
 import { AuthorCard } from '@/components/bytes/AuthorCard';
+import { BeginnerAnalogy } from '@/components/bytes/BeginnerAnalogy';
 
 interface BytePageProps {
   params: {
@@ -26,11 +27,15 @@ interface BytePageProps {
 
 const searchTitles:Record<string,string>={
   '01-what-is-an-ai-agent-from-answering-to-taking-action':'What Is an AI Agent? A Beginner-Friendly Explanation',
-  '62-how-developers-use-ai-tools':'GitHub Copilot Explained for Developers',
-  '63-api-first-thinking':'Give GitHub Copilot Better Context',
-  '66-ai-assisted-coding-workflow':'Build a Feature with GitHub Copilot',
-  '64-debugging-ai-generated-code':'Debug and Test with GitHub Copilot',
-  '75-secure-ai-coding':'Responsible GitHub Copilot Use',
+  '02-how-an-ai-agent-works-goal-reasoning-tools-actions':'How AI Agents Work: Goal, Tools and Actions',
+  '03-tools-knowledge-memory-explained-simply':'AI Agent Tools, Knowledge and Memory Explained',
+  '04-build-first-ai-agent-without-coding':'Build Your First No-Code AI Agent',
+  '05-use-ai-agents-safely-responsibly':'AI Agent Safety: Permissions, Privacy and Human Review',
+  '01-github-copilot-for-developers':'GitHub Copilot Explained for Developers',
+  '02-give-github-copilot-better-context':'Give GitHub Copilot Better Context',
+  '03-debug-test-refactor-with-github-copilot':'Debug, Test and Refactor with GitHub Copilot',
+  '04-build-feature-with-github-copilot':'Build a Feature with GitHub Copilot',
+  '05-use-github-copilot-responsibly':'Use GitHub Copilot Responsibly',
   '01-what-does-a-forward-deployed-engineer-do':'Forward Deployed Engineer Role Explained',
   '02-problem-discovery-and-workflow-mapping':'FDE Problem Discovery and Workflow Mapping',
   '03-design-thin-production-slice':'FDE Thin Production Slice Architecture',
@@ -68,6 +73,14 @@ const searchTitles:Record<string,string>={
   '05-write-production-ready-sql':'Write Production-Ready SQL',
 };
 
+const movedRoutes:Record<string,string>={
+  '62-how-developers-use-ai-tools':'01-github-copilot-for-developers',
+  '63-api-first-thinking':'02-give-github-copilot-better-context',
+  '64-debugging-ai-generated-code':'03-debug-test-refactor-with-github-copilot',
+  '66-ai-assisted-coding-workflow':'04-build-feature-with-github-copilot',
+  '75-secure-ai-coding':'05-use-github-copilot-responsibly',
+};
+
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
@@ -81,7 +94,8 @@ export async function generateStaticParams() {
     .filter((parts) => parts.length === 2)
     .map(([categorySlug, byteSlug]) => ({ categorySlug, byteSlug }));
 
-  return [...published, ...legacy, { categorySlug: 'ai-agents', byteSlug: 'introduction-to-ai-agents' }]
+  const moved = Object.keys(movedRoutes).map((byteSlug)=>({categorySlug:'software-engineering',byteSlug}));
+  return [...published, ...legacy, ...moved, { categorySlug: 'ai-agents', byteSlug: 'introduction-to-ai-agents' }]
     .filter((route, index, routes) => routes.findIndex((item) => item.categorySlug === route.categorySlug && item.byteSlug === route.byteSlug) === index);
 }
 
@@ -131,6 +145,10 @@ export async function generateMetadata({ params }: BytePageProps): Promise<Metad
 export default async function BytePage({ params }: BytePageProps) {
   const { categorySlug, byteSlug } = params;
 
+  if (categorySlug === 'software-engineering' && movedRoutes[byteSlug]) {
+    permanentRedirect(`/software-engineering/${movedRoutes[byteSlug]}/`);
+  }
+
   // Get byte and validate category matches
   const byte = await getByteBySlug(byteSlug);
 
@@ -149,7 +167,7 @@ export default async function BytePage({ params }: BytePageProps) {
   const canonical=`https://bytes.maanavan.com/${categorySlug}/${byteSlug}/`;
   const minutes=Number.parseInt(byte.duration,10) || 10;
   const schema={'@context':'https://schema.org','@graph':[
-    {'@type':['Article','LearningResource'],'@id':`${canonical}#learning-resource`,headline:byte.title,name:byte.title,description:byte.summary,url:canonical,dateModified:byte.updatedAt,author:{'@type':'Person',name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'},publisher:{'@id':'https://www.maanavan.com/#organization'},isPartOf:{'@id':`https://bytes.maanavan.com/${categorySlug}/#collection`},educationalLevel:byte.level,learningResourceType:'Tutorial',timeRequired:`PT${minutes}M`,inLanguage:'en-IN',audience:{'@type':'Audience',audienceType:'Tamil-speaking technology learners'}},
+    {'@type':['Article','LearningResource'],'@id':`${canonical}#learning-resource`,headline:byte.title,name:byte.title,description:byte.summary,abstract:byte.summary,url:canonical,dateModified:byte.updatedAt,author:{'@type':'Person',name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'},publisher:{'@id':'https://www.maanavan.com/#organization'},isPartOf:{'@id':`https://bytes.maanavan.com/${categorySlug}/#collection`},educationalLevel:byte.level,learningResourceType:'Tutorial',timeRequired:`PT${minutes}M`,inLanguage:['en-IN','ta-IN'],isAccessibleForFree:true,keywords:byte.tags.join(', '),about:byte.tags.map((name)=>({'@type':'Thing',name})),teaches:[byte.title,byte.summary],audience:{'@type':'Audience',audienceType:'Beginners, working professionals and Tamil-speaking technology learners'}},
     {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'MaanavaN Bytes',item:'https://bytes.maanavan.com/'},{'@type':'ListItem',position:2,name:category?.title,item:`https://bytes.maanavan.com/${categorySlug}/`},{'@type':'ListItem',position:3,name:byte.title,item:canonical}]}
   ]};
   return (
@@ -161,7 +179,7 @@ export default async function BytePage({ params }: BytePageProps) {
         <div className="byte-reading-layout">
           <AccordionTableOfContents headings={headings} byteSlug={byte.slug} />
           <div className="byte-main-column">
-            <ReadingReveal><ByteContent content={byte.content} /><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
+            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={byte.content} /><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
           <aside className="byte-trust-rail"><div className="byte-progress-card"><span>LEARNING PROGRESS</span><h3>Chapter {chapterNumber} of {handbookBytes.length}</h3><p>{category?.title}</p><div className="byte-progress-track"><i style={{width:`${chapterNumber * 20}%`}} /></div><small>{byte.duration} focused reading</small></div><div className="byte-review-card"><span>INSIDE THIS BYTE</span><h3>Learn it visually</h3><p>Workflow · example · practical takeaway</p><small>Designed for focused, self-paced learning</small></div></aside>
         </div>

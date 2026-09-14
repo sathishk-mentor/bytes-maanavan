@@ -7,12 +7,15 @@ import { ByteLibraryCard } from '@/components/bytes/ByteLibraryCard';
 
 const filters = [
   {label:'All Bytes',value:'all'},
+  {label:'AI Agents',value:'ai-agents'},
   {label:'Software Engineering',value:'software-engineering'},
   {label:'Technology Careers',value:'forward-deployed-engineer'},
   {label:'Cloud & DevOps',value:'cloud-devops'},
   {label:'Generative AI & Agents',value:'langchain'},
   {label:'RAG Application Engineering',value:'rag-application-engineering'},
   {label:'API & Backend Engineering',value:'fastapi-ai-applications'},
+  {label:'Modern Java & GenAI',value:'modern-java-spring-boot-genai'},
+  {label:'SQL for Data & AI',value:'sql-data-ai-applications'},
 ];
 export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
   const [query, setQuery] = useState('');

@@ -214,7 +214,7 @@ export const SEO_URL_PLAN: HandbookPlan[] = [
     chapters: [
       {
         title: 'GitHub Copilot Explained: More Than Code Completion',
-        canonical: '/software-engineering/62-how-developers-use-ai-tools/',
+        canonical: '/software-engineering/01-github-copilot-for-developers/',
         redirects: [
           '/software-engineering/61-software-engineering-in-ai-era/',
           '/software-engineering/65-app-flow-understanding/',
@@ -222,7 +222,7 @@ export const SEO_URL_PLAN: HandbookPlan[] = [
       },
       {
         title: 'Give GitHub Copilot Better Context',
-        canonical: '/software-engineering/63-api-first-thinking/',
+        canonical: '/software-engineering/02-give-github-copilot-better-context/',
         redirects: [
           '/software-engineering/68-clean-code-with-ai/',
           '/software-engineering/70-git-ai-workflows/',
@@ -230,7 +230,7 @@ export const SEO_URL_PLAN: HandbookPlan[] = [
       },
       {
         title: 'Build a Feature with GitHub Copilot',
-        canonical: '/software-engineering/66-ai-assisted-coding-workflow/',
+        canonical: '/software-engineering/04-build-feature-with-github-copilot/',
         redirects: [
           '/software-engineering/67-building-apps-using-ai-apis/',
           '/software-engineering/74-ai-devops-integration/',
@@ -238,7 +238,7 @@ export const SEO_URL_PLAN: HandbookPlan[] = [
       },
       {
         title: 'Debug, Test and Refactor with GitHub Copilot',
-        canonical: '/software-engineering/64-debugging-ai-generated-code/',
+        canonical: '/software-engineering/03-debug-test-refactor-with-github-copilot/',
         redirects: [
           '/software-engineering/69-testing-ai-generated-code/',
           '/software-engineering/71-ai-system-design-basics/',
@@ -246,7 +246,7 @@ export const SEO_URL_PLAN: HandbookPlan[] = [
       },
       {
         title: 'Use GitHub Copilot Responsibly in Real Projects',
-        canonical: '/software-engineering/75-secure-ai-coding/',
+        canonical: '/software-engineering/05-use-github-copilot-responsibly/',
         redirects: [
           '/software-engineering/72-scalable-ai-apps/',
           '/software-engineering/73-microservices-ai/',
