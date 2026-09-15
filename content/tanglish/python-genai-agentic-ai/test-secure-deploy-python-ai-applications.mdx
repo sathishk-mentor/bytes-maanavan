@@ -8,7 +8,7 @@ Automated evidence, safety controls, repeatable deployment, monitoring மற்
 
 Production readiness என்றால் expected behaviour work ஆகிறது என்பதை prove செய்ய வேண்டும், unsafe behaviour-ஐ limit செய்ய வேண்டும், real usage-ஐ observe செய்ய வேண்டும், release fail ஆனால் recover செய்ய வேண்டும்.
 
-## Organise clear boundaries
+## Project boundaries-ஐ clear-ஆ organise பண்ணுவது
 
 ```text
 app/
@@ -23,7 +23,7 @@ evals/
 
 Application logic மற்றும் provider-specific AI logic-ஐ separate பண்ணினால் testing, model change மற்றும் incident recovery easy ஆகும். ஒரு provider மாறினாலும் complete application-ஐ rewrite பண்ண வேண்டிய நிலை வராது.
 
-## Test deterministic code first
+## முதலில் deterministic code-ஐ test பண்ணுவது
 
 ```python
 def test_calculate_weeks_rounds_up():
@@ -32,13 +32,13 @@ def test_calculate_weeks_rounds_up():
 
 Unit test small rules-ஐ cover பண்ணும். Integration test API, database மற்றும் provider boundaries-ஐ cover பண்ணும். Stable failure testing-க்கு external APIs mock பண்ணலாம்; அதோடு real integration-க்கு controlled end-to-end test ஒன்றும் வைத்திருங்க.
 
-## Evaluate the AI behaviour
+## AI behaviour-ஐ எப்படி evaluate பண்ணுவது?
 
 Normal questions, missing-context cases, unsupported requests, prompt-injection attempts மற்றும் expected safety behaviour கொண்ட fixed evaluation dataset maintain பண்ணுங்க. System approved course-ஐ select செய்ததா, correct evidence use செய்ததா, required fields return செய்ததா, தேவையான இடத்தில் approval கேட்டதா என்பதை measure பண்ணுங்க.
 
 Model output ஒவ்வொரு run-லும் exact same sentence-ஆ இருக்காது. அதனால் identical text expect பண்ணாமல் semantic criteria மற்றும் business checks use பண்ண வேண்டும்.
 
-## Tamil learner analogy: bus readiness check
+## Easy analogy: bus readiness check
 
 <Scenario title="Local-ல் start ஆனது safe journey என்று அர்த்தமில்லை">
 
@@ -48,7 +48,7 @@ Bus long trip start செய்வதற்கு முன் driver brakes, t
 
 </Scenario>
 
-## Protect every boundary
+## ஒவ்வொரு boundary-ஐயும் protect பண்ணுவது
 
 - Secrets-ஐ managed secret system-ல் store பண்ணுங்க.
 - Users-ஐ authenticate செய்து tools-ஐ தனியாக authorise பண்ணுங்க.
@@ -61,7 +61,7 @@ Bus long trip start செய்வதற்கு முன் driver brakes, t
 
 Prompt injection-ஐ ஒரு warning sentence மட்டும் solve பண்ணாது. Least privilege, source labelling, instruction separation, output validation மற்றும் approval gates மூலம் அதன் impact-ஐ reduce பண்ண வேண்டும்.
 
-## Package with Docker
+## Docker மூலம் application package பண்ணுவது
 
 ```dockerfile
 FROM python:3.12-slim
@@ -75,7 +75,7 @@ CMD ["python", "-m", "app"]
 
 Dependencies pin பண்ணி image scan பண்ணுங்க. Non-root user-ஆக run செய்து runtime-ல் மட்டும் secrets inject பண்ணுங்க. Expensive LLM call இல்லாமல் application process healthy-ஆ இருக்கிறதா check செய்ய lightweight health endpoint add பண்ணுங்க.
 
-## Observe the real system
+## Real system-ஐ monitor பண்ணுவது
 
 Monitoring இந்த practical questions-க்கு answer கொடுக்க வேண்டும்: Application available-ஆ இருக்கிறதா? Recommendations useful-ஆ உள்ளதா? எந்த tools fail ஆகிறது? ஒவ்வொரு request-க்கும் cost எவ்வளவு?
 
@@ -94,7 +94,7 @@ Prompts, model configuration, tools மற்றும் evaluation datasets-�
 7. Database backup மற்றும் migration plan confirm ஆக வேண்டும்.
 8. Rollback document செய்து rehearse பண்ணியிருக்க வேண்டும்.
 
-## Interview bit
+## Interview-ல் எப்படி explain பண்ணுவது?
 
 <ThemeCard title="LLM application-ஐ எப்படி test பண்ணுவீங்க?" badge="CAREER">
 
@@ -102,7 +102,7 @@ Deterministic application tests மற்றும் probabilistic AI evaluatio
 
 </ThemeCard>
 
-## Key takeaways
+## நினைவில் வைக்க வேண்டிய key points
 
 <Takeaways>
 

@@ -24,10 +24,10 @@ export function ReadingModeToggle() {
   }
 
   return <section className="reading-mode-control" aria-label="Choose explanation language">
-    <div><Languages/><span><small>EXPLANATION MODE</small><strong>Choose the language that feels easier</strong></span></div>
+    <div><span className="reading-mode-icon"><Languages/></span><span><small>CHOOSE YOUR READING MODE</small><strong>Same lesson. Two clear explanations.</strong></span></div>
     <div className="reading-mode-options" role="group" aria-label="Explanation mode">
-      <button type="button" className={mode === 'english' ? 'active' : ''} aria-pressed={mode === 'english'} onClick={() => select('english')}>English</button>
-      <button type="button" className={mode === 'tanglish' ? 'active' : ''} aria-pressed={mode === 'tanglish'} onClick={() => select('tanglish')}>Tanglish</button>
+      <button type="button" className={mode === 'english' ? 'active' : ''} aria-pressed={mode === 'english'} onClick={() => select('english')}><strong>English</strong><small>Standard explanation</small></button>
+      <button type="button" className={mode === 'tanglish' ? 'active' : ''} aria-pressed={mode === 'tanglish'} onClick={() => select('tanglish')}><strong>தமிழ் + English</strong><small>Easy Tanglish</small></button>
     </div>
   </section>;
 }

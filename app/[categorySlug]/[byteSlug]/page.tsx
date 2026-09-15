@@ -179,6 +179,7 @@ export default async function BytePage({ params }: BytePageProps) {
   // Extract headings for accordion navigation
   const headings = extractHeadings(byte.content);
   const tanglishContent = categorySlug === 'python-genai-agentic-ai' ? await getTanglishContent(categorySlug, byteSlug) : null;
+  const tanglishHeadings = tanglishContent ? extractHeadings(tanglishContent) : [];
 
   const canonical=`https://bytes.maanavan.com/${categorySlug}/${byteSlug}/`;
   const minutes=Number.parseInt(byte.duration,10) || 10;
@@ -193,7 +194,7 @@ export default async function BytePage({ params }: BytePageProps) {
 
       <div className="byte-reading-canvas">
         <div className="byte-reading-layout">
-          <AccordionTableOfContents headings={headings} byteSlug={byte.slug} />
+          <AccordionTableOfContents headings={headings} tanglishHeadings={tanglishHeadings} byteSlug={byte.slug} />
           <div className="byte-main-column">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} mobile />
             {categorySlug === 'python-genai-agentic-ai' && <ReadingModeToggle />}

@@ -8,7 +8,7 @@ Learning assistant-ஐ external model service-க்கு connect செய்�
 
 Python application ஒவ்வொரு API response-ஐயும் external data-ஆக treat செய்ய வேண்டும். முதலில் request success ஆனதா check பண்ணி, பிறகு JSON parse செய்து workflow-க்கு தேவையான fields சரியாக இருக்கிறதா validate செய்ய வேண்டும்.
 
-## API mental model
+## API-ஐ எப்படி புரிந்துகொள்வது?
 
 API என்பது இரண்டு applications இடையிலான contract. Client ஒரு method, URL, headers மற்றும் optional body கொண்ட request-ஐ send பண்ணும். Service status code, headers மற்றும் response body-ஐ return பண்ணும்.
 
@@ -19,7 +19,7 @@ API என்பது இரண்டு applications இடையிலான 
 | `PUT/PATCH` | Replace அல்லது update பண்ண | Learner progress update பண்ணுதல் |
 | `DELETE` | Remove பண்ண | Approved draft delete பண்ணுதல் |
 
-## Tamil learner analogy: restaurant waiter
+## Easy analogy: restaurant waiter
 
 <Scenario title="Agreed interface மூலம் request">
 
@@ -29,7 +29,7 @@ Customer kitchen-க்குள் சென்று equipment operate பண�
 
 </Scenario>
 
-## JSON becomes Python data
+## JSON எப்படி Python data-ஆக மாறும்?
 
 ```json
 {
@@ -54,7 +54,7 @@ courses = response.json()
 
 எப்போதும் timeout set பண்ணுங்க. Timeout இல்லையென்றால் slow dependency application resources-ஐ நீண்ட நேரம் hold பண்ணலாம்.
 
-## Keep API keys outside code
+## API keys-ஐ code-க்கு வெளியே வைப்பது
 
 ```python
 import os
@@ -66,7 +66,7 @@ api_key = os.environ["MODEL_API_KEY"]
 
 `.env` file-ஐ Git-ல் commit பண்ணாதீங்க. Production-ல் deployment platform secret settings மூலம் key கொடுங்க. Provider key-ஐ browser code-ல் expose பண்ணக்கூடாது.
 
-## Validate the response
+## Response-ஐ ஏன் validate பண்ண வேண்டும்?
 
 Status `200` வந்ததால் data correct என்று அர்த்தமில்லை. Content type, required fields, types மற்றும் allowed values எல்லாவற்றையும் check பண்ண வேண்டும்.
 
@@ -81,17 +81,17 @@ def validate_suggestion(data: dict) -> dict:
     return data
 ```
 
-## Failures, retries and rate limits
+## Failure, retry மற்றும் rate limit
 
 Failure temporary-ஆக இருக்கும்போது மட்டும் retry useful. Invalid credentials அல்லது wrong request இருந்தால் repeated-ஆக send பண்ணாமல் root problem-ஐ correct செய்ய வேண்டும்.
 
 Timeout மற்றும் selected `429`, `5xx` responses போன்ற temporary failures-க்கு மட்டும் retry பண்ணுங்க. Exponential backoff, jitter மற்றும் maximum attempt count use பண்ணுங்க. Async Python பல independent network calls-க்காக wait பண்ணும்போது useful; அது CPU-heavy work-ஐ automatic-ஆ faster ஆக்காது, provider limits-ஐ remove பண்ணாது.
 
-## Practical task
+## நீங்க try பண்ண வேண்டிய practical task
 
 `get_course_suggestions(profile)` function create பண்ணுங்க. அது learner profile-ஐ send செய்து timeout apply பண்ண வேண்டும்; HTTP status check செய்து JSON parse பண்ணி required fields validate செய்ய வேண்டும். Timeout, rate limit மற்றும் invalid response cases-க்கு clear handling add பண்ணுங்க.
 
-## Common mistakes
+## Beginners செய்யும் common mistakes
 
 <Mistakes>
 
@@ -103,7 +103,7 @@ Timeout மற்றும் selected `429`, `5xx` responses போன்ற te
 
 </Mistakes>
 
-## Key takeaways
+## நினைவில் வைக்க வேண்டிய key points
 
 <Takeaways>
 

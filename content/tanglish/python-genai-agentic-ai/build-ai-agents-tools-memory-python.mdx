@@ -8,7 +8,7 @@ Skill gaps identify செய்து, authorised tools use செய்து,
 
 Agent next step என்ன என்பதை decide செய்யும். Actual operation-ஐ Python tool தான் perform செய்யும். இந்த responsibilities-ஐ separate-ஆக வைத்தால் permission, testing மற்றும் evidence தெளிவாக இருக்கும்.
 
-## Chatbot, copilot and agent
+## Chatbot, copilot மற்றும் agent வித்தியாசம்
 
 | Pattern | எப்படி behave செய்யும் | Example |
 |---|---|---|
@@ -18,7 +18,7 @@ Agent next step என்ன என்பதை decide செய்யும்.
 
 Agent loop: goal-ஐ understand பண்ணும், next useful step choose பண்ணும், tool call பண்ணும், actual result observe பண்ணும், பிறகு continue செய்யலாமா stop செய்யலாமா decide பண்ணும்.
 
-## Create bounded Python tools
+## Bounded Python tools create பண்ணுவது
 
 ```python
 def calculate_weeks(total_hours: int, weekly_hours: int) -> int:
@@ -29,7 +29,7 @@ def calculate_weeks(total_hours: int, weekly_hours: int) -> int:
 
 Tool definition-க்கு precise name, clear description, parameter schema மற்றும் return contract தேவை. General `run_anything` tool-ஐ விட narrow tool authorise, test மற்றும் observe பண்ண easy.
 
-## Tamil learner analogy: junior coordinator
+## Easy analogy: junior coordinator
 
 <Scenario title="Manager boundary-க்குள் useful autonomy">
 
@@ -39,11 +39,11 @@ Junior project coordinator information collect பண்ணலாம், options
 
 </Scenario>
 
-## State and memory are different
+## State மற்றும் memory ஒன்றல்ல
 
 **State** என்பது current run-க்கு தேவையான goal, completed steps, tool results மற்றும் remaining work. **Memory** என்பது selected information-ஐ future interactions-க்கும் carry பண்ணுவது. Useful மற்றும் permitted information மட்டும் retention rule-உடன் store பண்ணுங்க. Old memory எப்போதும் correct என்று assume பண்ணாதீங்க.
 
-## Read tools, write tools and approval
+## Read tools, write tools மற்றும் approval
 
 Approved catalogue read பண்ணுவது lower risk. Schedule modify பண்ணுவது higher risk. Read மற்றும் write capabilities-ஐ separate பண்ணி least privilege apply பண்ணுங்க. Consequential tool call-க்கு explicit approval கேளுங்க.
 
@@ -57,7 +57,7 @@ if proposed_action.type == "schedule_activity":
 
 என்ன action நடக்கும், எங்கே நடக்கும், எந்த data use ஆகும் என்பதை UI clear-ஆ காட்ட வேண்டும். Approval கிடைத்த பிறகும் tool result-ஐ inspect செய்த பிறகு தான் success claim பண்ண வேண்டும்.
 
-## Stopping rules
+## Agent எப்போது stop ஆக வேண்டும்?
 
 Safe agent எப்போது stop செய்ய வேண்டும் என்பதை தெரிந்திருக்க வேண்டும். Information missing, permission இல்லாமை, repeated failure அல்லது step limit வந்தால் learner-கிட்ட control-ஐ return செய்ய வேண்டும்.
 
@@ -65,15 +65,15 @@ Goal complete ஆனதும், required information missing ஆனதும�
 
 Tool name, safe parameters, result status, latency மற்றும் correlation ID log பண்ணுங்க. Secrets அல்லது unnecessary learner content-ஐ log பண்ணாதீங்க.
 
-## Model Context Protocol
+## Model Context Protocol என்றால் என்ன?
 
 MCP என்பது AI applications exposed tools மற்றும் context-ஐ discover செய்து use பண்ண உதவும் standard. இது interoperability improve பண்ணும்; ஆனால் tool trustworthy என்று guarantee பண்ணாது. Authentication, authorisation, validation மற்றும் human approval application boundary-லேயே தேவை.
 
-## Framework or framework-free
+## Framework வேண்டுமா, வேண்டாமா?
 
 Workflow small மற்றும் clear என்றால் explicit Python loop-லிருந்து start பண்ணுங்க. Durable state, branching, large tool ecosystem, tracing அல்லது team convention தேவைப்பட்டால் framework use பண்ணலாம். எந்த approach எடுத்தாலும் safety responsibility மாறாது.
 
-## Critical safety rule
+## முக்கியமான agent safety rule
 
 <ThemeCard title="Prepare செய்தது execute செய்ததாகாது" badge="AGENT SAFETY">
 
@@ -81,7 +81,7 @@ Email draft பண்ணியது send செய்ததாகாது. Eve
 
 </ThemeCard>
 
-## Key takeaways
+## நினைவில் வைக்க வேண்டிய key points
 
 <Takeaways>
 

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Noto_Sans_Tamil } from 'next/font/google';
 import './globals.css';
 import './maanavan-brand.css';
 import './handbook-quick-nav.css';
@@ -10,6 +10,7 @@ import { Footer } from '@/components/layout/Footer';
 import { NavigationStability } from '@/components/navigation/NavigationStability';
 
 const inter = Inter({ subsets: ['latin'] });
+const notoTamil = Noto_Sans_Tamil({ subsets: ['tamil'], variable: '--font-tamil', display: 'swap' });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bytes.maanavan.com'),
@@ -44,7 +45,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-IN">
-      <body className={inter.className}>
+      <body className={`${inter.className} ${notoTamil.variable}`}>
         <NavigationStability />
         <a className="skip-link" href="#main-content">Skip to content</a>
         <div className="flex min-h-screen flex-col">
