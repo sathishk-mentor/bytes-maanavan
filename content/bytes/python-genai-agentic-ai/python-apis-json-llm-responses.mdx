@@ -19,10 +19,7 @@ Connect the learning assistant to an external model service and turn the respons
 
 <HandbookLearningVisual variant="pythonApi" />
 
-<ModeText
-  english="Your Python application should treat every API response as external data. First check whether the request succeeded, then parse the JSON and validate the fields your workflow needs."
-  tanglish="Python application ஒவ்வொரு API response-ஐயும் external data-ஆக treat செய்ய வேண்டும். முதலில் request success ஆனதா check பண்ணி, பிறகு JSON parse செய்து workflow-க்கு தேவையான fields சரியாக இருக்கிறதா validate செய்ய வேண்டும்."
-/>
+Your Python application should treat every API response as external data. First check whether the request succeeded, then parse the JSON and validate the fields your workflow needs.
 
 ## API mental model
 
@@ -35,13 +32,11 @@ An API is a contract between applications. A client sends a request containing a
 | `PUT/PATCH` | Replace or update | Update learner progress |
 | `DELETE` | Remove | Delete an authorised draft |
 
-## Tamil learner analogy: restaurant waiter
+## Everyday analogy: a restaurant waiter
 
 <Scenario title="Request through an agreed interface">
 
 A customer does not enter the kitchen and operate its equipment. The waiter accepts an order in an understood format and returns the result. An API provides that controlled interface between applications.
-
-**Simple Tanglish:** Customer direct-ஆ kitchen-க்கு போக மாட்டார். Waiter மூலமாக request அனுப்புவார். அதுபோல application, API மூலமாக service-ஐ communicate செய்யும்.
 
 </Scenario>
 
@@ -99,10 +94,7 @@ def validate_suggestion(data: dict) -> dict:
 
 ## Failures, retries and rate limits
 
-<ModeText
-  english="A retry is useful only when the failure may be temporary. Invalid credentials or an incorrect request must be corrected rather than sent repeatedly."
-  tanglish="Failure temporary-ஆக இருக்கும்போது மட்டும் retry useful. Invalid credentials அல்லது wrong request இருந்தால் repeated-ஆக send பண்ணாமல் problem-ஐ correct செய்ய வேண்டும்."
-/>
+A retry is useful only when the failure may be temporary. Invalid credentials or an incorrect request must be corrected rather than sent repeatedly.
 
 Retry only temporary failures such as a timeout or selected `429` and `5xx` responses. Use exponential backoff with jitter and a maximum attempt count. Do not retry invalid credentials or malformed requests.
 

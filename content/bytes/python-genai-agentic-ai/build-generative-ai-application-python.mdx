@@ -19,10 +19,7 @@ Build an **AI Course Advisor** that recommends only verified courses and explain
 
 <HandbookLearningVisual variant="pythonGenAi" />
 
-<ModeText
-  english="An LLM produces a recommendation, but the Python application owns the learner profile, approved catalogue, validation rules and final decision boundary."
-  tanglish="LLM recommendation generate செய்யும். ஆனால் learner profile, approved catalogue, validation rules மற்றும் final decision boundary அனைத்தையும் Python application தான் control செய்ய வேண்டும்."
-/>
+An LLM produces a recommendation, but the Python application owns the learner profile, approved catalogue, validation rules and final decision boundary.
 
 ## What makes this an application
 
@@ -48,13 +45,11 @@ Return the requested structured fields.
 """
 ```
 
-## Tamil learner analogy: brief the knowledgeable assistant
+## Everyday analogy: briefing a knowledgeable assistant
 
 <Scenario title="Context turns a vague request into a useful decision">
 
 “Suggest a course” is like asking a counsellor without sharing your education, goal or available time. A relevant answer needs the learner profile and an accurate course catalogue.
-
-**Simple Tanglish:** “Course suggest பண்ணு” என்பது vague request. Learner level, goal, completed skills எல்லாம் கொடுத்தால் useful recommendation கிடைக்கும்.
 
 </Scenario>
 
@@ -86,10 +81,7 @@ Streaming improves perceived responsiveness, but do not display an unvalidated J
 
 ## Hallucination and human review
 
-<ModeText
-  english="If the model returns a course that is not in the approved catalogue, Python must reject it. A confident sentence is not proof that the information is correct."
-  tanglish="Model approved catalogue-ல் இல்லாத course-ஐ return செய்தால் Python அதை reject செய்ய வேண்டும். Confident-ஆக சொல்லப்பட்ட sentence, information correct என்பதற்கான proof இல்லை."
-/>
+If the model returns a course that is not in the approved catalogue, Python must reject it. A confident sentence is not proof that the information is correct.
 
 The model may invent a course, prerequisite or promise. Deterministic checks should reject unknown identifiers. Human review is required when the result affects payment, enrolment, certification claims or a consequential career decision.
 

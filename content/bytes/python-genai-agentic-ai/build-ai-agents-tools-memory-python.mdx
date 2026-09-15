@@ -19,10 +19,7 @@ Build a **Personal Learning Agent** that finds skill gaps, uses authorised tools
 
 <HandbookLearningVisual variant="pythonAgent" />
 
-<ModeText
-  english="The agent decides the next step, but a Python tool performs the actual operation. Keeping these responsibilities separate makes permissions, testing and evidence clearer."
-  tanglish="Agent next step என்ன என்பதை decide செய்யும். Actual operation-ஐ Python tool தான் perform செய்யும். இந்த இரண்டு responsibilities-ஐ separate-ஆக வைத்தால் permission, testing மற்றும் evidence தெளிவாக இருக்கும்."
-/>
+The agent decides the next step, but a Python tool performs the actual operation. Keeping these responsibilities separate makes permissions, testing and evidence clearer.
 
 ## Chatbot, copilot and agent
 
@@ -45,13 +42,11 @@ def calculate_weeks(total_hours: int, weekly_hours: int) -> int:
 
 A tool definition needs a precise name, description, parameter schema and return contract. Narrow tools are easier to authorise, test and observe than a general `run_anything` tool.
 
-## Tamil learner analogy: junior coordinator
+## Everyday analogy: a junior coordinator
 
 <Scenario title="Useful autonomy with a manager boundary">
 
 A junior project coordinator can collect information, compare options and prepare the plan. Sending an official message, deleting a record, purchasing or changing access still needs manager approval.
-
-**Simple Tanglish:** Agent வேலை செய்யலாம். ஆனால் permission இல்லாமல் email send, file delete அல்லது payment செய்யக்கூடாது.
 
 </Scenario>
 
@@ -75,10 +70,7 @@ The UI should show exactly what will happen, where and with which data. After ap
 
 ## Stopping rules
 
-<ModeText
-  english="A safe agent knows when to stop. Missing information, absent permission, repeated failure or a reached step limit should return control to the learner."
-  tanglish="Safe agent எப்போது stop செய்ய வேண்டும் என்பதை தெரிந்திருக்க வேண்டும். Information missing, permission இல்லாமை, repeated failure அல்லது step limit வந்தால் learner-கிட்ட control-ஐ return செய்ய வேண்டும்."
-/>
+A safe agent knows when to stop. Missing information, absent permission, repeated failure or a reached step limit should return control to the learner.
 
 Stop when the goal is complete, required information is missing, permission is absent, a risk boundary is reached, the same tool fails repeatedly or the maximum step count is reached.
 
