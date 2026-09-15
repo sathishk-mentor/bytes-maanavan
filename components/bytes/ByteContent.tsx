@@ -21,11 +21,28 @@ import { MongoDBVisual } from './mdx/MongoDBVisuals';
 import { ModeText, ReadingModeToggle } from './ReadingMode';
 import { SyntaxCode } from './SyntaxCode';
 import { slugify } from '@/lib/mdx';
+import { BookOpen, Boxes, Building2, CheckCircle2, GitCompareArrows, HelpCircle, Lightbulb, Network, Rocket, Route, Target, Workflow } from 'lucide-react';
+
+const sectionIcon = (text:string) => {
+  if (/quick start/i.test(text)) return Rocket;
+  if (/start from basics/i.test(text)) return BookOpen;
+  if (/core explanation/i.test(text)) return Lightbulb;
+  if (/architecture|flow diagram/i.test(text)) return Network;
+  if (/types|components/i.test(text)) return Boxes;
+  if (/comparison|\bvs\b/i.test(text)) return GitCompareArrows;
+  if (/real-world/i.test(text)) return Building2;
+  if (/imagine/i.test(text)) return Workflow;
+  if (/use cases/i.test(text)) return Target;
+  if (/takeaways/i.test(text)) return CheckCircle2;
+  if (/final thought|next path/i.test(text)) return Route;
+  return HelpCircle;
+};
 
 const createComponents = (idPrefix = '', includeContextSwitch = false) => ({
   h2: ({children,...props}:any)=>{
     const text=children.toString();
-    const heading=<h2 id={`${idPrefix}${slugify(text)}`} className="byte-section-title" {...props}>{children}</h2>;
+    const Icon=sectionIcon(text);
+    const heading=<h2 id={`${idPrefix}${slugify(text)}`} className="byte-section-title" {...props}><span className="byte-section-icon" aria-hidden="true"><Icon/></span><span>{children}</span></h2>;
     return includeContextSwitch && /analogy/i.test(text) ? <><ReadingModeToggle compact />{heading}</> : heading;
   },
   h3: ({children,...props}:any)=><h3 id={`${idPrefix}${slugify(children.toString())}`} className="byte-subtitle" {...props}>{children}</h3>,

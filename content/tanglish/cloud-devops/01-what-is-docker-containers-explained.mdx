@@ -21,21 +21,9 @@ Container VM கிடையாது. அது host OS kernel-ஐ share செ
 
 ## Architecture / Flow Diagram
 
-```text
-Source code + Dockerfile
-           |
-           v
-      docker build
-           |
-           v
-   Image: status-api:1.0 -----> Registry
-           |                       |
-           | docker run            | pull
-           v                       v
-    Local container        Test / Cloud container
-```
+<DockerObjectArchitecture />
 
-Local, test மற்றும் cloud எல்லாம் same image version use பண்ணலாம் என்பதுதான் diagram-ன் key point.
+Animated build path-ஐ first follow பண்ணுங்க. Image ready ஆன பிறகு two paths இருக்கு: registry மூலம் share பண்ணலாம் அல்லது same image-லிருந்து multiple independent containers run பண்ணலாம். Local, test மற்றும் cloud எல்லாம் same tested image version use பண்ணலாம் என்பதுதான் key point.
 
 ## Types / Components
 

@@ -36,21 +36,9 @@ A container is not a virtual machine. It normally shares the host operating-syst
 
 ## Architecture / Flow Diagram
 
-```text
-Source code + Dockerfile
-           |
-           v
-      docker build
-           |
-           v
-   Image: status-api:1.0 -----> Registry
-           |                       |
-           | docker run            | pull
-           v                       v
-    Local container        Test / Cloud container
-```
+<DockerObjectArchitecture />
 
-The important idea is not the command syntax. Local, test and cloud environments can run containers created from the same tested image version.
+Follow the animated build path first, then watch the image split into two possible journeys: share it through a registry or run multiple independent containers. Local, test and cloud environments can all use the same tested image version.
 
 ## Types / Components
 
