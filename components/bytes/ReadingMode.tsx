@@ -20,6 +20,7 @@ export function ReadingModeToggle() {
     setMode(next);
     document.documentElement.dataset.readingMode = next;
     window.localStorage.setItem('maanavan-reading-mode', next);
+    window.dispatchEvent(new Event('reading-mode-change'));
   }
 
   return <section className="reading-mode-control" aria-label="Choose explanation language">

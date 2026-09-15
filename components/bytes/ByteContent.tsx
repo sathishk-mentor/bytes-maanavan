@@ -22,9 +22,9 @@ import { ModeText } from './ReadingMode';
 import { SyntaxCode } from './SyntaxCode';
 import { slugify } from '@/lib/mdx';
 
-const components = {
-  h2: ({children,...props}:any)=><h2 id={slugify(children.toString())} className="byte-section-title" {...props}>{children}</h2>,
-  h3: ({children,...props}:any)=><h3 id={slugify(children.toString())} className="byte-subtitle" {...props}>{children}</h3>,
+const createComponents = (idPrefix = '') => ({
+  h2: ({children,...props}:any)=><h2 id={`${idPrefix}${slugify(children.toString())}`} className="byte-section-title" {...props}>{children}</h2>,
+  h3: ({children,...props}:any)=><h3 id={`${idPrefix}${slugify(children.toString())}`} className="byte-subtitle" {...props}>{children}</h3>,
   p: ({children,...props}:any)=><p className="byte-paragraph" {...props}>{children}</p>,
   a: ({children,...props}:any)=><a className="byte-link" target="_blank" rel="noreferrer" {...props}>{children}</a>,
   ul: ({children,...props}:any)=><ul className="byte-list" {...props}>{children}</ul>,
@@ -38,6 +38,11 @@ const components = {
   pre: ({children}:any)=>{const child=children as any;const code=child?.props?.children?.toString?.()||'';const language=(child?.props?.className||'').replace('language-','')||'text';return <SyntaxCode code={code} language={language}/>;},
   code: ({children,...props}:any)=><code className="byte-code" {...props}>{children}</code>,
   ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual, DockerObjectArchitecture, OfficialDockerDiagram, LangChainFlowVisual, LangChainBuildingBlocks, OfficialLangChainDiagram, HandbookLearningVisual, AgentBoundaryVisual, AgentCapabilityVisual, MongoDBVisual, ModeText,
-};
+});
 
-export function ByteContent({content}:{content:string}) { return <article className="byte-article"><MDXRemote source={content} components={components} options={{mdxOptions:{remarkPlugins:[remarkGfm]}}}/></article>; }
+export function ByteContent({content,tanglishContent}:{content:string;tanglishContent?:string|null}) {
+  return <>
+    <article className="byte-article byte-article-english"><MDXRemote source={content} components={createComponents()} options={{mdxOptions:{remarkPlugins:[remarkGfm]}}}/></article>
+    {tanglishContent && <article className="byte-article byte-article-tanglish" lang="ta"><MDXRemote source={tanglishContent} components={createComponents('ta-')} options={{mdxOptions:{remarkPlugins:[remarkGfm]}}}/></article>}
+  </>;
+}

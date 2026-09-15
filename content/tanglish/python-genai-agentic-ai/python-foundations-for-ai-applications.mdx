@@ -1,0 +1,113 @@
+<ThemeCard title="Neenga build panna poradhu" badge="PYTHON AI HANDBOOK 01">
+
+**AI-Powered Personal Learning Assistant**-oda first working part-ஆக, clear inputs, rules மற்றும் output கொண்ட simple course recommender-ஐ build பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="pythonFoundation" />
+
+Python ஒரு AI application-ன் coordination layer. Learner data-ஐ receive செய்து, rules apply பண்ணி, model அல்லது tool-ஐ call செய்து, result-ஐ validate பண்ணி useful response கொடுக்கும்.
+
+## Why Python still matters in the AI era
+
+AI code generate பண்ணினாலும், data validate பண்ண, models-ஐ call பண்ண, tools connect பண்ண, permissions enforce பண்ண மற்றும் result test பண்ண ஒரு programming language தேவை. இந்த வேலைகளுக்கு Python அதிகமாக use ஆகிறது; காரணம் அதன் syntax படிக்க easy, மேலும் API, data, machine learning மற்றும் automation-க்கு தேவையான packages கிடைக்கும்.
+
+எல்லா Python features-ஐயும் memorise பண்ண வேண்டியதில்லை. AI workflow-ஐ power பண்ணும் code-ஐ **read, question, run, test மற்றும் improve** செய்யும் அளவுக்கு foundations strong-ஆக இருக்க வேண்டும்.
+
+## Set up a safe workspace
+
+Current supported Python version மற்றும் VS Code install பண்ணுங்க. ஒவ்வொரு project-க்கும் தனி folder create செய்து, அதன் packages-ஐ virtual environment-ல் isolate பண்ணுங்க:
+
+```bash
+python -m venv .venv
+# .venv activate செய்த பிறகு:
+python -m pip install --upgrade pip
+```
+
+Virtual environment என்பது ஒவ்வொரு course-ன் lab materials-ஐ தனித்தனி box-ல் வைப்பது மாதிரி. ஒரு project-ல் package update செய்தாலும் இன்னொரு project unexpectedly break ஆகாது.
+
+## Values and data structures
+
+```python
+learner_name = "Kavin"                   # string
+study_hours = 6                           # integer
+is_beginner = True                        # Boolean
+interests = ["Python", "AI Agents"]      # list: ordered and changeable
+profile = {"goal": "AI Engineer"}        # dictionary: key and value
+levels = ("beginner", "intermediate")    # tuple: fixed sequence
+completed = {"SQL", "Git"}               # set: unique values
+```
+
+எந்த behaviour தேவையோ அதைப் பொறுத்து data structure select பண்ணுங்க. Learner profile-க்கு dictionary சரியானது; ஒவ்வொரு value-க்கும் meaningful key இருக்கும். Learning path-க்கு list சரியானது; course order முக்கியம்.
+
+## Conditions, loops and functions
+
+```python
+def recommend_course(skill_level: str, interest: str) -> str:
+    if skill_level == "beginner" and interest == "AI":
+        return "Start with Python and Generative AI"
+    return "Explore the complete course library"
+
+recommendation = recommend_course("beginner", "AI")
+print(recommendation)
+```
+
+`if` condition ஒரு rule true-ஆ இருக்கிறதா check பண்ணும். Loop repeated items-ஐ process பண்ணும். Function ஒரு logic-ஐ name கொடுத்து reusable unit-ஆக மாற்றும். Type hints intended input மற்றும் output contract-ஐ explain செய்யும்; ஆனால் runtime-ல் எல்லா types-ஐயும் Python automatic-ஆ enforce பண்ணாது.
+
+## Tamil learner analogy: tea kadai recipe
+
+<Scenario title="Same input, repeatable steps">
+
+Tea kadai recipe-க்கு தேவையான ingredients கொடுத்தால், fixed steps follow பண்ணி tea கிடைக்கும். Function-மும் அதே மாதிரி: inputs receive பண்ணி, defined logic apply பண்ணி output return பண்ணும்.
+
+**Simple Tanglish:** Oru function-na repeatable recipe மாதிரி. Input கொடுத்தால், defined steps follow பண்ணி output கொடுக்கும்.
+
+</Scenario>
+
+ஒரு function-ஐ புரிந்துகொள்ள மூன்று கேள்விகள் கேளுங்க: அது என்ன input receive செய்கிறது? என்ன rule apply செய்கிறது? என்ன output return செய்கிறது?
+
+## Read errors as evidence
+
+Code fail ஆனால் final exception line-லிருந்து start பண்ணுங்க. அதில் சொல்லப்பட்ட file மற்றும் line number-ஐ பாருங்க. Code-ஐ உடனே rewrite பண்ணாமல், smallest input use செய்து error-ஐ reproduce பண்ணுங்க.
+
+```python
+try:
+    weekly_hours = int(input("Weekly study hours: "))
+except ValueError:
+    print("Enter a whole number, such as 5")
+```
+
+Broad `except` use செய்து எல்லா errors-ஐயும் hide பண்ணாதீங்க. புரிந்த failure-ஐ மட்டும் handle பண்ணுங்க; unexpected failure development நேரத்தில் visible-ஆ இருக்கட்டும்.
+
+## Use AI coding assistants responsibly
+
+- புரியாத code-ஐ accept பண்ணுவதற்கு முன் explanation கேளுங்க.
+- Goal, input format மற்றும் expected examples-ஐ clear-ஆ கொடுங்க.
+- Isolated development environment-ல் code run பண்ணுங்க.
+- Normal, empty மற்றும் invalid inputs எல்லாவற்றையும் test பண்ணுங்க.
+- Password, API key அல்லது private learner record-ஐ paste பண்ணாதீங்க.
+- Dependency மற்றும் final behaviour-க்கு human ownership வைத்திருங்க.
+
+## Practical task
+
+Recommender-ஐ extend செய்து learner level, interest மற்றும் available weekly hours receive பண்ண வையுங்க. `course`, `reason`, `weekly_plan` கொண்ட dictionary return பண்ண வேண்டும். Invalid level உட்பட குறைந்தது நான்கு inputs-ஐ test பண்ணுங்க.
+
+## Interview bit
+
+<ThemeCard title="AI code எழுதும்போது Python ஏன் கற்க வேண்டும்?" badge="CAREER">
+
+AI implementation-ஐ speed up பண்ணும். ஆனால் contracts define பண்ண, data validate பண்ண, errors investigate பண்ண, behaviour test பண்ண மற்றும் application என்ன செய்யலாம் என்பதை control பண்ண Python knowledge தேவை. AI-ஐ assistant-ஆக use செய்து, அதன் output-ஐ executable evidence மூலம் verify பண்ணுவேன்.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- AI application-ல் data, API, tool மற்றும் validation-ஐ Python coordinate பண்ணும்.
+- Function business rule-ஐ reusable மற்றும் testable-ஆக மாற்றும்.
+- Virtual environment project dependencies-ஐ isolate பண்ணும்.
+- Error message ஒரு evidence; எல்லாவற்றையும் rewrite பண்ண சொல்லும் signal இல்லை.
+- AI generate செய்த code-க்கும் developer தான் responsible.
+
+</Takeaways>

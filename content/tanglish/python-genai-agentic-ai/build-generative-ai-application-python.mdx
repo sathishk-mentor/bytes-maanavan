@@ -1,0 +1,110 @@
+<ThemeCard title="Neenga build panna project" badge="PYTHON AI HANDBOOK 03">
+
+Verified courses மட்டும் recommend செய்து, prerequisite, reason, confidence மற்றும் missing information-ஐ explain செய்யும் **AI Course Advisor** build பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="pythonGenAi" />
+
+LLM recommendation generate செய்யும். ஆனால் learner profile, approved catalogue, validation rules மற்றும் final decision boundary அனைத்தையும் Python application தான் control செய்ய வேண்டும்.
+
+## What makes this an application
+
+LLM-ஐ ஒருமுறை call பண்ணுவது demo. அதை real application-ஆக மாற்ற input validation, approved context, output contract, failure handling, privacy controls மற்றும் usable experience தேவை.
+
+```text
+Learner profile + approved catalogue → Python context builder → LLM → structured output → validation → response
+```
+
+இந்த flow-ல் LLM ஒரு component மட்டும். Final answer safe மற்றும் correct-ஆ இருக்கிறதா என்பதை application code decide பண்ண வேண்டும்.
+
+## Model, instructions and context
+
+- **System instruction:** Stable role, boundaries மற்றும் output rules.
+- **User instruction:** Learner இப்போது கேட்ட request.
+- **Context:** இந்த request-க்கு தேவையான verified profile மற்றும் catalogue facts.
+- **Model response:** Application validate செய்ய வேண்டிய proposal.
+
+```python
+system_instruction = """
+You are a learning-path assistant.
+Recommend only courses present in APPROVED_COURSES.
+If required learner information is missing, say so.
+Return the requested structured fields.
+"""
+```
+
+System instruction-ல் model என்ன role perform செய்ய வேண்டும், எந்த boundary-ஐ cross பண்ணக்கூடாது, எந்த format-ல் result கொடுக்க வேண்டும் என்பதை clear-ஆ எழுதுங்க.
+
+## Tamil learner analogy: brief the knowledgeable assistant
+
+<Scenario title="Correct context vague request-ஐ useful decision-ஆக மாற்றும்">
+
+Education, goal மற்றும் available time சொல்லாமல் counsellor-கிட்ட “ஒரு course suggest பண்ணுங்க” என்றால் answer generic-ஆ இருக்கும். Learner profile மற்றும் correct course catalogue கொடுத்தால் தான் relevant recommendation கிடைக்கும்.
+
+**Simple Tanglish:** “Course suggest பண்ணு” என்பது vague request. Learner level, goal, completed skills எல்லாம் கொடுத்தால் useful recommendation கிடைக்கும்.
+
+</Scenario>
+
+## Define structured output
+
+```python
+from pydantic import BaseModel, Field
+
+class CourseRecommendation(BaseModel):
+    course_id: str
+    reason: str
+    prerequisite: str
+    next_step: str
+    confidence: float = Field(ge=0, le=1)
+    missing_information: list[str]
+```
+
+Structured output use செய்தால் missing அல்லது wrong fields உடனே visible ஆகும். `course_id` approved catalogue-ல் இருக்கிறதா, prerequisite learner record-க்கு match ஆகிறதா என்பதையும் Python தனியாக verify பண்ண வேண்டும்.
+
+## Ground the recommendation
+
+Learner கேட்கிறார்: **SQL முடித்த பிறகு எந்த course படிக்க வேண்டும்?** Application current level, completed courses, career goal மற்றும் weekly study time-ஐ collect பண்ணும். Approved MaanavaN catalogue-லிருந்து eligible courses retrieve செய்து useful facts மட்டும் model-க்கு send பண்ணும்.
+
+Conversation history continuity-க்கு useful. ஆனால் unlimited chat transcript அல்லது unrelated personal information-ஐ model-க்கு send பண்ணாதீங்க. தேவையான history மட்டும் select அல்லது summarise பண்ணுங்க.
+
+## Streaming and token control
+
+Streaming user-க்கு response fast-ஆ வருகிறது என்ற feeling கொடுக்கும். ஆனால் unvalidated JSON object-ஐ token-by-token display பண்ணாதீங்க. Structured decision என்றால் complete object வந்த பிறகு validate பண்ணி காட்டுங்க. ஒவ்வொரு request-க்கும் input/output tokens, latency மற்றும் estimated cost track பண்ணுங்க.
+
+## Hallucination and human review
+
+Model approved catalogue-ல் இல்லாத course-ஐ return செய்தால் Python அதை reject செய்ய வேண்டும். Confident-ஆக சொல்லப்பட்ட sentence, information correct என்பதற்கான proof இல்லை.
+
+Model course, prerequisite அல்லது promise-ஐ invent பண்ணலாம். Unknown identifiers-ஐ deterministic checks reject செய்ய வேண்டும். Payment, enrolment, certification claim அல்லது important career decision-ஐ result affect செய்தால் human review தேவை.
+
+## Practical build checklist
+
+1. Learner மற்றும் response models define பண்ணுங்க.
+2. Small approved course catalogue load பண்ணுங்க.
+3. Relevant course facts மட்டும் select பண்ணுங்க.
+4. System மற்றும் user messages build பண்ணுங்க.
+5. Structured output request பண்ணுங்க.
+6. Required fields மற்றும் course identity validate பண்ணுங்க.
+7. Guess பண்ணுவதற்கு பதில் missing information return பண்ணுங்க.
+8. Private content log பண்ணாமல் latency மற்றும் token use record பண்ணுங்க.
+
+## Interview bit
+
+<ThemeCard title="Hallucination-ஐ எப்படி reduce பண்ணுவீங்க?" badge="CAREER">
+
+Task-ஐ constrain செய்து verified context கொடுப்பேன்; structured output request செய்து identifiers மற்றும் business rules-ஐ Python-ல் validate பண்ணுவேன். Missing evidence இருந்தால் answer சொல்லாமல் stop செய்யும் behaviour define பண்ணுவேன். Consequential recommendation-க்கு human review வைத்திருப்பேன். Prompting useful; dependable boundary application controls-லிருந்து வருகிறது.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Production GenAI application என்பது model call மட்டும் இல்லை.
+- Recommendation approved knowledge மூலம் ground ஆக வேண்டும்.
+- Structured output validation-ஐ possible ஆக்கும்.
+- Deterministic business rules-ஐ Python own செய்ய வேண்டும்.
+- Privacy, token cost மற்றும் human review initial design-லேயே இருக்க வேண்டும்.
+
+</Takeaways>

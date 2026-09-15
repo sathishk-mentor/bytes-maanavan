@@ -1,0 +1,116 @@
+<ThemeCard title="Neenga build panna poradhu" badge="PYTHON AI HANDBOOK 02">
+
+Learning assistant-ஐ external model service-க்கு connect செய்து, response-ஐ validated course suggestion-ஆக மாற்றுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="pythonApi" />
+
+Python application ஒவ்வொரு API response-ஐயும் external data-ஆக treat செய்ய வேண்டும். முதலில் request success ஆனதா check பண்ணி, பிறகு JSON parse செய்து workflow-க்கு தேவையான fields சரியாக இருக்கிறதா validate செய்ய வேண்டும்.
+
+## API mental model
+
+API என்பது இரண்டு applications இடையிலான contract. Client ஒரு method, URL, headers மற்றும் optional body கொண்ட request-ஐ send பண்ணும். Service status code, headers மற்றும் response body-ஐ return பண்ணும்.
+
+| Method | பொதுவான வேலை | Example |
+|---|---|---|
+| `GET` | Data read பண்ண | ஒரு course retrieve பண்ணுதல் |
+| `POST` | Create அல்லது run பண்ண | LLM recommendation request பண்ணுதல் |
+| `PUT/PATCH` | Replace அல்லது update பண்ண | Learner progress update பண்ணுதல் |
+| `DELETE` | Remove பண்ண | Approved draft delete பண்ணுதல் |
+
+## Tamil learner analogy: restaurant waiter
+
+<Scenario title="Agreed interface மூலம் request">
+
+Customer kitchen-க்குள் சென்று equipment operate பண்ண மாட்டார். Waiter புரியும் format-ல் order receive செய்து result-ஐ கொண்டு வருவார். அதேபோல் API applications இடையில் controlled interface கொடுக்கும்.
+
+**Simple Tanglish:** Customer direct-ஆ kitchen-க்கு போக மாட்டார். Waiter மூலமாக request அனுப்புவார். அதுபோல application, API மூலமாக service-ஐ communicate செய்யும்.
+
+</Scenario>
+
+## JSON becomes Python data
+
+```json
+{
+  "course": "Python for GenAI",
+  "confidence": 0.88,
+  "prerequisites": ["Basic computer skills"]
+}
+```
+
+JSON object Python dictionary-ஆகவும், array list-ஆகவும் மாறும். String, number, Boolean மற்றும் null values-க்கும் corresponding Python values இருக்கும்.
+
+```python
+import requests
+
+response = requests.get(
+    "https://example.com/api/courses",
+    timeout=10,
+)
+response.raise_for_status()
+courses = response.json()
+```
+
+எப்போதும் timeout set பண்ணுங்க. Timeout இல்லையென்றால் slow dependency application resources-ஐ நீண்ட நேரம் hold பண்ணலாம்.
+
+## Keep API keys outside code
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+api_key = os.environ["MODEL_API_KEY"]
+```
+
+`.env` file-ஐ Git-ல் commit பண்ணாதீங்க. Production-ல் deployment platform secret settings மூலம் key கொடுங்க. Provider key-ஐ browser code-ல் expose பண்ணக்கூடாது.
+
+## Validate the response
+
+Status `200` வந்ததால் data correct என்று அர்த்தமில்லை. Content type, required fields, types மற்றும் allowed values எல்லாவற்றையும் check பண்ண வேண்டும்.
+
+```python
+def validate_suggestion(data: dict) -> dict:
+    required = {"course", "reason", "confidence"}
+    missing = required - data.keys()
+    if missing:
+        raise ValueError(f"Missing fields: {sorted(missing)}")
+    if not 0 <= float(data["confidence"]) <= 1:
+        raise ValueError("Confidence must be between 0 and 1")
+    return data
+```
+
+## Failures, retries and rate limits
+
+Failure temporary-ஆக இருக்கும்போது மட்டும் retry useful. Invalid credentials அல்லது wrong request இருந்தால் repeated-ஆக send பண்ணாமல் root problem-ஐ correct செய்ய வேண்டும்.
+
+Timeout மற்றும் selected `429`, `5xx` responses போன்ற temporary failures-க்கு மட்டும் retry பண்ணுங்க. Exponential backoff, jitter மற்றும் maximum attempt count use பண்ணுங்க. Async Python பல independent network calls-க்காக wait பண்ணும்போது useful; அது CPU-heavy work-ஐ automatic-ஆ faster ஆக்காது, provider limits-ஐ remove பண்ணாது.
+
+## Practical task
+
+`get_course_suggestions(profile)` function create பண்ணுங்க. அது learner profile-ஐ send செய்து timeout apply பண்ண வேண்டும்; HTTP status check செய்து JSON parse பண்ணி required fields validate செய்ய வேண்டும். Timeout, rate limit மற்றும் invalid response cases-க்கு clear handling add பண்ணுங்க.
+
+## Common mistakes
+
+<Mistakes>
+
+- `.env` commit பண்ணுவது அல்லது logs-ல் secrets print பண்ணுவது.
+- Limit இல்லாமல் ஒவ்வொரு failure-ஐயும் retry பண்ணுவது.
+- Successful HTTP response expected schema-வில் இருக்கும் என்று assume பண்ணுவது.
+- Model-க்கு தேவையில்லாத private learner details-ஐ send பண்ணுவது.
+- Async code capacity planning-க்கு replacement என்று நினைப்பது.
+
+</Mistakes>
+
+## Key takeaways
+
+<Takeaways>
+
+- API என்பது explicit request-response contract.
+- JSON parse செய்த பிறகும் application-level validation தேவை.
+- Secrets environment அல்லது secret-management system-ல் இருக்க வேண்டும்.
+- Timeout, bounded retry மற்றும் rate-limit handling production basics.
+- LLM output-ஐ display அல்லது use செய்வதற்கு முன் validate பண்ண வேண்டும்.
+
+</Takeaways>

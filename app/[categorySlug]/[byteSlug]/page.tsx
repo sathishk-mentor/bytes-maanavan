@@ -11,6 +11,7 @@ import {
   getAdjacentBytes,
   getBytesByCategory,
   extractHeadings,
+  getTanglishContent,
 } from '@/lib/mdx';
 import { getCategoryBySlug } from '@/lib/categories';
 import { CourseRecommendation } from '@/components/bytes/CourseRecommendation';
@@ -177,6 +178,7 @@ export default async function BytePage({ params }: BytePageProps) {
 
   // Extract headings for accordion navigation
   const headings = extractHeadings(byte.content);
+  const tanglishContent = categorySlug === 'python-genai-agentic-ai' ? await getTanglishContent(categorySlug, byteSlug) : null;
 
   const canonical=`https://bytes.maanavan.com/${categorySlug}/${byteSlug}/`;
   const minutes=Number.parseInt(byte.duration,10) || 10;
@@ -195,7 +197,7 @@ export default async function BytePage({ params }: BytePageProps) {
           <div className="byte-main-column">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} mobile />
             {categorySlug === 'python-genai-agentic-ai' && <ReadingModeToggle />}
-            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={byte.content} /><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
+            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={byte.content} tanglishContent={tanglishContent} /><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
           <aside className="byte-trust-rail" aria-label="Handbook quick navigation">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} />

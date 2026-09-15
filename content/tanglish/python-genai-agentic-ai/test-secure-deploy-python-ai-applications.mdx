@@ -1,0 +1,115 @@
+<ThemeCard title="Complete handbook outcome" badge="PYTHON AI HANDBOOK 05">
+
+Automated evidence, safety controls, repeatable deployment, monitoring மற்றும் recovery உடன் **AI-Powered Personal Learning Assistant**-ஐ production-ready ஆக்குவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="pythonProduction" />
+
+Production readiness என்றால் expected behaviour work ஆகிறது என்பதை prove செய்ய வேண்டும், unsafe behaviour-ஐ limit செய்ய வேண்டும், real usage-ஐ observe செய்ய வேண்டும், release fail ஆனால் recover செய்ய வேண்டும்.
+
+## Organise clear boundaries
+
+```text
+app/
+  api/          # request and response contracts
+  services/     # learning workflow
+  ai/           # prompts, models and tool loop
+  tools/        # bounded operations
+  models/       # typed data models
+tests/
+evals/
+```
+
+Application logic மற்றும் provider-specific AI logic-ஐ separate பண்ணினால் testing, model change மற்றும் incident recovery easy ஆகும். ஒரு provider மாறினாலும் complete application-ஐ rewrite பண்ண வேண்டிய நிலை வராது.
+
+## Test deterministic code first
+
+```python
+def test_calculate_weeks_rounds_up():
+    assert calculate_weeks(total_hours=21, weekly_hours=5) == 5
+```
+
+Unit test small rules-ஐ cover பண்ணும். Integration test API, database மற்றும் provider boundaries-ஐ cover பண்ணும். Stable failure testing-க்கு external APIs mock பண்ணலாம்; அதோடு real integration-க்கு controlled end-to-end test ஒன்றும் வைத்திருங்க.
+
+## Evaluate the AI behaviour
+
+Normal questions, missing-context cases, unsupported requests, prompt-injection attempts மற்றும் expected safety behaviour கொண்ட fixed evaluation dataset maintain பண்ணுங்க. System approved course-ஐ select செய்ததா, correct evidence use செய்ததா, required fields return செய்ததா, தேவையான இடத்தில் approval கேட்டதா என்பதை measure பண்ணுங்க.
+
+Model output ஒவ்வொரு run-லும் exact same sentence-ஆ இருக்காது. அதனால் identical text expect பண்ணாமல் semantic criteria மற்றும் business checks use பண்ண வேண்டும்.
+
+## Tamil learner analogy: bus readiness check
+
+<Scenario title="Local-ல் start ஆனது safe journey என்று அர்த்தமில்லை">
+
+Bus long trip start செய்வதற்கு முன் driver brakes, tyres, fuel மற்றும் documents check பண்ணுவார். Real users depend பண்ணும் முன் Python AI application-க்கும் tests, security, monitoring மற்றும் recovery plan தேவை.
+
+**Simple Tanglish:** Local system-ல் work ஆகிறது என்பதால் production-ready என்று சொல்ல முடியாது. Test, security, logging மற்றும் monitoring எல்லாம் வேண்டும்.
+
+</Scenario>
+
+## Protect every boundary
+
+- Secrets-ஐ managed secret system-ல் store பண்ணுங்க.
+- Users-ஐ authenticate செய்து tools-ஐ தனியாக authorise பண்ணுங்க.
+- User text மற்றும் retrieved documents-ஐ untrusted input-ஆக treat பண்ணுங்க.
+- System rules மற்றும் external content-ஐ separate பண்ணுங்க.
+- Tools-ஐ allowlist செய்து parameters validate பண்ணுங்க.
+- Requests, agent steps, tokens, time மற்றும் cost-க்கு limits வையுங்க.
+- Logs-லிருந்து personal information redact பண்ணுங்க.
+- Consequential operations-க்கு approval require பண்ணுங்க.
+
+Prompt injection-ஐ ஒரு warning sentence மட்டும் solve பண்ணாது. Least privilege, source labelling, instruction separation, output validation மற்றும் approval gates மூலம் அதன் impact-ஐ reduce பண்ண வேண்டும்.
+
+## Package with Docker
+
+```dockerfile
+FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app ./app
+USER 10001
+CMD ["python", "-m", "app"]
+```
+
+Dependencies pin பண்ணி image scan பண்ணுங்க. Non-root user-ஆக run செய்து runtime-ல் மட்டும் secrets inject பண்ணுங்க. Expensive LLM call இல்லாமல் application process healthy-ஆ இருக்கிறதா check செய்ய lightweight health endpoint add பண்ணுங்க.
+
+## Observe the real system
+
+Monitoring இந்த practical questions-க்கு answer கொடுக்க வேண்டும்: Application available-ஆ இருக்கிறதா? Recommendations useful-ஆ உள்ளதா? எந்த tools fail ஆகிறது? ஒவ்வொரு request-க்கும் cost எவ்வளவு?
+
+Request count, error rate, latency, token usage, estimated cost, tool failures, approval outcomes மற்றும் evaluation quality track பண்ணுங்க. Private content expose பண்ணாமல் ஒரு request-ஐ end-to-end follow செய்ய correlation ID use பண்ணுங்க.
+
+Prompts, model configuration, tools மற்றும் evaluation datasets-ஐ version பண்ணுங்க. Rollback என்பது old prompt மட்டும் restore பண்ணுவது இல்லை; known compatible combination-ஐ restore பண்ண வேண்டும்.
+
+## Production checklist
+
+1. Unit மற்றும் integration tests pass ஆக வேண்டும்.
+2. Fixed AI evaluation release threshold-ஐ meet செய்ய வேண்டும்.
+3. Secrets மற்றும் permissions review ஆக வேண்டும்.
+4. Rate, token, cost மற்றும் agent-step limits work ஆக வேண்டும்.
+5. Image scan மற்றும் health check pass ஆக வேண்டும்.
+6. Logs, metrics மற்றும் alerts available-ஆ இருக்க வேண்டும்.
+7. Database backup மற்றும் migration plan confirm ஆக வேண்டும்.
+8. Rollback document செய்து rehearse பண்ணியிருக்க வேண்டும்.
+
+## Interview bit
+
+<ThemeCard title="LLM application-ஐ எப்படி test பண்ணுவீங்க?" badge="CAREER">
+
+Deterministic application tests மற்றும் probabilistic AI evaluations-ஐ separate பண்ணுவேன். Unit மற்றும் integration tests contracts, controls-ஐ prove செய்யும். Versioned evaluation dataset groundedness, task success மற்றும் safety-ஐ measure செய்யும். Model மற்றும் prompt versions record செய்து production signals monitor பண்ணி rollback threshold define பண்ணுவேன்.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Production readiness-க்கு tests, evaluation, security மற்றும் operations அனைத்தும் தேவை.
+- LLM quality measure பண்ண fixed, versioned evaluation dataset தேவை.
+- Limits security மட்டுமல்ல; reliability மற்றும் cost-ஐயும் protect பண்ணும்.
+- Docker repeatable runtime கொடுக்கும்; அது complete operational safety அல்ல.
+- Monitoring மற்றும் rollback release system-ஐ complete பண்ணும்.
+
+</Takeaways>

@@ -1,0 +1,94 @@
+<ThemeCard title="Neenga build panna project" badge="PYTHON AI HANDBOOK 04">
+
+Skill gaps identify செய்து, authorised tools use செய்து, weekly plan prepare செய்து, schedule செய்வதற்கு முன் approval கேட்கும் **Personal Learning Agent** build பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="pythonAgent" />
+
+Agent next step என்ன என்பதை decide செய்யும். Actual operation-ஐ Python tool தான் perform செய்யும். இந்த responsibilities-ஐ separate-ஆக வைத்தால் permission, testing மற்றும் evidence தெளிவாக இருக்கும்.
+
+## Chatbot, copilot and agent
+
+| Pattern | எப்படி behave செய்யும் | Example |
+|---|---|---|
+| Chatbot | Response generate செய்யும் | Python error explain பண்ணும் |
+| Copilot | Human செய்யும் work-க்கு assist பண்ணும் | Review-க்கு study plan draft பண்ணும் |
+| Agent | Tool steps choose செய்து perform செய்யும் | Goal read செய்து courses check பண்ணி path calculate செய்யும் |
+
+Agent loop: goal-ஐ understand பண்ணும், next useful step choose பண்ணும், tool call பண்ணும், actual result observe பண்ணும், பிறகு continue செய்யலாமா stop செய்யலாமா decide பண்ணும்.
+
+## Create bounded Python tools
+
+```python
+def calculate_weeks(total_hours: int, weekly_hours: int) -> int:
+    if weekly_hours <= 0:
+        raise ValueError("weekly_hours must be positive")
+    return (total_hours + weekly_hours - 1) // weekly_hours
+```
+
+Tool definition-க்கு precise name, clear description, parameter schema மற்றும் return contract தேவை. General `run_anything` tool-ஐ விட narrow tool authorise, test மற்றும் observe பண்ண easy.
+
+## Tamil learner analogy: junior coordinator
+
+<Scenario title="Manager boundary-க்குள் useful autonomy">
+
+Junior project coordinator information collect பண்ணலாம், options compare பண்ணலாம், plan prepare பண்ணலாம். ஆனால் official message send பண்ண, record delete பண்ண, purchase செய்ய அல்லது access change பண்ண manager approval தேவை.
+
+**Simple Tanglish:** Agent வேலை செய்யலாம். ஆனால் permission இல்லாமல் email send, file delete அல்லது payment செய்யக்கூடாது.
+
+</Scenario>
+
+## State and memory are different
+
+**State** என்பது current run-க்கு தேவையான goal, completed steps, tool results மற்றும் remaining work. **Memory** என்பது selected information-ஐ future interactions-க்கும் carry பண்ணுவது. Useful மற்றும் permitted information மட்டும் retention rule-உடன் store பண்ணுங்க. Old memory எப்போதும் correct என்று assume பண்ணாதீங்க.
+
+## Read tools, write tools and approval
+
+Approved catalogue read பண்ணுவது lower risk. Schedule modify பண்ணுவது higher risk. Read மற்றும் write capabilities-ஐ separate பண்ணி least privilege apply பண்ணுங்க. Consequential tool call-க்கு explicit approval கேளுங்க.
+
+```python
+if proposed_action.type == "schedule_activity":
+    return {
+        "status": "approval_required",
+        "proposal": proposed_action.model_dump(),
+    }
+```
+
+என்ன action நடக்கும், எங்கே நடக்கும், எந்த data use ஆகும் என்பதை UI clear-ஆ காட்ட வேண்டும். Approval கிடைத்த பிறகும் tool result-ஐ inspect செய்த பிறகு தான் success claim பண்ண வேண்டும்.
+
+## Stopping rules
+
+Safe agent எப்போது stop செய்ய வேண்டும் என்பதை தெரிந்திருக்க வேண்டும். Information missing, permission இல்லாமை, repeated failure அல்லது step limit வந்தால் learner-கிட்ட control-ஐ return செய்ய வேண்டும்.
+
+Goal complete ஆனதும், required information missing ஆனதும், permission இல்லாததும், risk boundary வந்ததும், same tool repeated-ஆ fail ஆனதும் அல்லது maximum step count வந்ததும் agent stop ஆக வேண்டும்.
+
+Tool name, safe parameters, result status, latency மற்றும் correlation ID log பண்ணுங்க. Secrets அல்லது unnecessary learner content-ஐ log பண்ணாதீங்க.
+
+## Model Context Protocol
+
+MCP என்பது AI applications exposed tools மற்றும் context-ஐ discover செய்து use பண்ண உதவும் standard. இது interoperability improve பண்ணும்; ஆனால் tool trustworthy என்று guarantee பண்ணாது. Authentication, authorisation, validation மற்றும் human approval application boundary-லேயே தேவை.
+
+## Framework or framework-free
+
+Workflow small மற்றும் clear என்றால் explicit Python loop-லிருந்து start பண்ணுங்க. Durable state, branching, large tool ecosystem, tracing அல்லது team convention தேவைப்பட்டால் framework use பண்ணலாம். எந்த approach எடுத்தாலும் safety responsibility மாறாது.
+
+## Critical safety rule
+
+<ThemeCard title="Prepare செய்தது execute செய்ததாகாது" badge="AGENT SAFETY">
+
+Email draft பண்ணியது send செய்ததாகாது. Event prepare பண்ணியது schedule செய்ததாகாது. Payment request generate பண்ணியது payment complete ஆனதாகாது. Connected tool verifiable success return செய்த பிறகு மட்டும் external action complete என்று சொல்ல வேண்டும்.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Agent action choose செய்யும்; bounded tool operation perform செய்யும்.
+- State current run-ஐ track செய்யும்; memory selected context-ஐ carry செய்யும்.
+- Read access மற்றும் consequential write access-ஐ separate பண்ண வேண்டும்.
+- Maximum steps, retries மற்றும் clear stop conditions தேவை.
+- Confirmed tool evidence இருந்தால் மட்டும் completion claim பண்ண வேண்டும்.
+
+</Takeaways>
