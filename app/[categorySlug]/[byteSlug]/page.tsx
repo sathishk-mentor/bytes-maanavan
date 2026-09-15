@@ -17,6 +17,7 @@ import { CourseRecommendation } from '@/components/bytes/CourseRecommendation';
 import { ReadingReveal } from '@/components/bytes/ReadingReveal';
 import { AuthorCard } from '@/components/bytes/AuthorCard';
 import { BeginnerAnalogy } from '@/components/bytes/BeginnerAnalogy';
+import { HandbookQuickNav } from '@/components/bytes/HandbookQuickNav';
 
 interface BytePageProps {
   params: {
@@ -185,9 +186,12 @@ export default async function BytePage({ params }: BytePageProps) {
         <div className="byte-reading-layout">
           <AccordionTableOfContents headings={headings} byteSlug={byte.slug} />
           <div className="byte-main-column">
+            <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} mobile />
             <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={byte.content} /><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
-          <aside className="byte-trust-rail"><div className="byte-progress-card"><span>LEARNING PROGRESS</span><h3>Chapter {chapterNumber} of {handbookBytes.length}</h3><p>{category?.title}</p><div className="byte-progress-track"><i style={{width:`${chapterNumber * 20}%`}} /></div><small>{byte.duration} focused reading</small></div><div className="byte-review-card"><span>INSIDE THIS BYTE</span><h3>Learn it visually</h3><p>Workflow · example · practical takeaway</p><small>Designed for focused, self-paced learning</small></div></aside>
+          <aside className="byte-trust-rail" aria-label="Handbook quick navigation">
+            <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} />
+          </aside>
         </div>
       </div>
     </>
