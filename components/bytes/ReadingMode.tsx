@@ -30,8 +30,8 @@ export function ReadingModeToggle({ compact = false }: { compact?: boolean }) {
   return <section className={`reading-mode-control ${compact ? 'reading-mode-inline' : ''}`} aria-label="Choose explanation language">
     <div><span className="reading-mode-icon"><Languages/></span><span><small>CHOOSE YOUR READING MODE</small><strong>Same lesson. Two clear explanations.</strong></span></div>
     <div className="reading-mode-options" role="group" aria-label="Explanation mode">
-      <button type="button" className={mode === 'english' ? 'active' : ''} aria-pressed={mode === 'english'} onClick={() => select('english')}><strong>English</strong><small>Standard explanation</small></button>
-      <button type="button" className={mode === 'tanglish' ? 'active' : ''} aria-pressed={mode === 'tanglish'} onClick={() => select('tanglish')}><strong>தமிழ் + English</strong><small>Easy Tanglish</small></button>
+      <button type="button" className={mode === 'english' ? 'active' : ''} aria-pressed={mode === 'english'} onClick={() => select('english')}><strong>English</strong><small>Standard Explanation</small></button>
+      <button type="button" className={mode === 'tanglish' ? 'active' : ''} aria-pressed={mode === 'tanglish'} onClick={() => select('tanglish')}><strong>தமிழ் + English</strong><small>Tamil Explanation</small></button>
     </div>
   </section>;
 }
