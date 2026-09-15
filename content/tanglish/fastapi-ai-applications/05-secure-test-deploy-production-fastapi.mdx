@@ -1,0 +1,112 @@
+<ThemeCard title="Capstone outcome" badge="FASTAPI HANDBOOK 05">
+
+Delivery-support AI API-க்கு authentication, cost limits, failure tests, container deployment மற்றும் rollback gate add பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fastapiProduction" />
+
+## Production question வேறு
+
+Prototype-ல் “Answer வருகிறதா?” என்று கேட்போம். Production-ல்:
+
+- இந்த order-ஐ யார் access செய்யலாம்?
+- One user model cost முழுவதையும் consume செய்யாமல் எப்படி prevent பண்ணுவது?
+- Provider fail ஆனால் safe response கிடைக்குமா?
+- Bad release-ஐ fast-ஆக rollback செய்ய முடியுமா?
+
+## Authentication மற்றும் authorisation
+
+Authentication identity-ஐ prove பண்ணும். Authorisation அந்த identity எந்த order/action access செய்யலாம் என்று decide பண்ணும். Token decode செய்வது மட்டும் verification இல்லை; signature, issuer, audience, expiry மற்றும் required claims verify பண்ண வேண்டும்.
+
+```python
+def require_order_access(user, order):
+    if order.customer_id != user.id:
+        raise HTTPException(status_code=403, detail="Permission denied")
+```
+
+LLM பார்க்கும் முன்பே authorised evidence மட்டும் retrieve பண்ணுங்க.
+
+## Cost மற்றும் abuse limits
+
+Identity-based request limit, concurrent generations, maximum input/context, token budget, upload size, timeout மற்றும் retry budget set பண்ண வேண்டும். Multiple replicas இருந்தால் shared rate limiter தேவை; each-process memory limiter consistent protection கொடுக்காது.
+
+## Logs-ல் events; secrets இல்லை
+
+```python
+logger.info("support_completed", extra={
+    "request_id": request_id,
+    "route": "/support/stream",
+    "latency_ms": latency_ms,
+    "model": model_name,
+    "input_tokens": usage.input_tokens,
+    "output_tokens": usage.output_tokens,
+})
+```
+
+Bearer token, API key, full address அல்லது complete private conversation log பண்ணாதீங்க. Redaction மற்றும் retention policy explicit ஆக இருக்க வேண்டும்.
+
+## Public contract-ஐ test பண்ணுங்க
+
+```python
+from fastapi.testclient import TestClient
+
+def test_health(client: TestClient):
+    response = client.get("/health")
+    assert response.status_code == 200
+
+def test_empty_question_rejected(client: TestClient):
+    response = client.post("/support", json={"order_id": 42, "question": ""})
+    assert response.status_code == 422
+```
+
+Dependency override மூலம் fake model/provider use பண்ணினால் tests deterministic, fast மற்றும் affordable ஆகும்.
+
+Test cases: expired token, wrong order owner, oversized input, provider timeout, invented source, client disconnect மற்றும் retry limit.
+
+## Containerize மற்றும் deploy
+
+Small trusted image, pinned dependencies, non-root user மற்றும் runtime secrets use பண்ணுங்க. Interactive API replicas-ஐ long background ingestion/processing worker-லிருந்து separate பண்ணுங்க. Liveness process alive-ஆ இருக்கிறதா; readiness traffic receive செய்யலாமா என்று answer செய்ய வேண்டும்.
+
+## Real-time scenario: safe release
+
+<Scenario title="Production-ல் gamble பண்ணாமல் release">
+
+CI tests run செய்து image scan பண்ணுகிறது. New version முதலில் limited traffic மட்டும் receive பண்ணும். Team error rate, latency, token cost மற்றும் answer evaluation watch பண்ணும். Regression இருந்தால் traffic previous known-good version-க்கு return ஆகும்.
+
+</Scenario>
+
+## Release gate
+
+1. Authentication மற்றும் order-isolation tests pass.
+2. JSON/SSE contracts versioned மற்றும் tested.
+3. Provider timeout/retry bounded.
+4. Secrets image மற்றும் logs-ல் இல்லை.
+5. Latency, errors, tokens மற்றும் cost visible.
+6. Non-root container scan pass.
+7. Database change மற்றும் rollback tested.
+
+## Common mistakes
+
+<Mistakes>
+
+- JWT content-ஐ signature verify செய்யாமல் trust பண்ணுவது.
+- Every automated test-லும் live paid model call பண்ணுவது.
+- `.env` file-ஐ container image-ல் copy பண்ணுவது.
+- External provider slow ஆனால் liveness fail செய்து restart loop உருவாக்குவது.
+- Rollback test இல்லாமல் full traffic release பண்ணுவது.
+
+</Mistakes>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Authentication identity; authorisation permitted data/action.
+- AI limits requests மட்டும் அல்ல—context, concurrency, tokens மற்றும் cost-ஐ cover செய்ய வேண்டும்.
+- Fake dependencies tests-ஐ deterministic ஆக்கும்.
+- Runtime secrets மற்றும் non-root container safer defaults.
+- Gradual release, observability மற்றும் rollback production safety-க்கு essential.
+
+</Takeaways>
+

@@ -1,6 +1,6 @@
 <ThemeCard title="Neenga build panna project" badge="PYTHON AI HANDBOOK 04">
 
-Skill gaps identify செய்து, authorised tools use செய்து, weekly plan prepare செய்து, schedule செய்வதற்கு முன் approval கேட்கும் **Personal Learning Agent** build பண்ணுவீங்க.
+Available titles search செய்து, preferences compare செய்து, watchlist prepare செய்து, shared profile change செய்வதற்கு முன் approval கேட்கும் **Personal Entertainment Agent** build பண்ணுவீங்க.
 
 </ThemeCard>
 
@@ -13,8 +13,8 @@ Agent next step என்ன என்பதை decide செய்யும்.
 | Pattern | எப்படி behave செய்யும் | Example |
 |---|---|---|
 | Chatbot | Response generate செய்யும் | Python error explain பண்ணும் |
-| Copilot | Human செய்யும் work-க்கு assist பண்ணும் | Review-க்கு study plan draft பண்ணும் |
-| Agent | Tool steps choose செய்து perform செய்யும் | Goal read செய்து courses check பண்ணி path calculate செய்யும் |
+| Copilot | Human செய்யும் work-க்கு assist பண்ணும் | Review-க்கு weekend watchlist draft பண்ணும் |
+| Agent | Tool steps choose செய்து perform செய்யும் | Preferences read செய்து titles check பண்ணி options prepare செய்யும் |
 
 Agent loop: goal-ஐ understand பண்ணும், next useful step choose பண்ணும், tool call பண்ணும், actual result observe பண்ணும், பிறகு continue செய்யலாமா stop செய்யலாமா decide பண்ணும்.
 
@@ -45,10 +45,10 @@ Junior project coordinator information collect பண்ணலாம், options
 
 ## Read tools, write tools மற்றும் approval
 
-Approved catalogue read பண்ணுவது lower risk. Schedule modify பண்ணுவது higher risk. Read மற்றும் write capabilities-ஐ separate பண்ணி least privilege apply பண்ணுங்க. Consequential tool call-க்கு explicit approval கேளுங்க.
+Streaming catalogue read பண்ணுவது lower risk. Shared watchlist change அல்லது paid title rent பண்ணுவது higher risk. Read மற்றும் write capabilities-ஐ separate பண்ணி least privilege apply பண்ணுங்க.
 
 ```python
-if proposed_action.type == "schedule_activity":
+if proposed_action.type == "rent_paid_title":
     return {
         "status": "approval_required",
         "proposal": proposed_action.model_dump(),

@@ -1,0 +1,107 @@
+<ThemeCard title="Practical outcome" badge="FASTAPI HANDBOOK 02">
+
+Order-support request-க்கு Pydantic validation, clear response model மற்றும் useful error contract design பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fastapiValidation" />
+
+## Validation ஏன் boundary-ல் வேண்டும்?
+
+API invalid input-ஐ business logic அல்லது database-க்கு அனுப்புவதற்கு முன்பே stop பண்ண வேண்டும். “Wrong data later crash ஆனது” என்பதற்கு பதிலாக client-க்கு exact, safe correction signal கிடைக்கும்.
+
+## Request model உருவாக்கலாம்
+
+```python
+from pydantic import BaseModel, Field
+
+class SupportRequest(BaseModel):
+    order_id: int = Field(gt=0)
+    question: str = Field(min_length=3, max_length=500)
+    language: str = Field(pattern="^(en|ta)$")
+
+@app.post("/support")
+def create_support_request(payload: SupportRequest):
+    return {"request_id": "req_123", "status": "accepted"}
+```
+
+Missing field, wrong type அல்லது limit violation வந்தால் FastAPI structured `422` response return பண்ணும். Validation rule business meaning-ஐ reflect பண்ண வேண்டும்; arbitrary restriction ஆகக்கூடாது.
+
+## Response model ஏன் முக்கியம்?
+
+```python
+class SupportResponse(BaseModel):
+    request_id: str
+    status: str
+    message: str
+
+@app.post("/support", response_model=SupportResponse, status_code=201)
+def create_support_request(payload: SupportRequest):
+    return SupportResponse(
+        request_id="req_123",
+        status="accepted",
+        message="We are checking your order.",
+    )
+```
+
+Response model accidental internal fields leak ஆகாமல் output contract-ஐ enforce பண்ணும்.
+
+## Status codes plain language-ல்
+
+| Status | எப்போது? |
+|---|---|
+| `200` | Read/update success |
+| `201` | New resource created |
+| `400` | Request meaning invalid |
+| `401` | Identity verify ஆகவில்லை |
+| `403` | Identity தெரியும்; permission இல்லை |
+| `404` | Resource கிடைக்கவில்லை |
+| `409` | Current state-உடன் conflict |
+| `422` | Input shape/validation fail |
+
+## Safe error contract
+
+Client fix செய்யக்கூடிய code, readable message மற்றும் trace ID கொடுங்க. Stack trace, SQL query அல்லது secret return பண்ணாதீங்க.
+
+```json
+{
+  "error": {
+    "code": "order_not_found",
+    "message": "No order was found for this account.",
+    "request_id": "req_123"
+  }
+}
+```
+
+## Real-time analogy: railway reservation form
+
+<Scenario title="Form check முதலில்; booking அடுத்து">
+
+Journey date அல்லது passenger details missing என்றால் reservation counter booking process start பண்ணாது. எந்த field correct செய்ய வேண்டும் என்று சொல்லும். API validation-மும் same: bad input-ஐ early-ஆக reject செய்து useful correction கொடுக்கும்.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- Database error வரும்வரை input validate பண்ணாமல் விடுவது.
+- Internal exception text-ஐ user-க்கு return பண்ணுவது.
+- `401` மற்றும் `403` ஒன்றாக treat பண்ணுவது.
+- Response model இல்லாமல் complete database object return பண்ணுவது.
+- Error response shape endpoint마다 change பண்ணுவது.
+
+</Mistakes>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Pydantic models boundary-ல் input contract enforce பண்ணும்.
+- Response models output-ஐ predictable மற்றும் safer ஆக்கும்.
+- Status code machine-க்கு; clear message human-க்கு.
+- Error contract stable code மற்றும் request ID கொடுக்க வேண்டும்.
+- Validation business rules-ஐ replace பண்ணாது; இரண்டும் தேவை.
+
+</Takeaways>
+

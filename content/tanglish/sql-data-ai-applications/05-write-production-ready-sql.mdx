@@ -14,18 +14,18 @@ Production query bounded, efficient, authorised மற்றும் observable
 
 ```sql
 EXPLAIN (ANALYZE, BUFFERS)
-SELECT course_id, SUM(amount)
+SELECT product_id, SUM(amount)
 FROM orders
 WHERE status = 'PAID'
   AND ordered_at >= DATE '2026-06-01'
-GROUP BY course_id;
+GROUP BY product_id;
 ```
 
 Execution plan database உண்மையில் எவ்வளவு work செய்தது என்பதை காட்டும். Index selective reads-ஐ faster ஆக்கலாம்; ஆனால் storage மற்றும் write cost add பண்ணும். எல்லா columns-க்கும் index உருவாக்காமல் measured access pattern அடிப்படையில் design பண்ணுங்க.
 
 ```sql
 CREATE INDEX idx_orders_paid_date_course
-ON orders (ordered_at, course_id)
+ON orders (ordered_at, product_id)
 WHERE status = 'PAID';
 ```
 
@@ -48,7 +48,7 @@ Prepared statement மற்றும் parameter binding use செய்த�
 
 ## Transaction complete change-ஐ protect பண்ணும்
 
-Payment record மற்றும் enrolment இரண்டும் commit ஆக வேண்டும் அல்லது இரண்டும் rollback ஆக வேண்டும். Transaction-ஐ focused-ஆ வைத்திருங்க, failures-ஐ explicit-ஆ handle பண்ணுங்க, database locks open-ஆ இருக்கும்போது slow LLM network call பண்ணாதீங்க.
+Payment record மற்றும் order confirmation இரண்டும் commit ஆக வேண்டும் அல்லது இரண்டும் rollback ஆக வேண்டும். Transaction-ஐ focused-ஆ வைத்திருங்க, failures-ஐ explicit-ஆ handle பண்ணுங்க, database locks open-ஆ இருக்கும்போது slow LLM network call பண்ணாதீங்க.
 
 ## AI-generated query-க்கு production controls
 

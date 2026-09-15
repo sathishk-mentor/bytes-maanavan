@@ -1,0 +1,74 @@
+<ThemeCard title="Neenga design panna poradhu" badge="FDE HANDBOOK 03">
+
+One real user, real data, safe action மற்றும் measurable outcome cover செய்யும் thin production slice-ஐ design பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fdeSlice" />
+
+## Prototype, pilot மற்றும் thin production slice
+
+Prototype idea possible என்று காட்டும். Pilot limited users-க்கு test பண்ணும். Thin production slice smallest scope-ல் real identity, data, integration, security, monitoring மற்றும் owner உடன் end-to-end value deliver பண்ணும்.
+
+## End-to-end architecture test
+
+User request → authentication → application rule → approved data → bounded AI/service step → validation → human approval → external system → logs/metrics.
+
+இந்த chain-ல் ஒரு critical boundary mock-ஆ இருந்தால் production assumption இன்னும் untested.
+
+## Easy analogy: one working kitchen station
+
+<Scenario title="Full restaurant முன் one complete counter">
+
+Menu முழுவதையும் launch செய்வதற்கு முன் one dish order, payment, kitchen preparation, quality check மற்றும் delivery flow-ஐ real conditions-ல் prove பண்ணலாம். Thin slice narrow scope கொண்டாலும் complete journey-ஐ test பண்ணும்.
+
+</Scenario>
+
+## Real-time scenario: maintenance assistant
+
+Factory-ல் every machine cover செய்யாமல் one equipment type மற்றும் one shift-லிருந்து start பண்ணுங்க. Approved manuals retrieve செய்து technician complaint-க்கு possible checks prepare பண்ணலாம். Shutdown அல்லது part order action human approval பின்னால் இருக்க வேண்டும். Resolution time மற்றும் repeat failure measure பண்ணுங்க.
+
+## AI எங்கே belong ஆகிறது?
+
+Unstructured text understand, evidence summarise மற்றும் options rank பண்ண AI useful. Identity, permission, limit, exact calculation மற்றும் high-impact action-க்கு deterministic application controls தேவை. AI uncertainty உள்ள இடத்தில் abstain அல்லது escalate பண்ண வேண்டும்.
+
+## Production contract
+
+Inputs, outputs, allowed sources, latency target, error behaviour, approval boundary, audit fields, owner, rollback மற்றும் success metric define பண்ணுங்க.
+
+## Common mistakes
+
+<Mistakes>
+
+- Narrow UI demo-ஐ thin production slice என்று அழைப்பது.
+- Real identity/data/integration எல்லாவற்றையும் mock பண்ணுவது.
+- AI-க்கு deterministic business rule decide செய்ய விடுவது.
+- Monitoring மற்றும் rollback-ஐ later work என்று postpone பண்ணுவது.
+- Too many users/use cases-ஐ first slice-ல் சேர்ப்பது.
+
+</Mistakes>
+
+## Interview-ல் எப்படி explain பண்ணுவது?
+
+<ThemeCard title="Thin production slice என்றால் என்ன?" badge="CAREER">
+
+Smallest meaningful scope-ல் one real user journey-ஐ production boundaries வழியாக complete பண்ணும் implementation. Real identity, authorised data, integration, validation, monitoring மற்றும் ownership include ஆகும்; scope narrow ஆனால் outcome end-to-end.
+
+</ThemeCard>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Thin slice small scope; incomplete architecture இல்லை.
+- Highest-risk assumptions early test ஆக வேண்டும்.
+- AI மற்றும் deterministic controls clear boundary-ல் இருக்க வேண்டும்.
+- Success metric மற்றும் rollback initial design-லேயே தேவை.
+- Evidence கிடைத்த பிறகு மட்டுமே expand பண்ணுங்க.
+
+</Takeaways>
+
+## Primary sources
+
+- [AWS Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html)
+- [Google Cloud Architecture Framework](https://cloud.google.com/architecture/framework)

@@ -1,6 +1,6 @@
 <ThemeCard title="Neenga build panna poradhu" badge="PYTHON AI HANDBOOK 01">
 
-**AI-Powered Personal Learning Assistant**-oda first working part-ஆக, clear inputs, rules மற்றும் output கொண்ட simple course recommender-ஐ build பண்ணுவீங்க.
+**Netflix-style Movie Discovery Assistant**-oda first working part-ஆக, clear inputs, rules மற்றும் output கொண்ட simple movie recommender-ஐ build பண்ணுவீங்க.
 
 </ThemeCard>
 
@@ -33,22 +33,22 @@ learner_name = "Kavin"                   # string
 study_hours = 6                           # integer
 is_beginner = True                        # Boolean
 interests = ["Python", "AI Agents"]      # list: ordered and changeable
-profile = {"goal": "AI Engineer"}        # dictionary: key and value
+profile = {"favourite_genre": "Drama"}   # dictionary: key and value
 levels = ("beginner", "intermediate")    # tuple: fixed sequence
 completed = {"SQL", "Git"}               # set: unique values
 ```
 
-எந்த behaviour தேவையோ அதைப் பொறுத்து data structure select பண்ணுங்க. Learner profile-க்கு dictionary சரியானது; ஒவ்வொரு value-க்கும் meaningful key இருக்கும். Learning path-க்கு list சரியானது; course order முக்கியம்.
+எந்த behaviour தேவையோ அதைப் பொறுத்து data structure select பண்ணுங்க. Viewer profile-க்கு dictionary சரியானது; ஒவ்வொரு preference-க்கும் meaningful key இருக்கும். Watchlist-க்கு list சரியானது; title order முக்கியம்.
 
 ## Conditions, loops மற்றும் functions
 
 ```python
-def recommend_course(skill_level: str, interest: str) -> str:
-    if skill_level == "beginner" and interest == "AI":
-        return "Start with Python and Generative AI"
-    return "Explore the complete course library"
+def recommend_movie(age_rating: str, genre: str) -> str:
+    if age_rating == "U" and genre == "Animation":
+        return "Show family-friendly animation"
+    return "Explore the complete movie library"
 
-recommendation = recommend_course("beginner", "AI")
+recommendation = recommend_movie("U", "Animation")
 print(recommendation)
 ```
 
@@ -90,7 +90,7 @@ Broad `except` use செய்து எல்லா errors-ஐயும் hid
 
 ## நீங்க try பண்ண வேண்டிய practical task
 
-Recommender-ஐ extend செய்து learner level, interest மற்றும் available weekly hours receive பண்ண வையுங்க. `course`, `reason`, `weekly_plan` கொண்ட dictionary return பண்ண வேண்டும். Invalid level உட்பட குறைந்தது நான்கு inputs-ஐ test பண்ணுங்க.
+Recommender-ஐ extend செய்து age rating, preferred genre மற்றும் available viewing time receive பண்ண வையுங்க. `title`, `reason`, `runtime_minutes` கொண்ட dictionary return பண்ண வேண்டும். Unsupported rating உட்பட குறைந்தது நான்கு inputs-ஐ test பண்ணுங்க.
 
 ## Interview-ல் எப்படி explain பண்ணுவது?
 

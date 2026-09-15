@@ -1,0 +1,108 @@
+<ThemeCard title="Capstone outcome" badge="DOCKER HANDBOOK 05">
+
+LLM-powered customer-support API-ஐ secret expose செய்யாமல் containerize செய்து, health, security, cost மற்றும் rollback checks உடன் deploy செய்ய கற்றுக்கொள்வீங்க.
+
+</ThemeCard>
+
+<DockerFlowVisual variant="aiDeploy" />
+
+## Application boundary என்ன?
+
+Food-delivery support API user question-ஐ validate செய்து, approved order context-ஐ retrieve செய்து, LLM provider-ஐ call செய்து bounded answer return பண்ணும். Image-ல் code மற்றும் dependencies இருக்க வேண்டும்; API key deployment environment-லிருந்து runtime-ல் வர வேண்டும்.
+
+```python
+import os
+from fastapi import FastAPI, HTTPException
+
+app = FastAPI()
+
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
+
+@app.post("/support")
+def support(question: str):
+    if not os.getenv("LLM_API_KEY"):
+        raise HTTPException(500, "LLM provider is not configured")
+    return {"answer": f"Demo response for: {question}"}
+```
+
+## Production-minded image
+
+```dockerfile
+FROM python:3.12-slim
+WORKDIR /app
+RUN addgroup --system app && adduser --system --ingroup app app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY --chown=app:app app.py .
+USER app
+EXPOSE 8000
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+Small trusted base image, dependency layer caching மற்றும் non-root user நல்ல defaults. Tested versions-ஐ pin செய்து final image-ஐ scan பண்ண வேண்டும்.
+
+## Secret-ஐ image-ல் bake பண்ணாதீங்க
+
+`ENV LLM_API_KEY=...` அல்லது `COPY .env .` image history-ல் secret leak செய்யலாம். Local-ல் runtime environment variable; production-ல் platform secret manager மற்றும் least-privilege access use பண்ணுங்க.
+
+## Production request path
+
+<HandbookLearningVisual variant="dockerAi" />
+
+User request HTTPS ingress வழியாக API container-க்கு வரும். Container secret manager, order database மற்றும் LLM provider-ஐ controlled access மூலம் use பண்ணும். Logs, metrics மற்றும் traces request outcome-ஐ record பண்ணும்.
+
+## Real-time scenario: delayed order assistant
+
+<Scenario title="Demo start ஆகுவது மட்டும் success இல்லை">
+
+Hundreds of customers “En order enga?” என்று ஒரே நேரத்தில் கேட்கலாம். Provider slow ஆகலாம்; user very long input அனுப்பலாம்; retry loop cost அதிகரிக்கலாம். Team input limit, timeout, concurrency limit, token budget மற்றும் rollback set பண்ணுகிறது. Container running என்பதைக் கடந்தும் answer safe, timely மற்றும் affordable-ஆ இருக்கிறதா measure பண்ணுகிறது.
+
+</Scenario>
+
+## Health checks வேறுபாடு
+
+| Check | அது சொல்லும் விஷயம் |
+|---|---|
+| Liveness | Process உயிருடன் இருக்கிறதா? |
+| Readiness | New traffic receive செய்யலாமா? |
+| Evaluation | Answer expected quality meet ஆகிறதா? |
+| Cost metric | Request ஒன்றுக்கு tokens/cost எவ்வளவு? |
+
+Paid LLM call-ஐ frequent liveness probe-ஆக use பண்ணாதீங்க.
+
+## Deployment checklist
+
+1. Image-க்கு immutable version tag கொடுங்க.
+2. Dependencies மற்றும் image vulnerabilities scan பண்ணுங்க.
+3. Non-root process confirm பண்ணுங்க.
+4. Secrets runtime-ல் inject பண்ணுங்க.
+5. CPU, memory, concurrency, timeout limits set பண்ணுங்க.
+6. Quality, latency, errors மற்றும் cost observe பண்ணுங்க.
+7. Limited traffic-க்கு release செய்து rollback path ready வைங்க.
+
+## Common mistakes
+
+<Mistakes>
+
+- Provider key-ஐ Dockerfile அல்லது image context-ல் copy பண்ணுவது.
+- Every provider error-ஐ retry செய்து cost storm உருவாக்குவது.
+- `latest` tag மட்டும் deploy செய்து rollback version தெரியாமல் போவது.
+- Full private prompts-ஐ logs-ல் store பண்ணுவது.
+- Infrastructure uptime மட்டும் பார்த்து answer quality ignore பண்ணுவது.
+
+</Mistakes>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Image-ல் code மற்றும் dependencies; secret runtime-ல் மட்டும்.
+- Healthy container useful AI answer-ஐ guarantee பண்ணாது.
+- Quality, latency, safety மற்றும் cost ஒன்றாக monitor செய்ய வேண்டும்.
+- Immutable version rollout மற்றும் rollback-ஐ clear ஆக்கும்.
+- Platform controls container-ஐ production system-ஆக complete பண்ணும்.
+
+</Takeaways>
+

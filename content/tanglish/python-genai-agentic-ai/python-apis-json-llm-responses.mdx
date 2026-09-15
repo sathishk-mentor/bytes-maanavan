@@ -1,6 +1,6 @@
 <ThemeCard title="Neenga build panna poradhu" badge="PYTHON AI HANDBOOK 02">
 
-Learning assistant-ஐ external model service-க்கு connect செய்து, response-ஐ validated course suggestion-ஆக மாற்றுவீங்க.
+Movie-discovery assistant-ஐ external service-க்கு connect செய்து, JSON response-ஐ validated title suggestion-ஆக மாற்றுவீங்க.
 
 </ThemeCard>
 
@@ -33,9 +33,9 @@ Customer kitchen-க்குள் சென்று equipment operate பண�
 
 ```json
 {
-  "course": "Python for GenAI",
+  "title": "Family Adventure",
   "confidence": 0.88,
-  "prerequisites": ["Basic computer skills"]
+  "available_on": ["Mobile", "TV"]
 }
 ```
 
@@ -72,7 +72,7 @@ Status `200` வந்ததால் data correct என்று அர்த�
 
 ```python
 def validate_suggestion(data: dict) -> dict:
-    required = {"course", "reason", "confidence"}
+    required = {"title", "reason", "confidence"}
     missing = required - data.keys()
     if missing:
         raise ValueError(f"Missing fields: {sorted(missing)}")
@@ -89,7 +89,7 @@ Timeout மற்றும் selected `429`, `5xx` responses போன்ற te
 
 ## நீங்க try பண்ண வேண்டிய practical task
 
-`get_course_suggestions(profile)` function create பண்ணுங்க. அது learner profile-ஐ send செய்து timeout apply பண்ண வேண்டும்; HTTP status check செய்து JSON parse பண்ணி required fields validate செய்ய வேண்டும். Timeout, rate limit மற்றும் invalid response cases-க்கு clear handling add பண்ணுங்க.
+`get_movie_suggestions(profile)` function create பண்ணுங்க. அது permitted viewing preferences-ஐ send செய்து timeout apply பண்ண வேண்டும்; HTTP status check செய்து JSON parse பண்ணி required fields validate செய்ய வேண்டும். Timeout, rate limit மற்றும் invalid response cases-க்கு clear handling add பண்ணுங்க.
 
 ## Beginners செய்யும் common mistakes
 

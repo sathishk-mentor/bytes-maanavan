@@ -1,0 +1,87 @@
+<ThemeCard title="Practical outcome" badge="FASTAPI HANDBOOK 01">
+
+Python function-ஐ web/mobile application call செய்யக்கூடிய API endpoint-ஆக மாற்றி, complete request-response journey புரிந்துகொள்வீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fastapiFoundation" />
+
+## Real product problem-ல் தொடங்கலாம்
+
+Food-delivery status check பண்ணும் Python function laptop-ல் work ஆகிறது. ஆனால் mobile app local Python file-ஐ direct-ஆக call செய்ய முடியாது. Web API அந்த capability-க்கு network contract கொடுக்கும்.
+
+Client HTTP request அனுப்பும் → FastAPI input validate பண்ணும் → Python logic run ஆகும் → JSON response return ஆகும்.
+
+## Endpoint-ன் five parts
+
+| Part | Example | Meaning |
+|---|---|---|
+| Method | `GET` | செய்ய வேண்டிய operation |
+| Path | `/orders/42` | எந்த resource |
+| Input | path, query அல்லது JSON body | Client கொடுக்கும் data |
+| Output | JSON | Server return செய்யும் data |
+| Status | `200 OK` | Machine-readable outcome |
+
+## First application
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI(title="Delivery Support API")
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
+@app.get("/orders/{order_id}")
+def get_order(order_id: int):
+    return {"order_id": order_id, "status": "out_for_delivery"}
+```
+
+`fastapi dev main.py` run செய்து `/docs` open பண்ணினால் generated interactive API documentation கிடைக்கும். `/orders/abc` request, `order_id: int` contract match ஆகாததால் function run ஆகும் முன்பே reject ஆகும்.
+
+## Path vs query parameter
+
+`/orders/42`-ல் `42` order identity. `/orders?status=delayed&limit=10` collection-ஐ filter/control பண்ணும் query parameters. Identity-க்கு path; search, filter, pagination-க்கு query நல்ல default.
+
+## HTTP method intent
+
+- `GET`: Data read பண்ணுவது.
+- `POST`: New request/resource create பண்ணுவது.
+- `PATCH`: Existing resource-ன் ஒரு பகுதி update பண்ணுவது.
+- `DELETE`: Resource remove பண்ணுவது.
+
+Private question-ஐ `GET` URL-ல் வைக்காதீங்க; URLs browser history மற்றும் proxy logs-ல் appear ஆகலாம்.
+
+## Real-time analogy: restaurant counter
+
+<Scenario title="Menu தான் public contract">
+
+Menu available items மற்றும் expected result-ஐ சொல்லும். Customer valid order கொடுக்கிறார்; counter order-ஐ kitchen-க்கு அனுப்பி receipt/result கொடுக்கிறது. FastAPI route menu item மாதிரி; request input; Python logic kitchen; JSON response receipt மாதிரி.
+
+</Scenario>
+
+## Common mistakes
+
+<Mistakes>
+
+- API என்பது URL மட்டும் என்று நினைப்பது.
+- Every action-க்கும் `GET` use பண்ணுவது.
+- Private data-ஐ query string-ல் அனுப்புவது.
+- `/docs` work ஆனதால் business logic correct என்று assume பண்ணுவது.
+- Clear status code இல்லாமல் எல்லா result-க்கும் `200` return பண்ணுவது.
+
+</Mistakes>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- API Python capability-க்கு stable network contract கொடுக்கும்.
+- Method, path, input, output மற்றும் status சேர்ந்து endpoint ஆகும்.
+- Type hints validation மற்றும் documentation-க்கு power கொடுக்கும்.
+- Path identity-க்கு; query filtering/control-க்கு.
+- Public contract stable மற்றும் predictable-ஆ இருக்க வேண்டும்.
+
+</Takeaways>
+

@@ -1,0 +1,113 @@
+<ThemeCard title="Neenga learn panna poradhu" badge="AI AGENTS HANDBOOK 02">
+
+User goal-லிருந்து checked outcome வரை agent flow-ஐ trace செய்து, agent எப்போது continue, retry, stop அல்லது human help கேட்க வேண்டும் என்பதை identify பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="agentWorkflow" />
+
+## 60 seconds-ல் agent workflow
+
+AI agent ஒரு loop-ல் work பண்ணும். அது **goal** receive செய்து available information-ஐ examine பண்ணும், suitable **next step** choose பண்ணும், authorised **tool** use பண்ணும், result observe செய்து அடுத்த action-ஐ decide பண்ணும். Completion criteria satisfy ஆனதும் அல்லது stopping rule வந்ததும் loop முடியும்.
+
+Fixed automation எப்போதும் A, B, C steps run பண்ணலாம். Agent observation அடிப்படையில் B-ஐ choose பண்ணலாம், missing data இருந்தால் A-ஐ bounded retry பண்ணலாம் அல்லது person-கிட்ட clarification கேட்கலாம்.
+
+Agent “human மாதிரி think பண்ணுகிறது” என்று சொல்ல வேண்டாம். Model, application rules மற்றும் current evidence சேர்ந்து action select செய்கிறது. Reliable design இந்த process-ஐ constrained மற்றும் testable-ஆக வைத்திருக்கும்.
+
+## One request-ல் six responsibilities
+
+Request: **“Tomorrow customer meeting-க்கு approved project information use செய்து brief prepare பண்ணு.”**
+
+| Responsibility | System answer செய்ய வேண்டிய question | Example |
+|---|---|---|
+| Goal | Expected outcome என்ன? | Concise meeting brief |
+| Context | Limits மற்றும் facts என்ன? | Customer, time, approved sources |
+| Reasoning | இப்போது best next step என்ன? | Latest status update find பண்ணுதல் |
+| Tool | எந்த capability அதை செய்யும்? | Project document search |
+| Action | எந்த operation run ஆகும்? | Latest authorised document read |
+| Check | Result complete மற்றும் acceptable-ஆ? | Agenda, risks, decisions present |
+
+Approved source-ல் latest status இல்லையென்றால் agent invent பண்ணாமல் gap-ஐ mark செய்து help கேட்க வேண்டும்.
+
+## Goal-ஐ vague activity-ஆக எழுதாதீங்க
+
+“Meeting-க்கு help பண்ணு” என்பது broad. Useful goal deliverable, boundaries மற்றும் definition of done-ஐ சொல்ல வேண்டும். Example: one-page brief, approved account notes மட்டும், three developments, open risks, required decisions, sources cited, send செய்ய வேண்டாம்.
+
+## Reasoning என்பது next useful step choose பண்ணுவது
+
+Reasoning என்பது goal மற்றும் latest observation அடிப்படையில் அடுத்த action-ஐ choose பண்ணுவது. Large outcome-ஐ tasks-ஆக break பண்ணுதல், source/tool select பண்ணுதல், completion check பண்ணுதல், expected failure-லிருந்து recover பண்ணுதல் மற்றும் human input தேவை என்று decide பண்ணுதல் இதில் அடங்கும்.
+
+Reasoning automatic-ஆ reliable இல்லை. Available actions constrain செய்து tool inputs மற்றும் results validate பண்ண வேண்டும்.
+
+## Tool மற்றும் action ஒன்றல்ல
+
+| Tool | Read action | Write action |
+|---|---|---|
+| Calendar | Availability check | Event create அல்லது cancel |
+| Email | Approved thread read | Message send |
+| Document service | Policy search | File edit அல்லது delete |
+| CRM | Account status read | Opportunity stage change |
+
+Calendar inspect permission இருந்தால் meeting book permission automatic-ஆ கிடைக்காது.
+
+## Observation எப்படி loop-ஐ change பண்ணும்?
+
+<Scenario title="Changing information-உடன் appointment scheduling">
+
+First search-ல் common slot கிடைக்கவில்லை. Good agent same search-ஐ repeated-ஆ run பண்ணாது. Wider time window allowed-ஆ என்று check பண்ணும், alternatives suggest பண்ணும் அல்லது எந்த constraint change செய்யலாம் என்று கேட்கும். Confirmation முன் slot unavailable ஆனால் recheck செய்ய வேண்டும்.
+
+**Simple Tanglish:** Result கிடைக்கவில்லை என்றால் agent guess பண்ணக் கூடாது. Constraint மாற்றலாமா என்று கேட்க வேண்டும்.
+
+</Scenario>
+
+## Completion மற்றும் stopping rules
+
+Definition of **done** மற்றும் reasons to **stop** இரண்டும் தேவை. Required sections complete, claims approved sources-உடன் linked, gaps visible ஆகியவை completion checks. Source unavailable, permission unverified, repeated tool failure, conflicting sources அல்லது approval இல்லாத high-impact action ஆகியவை stopping rules.
+
+## Agent workflow prompt
+
+<PromptBox label="Goal-to-action loop design பண்ணுங்கள்">
+
+Convert this work request into a safe AI agent workflow: [request]
+
+Return goal, definition of done, required information, possible steps, tool per step, expected observation, retry limit, approval points and stop conditions. Do not assume unapproved access.
+
+</PromptBox>
+
+## Common mistakes
+
+<Mistakes>
+
+- Completion criteria இல்லாமல் task கொடுப்பது.
+- Observation change ஆனாலும் first plan-ஐ fixed-ஆ follow பண்ணுவது.
+- Tool input மற்றும் output validate பண்ணாமல் call செய்வது.
+- Service unavailable ஆனாலும் unlimited retry பண்ணுவது.
+- External system confirm செய்யும் முன் “done” என்று report பண்ணுவது.
+
+</Mistakes>
+
+## Interview-ல் எப்படி explain பண்ணுவது?
+
+<ThemeCard title="Basic AI agent loop என்ன?" badge="BEGINNER ANSWER">
+
+Agent goal receive செய்து current context மூலம் next step choose பண்ணும். Authorised tool call செய்து result observe செய்து progress check பண்ணும். Completion criteria satisfy ஆகும் வரை அல்லது stopping rule human help require செய்யும் வரை loop repeat ஆகும்.
+
+</ThemeCard>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Clear goal-க்கு boundaries மற்றும் definition of done தேவை.
+- Reasoning current evidence-லிருந்து next step select பண்ணும்; magic இல்லை.
+- Tool capability; action அந்த tool-ன் specific operation.
+- Observation continue, retry அல்லது direction change-ஐ decide பண்ணும்.
+- Workflow-க்கு completion checks, retry limits மற்றும் stop rules தேவை.
+
+</Takeaways>
+
+## Primary sources
+
+- [Google Cloud: What are AI agents?](https://cloud.google.com/discover/what-are-ai-agents)
+- [Microsoft: AI agent orchestration patterns](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns)
+- [Anthropic: Building effective agents](https://www.anthropic.com/research/building-effective-agents)

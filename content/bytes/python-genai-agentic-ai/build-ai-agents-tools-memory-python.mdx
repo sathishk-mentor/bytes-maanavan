@@ -13,7 +13,7 @@ isPopular: true
 
 <ThemeCard title="Practical project" badge="PYTHON AI HANDBOOK 04">
 
-Build a **Personal Learning Agent** that finds skill gaps, uses authorised tools, prepares a weekly plan and requests approval before scheduling anything.
+Build a **Personal Entertainment Agent** that searches available titles, compares preferences, prepares a watchlist and requests approval before changing a shared profile.
 
 </ThemeCard>
 
@@ -26,8 +26,8 @@ The agent decides the next step, but a Python tool performs the actual operation
 | Pattern | Typical behaviour | Example |
 |---|---|---|
 | Chatbot | Produces a response | Explains a Python error |
-| Copilot | Assists a human doing work | Drafts a study plan for review |
-| Agent | Chooses and performs tool steps | Reads goals, checks courses and calculates a path |
+| Copilot | Assists a human doing work | Drafts a weekend watchlist for review |
+| Agent | Chooses and performs tool steps | Reads preferences, checks titles and prepares options |
 
 An agent follows a loop: understand the goal, choose the next useful step, call a tool, observe the actual result and decide whether to continue or stop.
 
@@ -58,10 +58,10 @@ A junior project coordinator can collect information, compare options and prepar
 
 ## Read tools, write tools and approval
 
-Reading an approved catalogue is usually lower risk than modifying a schedule. Separate read and write capabilities, apply least privilege and require explicit approval before consequential calls.
+Reading a streaming catalogue is usually lower risk than changing a shared watchlist or renting a paid title. Separate read and write capabilities, apply least privilege and require explicit approval before consequential calls.
 
 ```python
-if proposed_action.type == "schedule_activity":
+if proposed_action.type == "rent_paid_title":
     return {
         "status": "approval_required",
         "proposal": proposed_action.model_dump(),

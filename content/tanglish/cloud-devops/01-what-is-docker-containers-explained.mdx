@@ -1,0 +1,85 @@
+<ThemeCard title="Neenga learn panna poradhu" badge="DOCKER HANDBOOK 01">
+
+Docker image, container, Dockerfile மற்றும் registry எப்படி connect ஆகிறது என்பதை புரிந்து, “works on my machine” problem-ஐ Docker எப்படி reduce பண்ணுகிறது என்று explain பண்ணுவீங்க.
+
+</ThemeCard>
+
+<DockerObjectArchitecture />
+
+## 60 seconds-ல் Docker
+
+Docker application code, runtime, libraries மற்றும் required configuration-ஐ repeatable image-ஆக package பண்ண உதவும். அந்த image run ஆகும் instance தான் container. Developer laptop, test server மற்றும் cloud-ல் same tested package run செய்ய முடியும்.
+
+Container virtual machine இல்லை. அது host operating-system kernel-ஐ share செய்து isolated process-ஆக run ஆகும். அதனால் lightweight; ஆனால் security boundary மற்றும் resource limits இன்னும் தேவை.
+
+## “Works on my machine” ஏன் நடக்கிறது?
+
+Different Python version, missing package, environment variable, operating-system library அல்லது start command காரணமாக application வேறு machine-ல் fail ஆகலாம். Dockerfile required environment-ஐ code-ஆக describe செய்து repeatability கொடுக்கும்.
+
+## Four Docker objects எப்படி connect ஆகும்?
+
+<DockerFlowVisual variant="mentalModel" />
+
+- **Dockerfile:** Image build செய்யும் recipe.
+- **Image:** Immutable packaged template.
+- **Container:** Image-ன் running instance.
+- **Registry:** Versioned images store மற்றும் distribute செய்யும் service.
+
+<OfficialDockerDiagram />
+
+## Real-time analogy: standard shipping container
+
+<Scenario title="Package vehicle-ஐ depend பண்ணக்கூடாது">
+
+Standard shipping container ship, train அல்லது lorry மாறினாலும் goods-ஐ same sealed format-ல் carry பண்ணும். Docker image application மற்றும் runtime requirements-ஐ standard package-ஆக வைத்திருக்கும். Destination-க்கு compatible container runtime மட்டும் தேவை.
+
+</Scenario>
+
+## Container மற்றும் virtual machine different
+
+VM full guest operating system run பண்ணும்; container host kernel share பண்ணும். VM stronger isolation அல்லது different OS தேவைப்படும் workload-க்கு useful. Container fast startup மற்றும் application packaging-க்கு useful. Production-ல் இரண்டும் together use ஆகலாம்.
+
+## Smallest useful workflow
+
+Dockerfile எழுதுங்க → image build பண்ணுங்க → container run பண்ணுங்க → exposed service test பண்ணுங்க → logs inspect பண்ணுங்க → same image-ஐ registry-க்கு push பண்ணுங்க.
+
+## Docker எப்போது help பண்ணும்?
+
+Repeatable development, CI/CD, microservices, dependency isolation மற்றும் cloud deployment-க்கு useful. Poor application design, missing tests, secret management அல்லது monitoring problem-ஐ Docker automatic-ஆ solve பண்ணாது.
+
+## Common mistakes
+
+<Mistakes>
+
+- Image மற்றும் container ஒன்றே என்று நினைப்பது.
+- Container-க்குள் manually fix செய்து image rebuild பண்ணாமல் விடுவது.
+- Secret-ஐ Dockerfile அல்லது image layer-ல் bake பண்ணுவது.
+- `latest` tag மட்டும் use செய்து exact version lose பண்ணுவது.
+- Container use செய்ததால் application secure என்று assume பண்ணுவது.
+
+</Mistakes>
+
+## Interview-ல் எப்படி explain பண்ணுவது?
+
+<ThemeCard title="Docker image மற்றும் container difference?" badge="CAREER">
+
+Image immutable application package/template. Container அந்த image-லிருந்து create ஆன running process instance. One image-லிருந்து multiple containers run பண்ணலாம்; runtime change வேண்டுமென்றால் source/Dockerfile update செய்து new image build பண்ண வேண்டும்.
+
+</ThemeCard>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Docker application runtime-ஐ repeatable package-ஆக மாற்றும்.
+- Dockerfile recipe; image package; container running instance.
+- Containers host kernel share பண்ணும்.
+- Registry versioned image distribution-க்கு உதவும்.
+- Packaging மட்டும் production readiness இல்லை.
+
+</Takeaways>
+
+## Official references
+
+- [Docker overview](https://docs.docker.com/get-started/docker-overview/)
+- [Docker images and containers](https://docs.docker.com/get-started/)

@@ -26,18 +26,18 @@ A production query must also be bounded, efficient, authorised and observable. A
 
 ```sql
 EXPLAIN (ANALYZE, BUFFERS)
-SELECT course_id, SUM(amount)
+SELECT product_id, SUM(amount)
 FROM orders
 WHERE status = 'PAID'
   AND ordered_at >= DATE '2026-06-01'
-GROUP BY course_id;
+GROUP BY product_id;
 ```
 
 Use execution plans to see the work performed. An index can improve selective reads but adds storage and write cost. Design it around demonstrated access patterns—not every column.
 
 ```sql
 CREATE INDEX idx_orders_paid_date_course
-ON orders (ordered_at, course_id)
+ON orders (ordered_at, product_id)
 WHERE status = 'PAID';
 ```
 
@@ -60,7 +60,7 @@ OWASP recommends prepared statements with parameter binding because the database
 
 ## Transactions protect complete changes
 
-A payment record and its enrolment should either both commit or both roll back. Keep transactions focused, handle failures explicitly and avoid network calls to an LLM while locks remain open.
+A payment record and its order confirmation should either both commit or both roll back. Keep transactions focused, handle failures explicitly and avoid network calls to an LLM while locks remain open.
 
 ## Production controls for AI-generated queries
 

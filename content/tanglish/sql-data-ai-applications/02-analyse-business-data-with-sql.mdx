@@ -1,6 +1,6 @@
 <ThemeCard title="Neenga learn panna poradhu" badge="SQL HANDBOOK 02">
 
-Course revenue-ஐ month மற்றும் category அடிப்படையில் calculate செய்து, correct number-க்கும் useful business explanation-க்கும் உள்ள difference-ஐ புரிந்துகொள்வீங்க.
+E-commerce revenue-ஐ month மற்றும் product category அடிப்படையில் calculate செய்து, correct number-க்கும் useful business explanation-க்கும் உள்ள difference-ஐ புரிந்துகொள்வீங்க.
 
 </ThemeCard>
 
@@ -18,10 +18,10 @@ Aggregate functions பல rows-ஐ ஒரு meaningful summary-ஆக மா�
 | `MIN` / `MAX` | Smallest அல்லது largest value |
 
 ```sql
-SELECT course_id, COUNT(*) AS orders, SUM(amount) AS revenue
+SELECT product_id, COUNT(*) AS orders, SUM(amount) AS revenue
 FROM orders
 WHERE ordered_at >= CURRENT_DATE - INTERVAL '3 months'
-GROUP BY course_id
+GROUP BY product_id
 HAVING SUM(amount) > 10000
 ORDER BY revenue DESC;
 ```

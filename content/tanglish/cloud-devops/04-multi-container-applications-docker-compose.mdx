@@ -1,0 +1,102 @@
+<ThemeCard title="Neenga build panna poradhu" badge="DOCKER HANDBOOK 04">
+
+Frontend, order API, database மற்றும் notification service-ஐ ஒரே `compose.yaml` மூலம் connect செய்து run பண்ண கற்றுக்கொள்வீங்க.
+
+</ThemeCard>
+
+<DockerFlowVisual variant="compose" />
+
+## ஏன் Docker Compose தேவை?
+
+Real application பொதுவாக single container இல்லை. Food-delivery app-ல் customer frontend, order API, database மற்றும் notification service தனித்தனி responsibility handle பண்ணும். ஒவ்வொன்றையும் long `docker run` command மூலம் start செய்தால் configuration miss ஆகலாம்.
+
+Docker Compose எல்லா services, network, volume, port மற்றும் health check-ஐ ஒரே readable file-ல் declare செய்ய உதவும்.
+
+## Connected application எப்படி இருக்கும்?
+
+<HandbookLearningVisual variant="dockerCompose" />
+
+Browser `localhost:3000` மூலம் frontend-ஐ access பண்ணும். Frontend, Compose network-ல் `http://order-api:8000` என்று API-ஐ call பண்ணும். API, `postgres:5432` என்ற service name மூலம் database-ஐ reach பண்ணும்.
+
+## Practical `compose.yaml`
+
+```yaml
+services:
+  order-api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://app:app@postgres:5432/orders
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: orders
+    volumes:
+      - order-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  order-data:
+```
+
+இது learning configuration மட்டும். Real production password-ஐ file-ல் hardcode பண்ணக்கூடாது.
+
+## முக்கியமான networking rule
+
+Container-க்குள் `localhost` என்றால் அந்த same container. அது மற்ற service இல்லை. அதனால் API database-ஐ `localhost:5432` மூலம் அல்ல, `postgres:5432` மூலம் access பண்ண வேண்டும்.
+
+## `depends_on` மட்டும் போதுமா?
+
+Process start ஆனது service ready என்று அர்த்தம் இல்லை. Health check readiness-க்கு better signal கொடுக்கும். ஆனாலும் service later fail ஆகலாம்; application timeout, bounded retry மற்றும் clear error handle பண்ண வேண்டும்.
+
+## Real-time analogy: restaurant team
+
+<Scenario title="One order, multiple specialised stations">
+
+Restaurant-ல் counter, kitchen, pantry மற்றும் billing தனித்தனி station. Customer experience ஒன்று என்றாலும் ஒவ்வொரு station-க்கும் known name மற்றும் responsibility இருக்கும். Compose அந்த operating plan மாதிரி—எந்த station இருக்கிறது, எப்படி connect ஆகிறது, எது first ready ஆக வேண்டும் என்பதை define பண்ணும்.
+
+</Scenario>
+
+## Debug செய்யும் சரியான order
+
+1. `docker compose config` மூலம் resolved configuration பாருங்க.
+2. `docker compose ps` மூலம் service மற்றும் health state பாருங்க.
+3. Failed request receive பண்ணிய service logs பாருங்க.
+4. Container-to-container URL-ல் `localhost` use செய்திருக்கிறீர்களா check பண்ணுங்க.
+5. Environment variables மற்றும் database migration verify பண்ணுங்க.
+
+## Common mistakes
+
+<Mistakes>
+
+- Another container-ஐ `localhost` மூலம் call பண்ணுவது.
+- எல்லா internal ports-ஐ host-க்கு publish பண்ணுவது.
+- Startup order-ஐ readiness guarantee என்று நினைப்பது.
+- Production secrets-ஐ `compose.yaml`-ல் எழுதுவது.
+- `docker compose down -v` effect புரியாமல் database volume delete பண்ணுவது.
+
+</Mistakes>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Compose multi-container application-ஐ version-controlled configuration-ஆக describe பண்ணும்.
+- Service name தான் internal DNS name.
+- Health checks startup coordination improve பண்ணும்; runtime resilience-ஐ replace பண்ணாது.
+- Data persist ஆக named volume தேவை.
+- Local Compose design production architecture-க்கு starting point மட்டும்.
+
+</Takeaways>
+

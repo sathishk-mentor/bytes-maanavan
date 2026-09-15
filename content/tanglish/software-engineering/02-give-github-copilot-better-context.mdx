@@ -1,0 +1,93 @@
+<ThemeCard title="Neenga learn panna poradhu" badge="COPILOT HANDBOOK 02">
+
+Goal, relevant files, constraints, examples மற்றும் definition of done கொடுத்து Copilot guessing-ஐ reduce பண்ணி repository-fit output பெறுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="copilotContext" />
+
+## Context தான் guessing மற்றும் assisting-ன் difference
+
+“Login add பண்ணு” என்பது insufficient request. எந்த framework, existing authentication, user model, error format, security rule மற்றும் test expectation என்பதைக் Copilot அறியாது. Missing context இருந்தால் அது plausible ஆனால் wrong pattern generate பண்ணலாம்.
+
+Good context என்பது whole repository dump அல்ல. Current task-க்கு relevant goal, evidence மற்றும் boundaries மட்டும் கொடுப்பது.
+
+## Five-part context pattern
+
+1. **Goal:** User அல்லது business outcome என்ன?
+2. **Current system:** Relevant files மற்றும் existing flow என்ன?
+3. **Constraints:** Framework, security, style, performance rules என்ன?
+4. **Examples:** Existing good pattern அல்லது expected input/output என்ன?
+5. **Done:** Tests மற்றும் acceptance criteria என்ன?
+
+## Easy analogy: new teammate briefing
+
+<Scenario title="New developer-க்கு project brief கொடுப்பது">
+
+“Page build பண்ணு” என்று மட்டும் சொன்னால் teammate design, data மற்றும் behaviour guess செய்வார். Goal, wireframe, relevant components, brand rules மற்றும் completion checks கொடுத்தால் அவரால் existing product-க்கு fit ஆகும் change prepare செய்ய முடியும். Copilot-க்கும் இதே clarity தேவை.
+
+</Scenario>
+
+## Real-time scenario: API safely add பண்ணுவது
+
+Existing controller, service, validation model, error envelope மற்றும் test file-ஐ context-ல் கொடுங்க. New endpoint read-only ஆக வேண்டும், authenticated users மட்டும் access செய்ய வேண்டும், result 20 rows-க்கு limit ஆக வேண்டும் என்று constraints சொல்லுங்க. முதலில் plan கேட்டு assumptions review செய்த பிறகு implementation request பண்ணுங்க.
+
+## Copy-and-paste context prompt
+
+<PromptBox label="Five-part implementation context">
+
+Goal: [desired user outcome]
+Current system: [relevant files and behaviour]
+Constraints: [security, framework, style and performance rules]
+Reference pattern: [existing file or example]
+Definition of done: [tests and acceptance checks]
+
+First explain the current flow and list assumptions. Then propose the smallest implementation plan. Do not modify files until the plan is reviewed.
+
+</PromptBox>
+
+## Context quality checklist
+
+- Requested outcome measurable-ஆ இருக்கிறதா?
+- Only relevant files selected-ஆ?
+- Existing conventions visible-ஆ?
+- Security மற்றும் permission boundaries சொல்லப்பட்டதா?
+- Failure behaviour define செய்யப்பட்டதா?
+- Testable definition of done இருக்கிறதா?
+
+## Common mistakes
+
+<Mistakes>
+
+- Goal இல்லாமல் file மட்டும் கொடுப்பது.
+- Complete repository attach செய்து important context-ஐ dilute பண்ணுவது.
+- Outdated example-ஐ current standard என்று use பண்ணுவது.
+- Secrets, customer data அல்லது credentials prompt-ல் paste பண்ணுவது.
+- Copilot assumptions-ஐ review பண்ணாமல் implementation start பண்ணுவது.
+
+</Mistakes>
+
+## Interview-ல் எப்படி explain பண்ணுவது?
+
+<ThemeCard title="Copilot output quality-ஐ எப்படி improve பண்ணுவீங்க?" badge="CAREER">
+
+Clear goal, relevant repository evidence, constraints, one approved example மற்றும் testable definition of done கொடுப்பேன். First plan மற்றும் assumptions review செய்து small increments-ல் implement பண்ணி tests மற்றும் diff மூலம் verify பண்ணுவேன்.
+
+</ThemeCard>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Context quantity அல்ல; relevance முக்கியம்.
+- Existing repository pattern model-க்கு practical constraint கொடுக்கும்.
+- Assumptions implementation முன் visible ஆக வேண்டும்.
+- Definition of done AI output-ஐ testable ஆக்கும்.
+- Sensitive data context-ல் சேர்க்கக்கூடாது.
+
+</Takeaways>
+
+## Official references
+
+- [GitHub Copilot custom instructions](https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot)
+- [GitHub Copilot Chat](https://docs.github.com/en/copilot/using-github-copilot/asking-github-copilot-questions-in-your-ide)

@@ -1,0 +1,107 @@
+<ThemeCard title="Practical outcome" badge="FASTAPI HANDBOOK 04">
+
+Customer question-ஐ validate செய்து, authorised order evidence retrieve செய்து, answer events stream செய்து, verified sources உடன் complete பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fastapiStreaming" />
+
+## AI response ஏன் stream பண்ண வேண்டும்?
+
+LLM complete answer generate செய்ய சில seconds ஆகலாம். Normal JSON endpoint full result ready ஆகும்வரை wait செய்யும். Streaming small events ready ஆகும் போதே client-க்கு அனுப்பும்; perceived response time improve ஆகும்.
+
+Streaming model accuracy, speed அல்லது cost-ஐ automatic-ஆ improve பண்ணாது. Output எப்படி travel ஆகிறது என்பதை மட்டும் மாற்றும்.
+
+## Meaningful event contract
+
+```text
+meta      → request accepted, request ID
+token     → incremental answer text
+source    → verified order/policy evidence
+done      → stream completed
+error     → safe failure information
+```
+
+Anonymous text chunks-க்கு பதிலாக typed events use செய்தால் frontend reliable-ஆ handle பண்ணும்.
+
+## Request model மற்றும் SSE encoder
+
+```python
+import json
+from pydantic import BaseModel, Field
+
+class SupportRequest(BaseModel):
+    question: str = Field(min_length=3, max_length=500)
+    order_id: int = Field(gt=0)
+
+def sse(event: str, payload: dict) -> str:
+    data = json.dumps(payload, ensure_ascii=False)
+    return f"event: {event}\ndata: {data}\n\n"
+```
+
+Untrusted text-ஐ raw SSE protocol-ல் join பண்ணாமல் JSON serialize பண்ணுவது predictable envelope கொடுக்கும்.
+
+## Grounded answer stream
+
+```python
+async def answer_events(payload, customer):
+    request_id = create_request_id()
+    yield sse("meta", {"request_id": request_id})
+
+    evidence = await order_service.authorised_context(
+        order_id=payload.order_id,
+        customer_id=customer.id,
+    )
+    if not evidence:
+        yield sse("error", {"code": "order_not_found"})
+        return
+
+    async for text in model.stream(payload.question, evidence):
+        yield sse("token", {"text": text})
+
+    yield sse("source", evidence.public_summary())
+    yield sse("done", {"request_id": request_id})
+```
+
+User அனுப்பிய customer ID-ஐ trust பண்ணக்கூடாது. Authenticated identity-லிருந்து server derive செய்து order ownership verify பண்ண வேண்டும்.
+
+## Stream start ஆன பிறகு error handling
+
+Headers send ஆன பிறகு HTTP status change செய்ய முடியாமல் போகலாம். Authentication, input validation மற்றும் basic limits stream start ஆகும் முன் complete பண்ணுங்க. Mid-stream failure-க்கு typed `error` event அனுப்பி clean-ஆ close செய்து trace record பண்ணுங்க.
+
+## Real-time analogy: live cricket commentary
+
+<Scenario title="Live update மற்றும் official scorecard different">
+
+Commentary ball-by-ball உடனே வரும்; final scorecard structured மற்றும் authoritative. AI tokens live commentary மாதிரி. Verified source metadata மற்றும் `done` event official scorecard மாதிரி. Connection drop ஆனால் false completion காட்டக்கூடாது.
+
+</Scenario>
+
+## Client disconnect மறக்காதீங்க
+
+Customer page close செய்த பிறகும் paid model generation continue ஆனால் money மற்றும் compute waste ஆகும். Framework/provider support இருந்தால் downstream work cancel பண்ணி partial trace-ஐ correct state-ல் close பண்ணுங்க.
+
+## Common mistakes
+
+<Mistakes>
+
+- Authentication முடிவதற்கு முன் stream start பண்ணுவது.
+- Model generate செய்த URL/source-ஐ verification இல்லாமல் trust பண்ணுவது.
+- Client disconnect ஆன பிறகும் paid generation continue பண்ணுவது.
+- Frontend parse செய்ய முடியாத inconsistent chunks அனுப்புவது.
+- Partial answer-ஐ completed answer என்று mark பண்ணுவது.
+
+</Mistakes>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Streaming delivery experience-ஐ improve பண்ணும்; accuracy-ஐ அல்ல.
+- Typed event contract frontend handling-ஐ reliable ஆக்கும்.
+- Auth மற்றும் validation stream start ஆகும் முன் முடிக்க வேண்டும்.
+- Sources server-owned evidence-உடன் bind ஆக வேண்டும்.
+- Disconnect மற்றும் mid-stream failure first-class states.
+
+</Takeaways>
+

@@ -1,0 +1,106 @@
+<ThemeCard title="Neenga build panna project" badge="AI AGENTS HANDBOOK 04">
+
+Authorised information மட்டும் read செய்து stakeholder update draft prepare செய்து, send செய்வதற்கு முன் approval கேட்கும் **Personal Workday Assistant** build பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="agentNoCode" />
+
+## Neenga build panna workflow
+
+Request: **“நான் கொடுக்கும் project notes use செய்து progress, risks, decisions மற்றும் next actions கொண்ட today stakeholder update prepare பண்ணு. Sources show பண்ணு. எதையும் send பண்ணாதே.”**
+
+இது drafting agent; autonomous communication agent இல்லை. Information organise செய்து result prepare பண்ணும். Check மற்றும் send responsibility person-கிட்ட இருக்கும்.
+
+## Step 1: agent brief எழுதுங்க
+
+| Field | Personal Workday Assistant |
+|---|---|
+| Goal | Fact-based stakeholder update prepare பண்ணுதல் |
+| Inputs | User request மற்றும் selected project notes |
+| Allowed | Sources read, facts organise, draft output |
+| Prohibited | Message send, source edit, missing status invent |
+| Done | Required sections, sources, visible gaps |
+| Approval | User complete draft review பண்ணுதல் |
+| Stop | Missing source, conflict அல்லது sensitive instruction |
+
+“என் complete workday handle பண்ணு” என்பது evaluate செய்ய முடியாத broad goal. Narrow workflow தான் safe மற்றும் measurable.
+
+## Step 2: core instructions create பண்ணுங்க
+
+<PromptBox label="Personal Workday Assistant instructions">
+
+Prepare accurate work updates only from information I provide or authorise. Separate confirmed facts, open questions and assumptions. List sources. Never invent status, dates, people or decisions. Never claim a message was sent unless a tool confirms it. Ask for approval before external action.
+
+</PromptBox>
+
+## Step 3: authorised knowledge மட்டும் add பண்ணுங்க
+
+First version-க்கு sample அல்லது non-sensitive notes use பண்ணுங்க. Later document service connect செய்தால் complete drive-க்கு பதில் one approved folder மட்டும் allow பண்ணுங்க. Visible title, owner மற்றும் date கொண்ட clean documents use பண்ண வேண்டும்.
+
+## Step 4: predictable output contract
+
+Output-ல் title, overall status with evidence, maximum three progress bullets, risks with owner, decisions needed, next actions, missing information மற்றும் sources இருக்க வேண்டும். Main update-ஐ concise-ஆ வைத்திருங்க; gap-ஐ hide பண்ணாதீங்க.
+
+## Step 5: approval gate add பண்ணுங்க
+
+1. Final recipient, subject மற்றும் message prepare செய்.
+2. Exact content-ஐ user-க்கு preview காட்டு.
+3. “இந்த exact version-ஐ send செய்ய approve செய்கிறீர்களா?” என்று கேள்.
+4. Fresh explicit approval வந்தால் மட்டும் send tool call செய்.
+5. Tool success அல்லது failure result inspect செய்.
+6. Activity record செய்.
+
+Earlier draft-க்கு சொன்ன “looks good” later changed message-க்கு approval இல்லை.
+
+## Step 6: realistic tests
+
+Happy path, missing owner, conflicting dates, document prompt injection, unauthorised project access மற்றும் immediate-send request ஆகிய scenarios-ஐ test பண்ணுங்க. Instructions, sources அல்லது tools change ஆன பிறகு same test set run பண்ண வேண்டும்.
+
+<Scenario title="Friday project update">
+
+Approved meeting notes-லிருந்து agent completed work extract செய்து one missing decision owner-ஐ identify பண்ணும். Owner-ஐ guess செய்யாமல் focused question கேட்டு wait பண்ணும். Time saving information structuring-லிருந்து வருகிறது; accountability human-கிட்ட இருக்கும்.
+
+</Scenario>
+
+## Quality scorecard
+
+Accuracy, completeness, traceability, boundary behaviour மற்றும் recovery-ஐ 0–2 score பண்ணுங்க. Basic workflow consistently score செய்யும் முன் more tools add பண்ணாதீங்க.
+
+## Common mistakes
+
+<Mistakes>
+
+- One measurable workflow-க்கு பதில் “do everything” agent build பண்ணுவது.
+- Early experiment-க்கு confidential production data upload பண்ணுவது.
+- Draft quality test செய்வதற்கு முன் send tool connect பண்ணுவது.
+- Perfect example மட்டும் test பண்ணுவது.
+- Stable evaluation set இல்லாமல் instructions தொடர்ந்து change பண்ணுவது.
+
+</Mistakes>
+
+## Interview-ல் எப்படி explain பண்ணுவது?
+
+<ThemeCard title="No-code agent-ஐ safely எப்படி build பண்ணுவீங்க?" badge="BEGINNER ANSWER">
+
+One narrow outcome-லிருந்து start செய்து allowed sources/actions define பண்ணுவேன். Structured output request செய்து high-impact actions-ஐ explicit approval பின்னால் வைப்பேன். Happy path, missing data, conflict, unsafe instruction மற்றும் access limits test செய்த பிறகே capability expand பண்ணுவேன்.
+
+</ThemeCard>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- One bounded, repeatable outcome-லிருந்து start பண்ணுங்க.
+- Minimum source access மட்டும் use பண்ணுங்க.
+- Output contract visible மற்றும் testable-ஆ இருக்க வேண்டும்.
+- External action-க்கு fresh approval தேவை.
+- Autonomy add செய்வதற்கு முன் failure cases evaluate பண்ணுங்க.
+
+</Takeaways>
+
+## Primary sources
+
+- [Microsoft human-in-the-loop agent patterns](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns)
+- [Anthropic: Building effective agents](https://www.anthropic.com/research/building-effective-agents)
+- [OWASP Agentic AI Threats](https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/)

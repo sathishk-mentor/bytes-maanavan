@@ -38,8 +38,8 @@ from sqlalchemy import create_engine, text
 engine = create_engine(database_url)
 
 statement = text("""
-    SELECT title, price
-    FROM courses
+    SELECT name, price
+    FROM products
     WHERE category = :category
     ORDER BY price DESC
     LIMIT :limit
@@ -47,7 +47,7 @@ statement = text("""
 
 with engine.connect() as connection:
     rows = connection.execute(
-        statement, {"category": "AI", "limit": 5}
+        statement, {"category": "Headphones", "limit": 5}
     ).mappings().all()
 ```
 
@@ -66,9 +66,9 @@ Use SQL for exact structured questions such as revenue, count and status. Use do
 5. Require approval for sensitive datasets.
 6. Log the question, proposed query, decision and execution outcome safely.
 
-<Scenario title="Real-time scenario: highest-revenue courses">
+<Scenario title="Real-time scenario: highest-revenue products">
 
-The user asks, “Which courses generated the highest revenue in the last three months?” The model drafts a grouped query. The application confirms it is one read-only statement over approved tables, injects a row limit, executes with a restricted role and lets the model explain only the returned result.
+The user asks, “Which products generated the highest revenue in the last three months?” The model drafts a grouped query. The application confirms it is one read-only statement over approved tables, injects a row limit, executes with a restricted role and lets the model explain only the returned result.
 
 </Scenario>
 

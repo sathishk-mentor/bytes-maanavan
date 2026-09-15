@@ -1,0 +1,104 @@
+<ThemeCard title="Practical outcome" badge="FASTAPI HANDBOOK 03">
+
+FastAPI route, service, repository, database மற்றும் external provider responsibilities-ஐ clean-ஆக separate பண்ண கற்றுக்கொள்வீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="fastapiServices" />
+
+## Route எல்லா வேலையும் செய்யக்கூடாது
+
+Small demo-ல் route validation, SQL, provider call மற்றும் error handling எல்லாம் ஒரே function-ல் இருக்கலாம். Production-ல் change/test/debug கடினமாகும்.
+
+- **Route:** HTTP input/output handle பண்ணும்.
+- **Service:** Use case steps coordinate பண்ணும்.
+- **Repository:** Database operations own பண்ணும்.
+- **Provider client:** External API contract, timeout மற்றும் errors handle பண்ணும்.
+
+## Configuration environment-லிருந்து
+
+```python
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+class Settings(BaseSettings):
+    database_url: str
+    maps_api_key: str
+    provider_timeout_seconds: float = 8.0
+    model_config = SettingsConfigDict(env_file=".env")
+```
+
+Development `.env` git-ல் commit பண்ணக்கூடாது. Production-ல் platform secret manager use பண்ணுங்க.
+
+## Dependency injection
+
+```python
+from fastapi import Depends
+
+def get_order_service() -> OrderService:
+    return OrderService(repository=get_order_repository())
+
+@app.get("/orders/{order_id}")
+def order_status(order_id: int, service=Depends(get_order_service)):
+    return service.status_for(order_id)
+```
+
+Dependency explicit-ஆ இருப்பதால் test-ல் fake repository/provider replace பண்ணலாம்.
+
+## External call-க்கு limits அவசியம்
+
+```python
+import httpx
+
+async def fetch_driver_eta(order_id: int, api_key: str):
+    timeout = httpx.Timeout(5.0)
+    async with httpx.AsyncClient(timeout=timeout) as client:
+        response = await client.get(
+            f"https://maps.example/eta/{order_id}",
+            headers={"Authorization": f"Bearer {api_key}"},
+        )
+        response.raise_for_status()
+        return response.json()
+```
+
+Real application connection pool reuse பண்ணும். Beginner mental model: authentication, timeout, status check மற்றும் controlled parsing எல்லாம் explicit ஆக வேண்டும்.
+
+## Failure-ஐ application language-க்கு translate பண்ணுங்க
+
+Provider timeout என்றால் bounded retry அல்லது safe `503`; rate limit என்றால் controlled backoff; invalid provider response என்றால் validation failure record. Vendor body-ஐ direct-ஆக client-க்கு leak பண்ணாதீங்க.
+
+## Real-time scenario: delayed delivery status
+
+<Scenario title="Evidence lose ஆகாத request">
+
+API support request-ஐ `pending` state-ல் save செய்து, order data மற்றும் driver ETA fetch பண்ணும். Maps provider timeout ஆனால் request `failed_retryable` ஆக update ஆகும்; customer trace ID பெறுகிறார். Attempt நடந்ததற்கான evidence disappear ஆகாது.
+
+</Scenario>
+
+## Async பற்றி முக்கிய clarification
+
+`async def` use செய்தால் blocking library magic-ஆக non-blocking ஆகாது. Await support செய்யும் database/network client use பண்ணுங்க. CPU-heavy work மற்றும் long jobs worker queue-க்கு move பண்ணுங்க.
+
+## Common mistakes
+
+<Mistakes>
+
+- Route function-ல் SQL, provider மற்றும் business rules அனைத்தையும் mix பண்ணுவது.
+- Timeout இல்லாமல் external API call பண்ணுவது.
+- API keys source code-ல் hardcode பண்ணுவது.
+- Every error-ஐ retry பண்ணுவது.
+- Long processing-ஐ interactive request worker-ல் run பண்ணுவது.
+
+</Mistakes>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Routes HTTP-ஐ; services use case-ஐ; repositories persistence-ஐ own பண்ணும்.
+- Dependency injection testing மற்றும் replacement easy ஆக்கும்.
+- External calls-க்கு timeout, bounded retry மற்றும் error translation தேவை.
+- Configuration validated environment values-லிருந்து வர வேண்டும்.
+- Async code உள்ளே blocking work இருந்தாலும் event loop block ஆகும்.
+
+</Takeaways>
+

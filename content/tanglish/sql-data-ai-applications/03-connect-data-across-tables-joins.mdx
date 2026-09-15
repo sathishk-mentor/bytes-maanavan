@@ -1,6 +1,6 @@
 <ThemeCard title="Neenga learn panna poradhu" badge="SQL HANDBOOK 03">
 
-Course மற்றும் order facts-ஐ trusted keys மூலம் connect செய்து, “எந்த courses highest revenue generate செய்தது?” என்ற question-க்கு answer கண்டுபிடிப்பீங்க.
+Product மற்றும் order facts-ஐ trusted keys மூலம் connect செய்து, “எந்த products highest revenue generate செய்தது?” என்ற question-க்கு answer கண்டுபிடிப்பீங்க.
 
 </ThemeCard>
 
@@ -8,14 +8,14 @@ Course மற்றும் order facts-ஐ trusted keys மூலம் connec
 
 ## Data ஏன் different tables-ல் இருக்கும்?
 
-ஒவ்வொரு customer record-லும் course title மற்றும் price-ஐ repeat செய்தால் inconsistency வரும். Relational design ஒவ்வொரு concept-ஐயும் ஒரே authoritative இடத்தில் store செய்து keys மூலம் connect பண்ணும்.
+ஒவ்வொரு order record-லும் product name மற்றும் price-ஐ repeat செய்தால் inconsistency வரும். Relational design ஒவ்வொரு concept-ஐயும் ஒரே authoritative இடத்தில் store செய்து keys மூலம் connect பண்ணும்.
 
 ```sql
-SELECT c.title, SUM(o.amount) AS revenue
-FROM courses AS c
-JOIN orders AS o ON o.course_id = c.course_id
+SELECT p.name, SUM(o.amount) AS revenue
+FROM products AS p
+JOIN orders AS o ON o.product_id = p.product_id
 WHERE o.status = 'PAID'
-GROUP BY c.course_id, c.title
+GROUP BY p.product_id, p.name
 ORDER BY revenue DESC;
 ```
 
@@ -25,32 +25,32 @@ ORDER BY revenue DESC;
 
 | Join | எந்த rows preserve ஆகும்? | Useful question |
 |---|---|---|
-| `INNER JOIN` | Matching rows மட்டும் | Paid orders கொண்ட courses எவை? |
-| `LEFT JOIN` | Left table-ன் எல்லா rows | Orders இல்லாத courses எவை? |
+| `INNER JOIN` | Matching rows மட்டும் | Paid orders கொண்ட products எவை? |
+| `LEFT JOIN` | Left table-ன் எல்லா rows | Orders இல்லாத products எவை? |
 
 ```sql
-SELECT c.title, COUNT(o.order_id) AS order_count
-FROM courses c
+SELECT p.name, COUNT(o.order_id) AS order_count
+FROM products p
 LEFT JOIN orders o
-  ON o.course_id = c.course_id AND o.status = 'PAID'
-GROUP BY c.course_id, c.title
+  ON o.product_id = p.product_id AND o.status = 'PAID'
+GROUP BY p.product_id, p.name
 HAVING COUNT(o.order_id) = 0;
 ```
 
-Paid-status condition-ஐ `ON`-ல் வைத்தால் paid order இல்லாத courses-ன் `NULL` rows preserve ஆகும். அதையே `WHERE`-ல் வைத்தால் unmatched rows remove ஆகி query inner join மாதிரி behave பண்ணும்.
+Paid-status condition-ஐ `ON`-ல் வைத்தால் paid order இல்லாத products-ன் `NULL` rows preserve ஆகும். அதையே `WHERE`-ல் வைத்தால் unmatched rows remove ஆகி query inner join மாதிரி behave பண்ணும்.
 
 ## CTE மூலம் reasoning step-க்கு name கொடுங்க
 
 ```sql
 WITH recent_paid_orders AS (
-  SELECT course_id, amount FROM orders
+  SELECT product_id, amount FROM orders
   WHERE status = 'PAID'
     AND ordered_at >= CURRENT_DATE - INTERVAL '3 months'
 )
-SELECT c.title, SUM(r.amount) AS revenue
-FROM courses c
-JOIN recent_paid_orders r USING (course_id)
-GROUP BY c.course_id, c.title
+SELECT p.name, SUM(r.amount) AS revenue
+FROM products p
+JOIN recent_paid_orders r USING (product_id)
+GROUP BY p.product_id, p.name
 ORDER BY revenue DESC;
 ```
 

@@ -1,6 +1,6 @@
 <ThemeCard title="Neenga learn panna poradhu" badge="SQL HANDBOOK 01">
 
-**AI-Powered Business Data Analyst** use செய்யும் course catalogue-ல் query எழுதி, ஒரு business question-ஐ SQL எப்படி exact result-ஆக மாற்றுகிறது என்பதை explain பண்ணுவீங்க.
+E-commerce product catalogue-ல் query எழுதி, ஒரு business question-ஐ SQL எப்படி exact result-ஆக மாற்றுகிறது என்பதை explain பண்ணுவீங்க.
 
 </ThemeCard>
 
@@ -12,18 +12,18 @@ SQL என்பது relational database-கிட்ட precise question க�
 
 | Table | ஒரு row எதை குறிக்கும்? | Example columns |
 |---|---|---|
-| `courses` | ஒரு course | `course_id`, `title`, `category`, `price` |
+| `products` | ஒரு product | `product_id`, `name`, `category`, `price` |
 | `customers` | ஒரு learner | `customer_id`, `name`, `country` |
 | `orders` | ஒரு purchase | `order_id`, `customer_id`, `ordered_at` |
 
 ## தேவையான data மட்டும் read பண்ணுங்க
 
-Question: “Highest price கொண்ட active AI courses-ல் முதல் ஐந்தை காட்டுங்க.”
+Question: “Highest price கொண்ட active headphones-ல் முதல் ஐந்தை காட்டுங்க.”
 
 ```sql
-SELECT course_id, title, price
-FROM courses
-WHERE category = 'AI' AND status = 'ACTIVE'
+SELECT product_id, name, price
+FROM products
+WHERE category = 'Headphones' AND status = 'ACTIVE'
 ORDER BY price DESC
 LIMIT 5;
 ```
@@ -44,7 +44,7 @@ Application query-ல் `SELECT *` avoid பண்ணுங்க. Explicit col
 
 <Scenario title="Library-ல் precise request கேட்பது">
 
-“எல்லா books-ஐயும் கொடுங்க” என்பது expensive மற்றும் unclear request. “Active AI books-ல் title, price மட்டும், highest price first, five results” என்று கேட்டால் shelf, filter, fields, order மற்றும் limit எல்லாம் clear. Good SQL query-யும் இதே மாதிரி explicit-ஆக இருக்கும்.
+“எல்லா products-ஐயும் காட்டுங்க” என்பது expensive மற்றும் unclear request. “Active headphones-ல் name, price மட்டும், highest price first, five results” என்று கேட்டால் category, filter, fields, order மற்றும் limit எல்லாம் clear. Good SQL query-யும் இதே மாதிரி explicit-ஆக இருக்கும்.
 
 </Scenario>
 

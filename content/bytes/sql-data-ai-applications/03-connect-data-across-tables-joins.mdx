@@ -12,7 +12,7 @@ order: 3
 
 <ThemeCard title="Practical outcome" badge="SQL HANDBOOK 03">
 
-You will answer “Which courses generated the highest revenue?” by connecting course and order facts through trusted keys.
+You will answer “Which products generated the highest revenue?” by connecting product and order facts through trusted keys.
 
 </ThemeCard>
 
@@ -20,16 +20,16 @@ You will answer “Which courses generated the highest revenue?” by connecting
 
 ## Why data lives in different tables
 
-Repeating course title and price in every customer record creates inconsistency. Relational design stores each concept once and connects it with keys.
+Repeating a product name and price in every order record creates inconsistency. Relational design stores each concept once and connects it with keys.
 
 ```sql
 SELECT
-    c.title,
+    p.name,
     SUM(o.amount) AS revenue
-FROM courses AS c
-JOIN orders AS o ON o.course_id = c.course_id
+FROM products AS p
+JOIN orders AS o ON o.product_id = p.product_id
 WHERE o.status = 'PAID'
-GROUP BY c.course_id, c.title
+GROUP BY p.product_id, p.name
 ORDER BY revenue DESC;
 ```
 
@@ -39,33 +39,33 @@ The `ON` clause explains the relationship. Without it, rows can multiply into a 
 
 | Join | Rows preserved | Useful question |
 |---|---|---|
-| `INNER JOIN` | only matches | Which courses have paid orders? |
-| `LEFT JOIN` | every left row | Which courses have no orders? |
+| `INNER JOIN` | only matches | Which products have paid orders? |
+| `LEFT JOIN` | every left row | Which products have no orders? |
 
 ```sql
-SELECT c.title, COUNT(o.order_id) AS order_count
-FROM courses c
+SELECT p.name, COUNT(o.order_id) AS order_count
+FROM products p
 LEFT JOIN orders o
-  ON o.course_id = c.course_id AND o.status = 'PAID'
-GROUP BY c.course_id, c.title
+  ON o.product_id = p.product_id AND o.status = 'PAID'
+GROUP BY p.product_id, p.name
 HAVING COUNT(o.order_id) = 0;
 ```
 
-Placing the paid-status condition in `ON` preserves courses with no matching paid order. Putting it in `WHERE` would remove their `NULL` rows and accidentally behave like an inner join.
+Placing the paid-status condition in `ON` preserves products with no matching paid order. Putting it in `WHERE` would remove their `NULL` rows and accidentally behave like an inner join.
 
 ## Use a CTE to name a reasoning step
 
 ```sql
 WITH recent_paid_orders AS (
-  SELECT course_id, amount
+  SELECT product_id, amount
   FROM orders
   WHERE status = 'PAID'
     AND ordered_at >= CURRENT_DATE - INTERVAL '3 months'
 )
-SELECT c.title, SUM(r.amount) AS revenue
-FROM courses c
-JOIN recent_paid_orders r USING (course_id)
-GROUP BY c.course_id, c.title
+SELECT p.name, SUM(r.amount) AS revenue
+FROM products p
+JOIN recent_paid_orders r USING (product_id)
+GROUP BY p.product_id, p.name
 ORDER BY revenue DESC;
 ```
 

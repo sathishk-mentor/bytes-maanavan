@@ -13,7 +13,7 @@ isPopular: true
 
 <ThemeCard title="Practical outcome" badge="PYTHON AI HANDBOOK 02">
 
-Connect the learning assistant to an external model service and turn the response into a validated course suggestion.
+Connect the movie-discovery assistant to an external service and turn its JSON response into a validated title suggestion.
 
 </ThemeCard>
 
@@ -46,9 +46,9 @@ A customer does not enter the kitchen and operate its equipment. The waiter acce
 
 ```json
 {
-  "course": "Python for GenAI",
+  "title": "Family Adventure",
   "confidence": 0.88,
-  "prerequisites": ["Basic computer skills"]
+  "available_on": ["Mobile", "TV"]
 }
 ```
 
@@ -85,7 +85,7 @@ Status `200` does not prove the data is correct. Check content type, required fi
 
 ```python
 def validate_suggestion(data: dict) -> dict:
-    required = {"course", "reason", "confidence"}
+    required = {"title", "reason", "confidence"}
     missing = required - data.keys()
     if missing:
         raise ValueError(f"Missing fields: {sorted(missing)}")
@@ -104,7 +104,7 @@ Async Python is useful when one request waits for multiple independent network c
 
 ## Practical task
 
-Create `get_course_suggestions(profile)` that sends a learner profile, applies a timeout, checks the HTTP status, parses JSON and validates the required fields. Add clear handling for timeout, rate limit and invalid response cases.
+Create `get_movie_suggestions(profile)` that sends permitted viewing preferences, applies a timeout, checks the HTTP status, parses JSON and validates the required fields. Add clear handling for timeout, rate limit and invalid response cases.
 
 ## Common mistakes
 
@@ -113,7 +113,7 @@ Create `get_course_suggestions(profile)` that sends a learner profile, applies a
 - Committing `.env` or printing secrets in logs.
 - Retrying every failure without a limit.
 - Assuming every successful HTTP response has the expected schema.
-- Sending private learner details that the model does not need.
+- Sending private viewer details that the model does not need.
 - Treating asynchronous code as a substitute for capacity planning.
 
 </Mistakes>

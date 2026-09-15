@@ -13,7 +13,7 @@ isPopular: true
 
 <ThemeCard title="Practical outcome" badge="SQL HANDBOOK 01">
 
-You will query the course catalogue behind our **AI-Powered Business Data Analyst** and explain exactly how SQL turns a question into a result.
+You will query an e-commerce product catalogue and explain exactly how SQL turns a business question into a result.
 
 </ThemeCard>
 
@@ -25,18 +25,18 @@ SQL is a language for asking a relational database precise questions. A database
 
 | Table | One row means | Example columns |
 |---|---|---|
-| `courses` | one course | `course_id`, `title`, `category`, `price` |
-| `customers` | one learner | `customer_id`, `name`, `country` |
+| `products` | one product | `product_id`, `name`, `category`, `price` |
+| `customers` | one customer | `customer_id`, `name`, `country` |
 | `orders` | one purchase | `order_id`, `customer_id`, `ordered_at` |
 
 ## Read only what you need
 
-Question: “Show the five highest-priced active AI courses.”
+Question: “Show the five highest-priced active headphones.”
 
 ```sql
-SELECT course_id, title, price
-FROM courses
-WHERE category = 'AI' AND status = 'ACTIVE'
+SELECT product_id, name, price
+FROM products
+WHERE category = 'Headphones' AND status = 'ACTIVE'
 ORDER BY price DESC
 LIMIT 5;
 ```
@@ -57,7 +57,7 @@ A **primary key** uniquely identifies a row. A **foreign key** points to a relat
 
 <Scenario title="Real-time analogy: asking a librarian">
 
-“Give me every book” is expensive and unclear. “Give me the title and price of five active AI books, highest price first” tells the librarian the shelf, filter, fields, order and limit. A good SQL query is equally explicit.
+“Show every product” is expensive and unclear. “Show the name and price of five active headphones, highest price first” tells an online store the category, filter, fields, order and limit. A good SQL query is equally explicit.
 
 </Scenario>
 

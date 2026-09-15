@@ -1,0 +1,98 @@
+<ThemeCard title="Neenga learn panna poradhu" badge="AI AGENTS HANDBOOK 03">
+
+Tools, knowledge, memory மற்றும் policy-ன் different responsibilities-ஐ புரிந்து, agent-க்கு unnecessary access கொடுக்காமல் information boundary design பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="agentContext" />
+
+## 60 seconds-ல் core concepts
+
+AI model language generate பண்ணும். Real work complete செய்ய agent-க்கு கூடுதல் layers தேவை:
+
+- **Tools:** Model-க்கு வெளியே information inspect அல்லது system change செய்ய உதவும்.
+- **Knowledge:** Current task-க்கு relevant trusted evidence கொடுக்கும்.
+- **Memory:** Steps அல்லது conversations இடையில் useful state preserve பண்ணும்.
+- **Policy:** என்ன access, remember அல்லது change செய்யலாம் என்று decide பண்ணும்.
+
+Tool connect செய்ததால் எல்லா operations-மும் safe ஆகாது. Document retrieve ஆனதால் அது current அல்லது true என்று guarantee இல்லை. Information remember செய்ததால் forever store செய்ய permission கிடைக்காது.
+
+## Workplace analogy
+
+| Agent layer | Workplace equivalent | Example |
+|---|---|---|
+| Tool | Application அல்லது equipment | Calendar, email, CRM, calculator |
+| Knowledge | Approved reference | Policy, project plan, product manual |
+| Working memory | Current task notes | Checked sources list |
+| Long-term memory | Retained preference | Preferred report format |
+| Policy | Role மற்றும் access rules | Read only; approval இல்லாமல் send செய்யாதே |
+
+Finance system use செய்ய தெரிந்த coordinator-க்கு payment approve செய்ய permission இருக்க வேண்டியதில்லை. Capability மற்றும் authority separate.
+
+## Tools எப்படி outside world-ஐ reach பண்ணும்?
+
+Tool என்பது system அல்லது function-க்கு controlled interface. Web search, file retrieval, database query, calendar, email மற்றும் calculator common examples. `manage_email` போன்ற broad tool-க்கு பதில் `search_approved_email`, `draft_reply`, `send_approved_reply` போன்ற narrow tools clear boundaries கொடுக்கும்.
+
+<Scenario title="Guess செய்வதை விட calculator safe">
+
+Sales total prepare செய்ய agent language-model arithmetic-ஐ நம்பாமல் calculator அல்லது validated spreadsheet formula use பண்ண வேண்டும். Model result-ஐ explain பண்ணலாம்; deterministic tool calculate பண்ண வேண்டும்.
+
+</Scenario>
+
+## Knowledge என்பது தேவையான நேரத்தில் கிடைக்கும் evidence
+
+Approved documents, company wiki, product manual அல்லது database-லிருந்து knowledge வரலாம். RAG flow: question receive → authorised source search → relevant passages retrieve → model-க்கு evidence கொடு → citation-உடன் answer generate செய். Evidence கிடைக்கவில்லை என்றால் agent அதை clear-ஆ சொல்ல வேண்டும்.
+
+## Memory useful continuity; unlimited recording இல்லை
+
+- **Step memory:** Next action-க்கு தேவையான latest result.
+- **Session memory:** Current conversation context.
+- **Long-term memory:** User expect செய்து retain செய்ய அனுமதித்த preference.
+
+Travel dates current booking task-க்கு தேவை. Passport details-ஐ indefinitely store செய்வது different risk. Necessity, consent, sensitivity, correction, deletion மற்றும் expiry define பண்ணுங்க.
+
+## MCP simple explanation
+
+Model Context Protocol AI applications-ஐ external tools மற்றும் data sources-க்கு common interface மூலம் connect செய்யும் standard. Universal connector மாதிரி இருந்தாலும் authentication, permission, validation மற்றும் audit automatic-ஆ கிடைக்காது.
+
+## Minimum access set design
+
+Read-only access மற்றும் draft output-லிருந்து start பண்ணுங்க. Workflow prove ஆன பிறகே write actions add பண்ணுங்க. One user-ன் memory அல்லது documents இன்னொருவரின் session-க்கு leak ஆகாமல் tenant isolation enforce பண்ண வேண்டும்.
+
+## Common mistakes
+
+<Mistakes>
+
+- Broad connector-க்கு read மற்றும் destructive write access இரண்டும் கொடுப்பது.
+- Source/date check செய்யாமல் retrieved text-ஐ trusted என்று assume பண்ணுவது.
+- “Later useful ஆகலாம்” என்று sensitive data store பண்ணுவது.
+- MCP business permission கொடுக்கும் என்று நினைப்பது.
+- Model invent செய்த tool result-ஐ success என்று accept பண்ணுவது.
+
+</Mistakes>
+
+## Interview-ல் எப்படி explain பண்ணுவது?
+
+<ThemeCard title="Tools, knowledge மற்றும் memory எப்படி different?" badge="BEGINNER ANSWER">
+
+Tools operations perform செய்யும் capability கொடுக்கும். Knowledge current task-க்கு relevant evidence கொடுக்கும். Memory steps அல்லது sessions இடையில் selected state preserve பண்ணும். Policy எந்த tool, source மற்றும் memory permitted என்பதை control பண்ணும்.
+
+</ThemeCard>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Tool capability உருவாக்கும்; permission authority-ஐ decide பண்ணும்.
+- Knowledge relevant, authorised, current மற்றும் traceable-ஆ இருக்க வேண்டும்.
+- Working memory மற்றும் long-term memory different problems solve பண்ணும்.
+- Minimum information-ஐ minimum required time மட்டும் retain பண்ணுங்க.
+- MCP connection standard; security replacement இல்லை.
+
+</Takeaways>
+
+## Primary sources
+
+- [Model Context Protocol](https://modelcontextprotocol.io/docs/getting-started/intro)
+- [Google Cloud: Retrieval-Augmented Generation](https://cloud.google.com/use-cases/retrieval-augmented-generation)
+- [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)

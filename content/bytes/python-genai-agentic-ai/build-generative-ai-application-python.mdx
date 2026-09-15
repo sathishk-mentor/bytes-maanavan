@@ -13,20 +13,20 @@ isPopular: true
 
 <ThemeCard title="Practical project" badge="PYTHON AI HANDBOOK 03">
 
-Build an **AI Course Advisor** that recommends only verified courses and explains prerequisites, reasoning, confidence and missing information.
+Build a **Movie Discovery Assistant** that recommends only titles in the verified streaming catalogue and explains suitability, reasoning, confidence and missing information.
 
 </ThemeCard>
 
 <HandbookLearningVisual variant="pythonGenAi" />
 
-An LLM produces a recommendation, but the Python application owns the learner profile, approved catalogue, validation rules and final decision boundary.
+An LLM produces a recommendation, but the Python application owns the viewer profile, approved streaming catalogue, validation rules and final decision boundary.
 
 ## What makes this an application
 
 An LLM call alone is a demo. An application adds input validation, approved context, output contracts, failure handling, privacy controls and a user experience.
 
 ```text
-Learner profile + approved catalogue → Python context builder → LLM → structured output → validation → response
+Viewer preferences + streaming catalogue → Python context builder → LLM → structured output → validation → response
 ```
 
 ## Model, instructions and context
@@ -39,8 +39,8 @@ Learner profile + approved catalogue → Python context builder → LLM → stru
 ```python
 system_instruction = """
 You are a learning-path assistant.
-Recommend only courses present in APPROVED_COURSES.
-If required learner information is missing, say so.
+Recommend only titles present in AVAILABLE_TITLES.
+If required viewer information is missing, say so.
 Return the requested structured fields.
 """
 ```
@@ -49,9 +49,9 @@ Return the requested structured fields.
 
 <Scenario title="Context turns a vague request into a useful decision">
 
-“Suggest a course” is like asking a counsellor without sharing your education, goal or available time. A relevant answer needs the learner profile and an accurate course catalogue.
+“Suggest something to watch” is like asking a friend without sharing your preferred language, genre, age rating or available time. A relevant answer needs viewing preferences and an accurate streaming catalogue.
 
-**Simple Tanglish:** “Course suggest பண்ணு” என்பது vague request. Learner level, goal, completed skills எல்லாம் கொடுத்தால் useful recommendation கிடைக்கும்.
+**Simple Tanglish:** “Movie suggest பண்ணு” என்பது vague request. Language, genre, age rating மற்றும் available time கொடுத்தால் useful recommendation கிடைக்கும்.
 
 </Scenario>
 
@@ -60,20 +60,20 @@ Return the requested structured fields.
 ```python
 from pydantic import BaseModel, Field
 
-class CourseRecommendation(BaseModel):
-    course_id: str
+class MovieRecommendation(BaseModel):
+    title_id: str
     reason: str
-    prerequisite: str
+    suitability: str
     next_step: str
     confidence: float = Field(ge=0, le=1)
     missing_information: list[str]
 ```
 
-Structured output makes failures visible. Python should also verify that `course_id` exists in the approved catalogue and that prerequisites match the learner record.
+Structured output makes failures visible. Python should also verify that `title_id` exists in the current catalogue and that age rating and availability match the viewer request.
 
 ## Ground the recommendation
 
-The learner asks: **Which course should I study after SQL?** The application collects current level, completed courses, career goal and weekly study time. It retrieves eligible courses from the approved MaanavaN catalogue and sends only the useful facts to the model.
+A viewer asks: **What can our family watch in Tamil within 90 minutes?** The application collects language, genre, age rating and available time. It retrieves eligible titles from the current streaming catalogue and sends only the useful facts to the model.
 
 Conversation history can help with continuity, but it should be scoped, limited and summarised when necessary. Do not send an unlimited chat transcript or unrelated personal information.
 
@@ -85,16 +85,16 @@ Streaming improves perceived responsiveness, but do not display an unvalidated J
 
 If the model returns a course that is not in the approved catalogue, Python must reject it. A confident sentence is not proof that the information is correct.
 
-The model may invent a course, prerequisite or promise. Deterministic checks should reject unknown identifiers. Human review is required when the result affects payment, enrolment, certification claims or a consequential career decision.
+The model may invent a title, availability or age rating. Deterministic checks should reject unknown identifiers. Explicit confirmation is required before adding a paid title or changing a shared family watchlist.
 
 ## Practical build checklist
 
 1. Define the learner and response models.
-2. Load a small approved course catalogue.
-3. Select relevant course facts.
+2. Load a small current streaming catalogue.
+3. Select relevant title facts.
 4. Build system and user messages.
 5. Request structured output.
-6. Validate required fields and course identity.
+6. Validate required fields and title identity.
 7. Return missing information instead of guessing.
 8. Log latency and token use without logging private content.
 

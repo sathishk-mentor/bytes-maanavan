@@ -12,7 +12,7 @@ order: 2
 
 <ThemeCard title="Practical outcome" badge="SQL HANDBOOK 02">
 
-You will calculate course revenue by month and category, then separate a correct number from a useful business explanation.
+You will calculate e-commerce revenue by month and product category, then separate a correct number from a useful business explanation.
 
 </ThemeCard>
 
@@ -31,12 +31,12 @@ Aggregate functions summarise many rows:
 
 ```sql
 SELECT
-    course_id,
+    product_id,
     COUNT(*) AS orders,
     SUM(amount) AS revenue
 FROM orders
 WHERE ordered_at >= CURRENT_DATE - INTERVAL '3 months'
-GROUP BY course_id
+GROUP BY product_id
 HAVING SUM(amount) > 10000
 ORDER BY revenue DESC;
 ```
