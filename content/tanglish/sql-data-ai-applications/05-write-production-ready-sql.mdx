@@ -1,0 +1,106 @@
+<ThemeCard title="Neenga prepare panna poradhu" badge="SQL HANDBOOK 05">
+
+Performance, correctness, permissions, injection defence மற்றும் auditability cover செய்யும் Business Data Analyst production checklist-ஐ create பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="sqlProduction" />
+
+## Correct result மட்டும் போதாது
+
+Production query bounded, efficient, authorised மற்றும் observable-ஆகவும் இருக்க வேண்டும். Correct result கொடுக்கும் query ஒவ்வொரு chat request-க்கும் millions of rows scan செய்தால் application fail ஆகலாம்.
+
+## Index add செய்வதற்கு முன் execution plan படிங்க
+
+```sql
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT course_id, SUM(amount)
+FROM orders
+WHERE status = 'PAID'
+  AND ordered_at >= DATE '2026-06-01'
+GROUP BY course_id;
+```
+
+Execution plan database உண்மையில் எவ்வளவு work செய்தது என்பதை காட்டும். Index selective reads-ஐ faster ஆக்கலாம்; ஆனால் storage மற்றும் write cost add பண்ணும். எல்லா columns-க்கும் index உருவாக்காமல் measured access pattern அடிப்படையில் design பண்ணுங்க.
+
+```sql
+CREATE INDEX idx_orders_paid_date_course
+ON orders (ordered_at, course_id)
+WHERE status = 'PAID';
+```
+
+## Parameterised query மூலம் values-ஐ protect பண்ணுங்க
+
+Unsafe:
+
+```python
+sql = "SELECT * FROM customers WHERE email = '" + email + "'"
+```
+
+Safe approach-ல் value SQL code-லிருந்து separate-ஆக இருக்கும்:
+
+```python
+statement = text("SELECT customer_id FROM customers WHERE email = :email")
+connection.execute(statement, {"email": email})
+```
+
+Prepared statement மற்றும் parameter binding use செய்தால் database code மற்றும் data-வை distinguish பண்ண முடியும். Table name போன்ற dynamic identifiers-க்கு strict allow-list தேவை; ordinary value மாதிரி parameterise பண்ண முடியாது.
+
+## Transaction complete change-ஐ protect பண்ணும்
+
+Payment record மற்றும் enrolment இரண்டும் commit ஆக வேண்டும் அல்லது இரண்டும் rollback ஆக வேண்டும். Transaction-ஐ focused-ஆ வைத்திருங்க, failures-ஐ explicit-ஆ handle பண்ணுங்க, database locks open-ஆ இருக்கும்போது slow LLM network call பண்ணாதீங்க.
+
+## AI-generated query-க்கு production controls
+
+| Control | ஏன் தேவை? |
+|---|---|
+| Read-only role | Mutation prevent பண்ண |
+| Table/column allow-list | Data exposure limit பண்ண |
+| Query timeout | Resource use bound பண்ண |
+| Mandatory limit | Returned rows control பண்ண |
+| Audit event | யார் என்ன query கேட்டார் என்று preserve பண்ண |
+| Redaction | Logs மற்றும் model context-ல் sensitive values protect பண்ண |
+
+<Scenario title="Popular analytics question">
+
+Dashboard மற்றும் AI assistant இரண்டும் three-month revenue கேட்கிறது. Team validated calculation-ஐ governed query-ஆக மாற்றி, measured filter path-க்கு index add பண்ணும், service role-ஐ approved reporting views-க்கு limit பண்ணும் மற்றும் latency monitor பண்ணும். AI returned facts-ஐ explain பண்ணும்; revenue definition-ஐ மாற்றாது.
+
+</Scenario>
+
+## Beginners செய்யும் common mistakes
+
+<Mistakes>
+
+- Execution plan மற்றும் workload check பண்ணாமல் index add பண்ணுவது.
+- User அல்லது model text-ஐ concatenate செய்து SQL build பண்ணுவது.
+- Reporting service-க்கு write permission கொடுப்பது.
+- External API wait செய்யும்போது transaction open-ஆ வைத்திருப்பது.
+- Sensitive parameters அல்லது complete result sets-ஐ log பண்ணுவது.
+
+</Mistakes>
+
+## Interview-ல் எப்படி explain பண்ணுவது?
+
+<ThemeCard title="Slow SQL query-ஐ எப்படி optimise பண்ணுவீங்க?" badge="CAREER">
+
+முதலில் business result correct-ஆ என்று confirm செய்வேன். Representative data-ல் reproduce செய்து execution plan மற்றும் row estimates inspect பண்ணுவேன். Unnecessary work reduce செய்து predicates, joins verify செய்த பிறகு measured access path-க்கு suitable index consider பண்ணுவேன். Before/after plans compare செய்து write-side cost-ஐயும் check பண்ணுவேன்.
+
+</ThemeCard>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Optimise செய்வதற்கு முன் execution plan evidence use பண்ணுங்க.
+- Index faster read கொடுக்கும்; storage மற்றும் write cost add பண்ணும்.
+- Parameterisation values-ஐ query structure-லிருந்து separate பண்ணும்.
+- AI-driven SQL-க்கு least privilege, limits மற்றும் auditing mandatory.
+
+</Takeaways>
+
+## Primary sources
+
+- [PostgreSQL using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html)
+- [PostgreSQL indexes](https://www.postgresql.org/docs/current/indexes.html)
+- [PostgreSQL transaction tutorial](https://www.postgresql.org/docs/current/tutorial-transactions.html)
+- [OWASP SQL Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)

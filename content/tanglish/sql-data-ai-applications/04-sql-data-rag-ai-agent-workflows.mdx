@@ -1,0 +1,94 @@
+<ThemeCard title="Neenga design panna poradhu" badge="SQL HANDBOOK 04">
+
+Model-க்கு direct database authority கொடுக்காமல் **AI-Powered Business Data Analyst**-க்கான safe request path-ஐ design பண்ணுவீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="sqlAi" />
+
+## சரியான control boundary
+
+Model ஒரு query **proposer**; database administrator இல்லை.
+
+```text
+Question → approved schema context → draft SQL → deterministic validation
+         → read-only execution → bounded rows → business explanation
+```
+
+Multiple statements, write operations, unapproved tables, unlimited results மற்றும் time/cost limit exceed செய்யும் queries-ஐ application reject பண்ண வேண்டும். Prompt-ல் “SELECT மட்டும் generate பண்ணு” என்று எழுதுவது enforcement இல்லை.
+
+## Python-ஐ bound parameters-உடன் connect பண்ணுவது
+
+```python
+from sqlalchemy import create_engine, text
+
+engine = create_engine(database_url)
+statement = text("""
+    SELECT title, price FROM courses
+    WHERE category = :category
+    ORDER BY price DESC LIMIT :limit
+""")
+
+with engine.connect() as connection:
+    rows = connection.execute(
+        statement, {"category": "AI", "limit": 5}
+    ).mappings().all()
+```
+
+Bound parameters values-ஐ SQL structure-லிருந்து separate பண்ணும். ஆனால் arbitrary LLM-generated SQL-ஐ இது மட்டும் safe ஆக்காது; structural validation மற்றும் least-privilege execution இன்னும் தேவை.
+
+## Structured data மற்றும் RAG எப்போது?
+
+Revenue, count, status போன்ற exact structured questions-க்கு SQL use பண்ணுங்க. Policy அல்லது handbook போன்ற unstructured text-க்கு document RAG use பண்ணுங்க. Combined application approved aggregates-ஐ SQL-ல் query செய்து, policy passages-ஐ RAG மூலம் retrieve செய்து separate source labels-உடன் answer கொடுக்கலாம்.
+
+## Agent safety checklist
+
+1. Approved schema descriptions மட்டும் expose பண்ணுங்க.
+2. Dedicated read-only database user use பண்ணுங்க.
+3. Query structure-ஐ parse செய்து allow-list validate பண்ணுங்க.
+4. Row, runtime மற்றும் cost limits enforce பண்ணுங்க.
+5. Sensitive datasets-க்கு approval require பண்ணுங்க.
+6. Question, proposed query, validation decision மற்றும் result status-ஐ safely log பண்ணுங்க.
+
+<Scenario title="Highest-revenue courses">
+
+User “Last three months-ல் highest revenue generate செய்த courses எவை?” என்று கேட்கிறார். Model grouped query draft பண்ணும். Application அது approved tables பயன்படுத்தும் single read-only statement-ஆ என்று verify செய்து row limit inject பண்ணும். Restricted role query execute செய்த பிறகு returned result மட்டும் model explain பண்ணும்.
+
+</Scenario>
+
+## Beginners செய்யும் common mistakes
+
+<Mistakes>
+
+- Agent-க்கு owner-level database credentials கொடுப்பது.
+- Prompt instruction-ஐ security enforcement என்று நம்புவது.
+- Complete production schema மற்றும் sensitive column names expose பண்ணுவது.
+- Unlimited result set-ஐ model-க்கு send பண்ணுவது.
+- SQL calculate செய்த facts-உடன் unsupported model interpretation mix பண்ணுவது.
+
+</Mistakes>
+
+## Interview-ல் எப்படி explain பண்ணுவது?
+
+<ThemeCard title="Text-to-SQL-ஐ எப்படி secure பண்ணுவீங்க?" badge="CAREER">
+
+Limited schema context, parsed allow-list validation, read-only role, values-க்கு parameter binding, statement/row limits, timeout, sensitive-data controls, audit logs மற்றும் risk தேவைப்படும் இடத்தில் approval gate use பண்ணுவேன்.
+
+</ThemeCard>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- LLM propose பண்ணும்; deterministic application controls execution-ஐ authorise பண்ணும்.
+- SQL structured facts-க்கு; RAG unstructured evidence-க்கு.
+- Read-only credentials மற்றும் bounded results impact-ஐ reduce பண்ணும்.
+- Question → query → result → explanation trace preserve பண்ண வேண்டும்.
+
+</Takeaways>
+
+## Primary sources
+
+- [SQLAlchemy connections and transactions](https://docs.sqlalchemy.org/en/latest/core/connections.html)
+- [SQLAlchemy SELECT tutorial](https://docs.sqlalchemy.org/en/latest/tutorial/data_select.html)
+- [OWASP LLM Prompt Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html)

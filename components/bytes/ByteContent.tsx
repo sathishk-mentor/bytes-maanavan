@@ -22,8 +22,12 @@ import { ModeText, ReadingModeToggle } from './ReadingMode';
 import { SyntaxCode } from './SyntaxCode';
 import { slugify } from '@/lib/mdx';
 
-const createComponents = (idPrefix = '') => ({
-  h2: ({children,...props}:any)=><h2 id={`${idPrefix}${slugify(children.toString())}`} className="byte-section-title" {...props}>{children}</h2>,
+const createComponents = (idPrefix = '', includeContextSwitch = false) => ({
+  h2: ({children,...props}:any)=>{
+    const text=children.toString();
+    const heading=<h2 id={`${idPrefix}${slugify(text)}`} className="byte-section-title" {...props}>{children}</h2>;
+    return includeContextSwitch && /analogy/i.test(text) ? <><ReadingModeToggle compact />{heading}</> : heading;
+  },
   h3: ({children,...props}:any)=><h3 id={`${idPrefix}${slugify(children.toString())}`} className="byte-subtitle" {...props}>{children}</h3>,
   p: ({children,...props}:any)=><p className="byte-paragraph" {...props}>{children}</p>,
   a: ({children,...props}:any)=><a className="byte-link" target="_blank" rel="noreferrer" {...props}>{children}</a>,
@@ -42,7 +46,7 @@ const createComponents = (idPrefix = '') => ({
 
 export function ByteContent({content,tanglishContent}:{content:string;tanglishContent?:string|null}) {
   return <>
-    <article className="byte-article byte-article-english"><MDXRemote source={content} components={createComponents()} options={{mdxOptions:{remarkPlugins:[remarkGfm]}}}/></article>
+    <article className="byte-article byte-article-english"><MDXRemote source={content} components={createComponents('',Boolean(tanglishContent))} options={{mdxOptions:{remarkPlugins:[remarkGfm]}}}/></article>
     {tanglishContent && <article className="byte-article byte-article-tanglish" lang="ta"><MDXRemote source={tanglishContent} components={createComponents('ta-')} options={{mdxOptions:{remarkPlugins:[remarkGfm]}}}/></article>}
   </>;
 }

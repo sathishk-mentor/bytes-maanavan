@@ -1,0 +1,98 @@
+<ThemeCard title="Neenga learn panna poradhu" badge="SQL HANDBOOK 03">
+
+Course மற்றும் order facts-ஐ trusted keys மூலம் connect செய்து, “எந்த courses highest revenue generate செய்தது?” என்ற question-க்கு answer கண்டுபிடிப்பீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="sqlJoins" />
+
+## Data ஏன் different tables-ல் இருக்கும்?
+
+ஒவ்வொரு customer record-லும் course title மற்றும் price-ஐ repeat செய்தால் inconsistency வரும். Relational design ஒவ்வொரு concept-ஐயும் ஒரே authoritative இடத்தில் store செய்து keys மூலம் connect பண்ணும்.
+
+```sql
+SELECT c.title, SUM(o.amount) AS revenue
+FROM courses AS c
+JOIN orders AS o ON o.course_id = c.course_id
+WHERE o.status = 'PAID'
+GROUP BY c.course_id, c.title
+ORDER BY revenue DESC;
+```
+
+`ON` clause இரண்டு tables எப்படி related என்பதை சொல்லும். அது missing ஆனால் rows Cartesian product-ஆக multiply ஆகி, believable ஆனால் wrong totals வரலாம்.
+
+## Question-க்கு ஏற்ற join-ஐ choose பண்ணுங்க
+
+| Join | எந்த rows preserve ஆகும்? | Useful question |
+|---|---|---|
+| `INNER JOIN` | Matching rows மட்டும் | Paid orders கொண்ட courses எவை? |
+| `LEFT JOIN` | Left table-ன் எல்லா rows | Orders இல்லாத courses எவை? |
+
+```sql
+SELECT c.title, COUNT(o.order_id) AS order_count
+FROM courses c
+LEFT JOIN orders o
+  ON o.course_id = c.course_id AND o.status = 'PAID'
+GROUP BY c.course_id, c.title
+HAVING COUNT(o.order_id) = 0;
+```
+
+Paid-status condition-ஐ `ON`-ல் வைத்தால் paid order இல்லாத courses-ன் `NULL` rows preserve ஆகும். அதையே `WHERE`-ல் வைத்தால் unmatched rows remove ஆகி query inner join மாதிரி behave பண்ணும்.
+
+## CTE மூலம் reasoning step-க்கு name கொடுங்க
+
+```sql
+WITH recent_paid_orders AS (
+  SELECT course_id, amount FROM orders
+  WHERE status = 'PAID'
+    AND ordered_at >= CURRENT_DATE - INTERVAL '3 months'
+)
+SELECT c.title, SUM(r.amount) AS revenue
+FROM courses c
+JOIN recent_paid_orders r USING (course_id)
+GROUP BY c.course_id, c.title
+ORDER BY revenue DESC;
+```
+
+<Scenario title="Receipt-ஐ catalogue-உடன் match பண்ணுவது">
+
+Receipt-ல் product code இருக்கும்; full product description இருக்காது. அந்த code foreign key மாதிரி. Receipt-ஐ catalogue-உடன் join செய்தால் authoritative product record-லிருந்து name மற்றும் category கிடைக்கும்.
+
+</Scenario>
+
+## Beginners செய்யும் common mistakes
+
+<Mistakes>
+
+- Stable key-க்கு பதில் similar name வைத்து join பண்ணுவது.
+- `ON` condition miss செய்து rows-ஐ multiply பண்ணுவது.
+- Left join-க்கு பிறகு matched IDs-க்கு பதில் `COUNT(*)` use பண்ணுவது.
+- Right-table filter-ஐ `WHERE`-ல் வைத்து unmatched rows-ஐ accidental-ஆ remove பண்ணுவது.
+- Complex query-ஐ clarify செய்யாமல் hide செய்ய CTE use பண்ணுவது.
+
+</Mistakes>
+
+## Interview-ல் எப்படி explain பண்ணுவது?
+
+<ThemeCard title="INNER JOIN மற்றும் LEFT JOIN வித்தியாசம்?" badge="CAREER">
+
+Inner join matching relationships மட்டும் return பண்ணும். Left join left side-ன் எல்லா rows-ஐயும் preserve செய்து missing right-side values-க்கு `NULL` கொடுக்கும். Unmatched left records business question-க்கு meaningful-ஆ இருக்கிறதா என்பதை வைத்து join type choose பண்ணுவேன்.
+
+</ThemeCard>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Stable primary-key மற்றும் foreign-key relationship-ல் join பண்ணுங்க.
+- Business question அடிப்படையில் join type choose பண்ணுங்க.
+- Aggregates trust செய்வதற்கு முன் row counts validate பண்ணுங்க.
+- Meaningful reasoning stages-க்கு CTE மூலம் clear name கொடுங்க.
+
+</Takeaways>
+
+## Primary sources
+
+- [PostgreSQL tutorial: joins](https://www.postgresql.org/docs/current/tutorial-join.html)
+- [PostgreSQL table expressions](https://www.postgresql.org/docs/current/queries-table-expressions.html)
+- [PostgreSQL WITH queries](https://www.postgresql.org/docs/current/queries-with.html)

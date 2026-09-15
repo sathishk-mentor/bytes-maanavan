@@ -1,0 +1,87 @@
+<ThemeCard title="Neenga learn panna poradhu" badge="SQL HANDBOOK 02">
+
+Course revenue-ஐ month மற்றும் category அடிப்படையில் calculate செய்து, correct number-க்கும் useful business explanation-க்கும் உள்ள difference-ஐ புரிந்துகொள்வீங்க.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="sqlAnalysis" />
+
+## Rows எப்படி measures-ஆக மாறும்?
+
+Aggregate functions பல rows-ஐ ஒரு meaningful summary-ஆக மாற்றும்:
+
+| Function | Business meaning |
+|---|---|
+| `COUNT(*)` | Purchase count |
+| `SUM(amount)` | Total revenue |
+| `AVG(amount)` | Average order value |
+| `MIN` / `MAX` | Smallest அல்லது largest value |
+
+```sql
+SELECT course_id, COUNT(*) AS orders, SUM(amount) AS revenue
+FROM orders
+WHERE ordered_at >= CURRENT_DATE - INTERVAL '3 months'
+GROUP BY course_id
+HAVING SUM(amount) > 10000
+ORDER BY revenue DESC;
+```
+
+`WHERE` aggregation நடப்பதற்கு முன் individual rows-ஐ filter பண்ணும். `HAVING` aggregation முடிந்த பிறகு completed groups-ஐ filter பண்ணும்.
+
+## Date boundary-ஐ explicit-ஆக define பண்ணுங்க
+
+“Last three months” என்பது rolling 90 days ஆகவும் இருக்கலாம்; previous three complete calendar months ஆகவும் இருக்கலாம். இரண்டும் different answers கொடுக்கும். SQL எழுதுவதற்கு முன் business definition confirm பண்ணி, possible என்றால் `>= start` மற்றும் `< end` போன்ற half-open boundaries use பண்ணுங்க.
+
+## Business categories-ஐ safely add பண்ணுவது
+
+```sql
+SELECT CASE
+  WHEN amount >= 2000 THEN 'High value'
+  WHEN amount >= 1000 THEN 'Mid value'
+  ELSE 'Entry value'
+END AS value_band, COUNT(*) AS purchases
+FROM orders
+GROUP BY value_band;
+```
+
+<Scenario title="Shop closing report">
+
+ஒவ்வொரு bill-மும் ஒரு row. Decision எடுக்க owner எல்லா bills-ஐயும் ஒன்றாக படிக்க மாட்டார்; product அல்லது day அடிப்படையில் group செய்து totals பார்ப்பார். SQL aggregation transactions-ஐ trace செய்யும் ability-ஐ இழக்காமல் controlled summary கொடுக்கும்.
+
+</Scenario>
+
+## Beginners செய்யும் common mistakes
+
+<Mistakes>
+
+- Aggregate ஆகாத column-ஐ `GROUP BY`-ல் சேர்க்காமல் select பண்ணுவது.
+- `WHERE`-ல் இருக்க வேண்டிய filter-ஐ `HAVING`-ல் வைப்பது.
+- Revenue calculate செய்யும்போது refund, currency அல்லது cancelled order-ஐ ignore பண்ணுவது.
+- Business rule இல்லாமல் missing value-ஐ zero என்று treat பண்ணுவது.
+- “Month” அல்லது “recent” என்பதற்கு ambiguous definition use பண்ணுவது.
+
+</Mistakes>
+
+## Interview-ல் எப்படி explain பண்ணுவது?
+
+<ThemeCard title="இரண்டு correct revenue queries ஏன் different result கொடுக்கலாம்?" badge="CAREER">
+
+Time boundary, order status, refund handling, currency அல்லது reporting grain different-ஆக இருக்கலாம். Query optimise செய்வதற்கு முன் metric definition-ஐ confirm செய்து underlying rows-ஐ inspect பண்ணுவேன்.
+
+</ThemeCard>
+
+## நினைவில் வைக்க வேண்டிய key points
+
+<Takeaways>
+
+- Aggregates transactions-ஐ measures-ஆக மாற்றும்.
+- `GROUP BY` reporting grain-ஐ define பண்ணும்.
+- `WHERE` rows-ஐ filter பண்ணும்; `HAVING` groups-ஐ filter பண்ணும்.
+- Clear business definition இல்லாமல் metric complete ஆகாது.
+
+</Takeaways>
+
+## Primary sources
+
+- [PostgreSQL aggregate functions](https://www.postgresql.org/docs/current/functions-aggregate.html)
+- [PostgreSQL date and time functions](https://www.postgresql.org/docs/current/functions-datetime.html)
