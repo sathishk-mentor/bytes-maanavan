@@ -5,15 +5,19 @@ import { Languages } from 'lucide-react';
 
 type ReadingMode = 'english' | 'tanglish';
 
-export function ReadingModeToggle() {
+export function ReadingModeToggle({ compact = false }: { compact?: boolean }) {
   const [mode, setMode] = useState<ReadingMode>('english');
 
   useEffect(() => {
-    const saved = window.localStorage.getItem('maanavan-reading-mode');
-    const initial = saved === 'tanglish' ? 'tanglish' : 'english';
-    setMode(initial);
-    document.documentElement.dataset.readingMode = initial;
-    return () => { delete document.documentElement.dataset.readingMode; };
+    const sync = () => {
+      const saved = window.localStorage.getItem('maanavan-reading-mode');
+      const initial = saved === 'tanglish' ? 'tanglish' : 'english';
+      setMode(initial);
+      document.documentElement.dataset.readingMode = initial;
+    };
+    sync();
+    window.addEventListener('reading-mode-change', sync);
+    return () => window.removeEventListener('reading-mode-change', sync);
   }, []);
 
   function select(next: ReadingMode) {
@@ -23,7 +27,7 @@ export function ReadingModeToggle() {
     window.dispatchEvent(new Event('reading-mode-change'));
   }
 
-  return <section className="reading-mode-control" aria-label="Choose explanation language">
+  return <section className={`reading-mode-control ${compact ? 'reading-mode-inline' : ''}`} aria-label="Choose explanation language">
     <div><span className="reading-mode-icon"><Languages/></span><span><small>CHOOSE YOUR READING MODE</small><strong>Same lesson. Two clear explanations.</strong></span></div>
     <div className="reading-mode-options" role="group" aria-label="Explanation mode">
       <button type="button" className={mode === 'english' ? 'active' : ''} aria-pressed={mode === 'english'} onClick={() => select('english')}><strong>English</strong><small>Standard explanation</small></button>
