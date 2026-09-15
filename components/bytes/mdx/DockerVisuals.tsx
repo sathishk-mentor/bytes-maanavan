@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowRight, Box, CheckCircle2, Cloud, Code2, Container, Database, ExternalLink, FileCode2, Globe2, HardDrive, KeyRound, Network, PackageOpen, Play, Rocket, Server, ShieldCheck, Sparkles, UploadCloud } from 'lucide-react';
+import { ArrowDown, ArrowRight, Box, CheckCircle2, Cloud, Code2, Container, Database, ExternalLink, FileCode2, Globe2, HardDrive, KeyRound, Network, PackageOpen, Play, Rocket, Server, ShieldCheck, ShoppingBag, Sparkles, Truck, UploadCloud, Users } from 'lucide-react';
 
 const visuals = {
   mentalModel: {
@@ -35,6 +35,11 @@ export function DockerFlowVisual({variant}:{variant:keyof typeof visuals}) {
 
 export function DockerCommand({label,children}:{label:string;children:React.ReactNode}) {
   return <div className="docker-command"><header><span><i/><i/><i/></span><small>{label}</small><b>TERMINAL</b></header><pre><code>{children}</code></pre></div>;
+}
+
+export function DockerRealWorldVisual() {
+  const examples=[[Truck,'Delivery API','Same image · many containers'],[ShoppingBag,'Sale traffic','Scale a tested service'],[Users,'Project team','Dev · QA · Cloud consistency']] as const;
+  return <figure className="docker-market-visual"><header><small>FROM ONE IMAGE TO REAL WORK</small><strong>Three teams. One repeatable delivery idea.</strong></header><div>{examples.map(([Icon,title,note],index)=><article key={title} style={{'--market-delay':`${index*.9}s`} as React.CSSProperties}><span><Icon/></span><b>{title}</b><small>{note}</small><i><CheckCircle2/> READY</i></article>)}</div><figcaption>Illustrative Indian product scenarios—not claims about private company infrastructure.</figcaption></figure>;
 }
 
 export function DockerObjectArchitecture() {

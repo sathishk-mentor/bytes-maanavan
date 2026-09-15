@@ -17,6 +17,12 @@ Karthik builds a Python application. It works perfectly on his laptop, but a tea
 
 Docker tackles this practical problem by packaging the application, runtime and dependencies together. It does not repair faulty code or guarantee security. It reduces avoidable differences between the environments where the application runs.
 
+<Scenario title="FAMILIAR SCENARIO — THE FRIDAY DEPLOYMENT">
+
+Karthik finishes the order-status API on Friday afternoon. It runs locally, but QA cannot start it because one dependency and an environment setting are missing. Instead of sending another setup document, Karthik packages the known working runtime as a versioned Docker image. QA runs that exact image and investigates the application behaviour—not a different machine setup.
+
+</Scenario>
+
 ## Start from Basics
 
 - **Dockerfile:** A text file containing instructions for building an image.
@@ -70,6 +76,8 @@ Neither is universally better. Choose according to workload, security and operat
 - A **TCS delivery team** can use the same image across developer, QA and deployment environments to reduce setup differences.
 
 These are learning scenarios, not claims about the companies’ private internal architectures.
+
+<DockerRealWorldVisual />
 
 ## Imagine Pannunga
 

@@ -4,6 +4,12 @@ Karthik build பண்ணிய Python app அவருடைய laptop-ல் 
 
 Docker use பண்ணினால் app code, runtime மற்றும் dependencies எல்லாத்தையும் ஒரே package-ஆக எடுத்துச் செல்லலாம். இதுதான் “works on my machine” problem-க்கு practical answer. Docker எல்லா bugs-ஐயும் solve பண்ணாது; environment difference-ஐ control பண்ணும்.
 
+<Scenario title="FAMILIAR SCENARIO — FRIDAY DEPLOYMENT">
+
+Friday afternoon Karthik order-status API complete பண்ணுகிறார். அவருடைய laptop-ல் app correct-ஆ run ஆகுது. QA system-ல் ஒரு dependency மற்றும் environment setting missing; app start ஆகல. இன்னொரு setup document அனுப்புவதற்குப் பதிலாக, working runtime-ஐ versioned Docker image-ஆக package பண்ணுகிறார். QA exact same image-ஐ run பண்ணி machine setup-ஐ அல்ல, actual app behaviour-ஐ test பண்ணலாம்.
+
+</Scenario>
+
 ## Start from Basics
 
 - **Dockerfile:** Image எப்படி build ஆகணும் என்று சொல்லும் instruction file.
@@ -47,6 +53,8 @@ Container always better இல்லை. Requirement பார்த்து ch
 - **TCS project team:** Developer, QA மற்றும் deployment team same image version use செய்து environment mismatch reduce பண்ணலாம்.
 
 இவை learning scenarios; அந்த companies-ன் private internal architecture பற்றிய claims இல்லை.
+
+<DockerRealWorldVisual />
 
 ## Imagine Pannunga
 
