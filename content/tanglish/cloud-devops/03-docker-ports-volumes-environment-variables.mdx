@@ -1,6 +1,6 @@
 <ThemeCard title="Neenga learn panna poradhu" badge="DOCKER HANDBOOK 03">
 
-Food-delivery status service-ல் network access, persistent data மற்றும் runtime configuration-க்கு ports, volumes மற்றும் environment variables எப்படி different roles perform செய்கிறது என்பதை apply பண்ணுவீங்க.
+Food-delivery status service-ல் network access, persistent data மற்றும் runtime configuration-க்கு ports, volumes மற்றும் environment variables எப்படி different roles perform செய்கிறது என்பதை apply செய்வீர்கள்.
 
 </ThemeCard>
 
@@ -8,7 +8,7 @@ Food-delivery status service-ல் network access, persistent data மற்ற
 
 ## Three questions, three Docker features
 
-- User request container-ஐ எப்படி reach பண்ணும்? **Port**.
+- User request container-ஐ எப்படி reach செய்யும்? **Port**.
 - Container replace ஆனாலும் data எப்படி remain ஆகும்? **Volume**.
 - Environment-specific setting எப்படி change ஆகும்? **Environment variable**.
 
@@ -18,13 +18,13 @@ Food-delivery status service-ல் network access, persistent data மற்ற
 
 Port publish செய்வது authentication இல்லை. Sensitive service-ஐ unnecessary public interface-ல் expose பண்ணாதீங்க.
 
-## Volumes: container replace செய்யலாம்; data remain ஆக வேண்டும்
+## Volumes: container மாறினாலும் data நீடிக்க வேண்டும்
 
-Container filesystem ephemeral. Database data, uploaded files அல்லது durable state-க்கு named volume அல்லது managed external storage use பண்ணுங்க. Application code-ஐ production volume-ல் hide செய்வது avoid பண்ணுங்க.
+Container filesystem ephemeral. Database data, uploaded files அல்லது durable state-க்கு named volume அல்லது managed external storage use செய்யுங்கள். Application code-ஐ production volume-ல் hide செய்வது avoid செய்யுங்கள்.
 
 ## Environment variables: runtime configuration
 
-Database URL, log level, feature flag போன்ற settings environment மூலம் inject பண்ணலாம். Secret values image-ல் bake பண்ணாமல் secret manager மூலம் runtime-ல் வழங்க வேண்டும். Missing required setting-க்கு app startup-லேயே clear error கொடுக்க வேண்டும்.
+Database URL, log level, feature flag போன்ற settings environment மூலம் inject செய்யலாம். Secret values image-ல் bake செய்யாமல் secret manager மூலம் runtime-ல் வழங்க வேண்டும். Missing required setting-க்கு app startup-லேயே clear error கொடுக்க வேண்டும்.
 
 <DockerFlowVisual variant="runtime" />
 
@@ -32,35 +32,39 @@ Database URL, log level, feature flag போன்ற settings environment ம�
 
 <Scenario title="One application, three runtime needs">
 
-Customer `8080` port மூலம் status API-ஐ reach பண்ணுகிறார். Delivery events volume/database-ல் persist ஆகிறது. `LOG_LEVEL` மற்றும் provider endpoint environment-க்கு ஏற்றபடி configure ஆகிறது. Container update ஆனாலும் history safe-ஆக இருக்கும்.
+Customer `8080` port மூலம் status API-ஐ அணுகுகிறார். Delivery events volume அல்லது database-ல் persist ஆகின்றன. `LOG_LEVEL` மற்றும் provider endpoint ஒவ்வொரு environment-க்கும் ஏற்றபடி configure செய்யப்படுகின்றன. Container update ஆனாலும் history பாதுகாப்பாக நீடிக்கும்.
 
 </Scenario>
 
-## One request-ஐ trace பண்ணுங்க
+### Named volume அல்லது bind mount?
+
+Named volume-ஐ Docker manage செய்யும்; database data போன்ற runtime state-க்கு இது நல்ல default. Bind mount host folder-ஐ container-க்கு நேரடியாக இணைக்கும்; local source-code development-க்கு பயனுள்ளதாக இருக்கும். இரண்டையும் ஒரே purpose-க்கு பயன்படுத்த வேண்டிய அவசியமில்லை.
+
+## ஒரு request-ன் பயணத்தை trace செய்யுங்கள்
 
 Browser → host port → container port → application route → database volume/service → response. எந்த boundary-ல் failure என்று logs மற்றும் inspection மூலம் கண்டுபிடிக்க வேண்டும்.
 
-## Change செய்வதற்கு முன் inspect பண்ணுங்க
+## மாற்றம் செய்வதற்கு முன் inspect செய்யுங்கள்
 
-Running container port mapping, mounted volumes, environment variable names, logs மற்றும் network inspect பண்ணுங்க. Secret values output-ல் expose பண்ணாதீங்க.
+Running container port mapping, mounted volumes, environment variable names, logs மற்றும் network inspect செய்யுங்கள். Secret values output-ல் expose பண்ணாதீங்க.
 
 ## Common mistakes
 
 <Mistakes>
 
-- `EXPOSE` மட்டும் host port publish பண்ணும் என்று நினைப்பது.
-- Important data container writable layer-ல் store பண்ணுவது.
-- Secret-ஐ image, compose file அல்லது Git-ல் commit பண்ணுவது.
-- Environment variable missing ஆனாலும் unsafe default use பண்ணுவது.
-- Port conflict-க்கு application code change பண்ணுவது.
+- `EXPOSE` மட்டும் host port publish செய்யும் என்று நினைப்பது.
+- Important data container writable layer-ல் store செய்வது.
+- Secret-ஐ image, compose file அல்லது Git-ல் commit செய்வது.
+- Environment variable missing ஆனாலும் unsafe default use செய்வது.
+- Port conflict-க்கு application code change செய்வது.
 
 </Mistakes>
 
-## Interview-ல் எப்படி explain பண்ணுவது?
+## Interview-ல் எப்படி explain செய்வது?
 
 <ThemeCard title="Ports, volumes மற்றும் environment variables difference?" badge="CAREER">
 
-Port network traffic-ஐ container service-க்கு map பண்ணும். Volume container lifecycle-லிருந்து persistent data-ஐ separate பண்ணும். Environment variable image rebuild இல்லாமல் runtime configuration வழங்கும். மூன்றும் different runtime concerns solve பண்ணும்.
+Port network traffic-ஐ container service-க்கு map செய்யும். Volume container lifecycle-லிருந்து persistent data-ஐ separate செய்யும். Environment variable image rebuild இல்லாமல் runtime configuration வழங்கும். மூன்றும் different runtime concerns solve செய்யும்.
 
 </ThemeCard>
 
