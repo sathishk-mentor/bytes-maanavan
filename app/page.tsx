@@ -29,7 +29,7 @@ export default async function HomePage() {
           <h1>Build technology skills.<br/><span>One practical Byte at a time.</span></h1>
           <p>Learn AI, software, data and cloud through simple explanations, visual workflows and real-world scenarios—designed for beginners and busy professionals.</p>
           <div className="bytes-hero-actions"><Link className="primary-cta" href="#tracks">Start a learning path <ArrowRight/></Link><Link className="ghost-cta" href="#bytes-library">Search all Bytes</Link></div>
-          <div className="bytes-hero-trust"><span><CheckCircle2/>9 complete handbooks</span><span><CheckCircle2/>45 practical Bytes</span><span><CheckCircle2/>Free access</span></div>
+          <div className="bytes-hero-trust"><span><CheckCircle2/>Complete visual handbooks</span><span><CheckCircle2/>Practical bite-sized learning</span><span><CheckCircle2/>Free access</span></div>
         </div>
         <div className="hero-learning-console hero-path-console" aria-label="Animated MaanavaN Bytes learning-path preview">
           <header><span><i/><i/><i/></span><small>MAANAVAN LEARNING PATH</small><b><i/> UPDATED</b></header>

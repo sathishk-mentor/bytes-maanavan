@@ -11,7 +11,7 @@ export const handbooks: Handbook[] = [
     slug: 'ai-agents', title: 'AI Agents Handbook for Everyone', shortTitle: 'AI Agents',
     audience: 'Non-technical Beginners · Professionals', tone: 'violet', status: 'available', category: 'ai-application-engineering', label: 'FROM ANSWERING TO TAKING ACTION',
     description: 'Understand AI agents through familiar work and life scenarios—without coding or unnecessary technical language.',
-    promise: 'Learn what makes an agent different, how it works and where human approval belongs.',
+    promise: 'Understand agents, tools, memory and human approval.',
     chapters: [
       { title: 'What is an AI agent?', outcome: 'Distinguish chatbots, copilots and agents.', href: '/ai-agents/01-what-is-an-ai-agent-from-answering-to-taking-action/' },
       { title: 'How an AI agent works', outcome: 'Trace goals, reasoning, tools, actions and completion checks.', href: '/ai-agents/02-how-an-ai-agent-works-goal-reasoning-tools-actions/' },
@@ -24,7 +24,7 @@ export const handbooks: Handbook[] = [
     slug: 'github-copilot', title: 'The GitHub Copilot Handbook', shortTitle: 'GitHub Copilot',
     audience: 'Developers', tone: 'blue', status: 'available', category: 'software-engineering', label: 'AI-ASSISTED SOFTWARE ENGINEERING',
     description: 'Use Copilot as an engineering partner—from context and feature work to debugging, testing and safer delivery.',
-    promise: 'Move beyond code completion and build a repeatable AI-assisted engineering workflow.',
+    promise: 'Build a repeatable AI-assisted software engineering workflow.',
     chapters: [
       { title: 'GitHub Copilot for developers', outcome: 'Choose the right mode for the task.', href: '/software-engineering/01-github-copilot-for-developers/' },
       { title: 'Give Copilot better context', outcome: 'Supply the goal, files, rules and acceptance checks.', href: '/software-engineering/02-give-github-copilot-better-context/' },
@@ -37,7 +37,7 @@ export const handbooks: Handbook[] = [
     slug: 'forward-deployed-engineer', title: 'The Forward Deployed Engineer Handbook', shortTitle: 'FDE',
     audience: 'Engineers · Consultants', tone: 'orange', status: 'available', category: 'technology-careers', label: 'CUSTOMER TO PRODUCTION',
     description: 'Connect customer problems, product capability and production delivery in one field-facing engineering role.',
-    promise: 'Understand the job through discovery, architecture, delivery and measurable adoption.',
+    promise: 'Move from customer discovery to measurable production adoption.',
     chapters: [
       { title: 'What an FDE actually does', outcome: 'Distinguish FDE from consultant and product engineer.', href: '/forward-deployed-engineer/01-what-does-a-forward-deployed-engineer-do/' },
       { title: 'Problem discovery in the field', outcome: 'Turn ambiguity into testable requirements.', href: '/forward-deployed-engineer/02-problem-discovery-and-workflow-mapping/' },
@@ -50,7 +50,7 @@ export const handbooks: Handbook[] = [
     slug: 'docker', title: 'The Docker Handbook', shortTitle: 'Docker',
     audience: 'Beginners · Developers', tone: 'cyan', status: 'available', category: 'cloud-devops', label: 'CONTAINERS TO CLOUD',
     description: 'Understand containers, package a Python application, manage runtime configuration and deploy a practical Generative AI service.',
-    promise: 'Move from “works on my machine” to a repeatable container workflow you can explain and troubleshoot.',
+    promise: 'Build a repeatable container workflow from code to cloud.',
     chapters: [
       { title: 'What is Docker?', outcome: 'Distinguish images, containers and virtual machines.', href: '/cloud-devops/01-what-is-docker-containers-explained/' },
       { title: 'Dockerize a Python application', outcome: 'Write a Dockerfile, build an image and run it.', href: '/cloud-devops/02-dockerize-first-python-application/' },
@@ -63,7 +63,7 @@ export const handbooks: Handbook[] = [
     slug: 'langchain', title: 'LangChain for GenAI and AI Agents Handbook', shortTitle: 'LangChain',
     audience: 'Python Developers · AI Builders', tone: 'green', status: 'available', category: 'ai-application-engineering', label: 'LLM APPLICATION ENGINEERING',
     description: 'Build practical LLM, RAG and agentic AI applications with Python using current LangChain patterns.',
-    promise: 'Move from a model call to a grounded, tool-using and observable AI application.',
+    promise: 'Build grounded, tool-using and observable LangChain applications.',
     chapters: [
       { title: 'What is LangChain?', outcome: 'Place models, messages and structured output in one mental model.', href: '/langchain/01-what-is-langchain-build-llm-applications/' },
       { title: 'Connect Python with LLMs', outcome: 'Configure a model and validate its response.', href: '/langchain/02-connect-python-with-llms-using-langchain/' },
@@ -76,7 +76,7 @@ export const handbooks: Handbook[] = [
     slug: 'rag-application-engineering', title: 'The RAG Application Engineering Handbook', shortTitle: 'RAG Engineering',
     audience: 'Beginners · AI Builders', tone: 'purple', status: 'available', category: 'ai-application-engineering', label: 'PRIVATE KNOWLEDGE TO GROUNDED ANSWERS',
     description: 'Give AI governed access to private knowledge—from document preparation and semantic retrieval to cited answers, evaluation and deployment.',
-    promise: 'Build a complete RAG mental model and a production-minded document assistant you can explain, test and improve.',
+    promise: 'Build and improve a secure, cited document assistant.',
     chapters: [
       { title: 'What is RAG?', outcome: 'Understand retrieval, context and grounded generation.', href: '/rag-application-engineering/01-what-is-rag-give-ai-access-to-your-knowledge/' },
       { title: 'Prepare documents for RAG', outcome: 'Load, clean, chunk and label useful evidence.', href: '/rag-application-engineering/02-prepare-documents-loading-cleaning-chunking/' },
@@ -89,7 +89,7 @@ export const handbooks: Handbook[] = [
     slug: 'fastapi-ai-applications', title: 'FastAPI for AI Applications Handbook', shortTitle: 'FastAPI for AI',
     audience: 'Python Developers · AI Builders', tone: 'teal', status: 'available', category: 'ai-application-engineering', label: 'PYTHON TO PRODUCTION AI API',
     description: 'Build, validate, stream, secure, test and deploy production-ready Python APIs for Generative AI, RAG and agent applications.',
-    promise: 'Turn one Python function into a dependable Enterprise AI Assistant API with clear contracts and production controls.',
+    promise: 'Turn Python functions into dependable production AI APIs.',
     chapters: [
       { title: 'What is FastAPI?', outcome: 'Turn Python functions into documented HTTP endpoints.', href: '/fastapi-ai-applications/01-what-is-fastapi-turn-python-into-web-api/' },
       { title: 'Validation and error handling', outcome: 'Build predictable REST contracts with Pydantic.', href: '/fastapi-ai-applications/02-rest-api-validation-error-handling/' },
@@ -102,7 +102,7 @@ export const handbooks: Handbook[] = [
     slug: 'modern-java-spring-boot-genai', title: 'Modern Java with Spring Boot and GenAI Handbook', shortTitle: 'Java, Spring Boot & GenAI',
     audience: 'Java Beginners · Enterprise Developers', tone: 'orange', status: 'available', category: 'software-engineering', label: 'ENTERPRISE JAVA IN THE AI ERA',
     description: 'Build enterprise applications with modern Java, Spring Boot, databases, grounded Generative AI and production deployment.',
-    promise: 'Build an Enterprise Policy Assistant from Java foundations to a secure, cited and containerised AI application.',
+    promise: 'Build a secure enterprise AI assistant with Java.',
     chapters: [
       { title: 'Modern Java foundations for the AI era', outcome: 'Model application behaviour with readable Java and AI-assisted review.', href: '/modern-java-spring-boot-genai/01-modern-java-foundations-ai-era/' },
       { title: 'Build REST APIs with Spring Boot', outcome: 'Create clear controller, service, validation and error boundaries.', href: '/modern-java-spring-boot-genai/02-build-rest-apis-java-spring-boot/' },
@@ -115,7 +115,7 @@ export const handbooks: Handbook[] = [
     slug: 'sql-data-ai-applications', title: 'SQL for Data and AI Applications Handbook', shortTitle: 'SQL for Data & AI',
     audience: 'Beginners · Data and AI Builders', tone: 'indigo', status: 'available', category: 'ai-application-engineering', label: 'DATA FOUNDATIONS FOR INTELLIGENT SYSTEMS',
     description: 'Query, analyse and safely power analytics, data engineering, RAG and AI-agent applications with SQL.',
-    promise: 'Build an AI-Powered Business Data Analyst that converts questions into validated, read-only SQL and clear explanations.',
+    promise: 'Turn business questions into safe, validated SQL insights.',
     chapters: [
       { title: 'SQL foundations: ask questions using data', outcome: 'Read tables with SELECT, filters, sorting and limits.', href: '/sql-data-ai-applications/01-sql-foundations-ask-questions-using-data/' },
       { title: 'Analyse business data with SQL', outcome: 'Use aggregates, groups, conditions and dates for insight.', href: '/sql-data-ai-applications/02-analyse-business-data-with-sql/' },
