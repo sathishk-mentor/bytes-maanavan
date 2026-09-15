@@ -6,6 +6,7 @@ import './handbook-quick-nav.css';
 import './ai-agents.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { NavigationStability } from '@/components/navigation/NavigationStability';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -43,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en-IN">
       <body className={inter.className}>
+        <NavigationStability />
         <a className="skip-link" href="#main-content">Skip to content</a>
         <div className="flex min-h-screen flex-col">
           <Header />
