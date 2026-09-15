@@ -5,9 +5,9 @@ import { PublishedHandbooks } from '@/components/home/PublishedHandbooks';
 
 export const metadata: Metadata = {
   title: 'AI & Technology Handbooks',
-  description: 'Explore beginner-friendly visual handbooks for MongoDB, FastAPI, RAG, LangChain, Docker, GitHub Copilot and AI application engineering.',
+  description: 'Explore beginner-friendly visual handbooks for Python, GenAI, AI agents, MongoDB, FastAPI, RAG, LangChain, Docker and software engineering.',
   alternates: { canonical: '/handbooks/' },
-  openGraph: {title:'Visual Technology Handbooks | MaanavaN Bytes',description:'Connected, beginner-friendly handbooks for MongoDB, FastAPI, RAG, LangChain, Docker, GitHub Copilot and AI application engineering.',url:'/handbooks/',type:'website'},
+  openGraph: {title:'Visual Technology Handbooks | MaanavaN Bytes',description:'Connected, beginner-friendly handbooks for Python, GenAI, AI agents, MongoDB, FastAPI, RAG, LangChain, Docker and software engineering.',url:'/handbooks/',type:'website'},
 };
 
 export default function HandbooksPage() {

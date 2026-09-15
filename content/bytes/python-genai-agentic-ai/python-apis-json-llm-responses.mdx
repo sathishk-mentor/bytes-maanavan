@@ -1,0 +1,128 @@
+---
+title: "Work with APIs, JSON and LLM Responses Using Python"
+slug: "python-apis-json-llm-responses"
+summary: "Call REST and LLM APIs with Python, handle JSON, secrets, timeouts, retries, rate limits and response validation safely."
+category: "python-genai-agentic-ai"
+tags: ["Python REST API tutorial", "Python JSON", "LLM API Python", "API keys environment variables", "async Python API"]
+level: "beginner"
+duration: "24 min"
+updatedAt: "2026-09-15"
+order: 2
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="PYTHON AI HANDBOOK 02">
+
+Connect the learning assistant to an external model service and turn the response into a validated course suggestion.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="pythonApi" />
+
+## API mental model
+
+An API is a contract between applications. A client sends a request containing a method, URL, headers and optional body. The service returns a status code, headers and response body.
+
+| Method | Typical purpose | Example |
+|---|---|---|
+| `GET` | Read | Retrieve a course |
+| `POST` | Create or run | Request an LLM recommendation |
+| `PUT/PATCH` | Replace or update | Update learner progress |
+| `DELETE` | Remove | Delete an authorised draft |
+
+## Tamil learner analogy: restaurant waiter
+
+<Scenario title="Request through an agreed interface">
+
+A customer does not enter the kitchen and operate its equipment. The waiter accepts an order in an understood format and returns the result. An API provides that controlled interface between applications.
+
+**Simple Tanglish:** Customer direct-ஆ kitchen-க்கு போக மாட்டார். Waiter மூலமாக request அனுப்புவார். அதுபோல application, API மூலமாக service-ஐ communicate செய்யும்.
+
+</Scenario>
+
+## JSON becomes Python data
+
+```json
+{
+  "course": "Python for GenAI",
+  "confidence": 0.88,
+  "prerequisites": ["Basic computer skills"]
+}
+```
+
+JSON objects become dictionaries; arrays become lists; strings, numbers, Booleans and null become their Python equivalents.
+
+```python
+import requests
+
+response = requests.get(
+    "https://example.com/api/courses",
+    timeout=10,
+)
+response.raise_for_status()
+courses = response.json()
+```
+
+Always set a timeout. Without one, a slow dependency can hold application resources indefinitely.
+
+## Keep API keys outside code
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+api_key = os.environ["MODEL_API_KEY"]
+```
+
+Keep `.env` out of Git and provide secrets through the deployment platform in production. Never expose a provider key in browser code.
+
+## Validate the response
+
+Status `200` does not prove the data is correct. Check content type, required fields, types and allowed values.
+
+```python
+def validate_suggestion(data: dict) -> dict:
+    required = {"course", "reason", "confidence"}
+    missing = required - data.keys()
+    if missing:
+        raise ValueError(f"Missing fields: {sorted(missing)}")
+    if not 0 <= float(data["confidence"]) <= 1:
+        raise ValueError("Confidence must be between 0 and 1")
+    return data
+```
+
+## Failures, retries and rate limits
+
+Retry only temporary failures such as a timeout or selected `429` and `5xx` responses. Use exponential backoff with jitter and a maximum attempt count. Do not retry invalid credentials or malformed requests.
+
+Async Python is useful when one request waits for multiple independent network calls. It does not make CPU-heavy work automatically faster, and it does not remove provider limits.
+
+## Practical task
+
+Create `get_course_suggestions(profile)` that sends a learner profile, applies a timeout, checks the HTTP status, parses JSON and validates the required fields. Add clear handling for timeout, rate limit and invalid response cases.
+
+## Common mistakes
+
+<Mistakes>
+
+- Committing `.env` or printing secrets in logs.
+- Retrying every failure without a limit.
+- Assuming every successful HTTP response has the expected schema.
+- Sending private learner details that the model does not need.
+- Treating asynchronous code as a substitute for capacity planning.
+
+</Mistakes>
+
+## Key takeaways
+
+<Takeaways>
+
+- APIs are explicit request-response contracts.
+- JSON needs application-level validation after parsing.
+- Secrets belong in environment or secret-management systems.
+- Timeouts, bounded retries and rate-limit handling are production basics.
+- Validate LLM output before displaying or using it.
+
+</Takeaways>
+

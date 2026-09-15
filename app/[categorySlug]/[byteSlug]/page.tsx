@@ -77,6 +77,11 @@ const searchTitles:Record<string,string>={
   'mongodb-queries-updates-aggregation-pipeline':'MongoDB Queries, Updates and Aggregation Pipeline',
   'mongodb-python-fastapi-ai-application':'MongoDB with Python, FastAPI and AI Applications',
   'production-mongodb-indexing-security-deployment':'Production MongoDB: Indexing, Security and Deployment',
+  'python-foundations-for-ai-applications':'Python Foundations for AI Application Development',
+  'python-apis-json-llm-responses':'Python APIs, JSON and LLM Responses',
+  'build-generative-ai-application-python':'Build a Generative AI Application with Python',
+  'build-ai-agents-tools-memory-python':'Build AI Agents with Tools and Memory Using Python',
+  'test-secure-deploy-python-ai-applications':'Test, Secure and Deploy Python AI Applications',
 };
 
 const movedRoutes:Record<string,string>={
@@ -91,7 +96,7 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  const published = bytes.filter((byte) => ['ai-agents','software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications','modern-java-spring-boot-genai','sql-data-ai-applications','mongodb'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['ai-agents','software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications','modern-java-spring-boot-genai','sql-data-ai-applications','mongodb','python-genai-agentic-ai'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
@@ -119,6 +124,7 @@ function legacyDestination(categorySlug: string) {
     'modern-java-spring-boot-genai':'/modern-java-spring-boot-genai/',
     'sql-data-ai-applications':'/sql-data-ai-applications/',
     mongodb:'/mongodb/',
+    'python-genai-agentic-ai':'/python-genai-agentic-ai/',
     cybersecurity:'https://www.maanavan.com/courses/cybersecurity',
     'case-studies':'/forward-deployed-engineer/',
   };

@@ -172,6 +172,26 @@ const visuals = {
     {icon:ShieldCheck,title:'Parameterise',note:'Separate code + data'}, {icon:Gauge,title:'Optimise',note:'Plan + index'},
     {icon:Repeat2,title:'Transact',note:'All or nothing'}, {icon:Eye,title:'Audit',note:'Who queried what'},
   ], remember:'Production SQL must be correct, bounded, authorised, observable and efficient.' },
+  pythonFoundation: { eyebrow:'PYTHON MENTAL MODEL', title:'Turn a learner need into small, reusable program decisions', steps:[
+    {icon:MessageSquareText,title:'Input',note:'Learner details'}, {icon:Braces,title:'Data',note:'Lists + dictionaries'},
+    {icon:Code2,title:'Function',note:'Repeatable rule'}, {icon:BadgeCheck,title:'Output',note:'Course suggestion'},
+  ], remember:'A function is a repeatable recipe: clear inputs, defined steps and a predictable output.' },
+  pythonApi: { eyebrow:'API REQUEST LIFECYCLE', title:'Call an AI service without trusting every response', steps:[
+    {icon:Code2,title:'Python app',note:'Prepare request'}, {icon:Network,title:'API',note:'Send securely'},
+    {icon:Sparkles,title:'LLM',note:'Return JSON'}, {icon:ShieldCheck,title:'Validate',note:'Accept or recover'},
+  ], remember:'HTTP success only means the request completed; your code must still validate the response.' },
+  pythonGenAi: { eyebrow:'GROUNDED COURSE ADVISOR', title:'Combine learner context and approved knowledge before generation', steps:[
+    {icon:Users,title:'Learner profile',note:'Skills + goal'}, {icon:FileSearch,title:'Catalogue',note:'Verified courses'},
+    {icon:Sparkles,title:'LLM',note:'Structured proposal'}, {icon:BadgeCheck,title:'Python validation',note:'Final answer'},
+  ], remember:'The model recommends; Python verifies course identity, prerequisites and required fields.' },
+  pythonAgent: { eyebrow:'BOUNDED AGENT LOOP', title:'Choose one tool, observe evidence and decide whether to continue', steps:[
+    {icon:MessageSquareText,title:'Goal',note:'Outcome + limits'}, {icon:ListChecks,title:'Choose step',note:'Current state'},
+    {icon:Wrench,title:'Call tool',note:'Bounded action'}, {icon:Users,title:'Check + approve',note:'Stop safely'},
+  ], remember:'Preparing an action is not completing it; consequential actions require tool confirmation and human approval.' },
+  pythonProduction: { eyebrow:'PRODUCTION RELEASE PATH', title:'Prove quality and safety before exposing the AI workflow', steps:[
+    {icon:TestTube2,title:'Test',note:'Logic + integrations'}, {icon:ShieldCheck,title:'Evaluate',note:'Quality + security'},
+    {icon:Container,title:'Package',note:'Docker image'}, {icon:Eye,title:'Operate',note:'Logs + rollback'},
+  ], remember:'Works on my machine becomes production-ready only after tests, controls, telemetry and recovery are in place.' },
 } satisfies Record<string, Visual>;
 
 export type HandbookLearningVisualVariant = keyof typeof visuals;

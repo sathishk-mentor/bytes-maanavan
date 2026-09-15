@@ -1,0 +1,123 @@
+---
+title: "Python Foundations for AI Application Development"
+slug: "python-foundations-for-ai-applications"
+summary: "Learn essential Python, data structures, functions, errors, virtual environments and responsible AI-assisted coding by building a course recommender."
+category: "python-genai-agentic-ai"
+tags: ["Python for AI beginners", "Python fundamentals", "Python functions", "Python virtual environments", "AI-assisted coding"]
+level: "beginner"
+duration: "22 min"
+updatedAt: "2026-09-15"
+order: 1
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="PYTHON AI HANDBOOK 01">
+
+Build the first working part of an **AI-Powered Personal Learning Assistant**: a small course recommender with clear inputs, rules and output.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="pythonFoundation" />
+
+## Why Python still matters in the AI era
+
+AI can generate code, but an application still needs a language to validate data, call models, connect tools, enforce permissions and test results. Python is widely used for these jobs because its syntax is readable and its ecosystem covers APIs, data, machine learning and automation.
+
+Your goal is not to memorise every Python feature. Learn enough to **read, question, run, test and improve** the code that powers an AI workflow.
+
+## Set up a safe workspace
+
+Install a current supported Python release and VS Code. Create one project folder and isolate its packages:
+
+```bash
+python -m venv .venv
+# Activate .venv, then:
+python -m pip install --upgrade pip
+```
+
+A virtual environment is like keeping each course’s lab materials in a separate box. One project can upgrade a package without unexpectedly changing another project.
+
+## Values and data structures
+
+```python
+learner_name = "Kavin"                   # string
+study_hours = 6                           # integer
+is_beginner = True                        # Boolean
+interests = ["Python", "AI Agents"]      # list: ordered and changeable
+profile = {"goal": "AI Engineer"}        # dictionary: key and value
+levels = ("beginner", "intermediate")    # tuple: fixed sequence
+completed = {"SQL", "Git"}               # set: unique values
+```
+
+Choose a structure from the behaviour you need. A dictionary fits a learner profile because each value has a meaningful key. A list fits a learning path because order matters.
+
+## Conditions, loops and functions
+
+```python
+def recommend_course(skill_level: str, interest: str) -> str:
+    if skill_level == "beginner" and interest == "AI":
+        return "Start with Python and Generative AI"
+    return "Explore the complete course library"
+
+recommendation = recommend_course("beginner", "AI")
+print(recommendation)
+```
+
+The type hints explain the intended contract. They improve readability and tooling, but Python does not automatically enforce every type at runtime.
+
+## Tamil learner analogy: tea kadai recipe
+
+<Scenario title="Same inputs, repeatable steps">
+
+A tea kadai recipe accepts ingredients, follows an agreed sequence and produces tea. A function behaves similarly: it receives inputs, applies defined logic and returns an output.
+
+**Simple Tanglish:** Oru function-na repeatable recipe மாதிரி. Input கொடுத்தால், defined steps follow பண்ணி output கொடுக்கும்.
+
+</Scenario>
+
+## Read errors as evidence
+
+When code fails, start at the final exception line, then inspect the referenced file and line number. Reproduce the error with the smallest input before changing code.
+
+```python
+try:
+    weekly_hours = int(input("Weekly study hours: "))
+except ValueError:
+    print("Enter a whole number, such as 5")
+```
+
+Do not hide every exception with a broad `except`. Handle failures you understand and let unexpected failures remain visible during development.
+
+## Use AI coding assistants responsibly
+
+- Ask for an explanation before accepting unfamiliar code.
+- Give the assistant the goal, input format and expected examples.
+- Run the code in an isolated development environment.
+- Test normal, empty and invalid inputs.
+- Never paste passwords, API keys or private learner records.
+- Keep human ownership of dependencies and final behaviour.
+
+## Practical task
+
+Extend the recommender to accept learner level, interest and available weekly hours. Return a dictionary containing `course`, `reason` and `weekly_plan`. Test at least four inputs, including an invalid level.
+
+## Interview bit
+
+<ThemeCard title="Why learn Python when AI can write code?" badge="CAREER">
+
+AI can accelerate implementation, but developers still need Python knowledge to define contracts, validate data, investigate errors, test behaviour and control what the application is allowed to do. I use AI as an assistant and verify its output with executable evidence.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Python coordinates data, APIs, tools and validation in AI applications.
+- Functions make business rules reusable and testable.
+- Virtual environments isolate project dependencies.
+- An error message is evidence, not a reason to rewrite everything.
+- AI-generated code remains your responsibility.
+
+</Takeaways>
+

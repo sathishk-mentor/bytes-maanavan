@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {url:'https://bytes.maanavan.com/modern-java-spring-boot-genai/',lastModified:new Date('2026-09-14'),changeFrequency:'monthly',priority:.9},
     {url:'https://bytes.maanavan.com/sql-data-ai-applications/',lastModified:new Date('2026-09-14'),changeFrequency:'monthly',priority:.9},
     {url:'https://bytes.maanavan.com/mongodb/',lastModified:new Date('2026-09-15'),changeFrequency:'monthly',priority:.9},
+    {url:'https://bytes.maanavan.com/python-genai-agentic-ai/',lastModified:new Date('2026-09-15'),changeFrequency:'monthly',priority:.9},
   ];
   return [...core,...bytes.map((byte)=>({url:`https://bytes.maanavan.com/${byte.category}/${byte.slug}/`,lastModified:new Date(byte.updatedAt),changeFrequency:'monthly' as const,priority:.8}))];
 }

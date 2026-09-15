@@ -1,0 +1,116 @@
+---
+title: "Build a Generative AI Application with Python"
+slug: "build-generative-ai-application-python"
+summary: "Build a grounded Python course advisor using learner context, approved knowledge, structured LLM output, validation and human review."
+category: "python-genai-agentic-ai"
+tags: ["Generative AI application Python", "LLM structured output", "Python prompt template", "grounded AI course advisor", "LLM validation"]
+level: "beginner"
+duration: "27 min"
+updatedAt: "2026-09-15"
+order: 3
+isPopular: true
+---
+
+<ThemeCard title="Practical project" badge="PYTHON AI HANDBOOK 03">
+
+Build an **AI Course Advisor** that recommends only verified courses and explains prerequisites, reasoning, confidence and missing information.
+
+</ThemeCard>
+
+<HandbookLearningVisual variant="pythonGenAi" />
+
+## What makes this an application
+
+An LLM call alone is a demo. An application adds input validation, approved context, output contracts, failure handling, privacy controls and a user experience.
+
+```text
+Learner profile + approved catalogue → Python context builder → LLM → structured output → validation → response
+```
+
+## Model, instructions and context
+
+- **System instruction:** stable role, boundaries and output rules.
+- **User instruction:** the learner’s current request.
+- **Context:** verified profile and catalogue facts needed for this request.
+- **Model response:** a proposal that application code must validate.
+
+```python
+system_instruction = """
+You are a learning-path assistant.
+Recommend only courses present in APPROVED_COURSES.
+If required learner information is missing, say so.
+Return the requested structured fields.
+"""
+```
+
+## Tamil learner analogy: brief the knowledgeable assistant
+
+<Scenario title="Context turns a vague request into a useful decision">
+
+“Suggest a course” is like asking a counsellor without sharing your education, goal or available time. A relevant answer needs the learner profile and an accurate course catalogue.
+
+**Simple Tanglish:** “Course suggest பண்ணு” என்பது vague request. Learner level, goal, completed skills எல்லாம் கொடுத்தால் useful recommendation கிடைக்கும்.
+
+</Scenario>
+
+## Define structured output
+
+```python
+from pydantic import BaseModel, Field
+
+class CourseRecommendation(BaseModel):
+    course_id: str
+    reason: str
+    prerequisite: str
+    next_step: str
+    confidence: float = Field(ge=0, le=1)
+    missing_information: list[str]
+```
+
+Structured output makes failures visible. Python should also verify that `course_id` exists in the approved catalogue and that prerequisites match the learner record.
+
+## Ground the recommendation
+
+The learner asks: **Which course should I study after SQL?** The application collects current level, completed courses, career goal and weekly study time. It retrieves eligible courses from the approved MaanavaN catalogue and sends only the useful facts to the model.
+
+Conversation history can help with continuity, but it should be scoped, limited and summarised when necessary. Do not send an unlimited chat transcript or unrelated personal information.
+
+## Streaming and token control
+
+Streaming improves perceived responsiveness, but do not display an unvalidated JSON object token by token. For structured decisions, wait for and validate the complete object. Track input/output tokens, latency and estimated cost per request.
+
+## Hallucination and human review
+
+The model may invent a course, prerequisite or promise. Deterministic checks should reject unknown identifiers. Human review is required when the result affects payment, enrolment, certification claims or a consequential career decision.
+
+## Practical build checklist
+
+1. Define the learner and response models.
+2. Load a small approved course catalogue.
+3. Select relevant course facts.
+4. Build system and user messages.
+5. Request structured output.
+6. Validate required fields and course identity.
+7. Return missing information instead of guessing.
+8. Log latency and token use without logging private content.
+
+## Interview bit
+
+<ThemeCard title="How do you reduce hallucinations?" badge="CAREER">
+
+I constrain the task, provide verified context, request structured output and validate identifiers and business rules in Python. I also define abstention behaviour and use human review for consequential recommendations. Prompting helps, but application controls provide the dependable boundary.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- A production GenAI application is more than a model call.
+- Approved knowledge should ground recommendations.
+- Structured output makes validation possible.
+- Python owns deterministic business rules.
+- Privacy, token cost and human review belong in the initial design.
+
+</Takeaways>
+

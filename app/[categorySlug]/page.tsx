@@ -7,7 +7,7 @@ import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
@@ -101,6 +101,15 @@ const handbookDetails = {
     result: 'A document → query → API → vector retrieval → production workflow',
     keywords: ['MongoDB tutorial for beginners', 'MongoDB data modeling', 'PyMongo FastAPI tutorial', 'MongoDB Atlas Vector Search', 'MongoDB for AI applications', 'production MongoDB security'],
   },
+  'python-genai-agentic-ai': {
+    searchTitle: 'Python for GenAI and Agentic AI Handbook',
+    eyebrow: 'PYTHON FOUNDATIONS TO PRODUCTION AI AGENTS',
+    intro: 'Learn Python by building practical Generative AI and Agentic AI applications—from core language skills and APIs to structured LLM output, tool use, evaluation, security and deployment.',
+    audience: 'Beginners, Python learners and practical AI builders',
+    prerequisite: 'No Python or AI application experience required',
+    result: 'An AI-powered personal learning assistant',
+    keywords: ['Python for Generative AI', 'Python Agentic AI tutorial', 'Python AI agents for beginners', 'build LLM application Python', 'Python tool calling', 'deploy Python AI application'],
+  },
 } as const;
 type PublishedCategory = keyof typeof handbookDetails;
 
@@ -171,6 +180,11 @@ function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory 
   if (categorySlug === 'mongodb') {
     return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated MongoDB AI application data workflow">
       <div className="langchain-orchestrator"><header><Database/><span><small>AI-POWERED LEARNING SUPPORT</small><strong>Store operational truth. Retrieve approved evidence.</strong></span><i>ATLAS</i></header><div><span><Code2/><small>FastAPI</small></span><b>→</b><span><Database/><small>Documents</small></span><b>→</b><span><SearchCheck/><small>Vector Search</small></span><b>→</b><span><Sparkles/><small>Grounded AI</small></span></div><footer><ShieldCheck/><span>Modelled · indexed · authorised · observable</span></footer></div>
+    </div>;
+  }
+  if (categorySlug === 'python-genai-agentic-ai') {
+    return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated Python learning assistant architecture">
+      <div className="langchain-orchestrator"><header><Code2/><span><small>PERSONAL LEARNING ASSISTANT</small><strong>Use Python to turn AI output into dependable action.</strong></span><i>VALIDATED</i></header><div><span><Code2/><small>Python</small></span><b>→</b><span><Network/><small>API + JSON</small></span><b>→</b><span><Sparkles/><small>LLM</small></span><b>→</b><span><Workflow/><small>Agent tools</small></span></div><footer><ShieldCheck/><span>Typed · tested · approved · observable</span></footer></div>
     </div>;
   }
   return <div className="handbook-hero-visual fde-hero-visual" aria-label="Animated Forward Deployed Engineer outcome loop">

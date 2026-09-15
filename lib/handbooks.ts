@@ -137,6 +137,19 @@ export const handbooks: Handbook[] = [
       { title: 'Production MongoDB', outcome: 'Apply indexing, security, backups, monitoring and capacity controls.', href: '/mongodb/production-mongodb-indexing-security-deployment/' },
     ],
   },
+  {
+    slug: 'python-genai-agentic-ai', title: 'Python for GenAI and Agentic AI Handbook', shortTitle: 'Python for GenAI & Agents',
+    audience: 'Beginners · Python and AI Builders', tone: 'blue', status: 'available', category: 'ai-application-engineering', label: 'PYTHON FOUNDATIONS TO PRODUCTION AI AGENTS',
+    description: 'Learn Python through one connected GenAI and agentic AI project—from language foundations and APIs to tools, evaluation, security and deployment.',
+    promise: 'Build a validated AI-powered personal learning assistant.',
+    chapters: [
+      { title: 'Python foundations for AI applications', outcome: 'Use core Python, functions, errors, environments and packages with confidence.', href: '/python-genai-agentic-ai/python-foundations-for-ai-applications/' },
+      { title: 'APIs, JSON and LLM responses', outcome: 'Call services safely and validate structured responses.', href: '/python-genai-agentic-ai/python-apis-json-llm-responses/' },
+      { title: 'Build a Generative AI application', outcome: 'Create a grounded course advisor with structured output.', href: '/python-genai-agentic-ai/build-generative-ai-application-python/' },
+      { title: 'Build tool-using AI agents', outcome: 'Create bounded tools, memory, stop rules and human approval.', href: '/python-genai-agentic-ai/build-ai-agents-tools-memory-python/' },
+      { title: 'Test, secure and deploy', outcome: 'Evaluate, protect, containerise, monitor and roll back the application.', href: '/python-genai-agentic-ai/test-secure-deploy-python-ai-applications/' },
+    ],
+  },
 ];
 
 export function getHandbook(slug: string) { return handbooks.find((handbook) => handbook.slug === slug); }

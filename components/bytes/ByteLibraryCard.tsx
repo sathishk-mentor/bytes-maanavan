@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, Clock3, Container, Database, FileText, Gauge, GitPullRequestArrow, HardDrive, MessageSquareText, Network, Rocket, Search, ShieldCheck, Workflow, Wrench } from 'lucide-react';
+import { ArrowRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, Clock3, Code2, Container, Database, FileText, Gauge, GitPullRequestArrow, HardDrive, MessageSquareText, Network, Rocket, Search, ShieldCheck, Workflow, Wrench } from 'lucide-react';
 import type { ByteMetadata } from '@/lib/types';
 
 const cardVisuals = {
@@ -34,6 +34,11 @@ const cardVisuals = {
   'mongodb-queries-updates-aggregation-pipeline': { icon: Gauge, label: 'Query & Aggregation', tone: 'blue' },
   'mongodb-python-fastapi-ai-application': { icon: Network, label: 'AI App Integration', tone: 'violet' },
   'production-mongodb-indexing-security-deployment': { icon: ShieldCheck, label: 'Production MongoDB', tone: 'indigo' },
+  'python-foundations-for-ai-applications': { icon: Code2, label: 'Python Foundations', tone: 'blue' },
+  'python-apis-json-llm-responses': { icon: Braces, label: 'APIs & JSON', tone: 'teal' },
+  'build-generative-ai-application-python': { icon: MessageSquareText, label: 'GenAI Application', tone: 'violet' },
+  'build-ai-agents-tools-memory-python': { icon: Wrench, label: 'Agents & Tools', tone: 'emerald' },
+  'test-secure-deploy-python-ai-applications': { icon: ShieldCheck, label: 'Production AI', tone: 'indigo' },
 } as const;
 
 export function ByteLibraryCard({ chapter, chapterNumber }: { chapter: ByteMetadata; chapterNumber: number }) {
@@ -44,8 +49,9 @@ export function ByteLibraryCard({ chapter, chapterNumber }: { chapter: ByteMetad
   const isLangChain = chapter.category === 'langchain';
   const isAgent = chapter.category === 'ai-agents';
   const isMongoDB = chapter.category === 'mongodb';
-  const category = isMongoDB ? 'Database & AI Engineering' : isFde ? 'Technology Careers' : isDocker ? 'Cloud & DevOps' : isLangChain || isAgent ? 'Generative AI & Agents' : 'Software Engineering';
-  const handbook = isMongoDB ? 'MongoDB for AI Handbook' : isFde ? 'FDE Handbook' : isDocker ? 'Docker Handbook' : isLangChain ? 'LangChain Handbook' : isAgent ? 'AI Agents Handbook' : 'GitHub Copilot Handbook';
+  const isPythonAI = chapter.category === 'python-genai-agentic-ai';
+  const category = isPythonAI ? 'Python & AI Engineering' : isMongoDB ? 'Database & AI Engineering' : isFde ? 'Technology Careers' : isDocker ? 'Cloud & DevOps' : isLangChain || isAgent ? 'Generative AI & Agents' : 'Software Engineering';
+  const handbook = isPythonAI ? 'Python for GenAI & Agents' : isMongoDB ? 'MongoDB for AI Handbook' : isFde ? 'FDE Handbook' : isDocker ? 'Docker Handbook' : isLangChain ? 'LangChain Handbook' : isAgent ? 'AI Agents Handbook' : 'GitHub Copilot Handbook';
 
   return <Link className={`library-byte-card tone-${visual.tone}`} href={`/${chapter.category}/${chapter.slug}/`}>
     <div className="byte-card-cover"><span>MAANAVAN BYTE</span><Icon/><i>BYTE {String(chapterNumber).padStart(2, '0')}</i></div>
