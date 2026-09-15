@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 export const metadata: Metadata = {
   title: 'Website Documentation | MaanavaN Bytes',
   description: 'Learn about the different areas and technical components of the MaanavaN Bytes website',
+  robots: { index: false, follow: false },
 };
 
 export default function DocsPage() {
