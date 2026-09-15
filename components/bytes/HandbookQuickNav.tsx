@@ -11,6 +11,15 @@ interface HandbookQuickNavProps {
 }
 
 function shortTitle(title: string) {
+  const conciseTitles: Record<string, string> = {
+    'Python Foundations for AI Application Development': 'Python Foundations for AI Apps',
+    'Work with APIs, JSON and LLM Responses Using Python': 'APIs, JSON and LLM Responses',
+    'Build a Generative AI Application with Python': 'Build a GenAI App with Python',
+    'Build Tool-Using AI Agents with Python': 'Build Tool-Using AI Agents',
+    'Test, Secure and Deploy Python AI Applications': 'Test, Secure and Deploy Python AI',
+  };
+  if (conciseTitles[title]) return conciseTitles[title];
+
   const cleaned = title
     .replace(/^\d+\s*[—–:-]\s*/, '')
     .replace(/^Byte\s+\d+\s*[—–:-]\s*/i, '');
@@ -61,7 +70,7 @@ export function HandbookQuickNav({
               </span>
               <span className="handbook-byte-copy">
                 <small>BYTE {String(number).padStart(2, '0')}</small>
-                <strong>{shortTitle(item.title)}</strong>
+                <strong title={item.title}>{shortTitle(item.title)}</strong>
               </span>
               {!isCurrent && <ChevronRight className="handbook-byte-arrow" aria-hidden="true" />}
               {isCurrent && <span className="handbook-current-label">CURRENT</span>}
