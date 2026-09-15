@@ -19,6 +19,8 @@ You will package an API-based Generative AI service without embedding its provid
 
 <DockerFlowVisual variant="aiDeploy" />
 
+<DockerConceptLab concept="deploy" />
+
 ## The application boundary
 
 Consider a small FastAPI service with one endpoint. It receives a user question, validates the input, calls an LLM provider and returns a bounded answer. The container should package application code and dependencies. The deployment environment should supply the API key and environment-specific values.
