@@ -1,0 +1,152 @@
+---
+title: "Design MongoDB Documents and Data Models"
+slug: "mongodb-data-modeling-embedding-vs-referencing"
+summary: "Turn application requirements into maintainable MongoDB documents using query patterns, embedding, references and schema validation."
+category: "mongodb"
+tags: ["MongoDB data modeling", "embedding vs referencing MongoDB", "MongoDB schema validation", "MongoDB relationships", "document database design"]
+level: "beginner"
+duration: "24 min"
+updatedAt: "2026-09-15"
+order: 2
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="MONGODB HANDBOOK 02">
+
+You will design `learners`, `courses` and `enrolments` for the learning platform and explain why each relationship is embedded or referenced.
+
+</ThemeCard>
+
+<MongoDBVisual variant="modeling" />
+
+## Begin with reads and changes—not diagrams
+
+Ask how the application uses the data:
+
+1. What must appear together on one screen or API response?
+2. What changes frequently and independently?
+3. Can the child list grow without a practical bound?
+4. Is the information shared by many records?
+5. Which queries must be fast and frequent?
+
+The best document shape follows real query and update patterns.
+
+## Embedding versus referencing
+
+**Embed** a small progress summary inside a learner when it is normally read with that learner and has a known bound.
+
+```javascript
+{
+  learner_id: "LRN-1042",
+  name: "Meena",
+  preferences: { language: "Tamil" },
+  current_progress: [
+    { course_id: "AI-101", completed: 8, total: 12 }
+  ]
+}
+```
+
+**Reference** a course when the same course is shared by thousands of learners and changes independently.
+
+```javascript
+// enrolments
+{
+  learner_id: "LRN-1042",
+  course_id: "AI-101",
+  status: "active",
+  enrolled_at: ISODate("2026-09-10T00:00:00Z")
+}
+```
+
+| Embed when | Reference when |
+|---|---|
+| Data is read together | Data is shared broadly |
+| Child data is small and bounded | Relationship can grow substantially |
+| Atomic update of the whole document helps | Parts change independently |
+| Duplication is controlled and useful | Duplication would become inconsistent |
+
+## Tamil analogy: kitchen shelf and storeroom
+
+<Scenario title="Keep daily ingredients near the stove">
+
+Salt, oil and frequently used masala stay together in the kitchen because every meal needs them. A 25 kg rice bag stays in the storeroom, and the household knows where to find it. Embedding is the kitchen shelf; referencing is the known storeroom location.
+
+Keeping every item near the stove creates clutter. Sending someone to the storeroom for every pinch of salt wastes time. Data modelling makes the same trade-off.
+
+</Scenario>
+
+## A practical three-collection model
+
+| Collection | Owns | Why |
+|---|---|---|
+| `learners` | Profile and bounded preferences | Read together for personalisation |
+| `courses` | Shared course catalogue | One course serves many learners |
+| `enrolments` | Learner-course relationship and progress | Grows independently and needs reporting |
+
+Use stable identifiers and include operational fields such as `created_at`, `updated_at`, `status` and, where needed, `created_by`.
+
+## Add schema validation
+
+```javascript
+db.createCollection("enrolments", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["learner_id", "course_id", "status", "enrolled_at"],
+      properties: {
+        learner_id: { bsonType: "string" },
+        course_id: { bsonType: "string" },
+        status: { enum: ["active", "completed", "cancelled"] },
+        enrolled_at: { bsonType: "date" }
+      }
+    }
+  }
+})
+```
+
+Validation protects collection boundaries. Pydantic validation in an API is still useful because it provides earlier, client-friendly feedback.
+
+## Avoid unbounded documents
+
+Do not continually append every chat message, event or enrolment to one learner document. The record becomes costly to move, update and return. Store growing histories in their own collection and query them with suitable indexes and limits.
+
+## Practical task
+
+Create sample documents for learners, courses and enrolments. For every nested object or reference, write one sentence answering: **Which application query made me choose this design?**
+
+## Common mistakes
+
+<Mistakes>
+
+- Recreating a relational schema field-for-field without considering document access.
+- Embedding an array that can grow forever.
+- Duplicating shared course information without an update strategy.
+- Storing status and dates with inconsistent names or types.
+- Designing the model before identifying important queries.
+
+</Mistakes>
+
+## Interview bit
+
+<ThemeCard title="How do you choose embedding or referencing?" badge="CAREER">
+
+I start from read and update patterns. I embed data that belongs together, is bounded and benefits from atomic access. I reference shared, independently changing or unbounded entities. I verify the choice against document growth, consistency needs and the indexes required by real queries.
+
+</ThemeCard>
+
+## Key takeaways
+
+<Takeaways>
+
+- Model for application access patterns.
+- Embedding reduces extra reads; references control duplication and growth.
+- Schema validation converts design intent into an enforced boundary.
+- Treat large arrays and endlessly growing histories as warning signs.
+
+</Takeaways>
+
+## Primary sources
+
+- [MongoDB data modeling](https://www.mongodb.com/docs/manual/data-modeling/)
+- [Embedded data versus references](https://www.mongodb.com/docs/manual/data-modeling/concepts/embedding-vs-references/)
+- [Schema validation](https://www.mongodb.com/docs/manual/core/schema-validation/)

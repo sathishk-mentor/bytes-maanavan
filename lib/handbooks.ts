@@ -124,6 +124,19 @@ export const handbooks: Handbook[] = [
       { title: 'Write production-ready SQL', outcome: 'Optimise, secure, audit and protect database operations.', href: '/sql-data-ai-applications/05-write-production-ready-sql/' },
     ],
   },
+  {
+    slug: 'mongodb', title: 'MongoDB for AI Application Engineering Handbook', shortTitle: 'MongoDB for AI',
+    audience: 'Beginners · Backend and AI Builders', tone: 'emerald', status: 'available', category: 'ai-application-engineering', label: 'DOCUMENT DATA TO GROUNDED AI',
+    description: 'Learn MongoDB documents, data modelling, queries, FastAPI integration, Vector Search and production operations through one connected AI application project.',
+    promise: 'Build the data foundation for an AI-powered learning support platform.',
+    chapters: [
+      { title: 'What is MongoDB?', outcome: 'Understand databases, collections, documents, fields, BSON and CRUD.', href: '/mongodb/what-is-mongodb-documents-collections-databases/' },
+      { title: 'Design MongoDB documents and data models', outcome: 'Choose embedding, referencing and validation from application query patterns.', href: '/mongodb/mongodb-data-modeling-embedding-vs-referencing/' },
+      { title: 'Query, update and analyse MongoDB data', outcome: 'Use filters, updates, pagination and aggregation to answer business questions.', href: '/mongodb/mongodb-queries-updates-aggregation-pipeline/' },
+      { title: 'Connect MongoDB with Python, FastAPI and AI', outcome: 'Build APIs, persist history and retrieve approved evidence with Vector Search.', href: '/mongodb/mongodb-python-fastapi-ai-application/' },
+      { title: 'Production MongoDB', outcome: 'Apply indexing, security, backups, monitoring and capacity controls.', href: '/mongodb/production-mongodb-indexing-security-deployment/' },
+    ],
+  },
 ];
 
 export function getHandbook(slug: string) { return handbooks.find((handbook) => handbook.slug === slug); }

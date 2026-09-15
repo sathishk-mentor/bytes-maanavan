@@ -17,6 +17,7 @@ export async function GET() {
 - [FastAPI for AI Applications Handbook](https://bytes.maanavan.com/fastapi-ai-applications/): Python APIs, validation, databases, streamed GenAI responses, authentication, testing and Docker deployment.
 - [Modern Java with Spring Boot and GenAI Handbook](https://bytes.maanavan.com/modern-java-spring-boot-genai/): Modern Java, Spring REST APIs, JPA persistence, grounded AI and secure Docker deployment.
 - [SQL for Data and AI Applications Handbook](https://bytes.maanavan.com/sql-data-ai-applications/): SQL foundations, business analysis, joins, safe text-to-SQL and production query engineering.
+- [MongoDB for AI Application Engineering Handbook](https://bytes.maanavan.com/mongodb/): Documents, query-first data modelling, aggregation, Python and FastAPI integration, Atlas Vector Search, indexing, security and production operations.
 
 ## Published Bytes
 

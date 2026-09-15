@@ -71,6 +71,11 @@ const searchTitles:Record<string,string>={
   '03-connect-data-across-tables-joins':'Connect Data Across Tables Using Joins',
   '04-sql-data-rag-ai-agent-workflows':'Use SQL in Data, RAG and AI-Agent Workflows',
   '05-write-production-ready-sql':'Write Production-Ready SQL',
+  'what-is-mongodb-documents-collections-databases':'What Is MongoDB? Documents, Collections and Databases',
+  'mongodb-data-modeling-embedding-vs-referencing':'MongoDB Data Modeling: Embedding vs Referencing',
+  'mongodb-queries-updates-aggregation-pipeline':'MongoDB Queries, Updates and Aggregation Pipeline',
+  'mongodb-python-fastapi-ai-application':'MongoDB with Python, FastAPI and AI Applications',
+  'production-mongodb-indexing-security-deployment':'Production MongoDB: Indexing, Security and Deployment',
 };
 
 const movedRoutes:Record<string,string>={
@@ -85,7 +90,7 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  const published = bytes.filter((byte) => ['ai-agents','software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications','modern-java-spring-boot-genai','sql-data-ai-applications'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['ai-agents','software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications','modern-java-spring-boot-genai','sql-data-ai-applications','mongodb'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
@@ -112,6 +117,7 @@ function legacyDestination(categorySlug: string) {
     'fastapi-ai-applications':'/fastapi-ai-applications/',
     'modern-java-spring-boot-genai':'/modern-java-spring-boot-genai/',
     'sql-data-ai-applications':'/sql-data-ai-applications/',
+    mongodb:'/mongodb/',
     cybersecurity:'https://www.maanavan.com/courses/cybersecurity',
     'case-studies':'/forward-deployed-engineer/',
   };

@@ -32,6 +32,11 @@ const handbookHeroes = {
   '03-build-rag-applications-with-your-documents': { label: 'RAG PIPELINE', icon: FileText, steps: [[FileText, 'Documents'], [Blocks, 'Chunks'], [Database, 'Vectors'], [Search, 'Evidence']] },
   '04-build-ai-agents-with-tools-and-memory': { label: 'AGENT LOOP', icon: Wrench, steps: [[Users, 'Goal'], [Bot, 'Decide'], [Wrench, 'Use tool'], [Network, 'Update state']] },
   '05-production-ready-langchain-application': { label: 'PRODUCTION GATES', icon: ShieldCheck, steps: [[Braces, 'Contract'], [ShieldCheck, 'Controls'], [Gauge, 'Observe'], [Rocket, 'Release']] },
+  'what-is-mongodb-documents-collections-databases': { label: 'MONGODB MENTAL MODEL', icon: Database, steps: [[Database, 'Database'], [Blocks, 'Collection'], [FileText, 'Document'], [KeyRound, 'Field']] },
+  'mongodb-data-modeling-embedding-vs-referencing': { label: 'QUERY-FIRST MODEL', icon: Blocks, steps: [[Users, 'Requirement'], [Search, 'Query pattern'], [Blocks, 'Embed'], [Network, 'Reference']] },
+  'mongodb-queries-updates-aggregation-pipeline': { label: 'AGGREGATION PIPELINE', icon: Gauge, steps: [[Search, 'Match'], [Blocks, 'Group'], [Braces, 'Project'], [Gauge, 'Sort']] },
+  'mongodb-python-fastapi-ai-application': { label: 'AI DATA WORKFLOW', icon: Server, steps: [[Users, 'Learner'], [Server, 'FastAPI'], [Database, 'MongoDB'], [Sparkles, 'Grounded AI']] },
+  'production-mongodb-indexing-security-deployment': { label: 'PRODUCTION GATES', icon: ShieldCheck, steps: [[Gauge, 'Explain'], [Search, 'Index'], [ShieldCheck, 'Protect'], [Rocket, 'Operate']] },
 } as const;
 
 function TopicHeroVisual({ slug }: { slug: string }) {

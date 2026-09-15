@@ -1,0 +1,145 @@
+---
+title: "Query, Update and Analyse MongoDB Data"
+slug: "mongodb-queries-updates-aggregation-pipeline"
+summary: "Use MongoDB filters, projections, updates, pagination and aggregation pipelines to build a practical course-performance report."
+category: "mongodb"
+tags: ["MongoDB queries tutorial", "MongoDB aggregation pipeline", "MongoDB update arrays", "MongoDB pagination", "MongoDB Compass"]
+level: "beginner"
+duration: "27 min"
+updatedAt: "2026-09-15"
+order: 3
+isPopular: true
+---
+
+<ThemeCard title="Practical outcome" badge="MONGODB HANDBOOK 03">
+
+You will query enrolments and build a course-performance report showing enrolment count, revenue and completion rate.
+
+</ThemeCard>
+
+<MongoDBVisual variant="aggregation" />
+
+## Read only what the application needs
+
+```javascript
+db.learners.find(
+  { status: "active", "preferences.language": "Tamil" },
+  { name: 1, interests: 1, _id: 0 }
+).sort({ name: 1 }).limit(20)
+```
+
+The first object is the **filter**. The second is the **projection**. Sorting and limiting make the result predictable and bounded.
+
+## Comparison and logical operators
+
+```javascript
+db.enrolments.find({
+  $and: [
+    { enrolled_at: { $gte: ISODate("2026-07-01T00:00:00Z") } },
+    { status: { $in: ["active", "completed"] } },
+    { amount_paid: { $gt: 0 } }
+  ]
+})
+```
+
+Use `$gt`, `$gte`, `$lt`, `$lte`, `$in`, `$and`, `$or` and `$not` to express conditions. Clear filters also make index design easier in Byte 05.
+
+## Update fields and arrays deliberately
+
+```javascript
+db.enrolments.updateOne(
+  { learner_id: "LRN-1042", course_id: "AI-101" },
+  {
+    $set: { status: "completed", updated_at: new Date() },
+    $addToSet: { badges: "course-finisher" }
+  }
+)
+```
+
+`$set` changes selected fields. `$addToSet` avoids adding the same array value twice. Use `$push` when duplicates and order are meaningful.
+
+## Delete safely
+
+Before deleting, run the same filter with `find()` and verify the count. Prefer status-based retention or archival when business, audit or recovery needs require it. Never demonstrate `deleteMany({})` against a shared environment.
+
+## Pagination: skip is not always the finish line
+
+`skip()` and `limit()` are easy for small result sets. For large, frequently changing collections, range pagination using a stable indexed value such as `_id` or `created_at` is often more consistent and efficient.
+
+```javascript
+db.enrolments.find({ _id: { $gt: last_seen_id } })
+  .sort({ _id: 1 })
+  .limit(20)
+```
+
+## Build the course-performance aggregation
+
+```javascript
+db.enrolments.aggregate([
+  { $match: { amount_paid: { $gt: 0 } } },
+  { $group: {
+      _id: "$course_id",
+      enrolments: { $sum: 1 },
+      revenue: { $sum: "$amount_paid" },
+      completed: {
+        $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] }
+      }
+  }},
+  { $project: {
+      _id: 0,
+      course_id: "$_id",
+      enrolments: 1,
+      revenue: 1,
+      completion_rate: {
+        $multiply: [{ $divide: ["$completed", "$enrolments"] }, 100]
+      }
+  }},
+  { $sort: { revenue: -1 } }
+])
+```
+
+An aggregation pipeline passes documents through ordered stages. `$match` filters, `$group` calculates, `$project` reshapes and `$sort` orders. `$lookup` can combine referenced collections, but it should not compensate for an unsuitable data model.
+
+## Real scenario: monthly course review
+
+<Scenario title="Which course needs attention?">
+
+The training team sees high enrolment but low completion for one course. The report identifies the pattern; it does not explain the cause. The team then checks lesson-level progress, learner feedback and support requests before changing the course.
+
+Database analysis provides evidence. Human investigation supplies context.
+
+</Scenario>
+
+## Use MongoDB Compass as a learning aid
+
+Compass can inspect documents, build filters and explore aggregation stages. Copy the generated query into version-controlled application code, add tests and review its execution plan before treating a visual result as production-ready.
+
+## Common mistakes
+
+<Mistakes>
+
+- Returning complete documents when the screen needs three fields.
+- Updating an array with `$push` when duplicates are not allowed.
+- Sorting without a deterministic tie-breaker for pagination.
+- Placing `$match` late and processing unnecessary documents.
+- Interpreting correlation in a report as the cause of learner behaviour.
+
+</Mistakes>
+
+## Key takeaways
+
+<Takeaways>
+
+- Filters choose records; projections choose fields.
+- Prefer explicit, bounded queries and deterministic pagination.
+- Aggregation stages form a readable transformation pipeline.
+- Validate a destructive filter before executing the delete.
+
+</Takeaways>
+
+## Primary sources
+
+- [MongoDB query documents](https://www.mongodb.com/docs/manual/tutorial/query-documents/)
+- [Update documents](https://www.mongodb.com/docs/manual/tutorial/update-documents/)
+- [Aggregation pipeline](https://www.mongodb.com/docs/manual/core/aggregation-pipeline/)
+- [MongoDB Compass](https://www.mongodb.com/docs/compass/)

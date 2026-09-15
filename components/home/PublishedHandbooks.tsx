@@ -28,6 +28,7 @@ function handbookVisual(slug: string) {
   if (slug === 'fastapi-ai-applications') return { Icon: Server, tone: 'fastapi' };
   if (slug === 'modern-java-spring-boot-genai') return { Icon: Code2, tone: 'java' };
   if (slug === 'sql-data-ai-applications') return { Icon: Database, tone: 'sql' };
+  if (slug === 'mongodb') return { Icon: Database, tone: 'mongodb' };
   return { Icon: Workflow, tone: 'fde' };
 }
 
@@ -41,6 +42,7 @@ function HandbookScene({ slug }: { slug: string }) {
   if (slug === 'fastapi-ai-applications') return <svg {...common}><rect x="27" y="31" width="55" height="38" rx="9"/><path d="M40 50h29M94 50h37m-8-8 8 8-8 8"/><circle cx="158" cy="50" r="21"/><path d="m152 62 13-25-2 13h11zM191 50h34"/><rect x="237" y="31" width="36" height="38" rx="8"/></svg>;
   if (slug === 'modern-java-spring-boot-genai') return <svg {...common}><path d="M42 73h99l-13 12H55zM55 55h73l13 12H42zM68 37h47l13 12H55z"/><path d="M163 51h38m-8-8 8 8-8 8"/><circle cx="235" cy="51" r="25"/><path d="M226 42h18v18h-18zM231 36c9 4 13 12 13 23"/></svg>;
   if (slug === 'sql-data-ai-applications') return <svg {...common}><ellipse cx="68" cy="32" rx="35" ry="12"/><path d="M33 32v42c0 7 16 12 35 12s35-5 35-12V32M33 53c0 7 16 12 35 12s35-5 35-12"/><path d="M121 52h43m-8-8 8 8-8 8"/><rect x="180" y="29" width="82" height="48" rx="10"/><path d="M195 61V48m17 13V39m17 22v-8m17 8V44"/></svg>;
+  if (slug === 'mongodb') return <svg {...common}><ellipse cx="62" cy="28" rx="31" ry="10"/><path d="M31 28v43c0 6 14 10 31 10s31-4 31-10V28M31 48c0 6 14 10 31 10s31-4 31-10"/><path d="M109 51h42m-8-8 8 8-8 8"/><circle cx="186" cy="51" r="19"/><path d="m199 64 16 16M180 51h12M186 45v12"/><path d="M220 51h45m-8-8 8 8-8 8"/></svg>;
   return <svg {...common}><circle cx="47" cy="42" r="16"/><path d="M27 73c5-14 16-19 20-19s17 5 22 19M76 49h45m-8-8 8 8-8 8"/><rect x="139" y="26" width="55" height="46" rx="9"/><path d="M153 60V45m14 15V36m14 24V49M205 49h45m-8-8 8 8-8 8"/></svg>;
 }
 

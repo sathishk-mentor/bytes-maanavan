@@ -33,7 +33,7 @@ export default async function HomePage() {
         </div>
         <div className="hero-learning-console hero-path-console" aria-label="Animated MaanavaN Bytes learning-path preview">
           <header><span><i/><i/><i/></span><small>MAANAVAN LEARNING PATH</small><b><i/> UPDATED</b></header>
-          <div className="hero-path-heading"><div><small>START HERE</small><strong>Choose the outcome you want</strong></div><span>9 paths</span></div>
+          <div className="hero-path-heading"><div><small>START HERE</small><strong>Choose the outcome you want</strong></div><span>Explore paths</span></div>
           <div className="hero-path-list">
             <Link href="/ai-agents/"><span className="path-icon path-violet"><Bot/></span><div><small>BEGINNER · 5 BYTES</small><strong>Understand AI Agents</strong><em>From answering to taking action</em></div><ArrowRight/></Link>
             <Link href="/modern-java-spring-boot-genai/"><span className="path-icon path-orange"><Code2/></span><div><small>BUILD · 5 BYTES</small><strong>Modern Java + GenAI</strong><em>From foundations to enterprise AI</em></div><ArrowRight/></Link>

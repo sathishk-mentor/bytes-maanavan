@@ -16,6 +16,7 @@ const filters = [
   {label:'API & Backend Engineering',value:'fastapi-ai-applications'},
   {label:'Modern Java & GenAI',value:'modern-java-spring-boot-genai'},
   {label:'SQL for Data & AI',value:'sql-data-ai-applications'},
+  {label:'MongoDB for AI Apps',value:'mongodb'},
 ];
 export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
   const [query, setQuery] = useState('');

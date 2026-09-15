@@ -7,7 +7,7 @@ import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
@@ -92,6 +92,15 @@ const handbookDetails = {
     result: 'A question → query → validate → execute → explain workflow',
     keywords: ['SQL tutorial for beginners', 'SQL for data analysis', 'SQL for AI applications', 'text to SQL tutorial', 'SQL AI agent', 'production SQL security'],
   },
+  mongodb: {
+    searchTitle: 'MongoDB for AI Application Engineering Handbook',
+    eyebrow: 'DOCUMENT DATA TO GROUNDED AI',
+    intro: 'Learn MongoDB from documents and data modelling to aggregation, Python and FastAPI integration, Atlas Vector Search, indexing, security and production deployment.',
+    audience: 'Beginners, backend developers, Python developers and AI builders',
+    prerequisite: 'Basic application awareness; no MongoDB experience required',
+    result: 'A document → query → API → vector retrieval → production workflow',
+    keywords: ['MongoDB tutorial for beginners', 'MongoDB data modeling', 'PyMongo FastAPI tutorial', 'MongoDB Atlas Vector Search', 'MongoDB for AI applications', 'production MongoDB security'],
+  },
 } as const;
 type PublishedCategory = keyof typeof handbookDetails;
 
@@ -157,6 +166,11 @@ function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory 
   if (categorySlug === 'sql-data-ai-applications') {
     return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated business question to safe SQL answer workflow">
       <div className="langchain-orchestrator"><header><Database/><span><small>AI-POWERED BUSINESS DATA ANALYST</small><strong>Turn questions into governed data answers.</strong></span><i>READ ONLY</i></header><div><span><Sparkles/><small>Question</small></span><b>→</b><span><Code2/><small>SQL</small></span><b>→</b><span><ShieldCheck/><small>Validate</small></span><b>→</b><span><Database/><small>Explain</small></span></div><footer><CheckCircle2/><span>Scoped · parameterised · audited</span></footer></div>
+    </div>;
+  }
+  if (categorySlug === 'mongodb') {
+    return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated MongoDB AI application data workflow">
+      <div className="langchain-orchestrator"><header><Database/><span><small>AI-POWERED LEARNING SUPPORT</small><strong>Store operational truth. Retrieve approved evidence.</strong></span><i>ATLAS</i></header><div><span><Code2/><small>FastAPI</small></span><b>→</b><span><Database/><small>Documents</small></span><b>→</b><span><SearchCheck/><small>Vector Search</small></span><b>→</b><span><Sparkles/><small>Grounded AI</small></span></div><footer><ShieldCheck/><span>Modelled · indexed · authorised · observable</span></footer></div>
     </div>;
   }
   return <div className="handbook-hero-visual fde-hero-visual" aria-label="Animated Forward Deployed Engineer outcome loop">
