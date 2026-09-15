@@ -25,7 +25,21 @@ Flow ரொம்ப simple. Dockerfile என்பது recipe. Docker அந
 
 Team image-ஐ registry என்ற online store-ல் save பண்ணலாம். இன்னொரு developer அந்த exact image-ஐ download செய்து புதிய container start பண்ணலாம். அவரவர் laptop-ல் setup steps guess பண்ண வேண்டிய அவசியம் குறையும்.
 
+### One app எப்படி container ஆகுது?
+
+1. Karthik கிட்ட `app.py` மற்றும் required Python libraries list இருக்கு.
+2. எந்த Python version use பண்ணணும், எந்த files copy பண்ணணும், app எப்படி start ஆகணும் என்று Dockerfile-ல் எழுதுகிறார்.
+3. Docker அந்த instructions-ஐ read பண்ணி `order-app:1.0` என்ற image build பண்ணும்.
+4. அந்த image-ஐ start செய்ததும் Docker ஒரு container create பண்ணும்; app run ஆக ஆரம்பிக்கும்.
+5. QA அதே `order-app:1.0` image-லிருந்து இன்னொரு container start பண்ணலாம். இருவரும் same prepared setup use பண்ணுகிறார்கள்.
+
+Image original ready package மாதிரி safe-ஆ இருக்கும். Container start பண்ணினால் image காலியாகாது அல்லது disappear ஆகாது. One container stop ஆனாலும் same image-லிருந்து another container start பண்ணலாம்.
+
 Container என்பது இன்னொரு full computer இல்லை. அது host operating system-ன் ஒரு பகுதியை share செய்து separate process-ஆ run ஆகும். Virtual machine-ல் full guest operating system இருக்கும். Beginner level-ல் நினைவில் வைக்க வேண்டியது: container பொதுவாக quick-ஆ start ஆகும்; VM அதிகமான system files உடன் வரும்.
+
+### App folder-ஐ ZIP செய்து send பண்ணினால் போதாதா?
+
+ZIP file source code-ஐ மட்டும் கொண்டு போகலாம். Friend laptop-ல் correct Python version அல்லது required library இல்லையென்றால் app இன்னும் start ஆகாது. Docker image app-உடன் required setup-யும் prepared package-ஆ வைத்திருக்கும். Friend machine-ல் Docker இருக்கணும்; ஆனால் long manual setup steps குறையும்.
 
 ## Architecture / Flow Diagram
 
@@ -43,6 +57,15 @@ Animation-ஐ left-to-right பாருங்க: **Dockerfile → image → co
 | Registry | Image save மற்றும் share செய்யும் online place | Docker Hub ஒரு example |
 | Docker Engine | Image build, container start செய்யும் software | Machine-ல் Docker தேவை |
 
+### Image vs container — easy check
+
+| Question | Image | Container |
+|---|---|---|
+| App இப்போ run ஆகுதா? | இல்லை | ஆம் |
+| Team save மற்றும் share செய்யுமா? | ஆம் | பொதுவாக image-ஐ தான் share செய்வார்கள் |
+| Multiple running copies create செய்ய முடியுமா? | ஆம் | ஒவ்வொரு copy-யும் separate container |
+| One container stop ஆனால்? | Image அப்படியே இருக்கும் | அந்த running copy மட்டும் stop ஆகும் |
+
 ## Docker Container vs Virtual Machine
 
 | Question | Container | Virtual Machine |
@@ -56,11 +79,11 @@ Container always better இல்லை. Requirement பார்த்து ch
 
 ## Real-World Examples
 
-- **Swiggy-style delivery app:** Developer மற்றும் tester same order-status service version use பண்ண image help செய்யும்.
-- **Flipkart-style shopping app:** New service version-ஐ image-ஆ test செய்து, approved ஆன same version-ஐ release செய்யலாம்.
-- **TCS project team:** Developer, QA மற்றும் deployment team same image version use செய்து environment mismatch reduce பண்ணலாம்.
-
-இவை learning scenarios; அந்த companies-ன் private internal architecture பற்றிய claims இல்லை.
+- **Food-delivery tracking:** `order-status:1.0` image-லிருந்து developer மற்றும் QA container start பண்ணினால் இருவருக்கும் same service setup கிடைக்கும்.
+- **Online shopping checkout:** Tester laptop-ல் tools manual-ஆ install பண்ணாமல் `checkout:2.1` image use செய்து approved version-ஐ test பண்ணலாம்.
+- **College project demo:** Rahul project image-ஐ evaluator-க்கு share பண்ணினால் demo time-ல் “library missing” issue குறையும்.
+- **Small shop billing app:** Meena-வின் developer ஒவ்வொரு approved release-க்கும் clear image version வைத்தால் எந்த version run ஆகுது என்று easy-ஆ identify பண்ணலாம்.
+- **New developer joining:** Long setup document follow பண்ணுவதற்கு பதிலாக team image-லிருந்து container start செய்து project-ஐ quick-ஆ open பண்ணலாம்.
 
 <DockerRealWorldVisual />
 
@@ -106,4 +129,4 @@ Shipping container-ஐ நினைச்சு பாருங்க. Box ship-
 4. Container full guest OS run பண்ணுமா? **இல்லை**
 5. Docker tests-ஐ replace பண்ணுமா? **இல்லை**
 
-**Score:** 5/5 — Byte 02 start பண்ண ready. 3–4 — Image/container flow once revise பண்ணுங்க. 0–2 — S2 மற்றும் S4 மறுபடியும் பாருங்க.
+**Score:** 5/5 — Byte 02 start பண்ண ready. 3–4 — Core Explanation once revise பண்ணுங்க. 0–2 — Start from Basics மற்றும் visual flow மறுபடியும் பாருங்க.

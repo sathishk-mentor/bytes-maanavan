@@ -38,9 +38,23 @@ A developer writes a Dockerfile—the preparation instructions. Docker follows t
 
 The team can keep the image in a registry, an online image store. Another team member can download that exact image and start a new container without rebuilding the setup manually.
 
+### Follow one application from code to container
+
+1. Karthik has `app.py` and a list of required Python libraries.
+2. He writes a Dockerfile that tells Docker which Python version to use, which files to copy and how to start the app.
+3. Docker reads those instructions and builds `order-app:1.0`, an image.
+4. Karthik starts the image. Docker creates a container and the application begins running.
+5. QA starts another container from `order-app:1.0`. Both containers came from the same prepared image.
+
+The image is the saved source for new containers. Starting a container does not consume or change the original image. If one container stops, the image still exists and can start another container.
+
 If the application changes, do not manually repair a running container and treat that as the solution. Update the source or Dockerfile, rebuild the image, test it and release a new version. That makes the result reproducible.
 
 A container is not a complete second computer. It runs as an isolated process while sharing part of the host operating system. A virtual machine includes a complete guest operating system. For a beginner, the important difference is simple: containers usually start faster and package less than virtual machines.
+
+### Why not send only a ZIP file?
+
+A ZIP file can carry source code, but the receiver may still need to install the correct Python version and libraries. A Docker image records much more of the required application setup. The receiver still needs Docker and a compatible machine, but fewer setup decisions are left to memory.
 
 ## Architecture / Flow Diagram
 
@@ -58,6 +72,15 @@ Read the animation from left to right: **Dockerfile → image → container**. T
 | Registry | Shares image versions | Use identifiable versions |
 | Docker Engine | Follows the build instructions and starts containers | Docker must be installed |
 
+### Image and container: do not mix them up
+
+| Question | Image | Container |
+|---|---|---|
+| Is the application running? | No | Yes |
+| Can the team store and share it? | Yes | Usually the image is shared instead |
+| Can one create several running copies? | Yes | Each copy is a separate container |
+| What happens when a container stops? | The image remains available | That running copy stops |
+
 ## Container vs Virtual Machine
 
 | Decision point | Container | Virtual machine |
@@ -71,11 +94,11 @@ Neither is universally better. Choose according to workload, security and operat
 
 ## Real-World Examples
 
-- A **Swiggy-style delivery application** can package its order-status service so developers and testers start the same version.
-- A **Flipkart-style shopping application** can test a new service image before using that exact version for a release.
-- A **TCS delivery team** can use the same image across developer, QA and deployment environments to reduce setup differences.
-
-These are learning scenarios, not claims about the companies’ private internal architectures.
+- **Food-delivery tracking:** The team packages an order-status service as `order-status:1.0`. Development and QA start containers from that same image.
+- **Online shopping checkout:** Developers test `checkout:2.1` instead of asking every tester to rebuild the setup manually.
+- **College project evaluation:** Rahul shares the project image with the evaluator, reducing “missing library” problems during the demo.
+- **Small-business billing:** Meena's developer keeps each approved billing release as a versioned image, making the selected version clear.
+- **New team member onboarding:** A developer starts a container from the team image instead of following a long, outdated installation document.
 
 <DockerRealWorldVisual />
 
@@ -125,4 +148,4 @@ A Docker image follows the same packaging idea: prepare the application once, th
 4. Does a container normally run a complete guest OS? **No**
 5. Does Docker replace application tests? **No**
 
-**Score:** 5/5 — continue to Byte 02. 3–4 — review S3 once. 0–2 — revisit S2 and S4 before continuing.
+**Score:** 5/5 — continue to Byte 02. 3–4 — review Core Explanation once. 0–2 — revisit Start from Basics and the visual flow before continuing.
