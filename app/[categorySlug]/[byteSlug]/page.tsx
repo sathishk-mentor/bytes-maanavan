@@ -18,6 +18,7 @@ import { ReadingReveal } from '@/components/bytes/ReadingReveal';
 import { AuthorCard } from '@/components/bytes/AuthorCard';
 import { BeginnerAnalogy } from '@/components/bytes/BeginnerAnalogy';
 import { HandbookQuickNav } from '@/components/bytes/HandbookQuickNav';
+import { ReadingModeToggle } from '@/components/bytes/ReadingMode';
 
 interface BytePageProps {
   params: {
@@ -193,6 +194,7 @@ export default async function BytePage({ params }: BytePageProps) {
           <AccordionTableOfContents headings={headings} byteSlug={byte.slug} />
           <div className="byte-main-column">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} mobile />
+            {categorySlug === 'python-genai-agentic-ai' && <ReadingModeToggle />}
             <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={byte.content} /><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
           <aside className="byte-trust-rail" aria-label="Handbook quick navigation">

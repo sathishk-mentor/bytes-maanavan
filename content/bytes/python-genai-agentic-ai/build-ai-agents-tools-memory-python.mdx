@@ -19,6 +19,11 @@ Build a **Personal Learning Agent** that finds skill gaps, uses authorised tools
 
 <HandbookLearningVisual variant="pythonAgent" />
 
+<ModeText
+  english="The agent decides the next step, but a Python tool performs the actual operation. Keeping these responsibilities separate makes permissions, testing and evidence clearer."
+  tanglish="Agent next step என்ன என்பதை decide செய்யும். Actual operation-ஐ Python tool தான் perform செய்யும். இந்த இரண்டு responsibilities-ஐ separate-ஆக வைத்தால் permission, testing மற்றும் evidence தெளிவாக இருக்கும்."
+/>
+
 ## Chatbot, copilot and agent
 
 | Pattern | Typical behaviour | Example |
@@ -70,6 +75,11 @@ The UI should show exactly what will happen, where and with which data. After ap
 
 ## Stopping rules
 
+<ModeText
+  english="A safe agent knows when to stop. Missing information, absent permission, repeated failure or a reached step limit should return control to the learner."
+  tanglish="Safe agent எப்போது stop செய்ய வேண்டும் என்பதை தெரிந்திருக்க வேண்டும். Information missing, permission இல்லாமை, repeated failure அல்லது step limit வந்தால் learner-கிட்ட control-ஐ return செய்ய வேண்டும்."
+/>
+
 Stop when the goal is complete, required information is missing, permission is absent, a risk boundary is reached, the same tool fails repeatedly or the maximum step count is reached.
 
 Log the tool name, safe parameters, result status, latency and correlation ID. Do not log secrets or unnecessary learner content.
@@ -101,4 +111,3 @@ Drafting an email does not mean it was sent. Preparing an event does not mean it
 - Claim completion only from confirmed tool evidence.
 
 </Takeaways>
-

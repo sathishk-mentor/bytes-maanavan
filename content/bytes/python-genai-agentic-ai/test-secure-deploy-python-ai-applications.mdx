@@ -19,6 +19,11 @@ Productionise the **AI-Powered Personal Learning Assistant** with automated evid
 
 <HandbookLearningVisual variant="pythonProduction" />
 
+<ModeText
+  english="Production readiness means the team can prove expected behaviour, limit unsafe behaviour, observe real usage and recover when a release fails."
+  tanglish="Production readiness என்றால் expected behaviour work ஆகிறது என்பதை prove செய்ய வேண்டும், unsafe behaviour-ஐ limit செய்ய வேண்டும், real usage-ஐ observe செய்ய வேண்டும், release fail ஆனால் recover செய்ய வேண்டும்."
+/>
+
 ## Organise clear boundaries
 
 ```text
@@ -88,6 +93,11 @@ Pin dependencies, scan the image, run as a non-root user and inject secrets only
 
 ## Observe the real system
 
+<ModeText
+  english="Monitoring should answer practical questions: Is the application available? Are recommendations useful? Which tools fail? How much does each request cost?"
+  tanglish="Monitoring practical questions-க்கு answer கொடுக்க வேண்டும்: Application available-ஆக இருக்கிறதா? Recommendations useful-ஆக உள்ளதா? எந்த tools fail ஆகிறது? ஒவ்வொரு request-க்கும் cost எவ்வளவு?"
+/>
+
 Track request count, error rate, latency, token usage, estimated cost, tool failures, approval outcomes and evaluation quality. Use correlation IDs to follow one request without exposing private content.
 
 Version prompts, model configuration, tools and evaluation datasets. A rollback must restore a known compatible combination—not only an older prompt.
@@ -122,4 +132,3 @@ I separate deterministic application tests from probabilistic AI evaluations. Un
 - Monitoring and rollback complete the release system.
 
 </Takeaways>
-

@@ -18,6 +18,7 @@ import { LangChainBuildingBlocks, LangChainFlowVisual, OfficialLangChainDiagram 
 import { HandbookLearningVisual } from './mdx/HandbookLearningVisual';
 import { AgentBoundaryVisual, AgentCapabilityVisual } from './mdx/AgentVisuals';
 import { MongoDBVisual } from './mdx/MongoDBVisuals';
+import { ModeText } from './ReadingMode';
 import { SyntaxCode } from './SyntaxCode';
 import { slugify } from '@/lib/mdx';
 
@@ -36,7 +37,7 @@ const components = {
   th: ({children,...props}:any)=><th {...props}>{children}</th>, td: ({children,...props}:any)=><td {...props}>{children}</td>,
   pre: ({children}:any)=>{const child=children as any;const code=child?.props?.children?.toString?.()||'';const language=(child?.props?.className||'').replace('language-','')||'text';return <SyntaxCode code={code} language={language}/>;},
   code: ({children,...props}:any)=><code className="byte-code" {...props}>{children}</code>,
-  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual, DockerObjectArchitecture, OfficialDockerDiagram, LangChainFlowVisual, LangChainBuildingBlocks, OfficialLangChainDiagram, HandbookLearningVisual, AgentBoundaryVisual, AgentCapabilityVisual, MongoDBVisual,
+  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual, DockerObjectArchitecture, OfficialDockerDiagram, LangChainFlowVisual, LangChainBuildingBlocks, OfficialLangChainDiagram, HandbookLearningVisual, AgentBoundaryVisual, AgentCapabilityVisual, MongoDBVisual, ModeText,
 };
 
 export function ByteContent({content}:{content:string}) { return <article className="byte-article"><MDXRemote source={content} components={components} options={{mdxOptions:{remarkPlugins:[remarkGfm]}}}/></article>; }

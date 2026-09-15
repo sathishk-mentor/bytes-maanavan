@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import './maanavan-brand.css';
 import './handbook-quick-nav.css';
+import './reading-mode.css';
 import './ai-agents.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
