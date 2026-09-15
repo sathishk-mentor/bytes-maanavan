@@ -67,17 +67,17 @@ export function HandbookQuickNav({
         })}
       </ol>
 
-      <div className="handbook-rail-actions">
+      <div className={`handbook-rail-actions ${previous && next ? 'has-both' : 'has-single'}`}>
         {previous ? (
           <Link href={`/${previous.category}/${previous.slug}/`} aria-label={`Previous Byte: ${previous.title}`}>
-            <ArrowLeft aria-hidden="true" /> Previous
+            <ArrowLeft aria-hidden="true" /> <span><small>GO BACK</small>Byte {currentNumber - 1}</span>
           </Link>
-        ) : <span />}
+        ) : null}
         {next ? (
           <Link href={`/${next.category}/${next.slug}/`} aria-label={`Next Byte: ${next.title}`}>
-            Next <ArrowRight aria-hidden="true" />
+            <span><small>CONTINUE TO</small>Byte {currentNumber + 1}</span> <ArrowRight aria-hidden="true" />
           </Link>
-        ) : <span />}
+        ) : null}
       </div>
     </>
   );
