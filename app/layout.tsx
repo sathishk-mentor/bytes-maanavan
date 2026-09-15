@@ -6,6 +6,7 @@ import './handbook-quick-nav.css';
 import './ai-agents.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { NavigationStability } from '@/components/navigation/NavigationStability';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -43,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en-IN">
       <body className={inter.className}>
+        <NavigationStability />
         <a className="skip-link" href="#main-content">Skip to content</a>
         <div className="flex min-h-screen flex-col">
           <Header />
@@ -52,7 +54,7 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({
           '@context':'https://schema.org','@graph':[
             {'@type':'Organization','@id':'https://www.maanavan.com/#organization',name:'MaanavaN',url:'https://www.maanavan.com/',founder:{'@type':'Person',name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'},sameAs:['https://www.linkedin.com/in/sathish-kumar-ceo/']},
-            {'@type':'WebSite','@id':'https://bytes.maanavan.com/#website',name:'MaanavaN Bytes',url:'https://bytes.maanavan.com/',description:'Free visual technology handbooks and practical bite-sized tutorials for Tamil-speaking learners worldwide.',publisher:{'@id':'https://www.maanavan.com/#organization'},inLanguage:'en-IN'}
+            {'@type':'WebSite','@id':'https://bytes.maanavan.com/#website',name:'MaanavaN Bytes',alternateName:'MaanavaN Technology Handbooks',url:'https://bytes.maanavan.com/',description:'Free visual technology handbooks and practical bite-sized tutorials for Tamil-speaking learners worldwide.',publisher:{'@id':'https://www.maanavan.com/#organization'},inLanguage:['en-IN','ta-IN']}
           ]
         })}} />
       </body>

@@ -11,9 +11,17 @@ interface HandbookQuickNavProps {
 }
 
 function shortTitle(title: string) {
-  return title
+  const cleaned = title
     .replace(/^\d+\s*[—–:-]\s*/, '')
     .replace(/^Byte\s+\d+\s*[—–:-]\s*/i, '');
+
+  const questionEnd = cleaned.indexOf('?');
+  if (questionEnd >= 0) return cleaned.slice(0, questionEnd + 1);
+
+  const [primary, ...detail] = cleaned.split(/\s*[:—–]\s*/);
+  if (detail.length && primary.length >= 14) return primary;
+
+  return cleaned.replace(/\s+explained simply$/i, '');
 }
 
 export function HandbookQuickNav({
@@ -46,38 +54,43 @@ export function HandbookQuickNav({
           const number = index + 1;
           const isCurrent = item.slug === currentSlug;
           const isComplete = index < currentIndex;
+          const itemContent = (
+            <>
+              <span className="handbook-byte-number">
+                {isComplete ? <Check aria-hidden="true" /> : String(number).padStart(2, '0')}
+              </span>
+              <span className="handbook-byte-copy">
+                <small>BYTE {String(number).padStart(2, '0')}</small>
+                <strong>{shortTitle(item.title)}</strong>
+              </span>
+              {!isCurrent && <ChevronRight className="handbook-byte-arrow" aria-hidden="true" />}
+              {isCurrent && <span className="handbook-current-label">CURRENT</span>}
+            </>
+          );
 
           return (
             <li key={item.slug} className={isCurrent ? 'is-current' : isComplete ? 'is-complete' : ''}>
-              <Link
-                href={`/${item.category}/${item.slug}/`}
-                aria-current={isCurrent ? 'page' : undefined}
-              >
-                <span className="handbook-byte-number">
-                  {isComplete ? <Check aria-hidden="true" /> : String(number).padStart(2, '0')}
-                </span>
-                <span className="handbook-byte-copy">
-                  <small>BYTE {String(number).padStart(2, '0')}</small>
-                  <strong>{shortTitle(item.title)}</strong>
-                </span>
-                <ChevronRight className="handbook-byte-arrow" aria-hidden="true" />
-              </Link>
+              {isCurrent ? (
+                <div className="handbook-byte-link" aria-current="page">{itemContent}</div>
+              ) : (
+                <Link className="handbook-byte-link" href={`/${item.category}/${item.slug}/`}>{itemContent}</Link>
+              )}
             </li>
           );
         })}
       </ol>
 
-      <div className="handbook-rail-actions">
+      <div className={`handbook-rail-actions ${previous && next ? 'has-both' : 'has-single'}`}>
         {previous ? (
           <Link href={`/${previous.category}/${previous.slug}/`} aria-label={`Previous Byte: ${previous.title}`}>
-            <ArrowLeft aria-hidden="true" /> Previous
+            <ArrowLeft aria-hidden="true" /> <span><small>GO BACK</small>Byte {currentNumber - 1}</span>
           </Link>
-        ) : <span />}
+        ) : null}
         {next ? (
           <Link href={`/${next.category}/${next.slug}/`} aria-label={`Next Byte: ${next.title}`}>
-            Next <ArrowRight aria-hidden="true" />
+            <span><small>CONTINUE TO</small>Byte {currentNumber + 1}</span> <ArrowRight aria-hidden="true" />
           </Link>
-        ) : <span />}
+        ) : null}
       </div>
     </>
   );
