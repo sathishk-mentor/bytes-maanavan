@@ -1,0 +1,26 @@
+.docker-concept-lab{margin:2rem 0 2.75rem;border:1px solid #c9e0e3;border-radius:24px;background:linear-gradient(145deg,#f9fdfd 0%,#eef8f8 100%);box-shadow:0 18px 48px rgba(10,55,65,.1);overflow:hidden}
+.docker-concept-lab>header{padding:1.6rem 1.75rem 1.2rem;background:radial-gradient(circle at 90% 0,rgba(35,181,190,.16),transparent 38%)}
+.docker-concept-lab>header small,.docker-concept-check small{display:block;color:#087d88;font-size:.72rem;font-weight:800;letter-spacing:.14em}
+.docker-concept-lab>header h3{margin:.35rem 0 .45rem;color:#082f3a;font-size:clamp(1.35rem,2.2vw,1.9rem);line-height:1.15}
+.docker-concept-lab>header p{margin:0;max-width:68ch;color:#55717a;font-size:1rem;line-height:1.65}
+.docker-concept-track{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem;padding:.25rem 1.25rem 1.25rem}
+.docker-concept-track button{position:relative;display:flex;min-height:98px;flex-direction:column;align-items:flex-start;gap:.35rem;border:1px solid #d4e4e6;border-radius:16px;background:#fff;padding:.8rem;color:#536b73;text-align:left;cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.docker-concept-track button:hover{transform:translateY(-2px);border-color:#69bbc2}
+.docker-concept-track button.active{border-color:#0795a1;background:linear-gradient(145deg,#087e89,#0aa3ae);color:#fff;box-shadow:0 10px 24px rgba(8,126,137,.22)}
+.docker-concept-track button>span{font-size:.65rem;font-weight:900;opacity:.72}
+.docker-concept-track button>svg{width:22px;height:22px}
+.docker-concept-track button>b{font-size:.83rem;line-height:1.25}
+.docker-concept-track button>.lucide-arrow-right{position:absolute;right:-13px;top:42%;z-index:2;width:16px;color:#8eb0b5}
+.docker-concept-track button.active>.lucide-arrow-right{color:#8eb0b5}
+.docker-concept-focus{display:flex;align-items:center;gap:1rem;margin:0 1.25rem 1rem;border-radius:18px;background:#092f3a;padding:1.15rem 1.25rem;color:#fff;animation:dockerConceptIn .3s ease}
+.docker-concept-focus>span{display:grid;width:48px;height:48px;flex:0 0 48px;place-items:center;border-radius:14px;background:#15a5af}
+.docker-concept-focus svg{width:24px}
+.docker-concept-focus small{color:#85dbe0;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.docker-concept-focus p{margin:.25rem 0 0;color:#eefafb;line-height:1.55}
+.docker-concept-check{display:grid;grid-template-columns:1fr auto;gap:.8rem;align-items:center;border-top:1px solid #d5e7e8;background:#fff;padding:1.15rem 1.4rem}
+.docker-concept-check b{display:block;margin-top:.3rem;color:#173c46;font-size:.95rem}
+.docker-concept-check button{border:0;border-radius:999px;background:#e5f5f6;padding:.7rem 1rem;color:#087d88;font-weight:800;cursor:pointer}
+.docker-concept-check>p{grid-column:1/-1;display:flex;align-items:center;gap:.55rem;margin:0;border-radius:12px;background:#e9f8f2;padding:.75rem 1rem;color:#155c43;font-weight:700;animation:dockerConceptIn .25s ease}
+.docker-concept-check>p svg{width:18px;flex:0 0 18px}
+@keyframes dockerConceptIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(max-width:720px){.docker-concept-lab{border-radius:19px}.docker-concept-lab>header{padding:1.25rem}.docker-concept-track{display:flex;overflow-x:auto;padding:0 1rem 1rem;scroll-snap-type:x mandatory}.docker-concept-track button{min-width:145px;scroll-snap-align:start}.docker-concept-focus{margin:0 1rem 1rem;align-items:flex-start}.docker-concept-check{grid-template-columns:1fr;padding:1rem}.docker-concept-check button{justify-self:start}.docker-concept-check>p{grid-column:1}}
