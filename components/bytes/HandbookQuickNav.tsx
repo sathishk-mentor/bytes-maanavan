@@ -46,22 +46,27 @@ export function HandbookQuickNav({
           const number = index + 1;
           const isCurrent = item.slug === currentSlug;
           const isComplete = index < currentIndex;
+          const itemContent = (
+            <>
+              <span className="handbook-byte-number">
+                {isComplete ? <Check aria-hidden="true" /> : String(number).padStart(2, '0')}
+              </span>
+              <span className="handbook-byte-copy">
+                <small>BYTE {String(number).padStart(2, '0')}</small>
+                <strong>{shortTitle(item.title)}</strong>
+              </span>
+              {!isCurrent && <ChevronRight className="handbook-byte-arrow" aria-hidden="true" />}
+              {isCurrent && <span className="handbook-current-label">CURRENT</span>}
+            </>
+          );
 
           return (
             <li key={item.slug} className={isCurrent ? 'is-current' : isComplete ? 'is-complete' : ''}>
-              <Link
-                href={`/${item.category}/${item.slug}/`}
-                aria-current={isCurrent ? 'page' : undefined}
-              >
-                <span className="handbook-byte-number">
-                  {isComplete ? <Check aria-hidden="true" /> : String(number).padStart(2, '0')}
-                </span>
-                <span className="handbook-byte-copy">
-                  <small>BYTE {String(number).padStart(2, '0')}</small>
-                  <strong>{shortTitle(item.title)}</strong>
-                </span>
-                <ChevronRight className="handbook-byte-arrow" aria-hidden="true" />
-              </Link>
+              {isCurrent ? (
+                <div className="handbook-byte-link" aria-current="page">{itemContent}</div>
+              ) : (
+                <Link className="handbook-byte-link" href={`/${item.category}/${item.slug}/`}>{itemContent}</Link>
+              )}
             </li>
           );
         })}
