@@ -24,9 +24,9 @@ CMD ["python", "app.py"]
 
 Base image runtime கொடுக்கும். `WORKDIR` container working folder define செய்யும். Dependency file-ஐ முதலில் copy செய்தால் code-only changes-க்கு build cache reuse ஆகும். Exec-form `CMD` signal handling-க்கு better.
 
-### Dockerfile-ஐ மேலிருந்து கீழாகப் படிப்பது
+### Dockerfile-ஐ top-to-bottom read பண்ணுவது
 
-`FROM` base runtime-ஐத் தேர்வு செய்கிறது. `WORKDIR` அடுத்த commands இயங்கும் folder-ஐ நிர்ணயிக்கிறது. Dependency file-ஐ source code-க்கு முன் copy செய்வதால் code மட்டும் மாறும்போது installation layer cache-லிருந்து reuse ஆகலாம். `CMD` container start ஆகும்போது இயங்க வேண்டிய foreground process-ஐ வரையறுக்கிறது.
+`FROM` base runtime-ஐ select பண்ணும். `WORKDIR` next commands எந்த folder-ல் run ஆகணும் என்று set பண்ணும். Dependency file-ஐ source code-க்கு முன்னாடி copy செய்தால், code மட்டும் change ஆகும்போது installation layer cache-லிருந்து reuse ஆகும். `CMD`, container start ஆகும்போது run ஆக வேண்டிய foreground process-ஐ define பண்ணும்.
 
 ## `.dockerignore` சேர்க்குங்கள்
 
@@ -75,7 +75,7 @@ Pinned dependencies, non-root user, smaller base image, health check, vulnerabil
 
 <ThemeCard title="docker build மற்றும் docker run-ல் என்ன நடக்கும்?" badge="CAREER">
 
-`docker build` Dockerfile instructions மற்றும் build context use செய்து immutable image layers உருவாக்கும். `docker run` அந்த image-லிருந்து writable runtime layer, network மற்றும் process கொண்ட container instance create செய்யும்.
+`docker build`, Dockerfile instructions மற்றும் build context use செய்து immutable image layers create பண்ணும். `docker run`, அந்த image-லிருந்து writable runtime layer, network மற்றும் process கொண்ட container instance create பண்ணும்.
 
 </ThemeCard>
 

@@ -16,7 +16,7 @@ Docker Compose எல்லா services, network, volume, port மற்று�
 
 <HandbookLearningVisual variant="dockerCompose" />
 
-Browser `localhost:3000` மூலம் frontend-ஐ அணுகும். Frontend, Compose network-ல் `http://order-api:8000` என்ற முகவரியில் API-ஐ அழைக்கும். API, `postgres:5432` என்ற service name மூலம் database-ஐ அணுகும்.
+Browser `localhost:3000` மூலம் frontend-ஐ access பண்ணும். Frontend, Compose network-ல் `http://order-api:8000` URL use செய்து API-ஐ call பண்ணும். API, `postgres:5432` என்ற service name மூலம் database-ஐ access பண்ணும்.
 
 ## Practical `compose.yaml`
 
@@ -70,13 +70,13 @@ docker compose exec order-api sh
 docker compose down
 ```
 
-`docker compose down -v` named volumes-ஐயும் நீக்கும். Database data-ஐ உண்மையாக delete செய்ய விரும்பும்போது மட்டுமே இதைப் பயன்படுத்துங்கள்.
+`docker compose down -v` named volumes-ஐயும் delete பண்ணும். Database data-ஐ delete செய்ய வேண்டும் என்று clear-ஆ decide செய்தால் மட்டும் இதை use பண்ணுங்க.
 
 ## Real-time analogy: restaurant team
 
 <Scenario title="One order, multiple specialised stations">
 
-Restaurant-ல் counter, kitchen, pantry மற்றும் billing ஆகியவை தனித்தனி stations. Customer experience ஒன்று என்றாலும் ஒவ்வொரு station-க்கும் தெளிவான பெயரும் பொறுப்பும் இருக்கும். Compose அந்த operating plan போன்றது—எந்த services இருக்கின்றன, அவை எப்படி இணைகின்றன, எது முதலில் ready ஆக வேண்டும் என்பதை வரையறுக்கிறது.
+Restaurant-ல் counter, kitchen, pantry மற்றும் billing எல்லாம் separate stations. Customer experience ஒன்றுதான்; but ஒவ்வொரு station-க்கும் clear name மற்றும் responsibility இருக்கும். Compose அந்த operating plan மாதிரி—எந்த services இருக்கு, எப்படி connect ஆகுது, எது first ready ஆகணும் என்பதை define பண்ணும்.
 
 </Scenario>
 
@@ -85,7 +85,7 @@ Restaurant-ல் counter, kitchen, pantry மற்றும் billing ஆக�
 1. `docker compose config` மூலம் resolved configuration-ஐப் பாருங்கள்.
 2. `docker compose ps` மூலம் service மற்றும் health state-ஐப் பாருங்கள்.
 3. Failed request-ஐ பெற்ற service-ன் logs-ஐ முதலில் பாருங்கள்.
-4. Container-to-container URL-ல் தவறாக `localhost` பயன்படுத்தப்பட்டுள்ளதா என்று சரிபாருங்கள்.
+4. Container-to-container URL-ல் wrong-ஆ `localhost` use பண்ணியிருக்கீங்களா check பண்ணுங்க.
 5. Environment variables மற்றும் database migration-ஐ verify செய்யுங்கள்.
 
 ## Common mistakes
@@ -104,7 +104,7 @@ Restaurant-ல் counter, kitchen, pantry மற்றும் billing ஆக�
 
 <ThemeCard title="Docker Compose-ல் services எப்படி communicate செய்கின்றன?" badge="CAREER">
 
-Compose application-க்கு default network உருவாக்குகிறது. அந்த network-ல் service names DNS names-ஆக செயல்படுகின்றன. Internal traffic container port-ஐப் பயன்படுத்தும்; host வழியாக access தேவைப்படும் service-க்கு மட்டும் port publish செய்யப்படும். Started container ready என்று assume செய்யாமல் health checks மற்றும் application-level retry பயன்படுத்துவேன்.
+Compose application-க்கு default network create பண்ணும். அந்த network-ல் service names, DNS names மாதிரி work ஆகும். Internal traffic container port-ஐ use பண்ணும்; host வழியாக access தேவைப்படும் service-க்கு மட்டும் port publish பண்ணப்படும். Container start ஆனாலே ready என்று assume செய்யாமல் health checks மற்றும் application-level retry use பண்ணுவேன்.
 
 </ThemeCard>
 

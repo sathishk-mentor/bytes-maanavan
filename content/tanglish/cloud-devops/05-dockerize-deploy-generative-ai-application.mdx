@@ -57,7 +57,7 @@ User request HTTPS ingress வழியாக API container-க்கு வர�
 
 <Scenario title="Demo start ஆகுவது மட்டும் success இல்லை">
 
-நூற்றுக்கணக்கான customers “என் order எங்கே?” என்று ஒரே நேரத்தில் கேட்கலாம். Provider மெதுவாகலாம்; user மிக நீளமான input அனுப்பலாம்; கட்டுப்பாடற்ற retry loop cost-ஐ அதிகரிக்கலாம். Team input limit, timeout, concurrency limit, token budget மற்றும் rollback policy அமைக்கிறது. Container running நிலையில் இருப்பதை மட்டும் பார்க்காமல் answer பாதுகாப்பாகவும், சரியான நேரத்திலும், கட்டுப்படுத்தப்பட்ட செலவிலும் கிடைக்கிறதா என்று அளவிடுகிறது.
+Hundreds of customers “என் order எங்கே?” என்று same time-ல் கேட்கலாம். Provider slow ஆகலாம்; user very long input அனுப்பலாம்; unlimited retry loop cost-ஐ increase பண்ணலாம். Team input limit, timeout, concurrency limit, token budget மற்றும் rollback policy set பண்ணும். Container running-ஆ இருக்கிறதா மட்டும் பார்க்காமல் answer safe-ஆ, right time-ல், controlled cost-ல் கிடைக்கிறதா measure பண்ணும்.
 
 </Scenario>
 
@@ -84,7 +84,7 @@ Paid LLM call-ஐ frequent liveness probe-ஆக use பண்ணாதீங்
 
 ## Troubleshooting map
 
-| Symptom | முதலில் பார்க்க வேண்டிய evidence | சாத்தியமான காரணம் |
+| Symptom | First check பண்ண வேண்டிய evidence | Possible reason |
 |---|---|---|
 | Container மீண்டும் மீண்டும் restart ஆகிறது | Platform events மற்றும் startup logs | Missing variable, wrong command அல்லது memory limit |
 | Request timeout ஆகிறது | Dependency latency trace | Provider delay, network அல்லது timeout mismatch |
@@ -98,7 +98,7 @@ Paid LLM call-ஐ frequent liveness probe-ஆக use பண்ணாதீங்
 <Mistakes>
 
 - Provider key-ஐ Dockerfile அல்லது image context-ல் copy செய்வது.
-- Every provider error-ஐ retry செய்து cost storm உருவாக்குவது.
+- Every provider error-ஐ retry செய்து cost storm create பண்ணுவது.
 - `latest` tag மட்டும் deploy செய்து rollback version தெரியாமல் போவது.
 - Full private prompts-ஐ logs-ல் store செய்வது.
 - Infrastructure uptime மட்டும் பார்த்து answer quality ignore செய்வது.

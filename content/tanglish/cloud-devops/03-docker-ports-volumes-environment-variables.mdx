@@ -18,13 +18,13 @@ Food-delivery status service-ல் network access, persistent data மற்ற
 
 Port publish செய்வது authentication இல்லை. Sensitive service-ஐ unnecessary public interface-ல் expose பண்ணாதீங்க.
 
-## Volumes: container மாறினாலும் data நீடிக்க வேண்டும்
+## Volumes: container change ஆனாலும் data இருக்கணும்
 
 Container filesystem ephemeral. Database data, uploaded files அல்லது durable state-க்கு named volume அல்லது managed external storage use செய்யுங்கள். Application code-ஐ production volume-ல் hide செய்வது avoid செய்யுங்கள்.
 
 ## Environment variables: runtime configuration
 
-Database URL, log level, feature flag போன்ற settings environment மூலம் inject செய்யலாம். Secret values image-ல் bake செய்யாமல் secret manager மூலம் runtime-ல் வழங்க வேண்டும். Missing required setting-க்கு app startup-லேயே clear error கொடுக்க வேண்டும்.
+Database URL, log level, feature flag மாதிரியான settings-ஐ environment மூலம் inject பண்ணலாம். Secret values-ஐ image-ல் bake பண்ணாமல் secret manager மூலம் runtime-ல் கொடுக்கணும். Required setting missing என்றால் app startup-லேயே clear error காட்டணும்.
 
 <DockerFlowVisual variant="runtime" />
 
@@ -32,7 +32,7 @@ Database URL, log level, feature flag போன்ற settings environment ம�
 
 <Scenario title="One application, three runtime needs">
 
-Customer `8080` port மூலம் status API-ஐ அணுகுகிறார். Delivery events volume அல்லது database-ல் persist ஆகின்றன. `LOG_LEVEL` மற்றும் provider endpoint ஒவ்வொரு environment-க்கும் ஏற்றபடி configure செய்யப்படுகின்றன. Container update ஆனாலும் history பாதுகாப்பாக நீடிக்கும்.
+Customer `8080` port மூலம் status API-ஐ access பண்ணுகிறார். Delivery events volume அல்லது database-ல் persist ஆகும். `LOG_LEVEL` மற்றும் provider endpoint ஒவ்வொரு environment-க்கும் match ஆக configure செய்யப்படும். Container update ஆனாலும் history safe-ஆ இருக்கும்.
 
 </Scenario>
 
@@ -44,7 +44,7 @@ Named volume-ஐ Docker manage செய்யும்; database data போன
 
 Browser → host port → container port → application route → database volume/service → response. எந்த boundary-ல் failure என்று logs மற்றும் inspection மூலம் கண்டுபிடிக்க வேண்டும்.
 
-## மாற்றம் செய்வதற்கு முன் inspect செய்யுங்கள்
+## Change செய்வதற்கு முன்னாடி inspect பண்ணுங்க
 
 Running container port mapping, mounted volumes, environment variable names, logs மற்றும் network inspect செய்யுங்கள். Secret values output-ல் expose பண்ணாதீங்க.
 

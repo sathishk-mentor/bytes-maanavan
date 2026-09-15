@@ -1,6 +1,6 @@
 <ThemeCard title="Neenga learn panna poradhu" badge="DOCKER HANDBOOK 01">
 
-Docker image, container, Dockerfile மற்றும் registry ஒன்றோடு ஒன்று எவ்வாறு இணைகின்றன என்பதைப் புரிந்துகொள்வீர்கள். மேலும், “works on my machine” பிரச்சினையை Docker எவ்வாறு குறைக்கிறது என்பதையும் தெளிவாக விளக்க முடியும்.
+Docker image, container, Dockerfile மற்றும் registry எப்படி connect ஆகுது என்பதை understand பண்ணுவீங்க. “Works on my machine” problem-ஐ Docker எப்படி reduce பண்ணுது என்பதையும் easy-ஆ explain பண்ண முடியும்.
 
 </ThemeCard>
 
@@ -8,13 +8,13 @@ Docker image, container, Dockerfile மற்றும் registry ஒன்ற�
 
 ## 60 seconds-ல் Docker
 
-Docker என்பது application code, runtime, libraries மற்றும் தேவையான configuration ஆகியவற்றை மீண்டும் மீண்டும் ஒரே விதமாகப் பயன்படுத்தக்கூடிய image-ஆக package செய்ய உதவும் platform. அந்த image இயங்கும் instance தான் container. இதனால் developer laptop, test server மற்றும் cloud ஆகிய சூழல்களில் ஒரே tested package-ஐ இயக்க முடியும்.
+Docker-na application code, runtime, libraries மற்றும் required configuration எல்லாத்தையும் repeatable image-ஆக package செய்ய உதவும் platform. அந்த image run ஆகும் instance தான் container. அதனால் developer laptop, test server மற்றும் cloud—எந்த environment ஆனாலும் same tested package-ஐ run செய்யலாம்.
 
-Container என்பது virtual machine அல்ல. அது host operating-system kernel-ஐ பகிர்ந்து கொண்டு isolated process-ஆக இயங்குகிறது. அதனால் அது பொதுவாக lightweight மற்றும் வேகமாக start ஆகும். இருப்பினும் security boundary, permissions மற்றும் resource limits அவசியம்.
+Container, virtual machine கிடையாது. அது host operating-system kernel-ஐ share செய்து isolated process-ஆக run ஆகும். அதனால் பொதுவாக lightweight; fast-ஆ start ஆகும். But security boundary, permissions மற்றும் resource limits இன்னும் தேவை.
 
 ## “Works on my machine” ஏன் நடக்கிறது?
 
-Developer machine-ல் Python 3.12 இருக்கலாம்; server-ல் 3.10 இருக்கலாம். ஒரு package install ஆகாமல் இருக்கலாம். Environment variable, operating-system library அல்லது start command மாறியிருக்கலாம். இத்தகைய வேறுபாடுகளால் application மற்றொரு machine-ல் fail ஆகும். Dockerfile தேவையான environment-ஐ code-ஆக பதிவு செய்வதால் setup repeatable ஆகிறது.
+Developer machine-ல் Python 3.12 இருக்கலாம்; server-ல் 3.10 இருக்கலாம். ஒரு package missing-ஆ இருக்கலாம். Environment variable, OS library அல்லது start command different-ஆ இருக்கலாம். இந்த differences காரணமாக application another machine-ல் fail ஆகும். Dockerfile required environment-ஐ code-ஆக record செய்வதால் setup repeatable ஆகும்.
 
 ## Four Docker objects எப்படி connect ஆகும்?
 
@@ -27,7 +27,7 @@ Developer machine-ல் Python 3.12 இருக்கலாம்; server-ல�
 
 ### ஒரு code change-ன் பயணத்தைப் பார்ப்போம்
 
-Developer source code-ஐ மாற்றுகிறார். `docker build` Dockerfile instructions-ஐப் பயன்படுத்தி புதிய image உருவாக்குகிறது. அந்த image version tag உடன் registry-க்கு push செய்யப்படுகிறது. Test அல்லது production environment அதே image-ஐ pull செய்து புதிய container உருவாக்குகிறது. Running container-க்குள் manual change செய்வதற்குப் பதிலாக image-ஐ rebuild செய்வதே repeatable workflow.
+Developer source code-ஐ change பண்ணுகிறார். `docker build`, Dockerfile instructions use செய்து new image create பண்ணும். அந்த image version tag உடன் registry-க்கு push ஆகும். Test அல்லது production environment அதே image-ஐ pull செய்து new container create பண்ணும். Running container-க்குள் manual fix செய்வதற்குப் பதிலாக image-ஐ rebuild செய்வதுதான் repeatable workflow.
 
 <OfficialDockerDiagram />
 
@@ -35,13 +35,13 @@ Developer source code-ஐ மாற்றுகிறார். `docker build` D
 
 <Scenario title="Package vehicle-ஐ depend பண்ணக்கூடாது">
 
-Standard shipping container கப்பல், ரயில் அல்லது லாரி மாறினாலும் பொருட்களை ஒரே sealed format-ல் எடுத்துச் செல்லும். அதுபோல Docker image application மற்றும் அதன் runtime requirements-ஐ standard package-ஆக வைத்திருக்கும். Destination environment-க்கு compatible container runtime தேவை. ஆனால் இந்த analogy முழுமையான security guarantee-ஐ குறிக்காது.
+Standard shipping container ship, train அல்லது lorry மாறினாலும் goods-ஐ same sealed format-ல் carry பண்ணும். அதே மாதிரி Docker image application மற்றும் runtime requirements-ஐ standard package-ஆக வைத்திருக்கும். Destination-ல் compatible container runtime மட்டும் வேண்டும். இந்த analogy packaging-ஐ explain பண்ணுது; complete security guarantee-ஐ அல்ல.
 
 </Scenario>
 
 ## Container மற்றும் virtual machine different
 
-Virtual machine தனி guest operating system-ஐ இயக்குகிறது. Container host kernel-ஐ பகிர்கிறது. Different operating system அல்லது stronger isolation தேவைப்படும் workload-க்கு VM பொருத்தமாக இருக்கலாம். Fast startup மற்றும் application packaging-க்கு container பயனுள்ளதாக இருக்கும். Production architecture-ல் இரண்டையும் சேர்த்தும் பயன்படுத்தலாம்.
+Virtual machine full guest operating system-ஐ run பண்ணும். Container host kernel-ஐ share பண்ணும். Different OS அல்லது stronger isolation தேவைப்படும் workload-க்கு VM useful. Fast startup மற்றும் application packaging-க்கு container useful. Production architecture-ல் இரண்டையும் together use பண்ணலாம்.
 
 ## Smallest useful workflow
 
@@ -49,11 +49,11 @@ Dockerfile எழுதுங்கள் → image build செய்யுங�
 
 ### Command-க்குப் பின்னால் Docker என்ன செய்கிறது?
 
-`docker build -t status-api:1.0 .` build context மற்றும் Dockerfile-ஐப் படித்து image layers உருவாக்குகிறது. `docker run --rm status-api:1.0` அந்த image-லிருந்து isolated process உருவாக்குகிறது. Container stop ஆனாலும் image நீடிக்கும்; புதிய container-ஐ அதிலிருந்து மீண்டும் உருவாக்கலாம்.
+`docker build -t status-api:1.0 .` build context மற்றும் Dockerfile-ஐ read செய்து image layers create பண்ணும். `docker run --rm status-api:1.0` அந்த image-லிருந்து isolated process start பண்ணும். Container stop ஆனாலும் image இருக்கும்; அதிலிருந்து another container create பண்ணலாம்.
 
 ## Docker எப்போது help செய்யும்?
 
-Repeatable development, CI/CD, microservices, dependency isolation மற்றும் cloud deployment ஆகியவற்றுக்கு Docker உதவும். ஆனால் poor application design, missing tests, insecure secrets அல்லது missing monitoring போன்ற பிரச்சினைகளை Docker தானாகத் தீர்க்காது.
+Repeatable development, CI/CD, microservices, dependency isolation மற்றும் cloud deployment-க்கு Docker useful. But poor application design, missing tests, insecure secrets அல்லது missing monitoring problems-ஐ Docker automatic-ஆ solve பண்ணாது.
 
 ## Common mistakes
 
