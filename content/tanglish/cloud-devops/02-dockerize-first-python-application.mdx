@@ -1,16 +1,16 @@
-<ThemeCard title="Neenga build panna poradhu" badge="DOCKER HANDBOOK 02">
+<ThemeCard title="இப்போ app-ஐ container-க்குள் run பண்ணலாம்" badge="DOCKER HANDBOOK 02">
 
-Simple Python delivery-status API-க்கு Dockerfile எழுதிப் image build செய்து container run, test மற்றும் troubleshoot செய்வீர்கள்.
+ஒரு small Python delivery-status API-ஐ எடுத்துக்கொண்டு Dockerfile எழுதுவோம். பிறகு image build பண்ணி, container start பண்ணி, browser-ல் result check பண்ணுவோம்.
 
 </ThemeCard>
 
 <HandbookLearningVisual variant="dockerBuild" />
 
-## Application contract-லிருந்து தொடங்குங்கள்
+## Docker open பண்ணும் முன் இந்த 4 questions
 
-Containerize செய்வதற்கு முன் app local-ல் எப்படி start ஆகிறது, எந்த port listen செய்கிறது, dependencies என்ன, health endpoint என்ன என்பதை confirm செய்யுங்கள். Broken app-ஐ Docker correct பண்ணாது.
+Dockerize செய்வதற்கு முன்: app local-ல் work ஆகுதா? Start command என்ன? எந்த port-ல் listen ஆகுது? Required packages எங்கே list பண்ணியிருக்கோம்? இதை first confirm பண்ணுங்க. Already broken-ஆ இருக்கும் app-ஐ Docker magic-ஆ fix பண்ணாது.
 
-## Dockerfile எழுதுங்கள்
+## Dockerfile-na app packing instruction
 
 ```dockerfile
 FROM python:3.12-slim
@@ -24,15 +24,15 @@ CMD ["python", "app.py"]
 
 Base image runtime கொடுக்கும். `WORKDIR` container working folder define செய்யும். Dependency file-ஐ முதலில் copy செய்தால் code-only changes-க்கு build cache reuse ஆகும். Exec-form `CMD` signal handling-க்கு better.
 
-### Dockerfile-ஐ top-to-bottom read பண்ணுவது
+### ஒவ்வொரு line-மும் என்ன சொல்லுது?
 
 `FROM` base runtime-ஐ select பண்ணும். `WORKDIR` next commands எந்த folder-ல் run ஆகணும் என்று set பண்ணும். Dependency file-ஐ source code-க்கு முன்னாடி copy செய்தால், code மட்டும் change ஆகும்போது installation layer cache-லிருந்து reuse ஆகும். `CMD`, container start ஆகும்போது run ஆக வேண்டிய foreground process-ஐ define பண்ணும்.
 
-## `.dockerignore` சேர்க்குங்கள்
+## தேவையில்லாத files image-க்குள் போகக்கூடாது
 
 `.git`, `.venv`, cache, local logs, secrets மற்றும் unnecessary files build context-க்கு போகாமல் exclude செய்யுங்கள். Smaller context build speed மற்றும் accidental data exposure reduce செய்யும்.
 
-## Build, run மற்றும் test
+## மூன்று commands: build → run → check
 
 ```bash
 docker build -t delivery-status:1.0 .
@@ -43,7 +43,7 @@ Host browser `localhost:8000/health` call செய்யும். Container ap
 
 <DockerFlowVisual variant="buildRun" />
 
-## Real-time analogy: repeatable lab kit
+## Easy analogy: practical lab kit
 
 <Scenario title="ஒவ்வொருவருக்கும் same working kit">
 
@@ -51,11 +51,11 @@ Training lab-க்கு code மட்டும் கொடுத்தால
 
 </Scenario>
 
-## Evidence-ஐப் பயன்படுத்தி troubleshoot செய்யுங்கள்
+## Work ஆகலையா? இந்த order-ல் check பண்ணுங்க
 
 `docker ps -a`, `docker logs`, image tag, port mapping மற்றும் application bind address check செய்யுங்கள். Random rebuild செய்யாமல் failed layer அல்லது runtime error identify செய்யுங்கள்.
 
-## Production improvement
+## Local demo-விலிருந்து production-க்கு
 
 Pinned dependencies, non-root user, smaller base image, health check, vulnerability scan மற்றும் runtime secrets use செய்யுங்கள். Build tools final image-ல் தேவையில்லையென்றால் multi-stage build consider செய்யலாம்.
 
@@ -71,7 +71,7 @@ Pinned dependencies, non-root user, smaller base image, health check, vulnerabil
 
 </Mistakes>
 
-## Interview-ல் எப்படி explain செய்வது?
+## Interview answer—build vs run
 
 <ThemeCard title="docker build மற்றும் docker run-ல் என்ன நடக்கும்?" badge="CAREER">
 
@@ -79,7 +79,7 @@ Pinned dependencies, non-root user, smaller base image, health check, vulnerabil
 
 </ThemeCard>
 
-## நினைவில் வைக்க வேண்டிய key points
+## Byte 02 quick recap
 
 <Takeaways>
 

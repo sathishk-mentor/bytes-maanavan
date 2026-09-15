@@ -1,34 +1,34 @@
-<ThemeCard title="Neenga learn panna poradhu" badge="DOCKER HANDBOOK 03">
+<ThemeCard title="Container run ஆகுது; இப்போ அதை useful ஆக்கலாம்" badge="DOCKER HANDBOOK 03">
 
-Food-delivery status service-ல் network access, persistent data மற்றும் runtime configuration-க்கு ports, volumes மற்றும் environment variables எப்படி different roles perform செய்கிறது என்பதை apply செய்வீர்கள்.
+Food-delivery status service use செய்து three practical questions-க்கு answer பார்ப்போம்: user app-ஐ எப்படி reach பண்ணுவார்? Container delete ஆனாலும் data எப்படி இருக்கும்? Dev, test, production settings-ஐ image rebuild இல்லாமல் எப்படி change பண்ணுவது?
 
 </ThemeCard>
 
 <HandbookLearningVisual variant="dockerRuntime" />
 
-## Three questions, three Docker features
+## Three problems—three Docker features
 
 - User request container-ஐ எப்படி reach செய்யும்? **Port**.
 - Container replace ஆனாலும் data எப்படி remain ஆகும்? **Volume**.
 - Environment-specific setting எப்படி change ஆகும்? **Environment variable**.
 
-## Ports: container address மற்றும் host address
+## Problem 1: browser-லிருந்து app open ஆகணும்
 
 `-p 8080:8000` என்றால் host port `8080`-க்கு வரும் traffic container port `8000`-க்கு forward ஆகும். App container-க்குள் `0.0.0.0:8000`-ல் listen செய்ய வேண்டும்.
 
 Port publish செய்வது authentication இல்லை. Sensitive service-ஐ unnecessary public interface-ல் expose பண்ணாதீங்க.
 
-## Volumes: container change ஆனாலும் data இருக்கணும்
+## Problem 2: container delete ஆனாலும் data இருக்கணும்
 
 Container filesystem ephemeral. Database data, uploaded files அல்லது durable state-க்கு named volume அல்லது managed external storage use செய்யுங்கள். Application code-ஐ production volume-ல் hide செய்வது avoid செய்யுங்கள்.
 
-## Environment variables: runtime configuration
+## Problem 3: same image; different settings
 
 Database URL, log level, feature flag மாதிரியான settings-ஐ environment மூலம் inject பண்ணலாம். Secret values-ஐ image-ல் bake பண்ணாமல் secret manager மூலம் runtime-ல் கொடுக்கணும். Required setting missing என்றால் app startup-லேயே clear error காட்டணும்.
 
 <DockerFlowVisual variant="runtime" />
 
-## Real-time scenario: delivery-status service
+## மூன்றையும் ஒரே delivery app-ல் connect பண்ணலாம்
 
 <Scenario title="One application, three runtime needs">
 
@@ -36,15 +36,15 @@ Customer `8080` port மூலம் status API-ஐ access பண்ணுகி
 
 </Scenario>
 
-### Named volume அல்லது bind mount?
+### Volume-ஆ, bind mount-ஆ?
 
 Named volume-ஐ Docker manage செய்யும்; database data போன்ற runtime state-க்கு இது நல்ல default. Bind mount host folder-ஐ container-க்கு நேரடியாக இணைக்கும்; local source-code development-க்கு பயனுள்ளதாக இருக்கும். இரண்டையும் ஒரே purpose-க்கு பயன்படுத்த வேண்டிய அவசியமில்லை.
 
-## ஒரு request-ன் பயணத்தை trace செய்யுங்கள்
+## Customer request எப்படி travel ஆகுது?
 
 Browser → host port → container port → application route → database volume/service → response. எந்த boundary-ல் failure என்று logs மற்றும் inspection மூலம் கண்டுபிடிக்க வேண்டும்.
 
-## Change செய்வதற்கு முன்னாடி inspect பண்ணுங்க
+## Issue வந்தால் first என்ன பார்க்கணும்?
 
 Running container port mapping, mounted volumes, environment variable names, logs மற்றும் network inspect செய்யுங்கள். Secret values output-ல் expose பண்ணாதீங்க.
 
@@ -60,7 +60,7 @@ Running container port mapping, mounted volumes, environment variable names, log
 
 </Mistakes>
 
-## Interview-ல் எப்படி explain செய்வது?
+## Interview answer—three different jobs
 
 <ThemeCard title="Ports, volumes மற்றும் environment variables difference?" badge="CAREER">
 
@@ -68,7 +68,7 @@ Port network traffic-ஐ container service-க்கு map செய்யு�
 
 </ThemeCard>
 
-## நினைவில் வைக்க வேண்டிய key points
+## Byte 03 quick recap
 
 <Takeaways>
 

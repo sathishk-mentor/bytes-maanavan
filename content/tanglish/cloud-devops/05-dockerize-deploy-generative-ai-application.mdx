@@ -1,14 +1,14 @@
-<ThemeCard title="Capstone outcome" badge="DOCKER HANDBOOK 05">
+<ThemeCard title="Local AI demo-வை production-க்கு ready பண்ணலாம்" badge="DOCKER HANDBOOK 05">
 
-LLM-powered customer-support API-ஐ secrets expose செய்யாமல் containerize செய்து, health, security, cost, observability மற்றும் rollback checks உடன் deploy செய்யக் கற்றுக்கொள்வீர்கள்.
+LLM-powered customer-support API local-ல் work ஆகுது. இப்போ API key leak ஆகாமல், cost control miss ஆகாமல், problem வந்தால் rollback செய்யக்கூடிய விதத்தில் deploy பண்ணுவது எப்படி என்று பார்ப்போம்.
 
 </ThemeCard>
 
 <DockerFlowVisual variant="aiDeploy" />
 
-## Application boundary என்ன?
+## Image-க்குள் என்ன இருக்கணும்? Outside என்ன இருக்கணும்?
 
-Food-delivery support API user question-ஐ validate செய்து, approved order context-ஐ retrieve செய்து, LLM provider-ஐ call செய்து bounded answer return செய்யும். Image-ல் code மற்றும் dependencies இருக்க வேண்டும்; API key deployment environment-லிருந்து runtime-ல் வர வேண்டும்.
+Food-delivery support API user question-ஐ validate பண்ணும், approved order context-ஐ retrieve பண்ணும், LLM provider-ஐ call பண்ணும், final answer return பண்ணும். App code மற்றும் dependencies image-க்குள் இருக்கலாம். API key மற்றும் environment-specific values runtime-ல் outside-லிருந்து வரணும்.
 
 ```python
 import os
@@ -27,7 +27,7 @@ def support(question: str):
     return {"answer": f"Demo response for: {question}"}
 ```
 
-## Production-minded image
+## Safer production image build பண்ணலாம்
 
 ```dockerfile
 FROM python:3.12-slim
@@ -43,17 +43,17 @@ CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 
 Small trusted base image, dependency layer caching மற்றும் non-root user நல்ல defaults. Tested versions-ஐ pin செய்து final image-ஐ scan பண்ண வேண்டும்.
 
-## Secret-ஐ image-ல் bake பண்ணாதீங்க
+## API key image-க்குள் போகவே கூடாது
 
 `ENV LLM_API_KEY=...` அல்லது `COPY .env .` image history-ல் secret leak செய்யலாம். Local-ல் runtime environment variable; production-ல் platform secret manager மற்றும் least-privilege access use செய்யுங்கள்.
 
-## Production request path
+## User question வந்ததும் என்ன நடக்குது?
 
 <HandbookLearningVisual variant="dockerAi" />
 
 User request HTTPS ingress வழியாக API container-க்கு வரும். Container secret manager, order database மற்றும் LLM provider-ஐ controlled access மூலம் use செய்யும். Logs, metrics மற்றும் traces request outcome-ஐ record செய்யும்.
 
-## Real-time scenario: delayed order assistant
+## Peak-time scenario: “என் order எங்கே?”
 
 <Scenario title="Demo start ஆகுவது மட்டும் success இல்லை">
 
@@ -61,7 +61,7 @@ Hundreds of customers “என் order எங்கே?” என்று sam
 
 </Scenario>
 
-## Health checks வேறுபாடு
+## App alive-ஆ? Traffic handle பண்ண ready-ஆ?
 
 | Check | அது சொல்லும் விஷயம் |
 |---|---|
@@ -72,7 +72,7 @@ Hundreds of customers “என் order எங்கே?” என்று sam
 
 Paid LLM call-ஐ frequent liveness probe-ஆக use பண்ணாதீங்க.
 
-## Deployment checklist
+## Deploy button click பண்ணும் முன்
 
 1. Image-க்கு immutable version tag கொடுங்கள்.
 2. Dependencies மற்றும் image vulnerabilities scan செய்யுங்கள்.
@@ -82,7 +82,7 @@ Paid LLM call-ஐ frequent liveness probe-ஆக use பண்ணாதீங்
 6. Quality, latency, errors மற்றும் cost observe செய்யுங்கள்.
 7. Limited traffic-க்கு release செய்து rollback path-ஐ ready-ஆக வைத்திருங்கள்.
 
-## Troubleshooting map
+## Problem வந்தால் எங்கே start பண்ணுவது?
 
 | Symptom | First check பண்ண வேண்டிய evidence | Possible reason |
 |---|---|---|
@@ -105,7 +105,7 @@ Paid LLM call-ஐ frequent liveness probe-ஆக use பண்ணாதீங்
 
 </Mistakes>
 
-## Interview-ல் எப்படி விளக்குவது?
+## Interview answer—safe AI deployment
 
 <ThemeCard title="LLM application-ஐ எப்படி safely deploy செய்வீர்கள்?" badge="CAREER">
 
@@ -113,7 +113,7 @@ Secrets இல்லாத minimal, versioned image உருவாக்கி 
 
 </ThemeCard>
 
-## நினைவில் வைக்க வேண்டிய key points
+## Docker Handbook final recap
 
 <Takeaways>
 

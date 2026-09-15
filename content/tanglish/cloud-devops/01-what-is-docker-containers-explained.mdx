@@ -1,4 +1,4 @@
-<ThemeCard title="Neenga learn panna poradhu" badge="DOCKER HANDBOOK 01">
+<ThemeCard title="First Docker-ஐ feel பண்ணலாம்" badge="DOCKER HANDBOOK 01">
 
 Docker image, container, Dockerfile மற்றும் registry எப்படி connect ஆகுது என்பதை understand பண்ணுவீங்க. “Works on my machine” problem-ஐ Docker எப்படி reduce பண்ணுது என்பதையும் easy-ஆ explain பண்ண முடியும்.
 
@@ -6,17 +6,19 @@ Docker image, container, Dockerfile மற்றும் registry எப்ப�
 
 <DockerObjectArchitecture />
 
-## 60 seconds-ல் Docker
+## முதலில் இந்த problem-ஐ பார்ப்போம்
 
-Docker-na application code, runtime, libraries மற்றும் required configuration எல்லாத்தையும் repeatable image-ஆக package செய்ய உதவும் platform. அந்த image run ஆகும் instance தான் container. அதனால் developer laptop, test server மற்றும் cloud—எந்த environment ஆனாலும் same tested package-ஐ run செய்யலாம்.
+நீங்கள் ஒரு Python app build பண்ணுறீங்க. உங்கள் laptop-ல் super-ஆ work ஆகுது. Friend laptop-ல் package missing; server-ல் Python version mismatch. App code same, but environment different. இந்த problem-ஐ control பண்ணத்தான் Docker help பண்ணுது.
+
+Docker-na app code, runtime, libraries மற்றும் setup எல்லாத்தையும் சேர்த்து ஒரு standard package-ஆக ready பண்ணும் platform. இந்த ready package தான் **image**. அந்த image-ஐ start பண்ணினால் கிடைக்கும் running app தான் **container**.
 
 Container, virtual machine கிடையாது. அது host operating-system kernel-ஐ share செய்து isolated process-ஆக run ஆகும். அதனால் பொதுவாக lightweight; fast-ஆ start ஆகும். But security boundary, permissions மற்றும் resource limits இன்னும் தேவை.
 
-## “Works on my machine” ஏன் நடக்கிறது?
+## Same code ஏன் another machine-ல் fail ஆகுது?
 
 Developer machine-ல் Python 3.12 இருக்கலாம்; server-ல் 3.10 இருக்கலாம். ஒரு package missing-ஆ இருக்கலாம். Environment variable, OS library அல்லது start command different-ஆ இருக்கலாம். இந்த differences காரணமாக application another machine-ல் fail ஆகும். Dockerfile required environment-ஐ code-ஆக record செய்வதால் setup repeatable ஆகும்.
 
-## Four Docker objects எப்படி connect ஆகும்?
+## நான்கு Docker parts—ஒரே story
 
 <DockerFlowVisual variant="mentalModel" />
 
@@ -25,13 +27,13 @@ Developer machine-ல் Python 3.12 இருக்கலாம்; server-ல�
 - **Container:** Image-ன் running instance.
 - **Registry:** Versioned images store மற்றும் distribute செய்யும் service.
 
-### ஒரு code change-ன் பயணத்தைப் பார்ப்போம்
+### Code change பண்ணினால் அடுத்து என்ன நடக்கும்?
 
 Developer source code-ஐ change பண்ணுகிறார். `docker build`, Dockerfile instructions use செய்து new image create பண்ணும். அந்த image version tag உடன் registry-க்கு push ஆகும். Test அல்லது production environment அதே image-ஐ pull செய்து new container create பண்ணும். Running container-க்குள் manual fix செய்வதற்குப் பதிலாக image-ஐ rebuild செய்வதுதான் repeatable workflow.
 
 <OfficialDockerDiagram />
 
-## Real-time analogy: standard shipping container
+## Easy analogy: shipping container
 
 <Scenario title="Package vehicle-ஐ depend பண்ணக்கூடாது">
 
@@ -39,19 +41,19 @@ Standard shipping container ship, train அல்லது lorry மாறின
 
 </Scenario>
 
-## Container மற்றும் virtual machine different
+## “Container-ம் VM-ம் same-ஆ?”
 
 Virtual machine full guest operating system-ஐ run பண்ணும். Container host kernel-ஐ share பண்ணும். Different OS அல்லது stronger isolation தேவைப்படும் workload-க்கு VM useful. Fast startup மற்றும் application packaging-க்கு container useful. Production architecture-ல் இரண்டையும் together use பண்ணலாம்.
 
-## Smallest useful workflow
+## நீங்கள் try பண்ண வேண்டிய first workflow
 
 Dockerfile எழுதுங்கள் → image build செய்யுங்கள் → container run செய்யுங்கள் → exposed service-ஐ test செய்யுங்கள் → logs inspect செய்யுங்கள் → test செய்யப்பட்ட அதே image-ஐ registry-க்கு push செய்யுங்கள்.
 
-### Command-க்குப் பின்னால் Docker என்ன செய்கிறது?
+### இந்த commands பின்னாடி என்ன நடக்குது?
 
 `docker build -t status-api:1.0 .` build context மற்றும் Dockerfile-ஐ read செய்து image layers create பண்ணும். `docker run --rm status-api:1.0` அந்த image-லிருந்து isolated process start பண்ணும். Container stop ஆனாலும் image இருக்கும்; அதிலிருந்து another container create பண்ணலாம்.
 
-## Docker எப்போது help செய்யும்?
+## Docker எதை solve பண்ணும்—எதை solve பண்ணாது?
 
 Repeatable development, CI/CD, microservices, dependency isolation மற்றும் cloud deployment-க்கு Docker useful. But poor application design, missing tests, insecure secrets அல்லது missing monitoring problems-ஐ Docker automatic-ஆ solve பண்ணாது.
 
@@ -67,7 +69,7 @@ Repeatable development, CI/CD, microservices, dependency isolation மற்ற�
 
 </Mistakes>
 
-## Interview-ல் எப்படி explain செய்வது?
+## Interview answer—short and clear
 
 <ThemeCard title="Docker image மற்றும் container difference?" badge="CAREER">
 
@@ -75,7 +77,7 @@ Image immutable application package/template. Container அந்த image-ல�
 
 </ThemeCard>
 
-## நினைவில் வைக்க வேண்டிய key points
+## Byte 01 quick recap
 
 <Takeaways>
 
