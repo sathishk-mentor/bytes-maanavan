@@ -34,12 +34,14 @@ Base image runtime கொடுக்கும். `WORKDIR` container working f
 
 ## மூன்று commands: build → run → check
 
+இங்க `-p 8000:8000` என்பது laptop-ல் இருக்கும் 8000 door-ஐ container app-ன் 8000 door-க்கு connect பண்ணும். Port topic-ஐ Byte 03-ல் detail-ஆ பார்க்கலாம். இப்போதைக்கு browser container app-ஐ reach செய்ய இந்த mapping தேவை என்று மட்டும் நினைவில் வைங்க.
+
 ```bash
 docker build -t delivery-status:1.0 .
 docker run --rm -p 8000:8000 delivery-status:1.0
 ```
 
-Host browser `localhost:8000/health` call செய்யும். Container app `0.0.0.0:8000`-ல் listen செய்ய வேண்டும்; `127.0.0.1` container-க்குள் மட்டும் accessible ஆகலாம்.
+Browser-ல் `localhost:8000/health` open பண்ணினால் healthy response வரணும். App `0.0.0.0:8000`-ல் listen செய்வதால் Docker create செய்த door connection வழியாக request உள்ளே வரும்.
 
 <DockerFlowVisual variant="buildRun" />
 
@@ -75,7 +77,7 @@ Pinned dependencies, non-root user, smaller base image, health check, vulnerabil
 
 <ThemeCard title="docker build மற்றும் docker run-ல் என்ன நடக்கும்?" badge="CAREER">
 
-`docker build`, Dockerfile instructions மற்றும் build context use செய்து immutable image layers create பண்ணும். `docker run`, அந்த image-லிருந்து writable runtime layer, network மற்றும் process கொண்ட container instance create பண்ணும்.
+`docker build`, Dockerfile instructions-ஐ follow பண்ணி image create பண்ணும். `docker run`, அந்த image-லிருந்து container start செய்து app process-ஐ run பண்ணும். Build என்பது package prepare செய்வது; run என்பது அந்த package-ஐ start செய்வது.
 
 </ThemeCard>
 

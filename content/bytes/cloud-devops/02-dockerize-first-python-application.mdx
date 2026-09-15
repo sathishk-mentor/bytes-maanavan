@@ -19,9 +19,9 @@ A tiny Flask health service packaged in a Docker image. You will understand ever
 
 <DockerFlowVisual variant="buildRun" />
 
-## Start with the application contract
+## Start with a tiny working application
 
-Our application must listen on all container network interfaces, not only `localhost`. It also needs an explicit dependency file so the image build is repeatable.
+Before using Docker, understand what the application does. This example has one `/health` address. When it is working, that address returns a small message saying the service is healthy. It also has a `requirements.txt` file that records the Flask library it needs.
 
 Create `app.py`:
 
@@ -90,7 +90,7 @@ __pycache__/
 
 The build context is the set of files sent to the builder. A `.dockerignore` keeps irrelevant, large or sensitive local files out of that context. It is not your only secret-control mechanism, but it reduces accidental inclusion.
 
-## Build, run and test
+## Build and start your first container
 
 <HandbookLearningVisual variant="dockerBuild" />
 
@@ -101,13 +101,15 @@ docker build -t python-health:1.0 .
 docker run --rm --name python-health -p 8000:8000 python-health:1.0
 ```
 
+The `-p 8000:8000` part creates a path from port 8000 on your laptop to port 8000 inside the container. Think of it as connecting the laptop's front door to the application's door. Ports are explained fully in Byte 03; for now, use this mapping so the browser can reach the app.
+
 Open `http://localhost:8000/health` or run:
 
 ```bash
 curl http://localhost:8000/health
 ```
 
-The expected response is a JSON object with `status` set to `healthy`. `-p 8000:8000` publishes host port 8000 to container port 8000. `--rm` removes the stopped container, not the image.
+The expected response is a JSON object with `status` set to `healthy`. `--rm` removes the stopped container, not the image.
 
 ## Real-time analogy: preparing a repeatable lab kit
 

@@ -1,39 +1,47 @@
 ## Quick Start
 
-Karthik build பண்ணிய Python app அவருடைய laptop-ல் work ஆகுது. Team member run பண்ணும்போது `package not found`; server-ல் Python version mismatch. Code same—but setup different.
+Karthik ஒரு small Python app build பண்ணினார். அவருடைய laptop-ல் Start பண்ணினால் app correct-ஆ open ஆகுது. Friend laptop-ல் `package not found` error வருது. Project same தான்; இரண்டு laptop-ல இருக்கிற Python setup same இல்லை.
 
-Docker use பண்ணினால் app code, runtime மற்றும் dependencies எல்லாத்தையும் ஒரே package-ஆக எடுத்துச் செல்லலாம். இதுதான் “works on my machine” problem-க்கு practical answer. Docker எல்லா bugs-ஐயும் solve பண்ணாது; environment difference-ஐ control பண்ணும்.
+Docker use பண்ணி app, required Python version, libraries எல்லாத்தையும் ஒரே package-ஆ prepare பண்ணலாம். Team அந்த same package-ஐ use பண்ணும்போது setup difference குறையும். Docker wrong code-ஐ correct பண்ணாது; app start ஆக தேவையான setup-ஐ consistent-ஆ வைத்திருக்க help பண்ணும்.
 
 <Scenario title="FAMILIAR SCENARIO — FRIDAY DEPLOYMENT">
 
-Friday afternoon Karthik order-status API complete பண்ணுகிறார். அவருடைய laptop-ல் app correct-ஆ run ஆகுது. QA system-ல் ஒரு dependency மற்றும் environment setting missing; app start ஆகல. இன்னொரு setup document அனுப்புவதற்குப் பதிலாக, working runtime-ஐ versioned Docker image-ஆக package பண்ணுகிறார். QA exact same image-ஐ run பண்ணி machine setup-ஐ அல்ல, actual app behaviour-ஐ test பண்ணலாம்.
+Friday afternoon Karthik order-status app complete பண்ணுகிறார். QA laptop-ல் ஒரு Python library missing; app start ஆகல. ஒவ்வொரு library-யும் manual-ஆ install பண்ண சொல்லாமல், app மற்றும் required setup சேர்த்து Docker image create பண்ணுகிறார். QA அந்த image-லிருந்து container start பண்ணி Karthik test பண்ணிய same app version-ஐ பார்க்கிறார்.
 
 </Scenario>
 
 ## Start from Basics
 
 - **Dockerfile:** Image எப்படி build ஆகணும் என்று சொல்லும் instruction file.
-- **Image:** App run ஆக required files கொண்ட read-only package.
-- **Container:** Image-லிருந்து start ஆன running instance.
+- **Image:** App மற்றும் அது start ஆக தேவையான files சேர்த்து prepare செய்த package. இது இன்னும் run ஆகவில்லை.
+- **Container:** Image-லிருந்து start ஆன running app copy.
 - **Registry:** Images store மற்றும் share செய்யும் place; Docker Hub ஒரு example.
 - **Tag:** Image version identify செய்யும் label, example `1.0`.
-- **Docker Engine:** Image build மற்றும் container run செய்யும் runtime.
+- **Docker Engine:** Dockerfile instructions follow பண்ணி image build செய்து container start செய்யும் Docker software.
 
 ## Core Explanation
 
-Flow simple: developer Dockerfile எழுதுகிறார் → Docker image build பண்ணுது → team அந்த image-ஐ registry-லிருந்து pull பண்ணுது → container start பண்ணுது. Running container-க்குள் manual fix பண்ணக்கூடாது. Source அல்லது Dockerfile change செய்து new image build பண்ணணும்; அப்போதுதான் result repeatable.
+Flow ரொம்ப simple. Dockerfile என்பது recipe. Docker அந்த recipe-ஐ follow பண்ணி image என்ற ready package-ஐ create பண்ணும். அந்த image-ஐ start பண்ணும்போது container என்ற running app கிடைக்கும்.
 
-Container VM கிடையாது. அது host OS kernel-ஐ share செய்து isolated process-ஆக run ஆகும். அதனால் startup fast; resource usage பொதுவாக குறைவு. But permissions, resource limits மற்றும் security checks இன்னும் தேவை.
+Team image-ஐ registry என்ற online store-ல் save பண்ணலாம். இன்னொரு developer அந்த exact image-ஐ download செய்து புதிய container start பண்ணலாம். அவரவர் laptop-ல் setup steps guess பண்ண வேண்டிய அவசியம் குறையும்.
+
+Container என்பது இன்னொரு full computer இல்லை. அது host operating system-ன் ஒரு பகுதியை share செய்து separate process-ஆ run ஆகும். Virtual machine-ல் full guest operating system இருக்கும். Beginner level-ல் நினைவில் வைக்க வேண்டியது: container பொதுவாக quick-ஆ start ஆகும்; VM அதிகமான system files உடன் வரும்.
 
 ## Architecture / Flow Diagram
 
 <DockerObjectArchitecture />
 
-Animated build path-ஐ first follow பண்ணுங்க. Image ready ஆன பிறகு two paths இருக்கு: registry மூலம் share பண்ணலாம் அல்லது same image-லிருந்து multiple independent containers run பண்ணலாம். Local, test மற்றும் cloud எல்லாம் same tested image version use பண்ணலாம் என்பதுதான் key point.
+Animation-ஐ left-to-right பாருங்க: **Dockerfile → image → container**. Registry என்பது image-ஐ team-க்கு save செய்து share செய்யும் shelf மாதிரி. இந்த Byte-ல் இதை மட்டும் clear பண்ணிக்கலாம். Port, data save பண்ணுவது, containers connect பண்ணுவது எல்லாம் இப்போ தேவையில்லை.
 
 ## Types / Components
 
-Image layers build cache-க்கு help பண்ணும். Container-க்கு writable runtime layer கிடைக்கும்; container delete ஆனால் அந்த layer data போகலாம். Registry team distribution-க்கு useful. Volume persistent data-க்கு; network containers communicate செய்ய; environment variables runtime settings கொடுக்க use ஆகும்—இவற்றை next Bytes-ல் பார்க்கலாம்.
+| Part | Easy meaning | நினைவில் வைக்க வேண்டியது |
+|---|---|---|
+| Dockerfile | App package prepare செய்யும் recipe | இது instruction file மட்டும் |
+| Image | Ready app package | இது இன்னும் run ஆகவில்லை |
+| Container | Image-லிருந்து start ஆன app | இது running copy |
+| Registry | Image save மற்றும் share செய்யும் online place | Docker Hub ஒரு example |
+| Docker Engine | Image build, container start செய்யும் software | Machine-ல் Docker தேவை |
 
 ## Docker Container vs Virtual Machine
 
@@ -48,8 +56,8 @@ Container always better இல்லை. Requirement பார்த்து ch
 
 ## Real-World Examples
 
-- **Swiggy-style delivery service:** Order API-ஐ versioned image-ஆக package செய்து multiple instances run பண்ணலாம்.
-- **Flipkart-style sale traffic:** Same tested service image-ஐ additional containers-ல் scale பண்ணலாம்.
+- **Swiggy-style delivery app:** Developer மற்றும் tester same order-status service version use பண்ண image help செய்யும்.
+- **Flipkart-style shopping app:** New service version-ஐ image-ஆ test செய்து, approved ஆன same version-ஐ release செய்யலாம்.
 - **TCS project team:** Developer, QA மற்றும் deployment team same image version use செய்து environment mismatch reduce பண்ணலாம்.
 
 இவை learning scenarios; அந்த companies-ன் private internal architecture பற்றிய claims இல்லை.
@@ -58,7 +66,7 @@ Container always better இல்லை. Requirement பார்த்து ch
 
 ## Imagine Pannunga
 
-Shipping container ship-லிருந்து train, அங்கிருந்து lorry-க்கு move ஆனாலும் goods-ஐ repack செய்ய வேண்டாம். Standard box same-ஆ இருக்கும். Docker image-ம் app-ஐ standard package-ஆக வைத்திருக்கும்; compatible runtime இருக்கும் இடத்தில் அதை run பண்ணலாம்.
+Shipping container-ஐ நினைச்சு பாருங்க. Box ship-லிருந்து train, பிறகு lorry-க்கு போனாலும் உள்ளே இருக்கும் goods-ஐ ஒவ்வொரு முறையும் repack செய்ய மாட்டாங்க. Docker image-ம் app-ஐ ready package-ஆ வைத்திருக்கும். Image என்பது packed box; container என்பது box open ஆகி உள்ளே இருக்கும் app வேலை செய்யும் நிலை.
 
 ## Use Cases
 
@@ -80,15 +88,15 @@ Shipping container ship-லிருந்து train, அங்கிருந
 
 ## Final Thought + Next Path
 
-> Docker கற்கும்போது commands memorize பண்ணுவதற்கு முன்னாடி image மற்றும் container difference clear-ஆ இருக்கணும். Image-na ready செய்யப்பட்ட package; container-na அந்த package இப்போது run ஆகும் instance. இந்த one mental model clear ஆனாலே Dockerfile, registry, scaling, deployment எல்லாம் connect ஆக ஆரம்பிக்கும். உங்கள் laptop-ல் மட்டும் work ஆகும் setup ஒரு personal setup. Same image team laptop, test server மற்றும் cloud-ல் run ஆனால் அது repeatable engineering workflow. அதே நேரத்தில் Docker use பண்ணியதால் code correct அல்லது application secure என்று assume பண்ணக்கூடாது. Docker setup consistency கொடுக்கும்; quality tests-லிருந்து வரும்; security correct configuration மற்றும் review-லிருந்து வரும். Next Byte-ல் இந்த theory-ஐ ஒரு small Python API மூலம் hands-on-ஆக பார்க்கலாம்: Dockerfile எழுதுவது, image build பண்ணுவது, container run பண்ணுவது மற்றும் browser-ல் health endpoint test பண்ணுவது.
+> ஒரு simple picture மட்டும் mind-ல் வைங்க: Dockerfile recipe, image ready package, container running app. Dockerfile-ஐ direct-ஆ run பண்ண மாட்டோம். First Dockerfile use பண்ணி image build பண்ணுவோம்; பிறகு அந்த image-லிருந்து container start பண்ணுவோம். Registry அந்த image-ஐ team save மற்றும் share செய்யும் place. இந்த flow clear ஆன பிறகுதான் next concepts easy-ஆ புரியும். Byte 02-ல் short Dockerfile எழுதி, first image build செய்து, one container start பண்ணப் போறோம். Byte 03-ல் browser எப்படி container-ஐ reach பண்ணுது, important data எப்படி safe-ஆ இருக்கும், settings எப்படி change ஆகும் என்று பார்க்கலாம். Byte 04-ல் multiple containers எப்படி ஒன்றாக work பண்ணும் என்று கற்போம். Byte 05-ல் app-ஐ deployment-ready ஆக்குவோம். ஒவ்வொரு Byte-லும் already தெரிந்த concept மேல் ஒரு new concept மட்டும் add ஆகும்.
 
 ## FAQ + Knowledge Check
 
 **Docker install செய்தால் app bugs fix ஆகுமா?** இல்லை. Environment mismatch reduce ஆகும்; application bugs தனியாக fix செய்யணும்.
 
-**One image-லிருந்து multiple containers run பண்ணலாமா?** ஆம். ஒவ்வொரு container-மும் separate runtime instance.
+**One image-லிருந்து multiple containers run பண்ணலாமா?** ஆம். ஒவ்வொரு container-மும் separate running copy.
 
-**Interview-ready answer:** Docker image என்பது application மற்றும் dependencies கொண்ட immutable package. Container என்பது அந்த image-லிருந்து உருவான running instance.
+**Interview-ready answer:** Docker image என்பது app மற்றும் required files கொண்ட prepared, versioned package. Container என்பது அந்த image-லிருந்து start ஆன running copy. Dockerfile image build செய்யும் instructions-ஐ வைத்திருக்கும்.
 
 **Knowledge Check — ஒவ்வொரு correct answer-க்கும் 1 mark**
 
