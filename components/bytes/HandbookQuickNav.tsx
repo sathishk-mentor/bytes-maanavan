@@ -11,9 +11,17 @@ interface HandbookQuickNavProps {
 }
 
 function shortTitle(title: string) {
-  return title
+  const cleaned = title
     .replace(/^\d+\s*[—–:-]\s*/, '')
     .replace(/^Byte\s+\d+\s*[—–:-]\s*/i, '');
+
+  const questionEnd = cleaned.indexOf('?');
+  if (questionEnd >= 0) return cleaned.slice(0, questionEnd + 1);
+
+  const [primary, ...detail] = cleaned.split(/\s*[:—–]\s*/);
+  if (detail.length && primary.length >= 14) return primary;
+
+  return cleaned.replace(/\s+explained simply$/i, '');
 }
 
 export function HandbookQuickNav({

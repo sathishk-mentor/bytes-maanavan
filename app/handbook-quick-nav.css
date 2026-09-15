@@ -14,7 +14,7 @@
 .handbook-byte-number svg{width:.78rem}
 .handbook-byte-copy{display:grid;min-width:0;color:inherit!important;letter-spacing:normal!important}
 .handbook-byte-copy small{color:#91a0a5;font-size:.52rem;font-weight:800;letter-spacing:.11em}
-.handbook-byte-copy strong{display:-webkit-box;overflow:hidden;margin-top:.13rem;font-size:.74rem;line-height:1.38;-webkit-box-orient:vertical;-webkit-line-clamp:3}
+.handbook-byte-copy strong{display:block;margin-top:.13rem;font-size:.74rem;line-height:1.38;overflow-wrap:normal;word-break:normal}
 .handbook-byte-arrow{width:.72rem;color:#a4b1b5}
 .handbook-byte-list .is-current .handbook-byte-link{cursor:default;background:linear-gradient(135deg,#087b91,#0799a2);color:#fff;box-shadow:0 8px 20px rgba(8,123,145,.2)}
 .handbook-byte-list .is-current .handbook-byte-number{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.16);color:#fff!important}
