@@ -1,107 +1,190 @@
 ---
 title: "Build Tool-Using AI Agents with Python"
 slug: "build-ai-agents-tools-memory-python"
-summary: "Build a bounded Python learning agent with clear tools, state, memory, stopping rules, execution evidence and human approval."
+summary: "Build a bounded Python watchlist agent with clear tools, state, memory, stopping rules, execution evidence and human approval."
 category: "python-genai-agentic-ai"
 tags: ["Python AI agents", "agent tool calling", "AI agent memory", "human in the loop AI", "Model Context Protocol introduction"]
 level: "beginner"
-duration: "29 min"
-updatedAt: "2026-09-15"
+duration: "36 min"
+updatedAt: "2026-09-16"
 order: 4
 isPopular: true
 ---
 
-<ThemeCard title="Practical project" badge="PYTHON AI HANDBOOK 04">
+## Quick Start
 
-Build a **Personal Entertainment Agent** that searches available titles, compares preferences, prepares a watchlist and requests approval before changing a shared profile.
+A chatbot answers once: “Here are three weekend movies.” An agent can go further: search the current catalogue, compare family preferences, calculate total runtime and prepare a shared-watchlist update. But preparing an update is still not the same as completing it.
+
+This Byte slows the agent loop down into five visible moments—goal, tool call, observation, approval proposal and confirmed result. Stepping through them will show exactly when state changes and why the agent must pause before a consequential action.
+
+<ThemeCard title="Byte project" badge="BOUNDED AUTONOMY">
+
+Build a **Watchlist Agent** that searches verified titles, explains its plan, prepares a shared-profile update and pauses for approval before any write action.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="pythonAgent" />
+<PythonConceptLab concept="agents" />
 
-The agent decides the next step, but a Python tool performs the actual operation. Keeping these responsibilities separate makes permissions, testing and evidence clearer.
+## Start from Basics
 
-## Chatbot, copilot and agent
-
-| Pattern | Typical behaviour | Example |
+| Pattern | What it does | Example |
 |---|---|---|
-| Chatbot | Produces a response | Explains a Python error |
-| Copilot | Assists a human doing work | Drafts a weekend watchlist for review |
-| Agent | Chooses and performs tool steps | Reads preferences, checks titles and prepares options |
+| Chatbot | responds to one message | explains an age rating |
+| Copilot | assists a person doing work | drafts a weekend watchlist |
+| Agent | chooses and performs bounded steps | searches titles and prepares an update |
+| Tool | performs one external operation | `search_titles()` |
+| State | facts needed during this run | goal, steps, tool results |
+| Memory | selected context retained across runs | permitted genre preference |
+| Approval | human authorisation before consequence | confirm shared-profile update |
 
-An agent follows a loop: understand the goal, choose the next useful step, call a tool, observe the actual result and decide whether to continue or stop.
+An agent loop is **goal → choose step → call tool → observe result → stop or continue**.
 
-## Create bounded Python tools
+## Core Explanation
+
+Create narrow tools with precise contracts:
 
 ```python
-def calculate_weeks(total_hours: int, weekly_hours: int) -> int:
-    if weekly_hours <= 0:
-        raise ValueError("weekly_hours must be positive")
-    return (total_hours + weekly_hours - 1) // weekly_hours
+def search_titles(language: str, rating: str) -> list[dict]:
+    """Return currently available titles matching allowed filters."""
+    ...
+
+def add_to_watchlist(profile_id: str, title_id: str) -> dict:
+    """Add one verified title after an approval token is present."""
+    ...
 ```
 
-A tool definition needs a precise name, description, parameter schema and return contract. Narrow tools are easier to authorise, test and observe than a general `run_anything` tool.
+<PythonCodeOutcome variant="tools" />
 
-## Tamil learner analogy: junior coordinator
-
-<Scenario title="Useful autonomy with a manager boundary">
-
-A junior project coordinator can collect information, compare options and prepare the plan. Sending an official message, deleting a record, purchasing or changing access still needs manager approval.
-
-**Simple Tanglish:** Agent வேலை செய்யலாம். ஆனால் permission இல்லாமல் email send, file delete அல்லது payment செய்யக்கூடாது.
-
-</Scenario>
-
-## State and memory are different
-
-**State** is what the current run needs: goal, completed steps, tool results and remaining work. **Memory** carries selected information across interactions. Store only useful, permitted information with a retention rule. Never treat an old memory as unquestionable truth.
-
-## Read tools, write tools and approval
-
-Reading a streaming catalogue is usually lower risk than changing a shared watchlist or renting a paid title. Separate read and write capabilities, apply least privilege and require explicit approval before consequential calls.
+Avoid a general `run_anything` tool. Narrow tools are easier to authorise, validate, test and audit.
 
 ```python
-if proposed_action.type == "rent_paid_title":
+if proposed_action.type == "update_shared_watchlist":
     return {
         "status": "approval_required",
         "proposal": proposed_action.model_dump(),
     }
 ```
 
-The UI should show exactly what will happen, where and with which data. After approval, the agent must inspect the tool result before claiming success.
+<PythonCodeOutcome variant="approval" />
 
-## Stopping rules
+After approval, the agent must inspect the write tool’s result. Preparing an action, asking for approval and completing an action are three different states.
 
-A safe agent knows when to stop. Missing information, absent permission, repeated failure or a reached step limit should return control to the learner.
+Keep the loop small and make every stopping condition visible:
 
-Stop when the goal is complete, required information is missing, permission is absent, a risk boundary is reached, the same tool fails repeatedly or the maximum step count is reached.
+```python
+for step in range(1, 5):
+    decision = choose_next_step(state)
 
-Log the tool name, safe parameters, result status, latency and correlation ID. Do not log secrets or unnecessary learner content.
+    if decision.requires_approval:
+        return request_approval(decision)
 
-## Model Context Protocol
+    result = run_allowed_tool(decision.tool, decision.arguments)
+    state.record(result)
 
-MCP is a standard way for AI applications to discover and use exposed tools and context. It can improve interoperability, but it does not make a tool trustworthy. Authentication, authorisation, validation and human approval still belong to the application and tool boundary.
+    if result.goal_completed:
+        return {"status": "completed", "evidence": result}
 
-## Framework or framework-free
+return {"status": "stopped", "reason": "Step limit reached"}
+```
 
-Start with a small explicit Python loop when the workflow is narrow. Use a framework when durable state, branching, tool ecosystems, tracing or team conventions justify the added abstraction. The safety responsibilities are the same.
+<PythonCodeOutcome variant="agentloop" />
 
-## Critical safety rule
+## Architecture / Flow Diagram
 
-<ThemeCard title="Preparation is not execution" badge="AGENT SAFETY">
+<HandbookLearningVisual variant="pythonAgent" />
 
-Drafting an email does not mean it was sent. Preparing an event does not mean it was scheduled. Generating a payment request does not mean payment completed. An external action is complete only when the connected tool returns verifiable success.
+The observation step prevents blind execution. Every tool result changes what the agent knows and therefore what it should do next.
 
-</ThemeCard>
+## Types / Components
 
-## Key takeaways
+| Component | Responsibility | Safety question |
+|---|---|---|
+| Goal | desired outcome and constraints | Is “done” clear? |
+| Planner | selects the next useful step | Can it choose only allowed actions? |
+| Tool registry | exposes bounded capabilities | Are read and write tools separate? |
+| State | records current-run evidence | Can each result be traced? |
+| Memory | retains selected permitted context | Is there a retention rule? |
+| Policy | checks identity, scope and limits | Who is allowed to do this? |
+| Approval gate | pauses consequential action | Is the proposal specific? |
+| Stop rule | ends success, uncertainty or failure | Can repeated loops terminate? |
+
+Stop when the goal is complete, information is missing, permission is absent, a risk boundary is reached, a tool repeatedly fails or the maximum step count is reached.
+
+## Tool / Technology Comparison
+
+| Approach | Best for | Trade-off |
+|---|---|---|
+| Explicit Python loop | narrow workflow and transparent control | you implement state and branching |
+| Agent framework | durable state, tracing and complex branches | additional abstraction and dependency |
+| Workflow engine | predictable long-running business process | less flexible open-ended reasoning |
+| MCP-connected tools | interoperable tool/context exposure | trust and authorisation still remain yours |
+| No-code agent builder | rapid prototype with known connectors | fine-grained testing may be limited |
+
+MCP standardises how tools and context are exposed. It does not make a tool safe; authentication, authorisation, validation and approval remain application responsibilities.
+
+## Real-World Examples
+
+<PythonRealWorldVisual variant="agents" />
+
+In a support workflow, an agent may read an approved knowledge base and draft a response. Sending the response or issuing a refund needs a stronger permission boundary and verified tool result.
+
+## Imagine Pannunga
+
+<Scenario title="A junior coordinator works within a manager boundary">
+
+A junior coordinator can collect facts, compare options and prepare a plan. They should not send an official message, make a payment or change access without the correct authority and confirmation.
+
+**Simple Tanglish:** Agent research panni plan prepare pannalaam. Aana shared profile change, email send, payment madhiri action-ku clear permission and tool confirmation venum.
+
+</Scenario>
+
+## Use Cases
+
+<PythonRoleVisual variant="agents" />
+
+### Practical project
+
+Implement `search_titles`, `check_profile_preferences`, `calculate_total_runtime` and `prepare_watchlist_update`. Give the loop a maximum of four steps. Keep the update as a proposal until the user approves; then verify the tool response before reporting completion.
+
+Log tool name, safe parameters, result status, latency and correlation ID. Never log secrets or unnecessary viewer content.
+
+## Key Takeaways
 
 <Takeaways>
 
-- Agents choose actions; tools perform bounded operations.
-- State tracks the run, while memory carries selected context.
-- Separate read access from consequential write access.
-- Apply maximum steps, retries and clear stop conditions.
-- Claim completion only from confirmed tool evidence.
+- Agents choose steps; tools perform bounded operations.
+- Every tool needs a clear name, description, parameters and result contract.
+- State tracks the current run; memory carries selected context across runs.
+- Read and write capabilities should have different permissions.
+- Consequential actions need a specific, visible approval proposal.
+- Tool evidence—not model wording—proves external completion.
+- Retry, step and time limits prevent uncontrolled loops.
+- Frameworks and MCP do not remove application safety responsibilities.
 
 </Takeaways>
+
+## Final Thought + Next Path
+
+> Useful autonomy comes from clear boundaries, not unlimited capability. Your agent can now choose a tool, observe real evidence and pause before a consequential change. In the final Byte, you will test this behaviour, secure every boundary, package the application and operate it with measurable release evidence.
+
+## FAQ + Knowledge Check
+
+<KnowledgeCheck>
+
+**Is an agent simply a chatbot with a longer prompt?** No. An agent can select tools, change state and repeat steps toward a goal.
+
+**Is memory the same as state?** No. State supports the current run; memory retains selected information across interactions.
+
+**Does approval mean the action already happened?** No. Approval authorises a tool call; the returned result proves success or failure.
+
+**Does MCP guarantee a safe integration?** No. It improves interoperability, while your system still owns trust and permissions.
+
+1. What proves an external update completed? A) Draft text B) Tool success result C) Model confidence
+2. Which tool is safer? A) run_anything B) narrow typed tool C) hidden shell
+3. What ends repeated failure? A) More prompts B) Stop and retry limits C) Memory
+4. When should write access occur? A) Always B) With authority and approval C) Before validation
+5. What belongs in logs? A) Secrets B) Safe parameters and status C) Full private conversation
+
+**Answers:** 1-B, 2-B, 3-B, 4-B, 5-B. Score 4/5 or better before continuing.
+
+</KnowledgeCheck>

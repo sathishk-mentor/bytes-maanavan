@@ -1,61 +1,45 @@
 ---
 title: "Build a Generative AI Application with Python"
 slug: "build-generative-ai-application-python"
-summary: "Build a grounded Python course advisor using learner context, approved knowledge, structured LLM output, validation and human review."
+summary: "Build a grounded Python movie advisor using viewer context, approved catalogue facts, structured LLM output, validation and human review."
 category: "python-genai-agentic-ai"
-tags: ["Generative AI application Python", "LLM structured output", "Python prompt template", "grounded AI course advisor", "LLM validation"]
+tags: ["Generative AI application Python", "LLM structured output", "Python prompt template", "grounded AI assistant", "LLM validation"]
 level: "beginner"
-duration: "27 min"
-updatedAt: "2026-09-15"
+duration: "34 min"
+updatedAt: "2026-09-16"
 order: 3
 isPopular: true
 ---
 
-<ThemeCard title="Practical project" badge="PYTHON AI HANDBOOK 03">
+## Quick Start
 
-Build a **Movie Discovery Assistant** that recommends only titles in the verified streaming catalogue and explains suitability, reasoning, confidence and missing information.
+A viewer asks, “What can our family watch in Tamil within 90 minutes?” A general LLM can write a convincing recommendation, but it may choose a title that is unavailable, too long or unsuitable for the requested rating.
+
+This Byte separates two jobs that beginners often mix together. The **LLM proposes** a readable answer; the **Python application decides** whether that proposal matches approved catalogue facts. You will deliberately test one valid ID and one invented ID to see the boundary clearly.
+
+<ThemeCard title="Byte project" badge="FROM MODEL CALL TO APPLICATION">
+
+Build a grounded **Movie Discovery Assistant** that returns one verified title, a reason, suitability, confidence and any missing information.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="pythonGenAi" />
+<PythonConceptLab concept="genai" />
 
-An LLM produces a recommendation, but the Python application owns the viewer profile, approved streaming catalogue, validation rules and final decision boundary.
+## Start from Basics
 
-## What makes this an application
+| Term | Purpose |
+|---|---|
+| Model | Generates or transforms language |
+| System instruction | Stable role, limits and output rules |
+| User instruction | The current request |
+| Context | Verified facts needed for this request |
+| Structured output | Response fields your code can validate |
+| Grounding | Connecting generation to approved evidence |
+| Hallucination | Unsupported or invented output |
 
-An LLM call alone is a demo. An application adds input validation, approved context, output contracts, failure handling, privacy controls and a user experience.
+An LLM call produces text. An application adds validated input, authorised context, output contracts, privacy controls, failure handling and a user experience.
 
-```text
-Viewer preferences + streaming catalogue → Python context builder → LLM → structured output → validation → response
-```
-
-## Model, instructions and context
-
-- **System instruction:** stable role, boundaries and output rules.
-- **User instruction:** the learner’s current request.
-- **Context:** verified profile and catalogue facts needed for this request.
-- **Model response:** a proposal that application code must validate.
-
-```python
-system_instruction = """
-You are a learning-path assistant.
-Recommend only titles present in AVAILABLE_TITLES.
-If required viewer information is missing, say so.
-Return the requested structured fields.
-"""
-```
-
-## Tamil learner analogy: brief the knowledgeable assistant
-
-<Scenario title="Context turns a vague request into a useful decision">
-
-“Suggest something to watch” is like asking a friend without sharing your preferred language, genre, age rating or available time. A relevant answer needs viewing preferences and an accurate streaming catalogue.
-
-**Simple Tanglish:** “Movie suggest பண்ணு” என்பது vague request. Language, genre, age rating மற்றும் available time கொடுத்தால் useful recommendation கிடைக்கும்.
-
-</Scenario>
-
-## Define structured output
+## Core Explanation
 
 ```python
 from pydantic import BaseModel, Field
@@ -64,56 +48,138 @@ class MovieRecommendation(BaseModel):
     title_id: str
     reason: str
     suitability: str
-    next_step: str
     confidence: float = Field(ge=0, le=1)
     missing_information: list[str]
 ```
 
-Structured output makes failures visible. Python should also verify that `title_id` exists in the current catalogue and that age rating and availability match the viewer request.
+<PythonCodeOutcome variant="schema" />
 
-## Ground the recommendation
+The model should return this shape, but Python must still verify that `title_id` exists in the retrieved catalogue and that rating, language and runtime match the request.
 
-A viewer asks: **What can our family watch in Tamil within 90 minutes?** The application collects language, genre, age rating and available time. It retrieves eligible titles from the current streaming catalogue and sends only the useful facts to the model.
+```python
+system_instruction = """
+You are a movie discovery assistant.
+Recommend only a title present in AVAILABLE_TITLES.
+If required viewer information is missing, list it instead of guessing.
+Return the requested structured fields.
+"""
+```
 
-Conversation history can help with continuity, but it should be scoped, limited and summarised when necessary. Do not send an unlimited chat transcript or unrelated personal information.
+<PythonCodeOutcome variant="prompt" />
 
-## Streaming and token control
+Good context is selective. Send the viewer constraints and eligible title facts—not an unlimited chat history or unrelated personal profile.
 
-Streaming improves perceived responsiveness, but do not display an unvalidated JSON object token by token. For structured decisions, wait for and validate the complete object. Track input/output tokens, latency and estimated cost per request.
+Validate the proposal against application-owned facts:
 
-## Hallucination and human review
+```python
+def verify_recommendation(result, catalogue, profile):
+    title = catalogue.get(result.title_id)
+    if title is None:
+        return {"status": "rejected", "reason": "Unknown title"}
+    if title["language"] != profile["language"]:
+        return {"status": "rejected", "reason": "Language mismatch"}
+    if title["runtime_minutes"] > profile["available_minutes"]:
+        return {"status": "rejected", "reason": "Too long"}
+    return {"status": "accepted", "title": title}
+```
 
-If the model returns a course that is not in the approved catalogue, Python must reject it. A confident sentence is not proof that the information is correct.
+<PythonCodeOutcome variant="grounded" />
 
-The model may invent a title, availability or age rating. Deterministic checks should reject unknown identifiers. Explicit confirmation is required before adding a paid title or changing a shared family watchlist.
+## Architecture / Flow Diagram
 
-## Practical build checklist
+<HandbookLearningVisual variant="pythonGenAi" />
 
-1. Define the learner and response models.
-2. Load a small current streaming catalogue.
-3. Select relevant title facts.
-4. Build system and user messages.
-5. Request structured output.
-6. Validate required fields and title identity.
-7. Return missing information instead of guessing.
-8. Log latency and token use without logging private content.
+This is an evidence chain: viewer need → approved facts → model proposal → deterministic Python checks → response. The model never becomes the source of catalogue truth.
 
-## Interview bit
+## Types / Components
 
-<ThemeCard title="How do you reduce hallucinations?" badge="CAREER">
+| Component | Owns | Must not do |
+|---|---|---|
+| Input model | required viewer fields | accept arbitrary unvalidated data |
+| Context builder | selected verified facts | send the entire database |
+| Prompt template | role, task and response rules | mix secrets into instructions |
+| LLM client | provider request | decide business truth |
+| Output model | required response shape | prove factual correctness alone |
+| Business validator | IDs, rating, runtime, availability | trust model confidence |
+| Review boundary | consequential or uncertain decisions | hide missing information |
 
-I constrain the task, provide verified context, request structured output and validate identifiers and business rules in Python. I also define abstention behaviour and use human review for consequential recommendations. Prompting helps, but application controls provide the dependable boundary.
+Streaming improves perceived speed for conversational text. For structured decisions, collect and validate the complete object before acting on it.
 
-</ThemeCard>
+## Tool / Technology Comparison
 
-## Key takeaways
+| Pattern | Best use | Main risk |
+|---|---|---|
+| Prompt only | low-risk drafting | no dependable factual boundary |
+| Prompt + structured output | machine-readable results | valid shape may still contain false facts |
+| RAG / retrieval grounding | current approved knowledge | poor retrieval produces weak evidence |
+| Fine-tuning | stable style or repeated behaviour | not a live knowledge database |
+| Deterministic Python rule | exact business constraint | cannot understand every natural-language variation |
+
+Strong applications combine model flexibility with deterministic checks rather than forcing one technique to do every job.
+
+## Real-World Examples
+
+<PythonRealWorldVisual variant="genai" />
+
+The same pattern supports a product assistant grounded in current stock, an HR assistant grounded in approved policy, and a support assistant grounded in published help content. Always keep source identity and access rules visible.
+
+## Imagine Pannunga
+
+<Scenario title="Brief a knowledgeable assistant with the correct file">
+
+“Suggest something” gives an assistant too much room to guess. “Choose one Tamil family title under 90 minutes from this approved list” provides a decision boundary and evidence.
+
+**Simple Tanglish:** “Edhaavadhu suggest pannunga” romba vague. Language, rating, available time, verified catalogue details kuduthaa recommendation useful-ah irukkum; Python final checks pannum.
+
+</Scenario>
+
+## Use Cases
+
+<PythonRoleVisual variant="genai" />
+
+### Practical project
+
+Use a small verified catalogue with `title_id`, language, rating, genres, runtime and region. Retrieve eligible entries, request a structured recommendation, validate the identifier and constraints, and return missing information instead of guessing.
+
+Track model name, prompt version, input/output tokens, latency and estimated cost. Do not log raw private conversations by default.
+
+## Key Takeaways
 
 <Takeaways>
 
-- A production GenAI application is more than a model call.
-- Approved knowledge should ground recommendations.
-- Structured output makes validation possible.
-- Python owns deterministic business rules.
-- Privacy, token cost and human review belong in the initial design.
+- A production GenAI feature is more than one model call.
+- System instruction, user instruction and verified context have different jobs.
+- Grounding gives the model relevant approved evidence.
+- Structured output enables parsing but does not prove factual correctness.
+- Python must validate identifiers and deterministic business rules.
+- Missing information should trigger clarification, not confident guessing.
+- Streaming changes delivery timing, not the trust boundary.
+- Privacy, cost tracking and human review belong in the initial design.
 
 </Takeaways>
+
+## Final Thought + Next Path
+
+> Let the model handle language; let the application own truth, permissions and evidence. You now have a grounded feature that can explain one recommendation without inventing catalogue facts. Next, you will give the application bounded tools and learn how an agent chooses, acts, observes and stops.
+
+## FAQ + Knowledge Check
+
+<KnowledgeCheck>
+
+**Is structured output automatically correct?** No. It can match the schema while containing an unknown ID or unsuitable value.
+
+**Is RAG the same as fine-tuning?** No. RAG supplies retrieved evidence at request time; fine-tuning changes model behaviour from training examples.
+
+**Should the whole conversation always be sent?** No. Send only useful, permitted and appropriately retained context.
+
+**When is human review required?** When uncertainty or consequence is high—for example paid, shared-profile or sensitive decisions.
+
+1. Who verifies title availability? A) Model confidence B) Python against catalogue C) UI colour
+2. What should happen when language is missing? A) Guess B) Ask or return missing information C) Invent
+3. Does a valid schema prove truth? A) Yes B) No C) Only with JSON
+4. What should grounding contain? A) Relevant approved evidence B) Every record C) Secrets
+5. What should be tracked? A) Only output text B) Model, prompt, tokens, latency and cost C) Nothing
+
+**Answers:** 1-B, 2-B, 3-B, 4-A, 5-B. Score 4/5 or better before continuing.
+
+</KnowledgeCheck>

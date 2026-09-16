@@ -145,7 +145,7 @@ export const handbooks: Handbook[] = [
     chapters: [
       { title: 'Python foundations for AI applications', outcome: 'Use core Python, functions, errors, environments and packages with confidence.', href: '/python-genai-agentic-ai/python-foundations-for-ai-applications/' },
       { title: 'APIs, JSON and LLM responses', outcome: 'Call services safely and validate structured responses.', href: '/python-genai-agentic-ai/python-apis-json-llm-responses/' },
-      { title: 'Build a Generative AI application', outcome: 'Create a grounded course advisor with structured output.', href: '/python-genai-agentic-ai/build-generative-ai-application-python/' },
+      { title: 'Build a Generative AI application', outcome: 'Create a grounded movie advisor with structured output and verified catalogue facts.', href: '/python-genai-agentic-ai/build-generative-ai-application-python/' },
       { title: 'Build tool-using AI agents', outcome: 'Create bounded tools, memory, stop rules and human approval.', href: '/python-genai-agentic-ai/build-ai-agents-tools-memory-python/' },
       { title: 'Test, secure and deploy', outcome: 'Evaluate, protect, containerise, monitor and roll back the application.', href: '/python-genai-agentic-ai/test-secure-deploy-python-ai-applications/' },
     ],

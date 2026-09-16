@@ -1,131 +1,198 @@
 ---
 title: "Work with APIs, JSON and LLM Responses Using Python"
 slug: "python-apis-json-llm-responses"
-summary: "Call REST and LLM APIs with Python, handle JSON, secrets, timeouts, retries, rate limits and response validation safely."
+summary: "Call REST and LLM APIs with Python while handling JSON, secrets, timeouts, retries, rate limits and response validation safely."
 category: "python-genai-agentic-ai"
 tags: ["Python REST API tutorial", "Python JSON", "LLM API Python", "API keys environment variables", "async Python API"]
 level: "beginner"
-duration: "24 min"
-updatedAt: "2026-09-15"
+duration: "31 min"
+updatedAt: "2026-09-16"
 order: 2
 isPopular: true
 ---
 
-<ThemeCard title="Practical outcome" badge="PYTHON AI HANDBOOK 02">
+## Quick Start
 
-Connect the movie-discovery assistant to an external service and turn its JSON response into a validated title suggestion.
+The first version works only with titles written inside its Python file. Tomorrow a title may be added, removed or become unavailable in India. Editing the code for every catalogue change is not practical, so the Python application must ask another service for current data.
+
+This Byte follows one complete exchange: Python prepares a request, the service returns an HTTP status and JSON body, and Python decides whether the response is safe to use. You will see why **“request succeeded”** and **“data is valid”** are two different checks.
+
+<ThemeCard title="Byte outcome" badge="CONNECT SAFELY">
+
+Connect the Movie Discovery Assistant to an external catalogue, convert the JSON response into Python data, and fail clearly when the service is slow, unavailable or returns an unexpected shape.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="pythonApi" />
+<PythonConceptLab concept="api" />
 
-Your Python application should treat every API response as external data. First check whether the request succeeded, then parse the JSON and validate the fields your workflow needs.
+## Start from Basics
 
-## API mental model
-
-An API is a contract between applications. A client sends a request containing a method, URL, headers and optional body. The service returns a status code, headers and response body.
-
-| Method | Typical purpose | Example |
+| Term | Meaning | Example |
 |---|---|---|
-| `GET` | Read | Retrieve a course |
-| `POST` | Create or run | Request an LLM recommendation |
-| `PUT/PATCH` | Replace or update | Update learner progress |
-| `DELETE` | Remove | Delete an authorised draft |
+| Client | Application making the request | Python movie assistant |
+| Endpoint | Address for one capability | `/v1/titles/search` |
+| Method | Requested operation | `GET` or `POST` |
+| Header | Request metadata | authorisation, content type |
+| Body | Data sent with the request | viewer filters |
+| Status code | Transport-level outcome | `200`, `404`, `429`, `500` |
+| JSON | Text format for structured data | title, rating and runtime fields |
 
-## Tamil learner analogy: restaurant waiter
+An API is a contract. It defines what the client may send, what the service returns, and how failures are represented.
 
-<Scenario title="Request through an agreed interface">
-
-A customer does not enter the kitchen and operate its equipment. The waiter accepts an order in an understood format and returns the result. An API provides that controlled interface between applications.
-
-**Simple Tanglish:** Customer direct-ஆ kitchen-க்கு போக மாட்டார். Waiter மூலமாக request அனுப்புவார். அதுபோல application, API மூலமாக service-ஐ communicate செய்யும்.
-
-</Scenario>
-
-## JSON becomes Python data
-
-```json
-{
-  "title": "Family Adventure",
-  "confidence": 0.88,
-  "available_on": ["Mobile", "TV"]
-}
-```
-
-JSON objects become dictionaries; arrays become lists; strings, numbers, Booleans and null become their Python equivalents.
+## Core Explanation
 
 ```python
 import requests
 
 response = requests.get(
-    "https://example.com/api/courses",
+    "https://api.example.com/v1/titles",
+    params={"language": "Tamil", "rating": "U"},
     timeout=10,
 )
 response.raise_for_status()
-courses = response.json()
+titles = response.json()
 ```
 
-Always set a timeout. Without one, a slow dependency can hold application resources indefinitely.
+<PythonCodeOutcome variant="request" />
 
-## Keep API keys outside code
-
-```python
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-api_key = os.environ["MODEL_API_KEY"]
-```
-
-Keep `.env` out of Git and provide secrets through the deployment platform in production. Never expose a provider key in browser code.
-
-## Validate the response
-
-Status `200` does not prove the data is correct. Check content type, required fields, types and allowed values.
+Always add a timeout. `raise_for_status()` catches HTTP failures, but a successful status does not prove the JSON contains the fields or values your application expects.
 
 ```python
-def validate_suggestion(data: dict) -> dict:
-    required = {"title", "reason", "confidence"}
+def validate_title(data: dict) -> dict:
+    required = {"id", "name", "rating", "runtime_minutes"}
     missing = required - data.keys()
     if missing:
         raise ValueError(f"Missing fields: {sorted(missing)}")
-    if not 0 <= float(data["confidence"]) <= 1:
-        raise ValueError("Confidence must be between 0 and 1")
+    if data["runtime_minutes"] <= 0:
+        raise ValueError("runtime_minutes must be positive")
     return data
 ```
 
-## Failures, retries and rate limits
+<PythonCodeOutcome variant="validation" />
 
-A retry is useful only when the failure may be temporary. Invalid credentials or an incorrect request must be corrected rather than sent repeatedly.
+Keep provider keys outside code:
 
-Retry only temporary failures such as a timeout or selected `429` and `5xx` responses. Use exponential backoff with jitter and a maximum attempt count. Do not retry invalid credentials or malformed requests.
+```python
+import os
+api_key = os.environ["CATALOGUE_API_KEY"]
+```
 
-Async Python is useful when one request waits for multiple independent network calls. It does not make CPU-heavy work automatically faster, and it does not remove provider limits.
+<PythonCodeOutcome variant="secret" />
 
-## Practical task
+Do not commit `.env`, print secrets in logs, or expose a server-side key in browser JavaScript.
 
-Create `get_movie_suggestions(profile)` that sends permitted viewing preferences, applies a timeout, checks the HTTP status, parses JSON and validates the required fields. Add clear handling for timeout, rate limit and invalid response cases.
+Handle temporary failures with a bounded retry—not an endless loop:
 
-## Common mistakes
+```python
+import time
 
-<Mistakes>
+for attempt in range(1, 4):
+    response = requests.get(url, timeout=10)
+    if response.status_code != 429:
+        response.raise_for_status()
+        break
+    time.sleep(attempt * 2)
+else:
+    raise RuntimeError("Catalogue is temporarily unavailable")
+```
 
-- Committing `.env` or printing secrets in logs.
-- Retrying every failure without a limit.
-- Assuming every successful HTTP response has the expected schema.
-- Sending private viewer details that the model does not need.
-- Treating asynchronous code as a substitute for capacity planning.
+<PythonCodeOutcome variant="retry" />
 
-</Mistakes>
+## Architecture / Flow Diagram
 
-## Key takeaways
+<HandbookLearningVisual variant="pythonApi" />
+
+The request crosses a trust boundary twice: data leaves your application and external data returns. Validate what goes out, limit what you disclose, and validate what comes back.
+
+## Types / Components
+
+| Component | Job | Failure to plan for |
+|---|---|---|
+| Request builder | URL, method, headers and body | sending unnecessary private fields |
+| HTTP client | connection, timeout and response | network timeout |
+| Authentication | proves the caller’s identity | expired or missing key |
+| JSON parser | converts text to Python values | malformed JSON |
+| Validator | checks required business fields | missing or invalid values |
+| Retry policy | repeats selected temporary failures | retry storm |
+| Error mapper | returns a useful application error | leaking provider details |
+
+Async Python helps when one request waits for several independent network calls. It does not make CPU-heavy work faster and does not remove provider limits.
+
+## Tool / Technology Comparison
+
+| Option | Use it when | Watch for |
+|---|---|---|
+| `requests` | simple synchronous scripts and services | each call blocks its worker |
+| `httpx` | sync/async clients and modern timeout control | still needs validation and retry policy |
+| provider SDK | convenient model-specific features | tighter vendor coupling |
+| direct REST | you want explicit HTTP contracts | more request/response code |
+| webhook | provider sends an event later | authenticate and prevent duplicate handling |
+
+Choose from the application’s concurrency and portability needs, not from popularity alone.
+
+## Real-World Examples
+
+<PythonRealWorldVisual variant="api" />
+
+A food-delivery app checks restaurant availability, a payment service checks transaction status, and an AI application calls a model provider. The domain changes; the reliability pattern stays: timeout, validate, recover and observe.
+
+## Imagine Pannunga
+
+<Scenario title="An API works like ordering through a waiter">
+
+A customer uses an agreed menu and gives the waiter a clear order. The waiter carries it to the kitchen and returns the result. The customer does not enter the kitchen or control its equipment. An API provides the same controlled interface between applications.
+
+**Simple Tanglish:** Customer direct-ah kitchen-kulla pogama waiter-kitta clear order kuduppaar. Adhe madhiri Python app, API contract moolama service-kitta request anuppi response receive pannum.
+
+</Scenario>
+
+## Use Cases
+
+<PythonRoleVisual variant="api" />
+
+### Practical task
+
+Build `get_movie_suggestions(profile)`. Send only language, rating, genre and available time. Apply a 10-second timeout, validate the JSON fields and handle timeout, `401`, `429`, `5xx` and invalid response cases separately.
+
+Retry only failures likely to be temporary—selected timeouts, `429` and `5xx` responses—with exponential backoff, jitter and a maximum attempt count. Do not retry invalid credentials or malformed requests.
+
+## Key Takeaways
 
 <Takeaways>
 
-- APIs are explicit request-response contracts.
-- JSON needs application-level validation after parsing.
-- Secrets belong in environment or secret-management systems.
-- Timeouts, bounded retries and rate-limit handling are production basics.
-- Validate LLM output before displaying or using it.
+- An API is an explicit contract between a client and a service.
+- Method, URL, headers and optional body form the request.
+- Status codes describe transport outcomes, not business correctness.
+- JSON becomes Python data only after parsing.
+- External responses need schema and business-rule validation.
+- Secrets belong in runtime configuration, never source or browser code.
+- Timeouts and bounded retries prevent dependencies from consuming resources forever.
+- Async improves waiting concurrency, not provider capacity or CPU speed.
 
 </Takeaways>
+
+## Final Thought + Next Path
+
+> Connecting an API is easy; making that dependency safe is the engineering work. Your application now knows how to send a minimal request, protect its key, validate JSON and recover from common failures. Next, you will combine verified catalogue facts with an LLM to build a grounded Generative AI feature.
+
+## FAQ + Knowledge Check
+
+<KnowledgeCheck>
+
+**Does status 200 mean the response is safe to use?** No. It only confirms HTTP success; validate fields, types and allowed values.
+
+**Should every failure be retried?** No. Retry only selected temporary failures with limits. Fix authentication and malformed requests.
+
+**Where should an API key live?** In a runtime environment or managed secret system, not Git, logs or browser code.
+
+**When is async useful?** When a workflow spends time waiting on multiple independent I/O operations.
+
+1. Which setting prevents indefinite waiting? A) Timeout B) Loop C) Print
+2. What does a JSON object become in Python? A) Set B) Dictionary C) Tuple
+3. Should `401` be retried repeatedly? A) Yes B) No C) Only at night
+4. What follows parsing? A) Trust immediately B) Validation C) Delete response
+5. Which data should be sent? A) Entire profile B) Only needed fields C) API key in body
+
+**Answers:** 1-A, 2-B, 3-B, 4-B, 5-B. Score 4/5 or better before continuing.
+
+</KnowledgeCheck>

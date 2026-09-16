@@ -5,76 +5,143 @@ summary: "Productionise a Python AI agent with architecture boundaries, tests, L
 category: "python-genai-agentic-ai"
 tags: ["production Python AI application", "LLM evaluation", "AI agent security", "Docker Python AI", "prompt injection controls"]
 level: "beginner"
-duration: "30 min"
-updatedAt: "2026-09-15"
+duration: "38 min"
+updatedAt: "2026-09-16"
 order: 5
 isPopular: true
 ---
 
-<ThemeCard title="Complete handbook outcome" badge="PYTHON AI HANDBOOK 05">
+## Quick Start
 
-Productionise the **Movie Discovery and Watchlist Assistant** with automated evidence, safety controls, repeatable deployment, monitoring and recovery.
+The assistant works on a developer’s laptop and the container starts successfully. That is encouraging, but it proves only one environment and one happy path. Real users bring missing fields, unexpected language, repeated requests and malicious instructions. Model providers can slow down, costs can rise and a newer model can reduce answer quality.
+
+This Byte turns “it runs” into four separate release questions: Does the code behave correctly? Does the AI meet a measured quality threshold? Are permissions and limits active? Can the team observe and roll back the release? You will run each gate independently and see why deployment stays blocked when even one form of evidence is missing.
+
+<ThemeCard title="Complete handbook project" badge="PRODUCTION EVIDENCE">
+
+Release the **Movie Discovery and Watchlist Assistant** with automated tests, AI evaluations, permission controls, Docker packaging, monitoring and a rehearsed rollback path.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="pythonProduction" />
+<PythonConceptLab concept="production" />
 
-Production readiness means the team can prove expected behaviour, limit unsafe behaviour, observe real usage and recover when a release fails.
+## Start from Basics
 
-## Organise clear boundaries
+| Term | Plain meaning |
+|---|---|
+| Unit test | proves one small deterministic rule |
+| Integration test | proves two real boundaries work together |
+| AI evaluation | measures variable model behaviour against criteria |
+| Observability | evidence from logs, metrics and traces |
+| Health check | confirms the service can receive work |
+| Rollback | restores a known compatible release |
+| Release threshold | measurable rule that allows or blocks deployment |
+
+Production-ready means the team can prove expected behaviour, limit unsafe behaviour, observe real usage and recover from failure.
+
+## Core Explanation
+
+Separate responsibilities:
 
 ```text
 app/
   api/          # request and response contracts
-  services/     # learning workflow
-  ai/           # prompts, models and tool loop
+  services/     # movie-discovery workflow
+  ai/           # prompts, models and agent loop
   tools/        # bounded operations
   models/       # typed data models
 tests/
 evals/
 ```
 
-Separating application logic from provider-specific AI logic makes testing, model changes and incident recovery easier.
+<PythonCodeOutcome variant="structure" />
 
-## Test deterministic code first
+Test deterministic rules first:
 
 ```python
-def test_calculate_weeks_rounds_up():
-    assert calculate_weeks(total_hours=21, weekly_hours=5) == 5
+def test_rejects_title_over_time_limit():
+    result = is_eligible(runtime_minutes=125, available_minutes=90)
+    assert result is False
 ```
 
-Unit tests cover small rules. Integration tests cover API, database and provider boundaries. Mock external APIs for stable failure tests, but keep a controlled end-to-end test against the real integration.
+<PythonCodeOutcome variant="test" />
 
-## Evaluate the AI behaviour
+Then maintain a versioned AI evaluation set containing normal requests, missing context, unavailable titles, prompt-injection attempts, tool failures and approval-required actions. Measure criteria such as catalogue validity, constraint match, grounded explanation and safe stopping.
 
-Maintain a fixed dataset containing normal questions, missing-context cases, unavailable titles, prompt-injection attempts and expected safety behaviour. Measure whether the system selected an available title, used the correct catalogue facts, returned required fields and requested approval when needed.
+Turn those criteria into a release decision:
 
-Model output varies. Use semantic criteria and business checks rather than expecting identical sentences.
+```python
+thresholds = {
+    "grounded_accuracy": 0.90,
+    "safe_stop_rate": 1.00,
+    "prompt_injection_pass_rate": 1.00,
+}
 
-## Tamil learner analogy: bus readiness check
+release_ready = all(
+    evaluation[name] >= minimum
+    for name, minimum in thresholds.items()
+)
 
-<Scenario title="A successful local start is not a safe journey">
+print("APPROVED" if release_ready else "BLOCKED")
+```
 
-Before a bus begins a long trip, the driver checks brakes, tyres, fuel and documents. A Python AI application needs tests, security, monitoring and a recovery plan before real users depend on it.
+<PythonCodeOutcome variant="evaluation" />
 
-**Simple Tanglish:** Local system-ல் work ஆகிறது என்பதால் production-ready என்று சொல்ல முடியாது. Test, security, logging மற்றும் monitoring எல்லாம் வேண்டும்.
+## Architecture / Flow Diagram
+
+<HandbookLearningVisual variant="pythonProduction" />
+
+Each gate answers a different question: Does the code work? Is the AI useful? Is access controlled? Can the system be operated and recovered?
+
+## Types / Components
+
+| Layer | Evidence before release | Production signal |
+|---|---|---|
+| Application logic | unit and contract tests | error rate |
+| Provider integration | timeout and failure tests | dependency latency |
+| AI behaviour | fixed evaluation thresholds | grounded success rate |
+| Agent tools | permission and approval tests | tool failure rate |
+| Security | secret, input and access review | denied/abnormal requests |
+| Runtime | image scan and health check | availability and resource use |
+| Cost | token and request limits | cost per successful task |
+| Recovery | tested rollback procedure | recovery time |
+
+Version the image, prompt, model configuration, tools and evaluation set together. Rolling back only a prompt may restore an incompatible combination.
+
+## Tool / Technology Comparison
+
+| Technique | Proves | Does not prove alone |
+|---|---|---|
+| Unit test | exact function behaviour | real provider integration |
+| Mocked integration test | controlled success/failure paths | provider’s current behaviour |
+| Live smoke test | basic real connectivity | broad AI quality |
+| Offline AI evaluation | repeatable quality/safety criteria | production traffic behaviour |
+| Monitoring | what is happening in production | why every issue happened |
+| Docker image | repeatable runtime package | security, quality or scalability |
+
+Use multiple forms of evidence. No single green check represents the whole system.
+
+## Real-World Examples
+
+<PythonRealWorldVisual variant="production" />
+
+An ecommerce assistant can be available but recommend out-of-stock products. A support agent can be fast but call the wrong write tool. Infrastructure health and task quality must be measured separately.
+
+## Imagine Pannunga
+
+<Scenario title="A bus needs more than a running engine">
+
+Before a long trip, the operator checks brakes, tyres, fuel, documents and the recovery plan—not only whether the engine starts. A production AI application also needs tests, security, monitoring, limits and rollback.
+
+**Simple Tanglish:** Local laptop-la app run aagudhu-na demo ready. Production-ready aaganum-na tests, evals, security, monitoring, cost limit, rollback ellam evidence-oda pass aaganum.
 
 </Scenario>
 
-## Protect every boundary
+## Use Cases
 
-- Store secrets in a managed secret system.
-- Authenticate users and authorise tools independently.
-- Treat user text and retrieved documents as untrusted input.
-- Keep system rules separate from external content.
-- Allowlist tools and validate their parameters.
-- Limit requests, agent steps, tokens, time and cost.
-- Redact personal information from logs.
-- Require approval for consequential operations.
+<PythonRoleVisual variant="production" />
 
-Prompt injection cannot be solved by one warning sentence. Reduce its impact with least privilege, source labelling, instruction separation, output validation and approval gates.
-
-## Package with Docker
+### Package and release
 
 ```dockerfile
 FROM python:3.12-slim
@@ -86,43 +153,49 @@ USER 10001
 CMD ["python", "-m", "app"]
 ```
 
-Pin dependencies, scan the image, run as a non-root user and inject secrets only at runtime. Add a lightweight health endpoint that checks the application process without making an expensive LLM call.
+<PythonCodeOutcome variant="docker" />
 
-## Observe the real system
+Pin dependencies, scan the image, run as non-root and inject secrets only at runtime. A lightweight health endpoint should not make an expensive LLM call.
 
-Monitoring should answer practical questions: Is the application available? Are recommendations useful? Which tools fail? How much does each request cost?
+Track request count, errors, latency, token usage, cost, tool failures, approval outcomes and AI quality. Use correlation IDs without logging secrets or unnecessary private content.
 
-Track request count, error rate, latency, token usage, estimated cost, tool failures, approval outcomes and evaluation quality. Use correlation IDs to follow one request without exposing private content.
-
-Version prompts, model configuration, tools and evaluation datasets. A rollback must restore a known compatible combination—not only an older prompt.
-
-## Production checklist
-
-1. Unit and integration tests pass.
-2. Fixed AI evaluation meets release thresholds.
-3. Secrets and permissions are reviewed.
-4. Rate, token, cost and agent-step limits work.
-5. Image scan and health check pass.
-6. Logs, metrics and alerts are available.
-7. Database backup and migration plan are confirmed.
-8. Rollback is documented and rehearsed.
-
-## Interview bit
-
-<ThemeCard title="How do you test an LLM application?" badge="CAREER">
-
-I separate deterministic application tests from probabilistic AI evaluations. Unit and integration tests prove contracts and controls; a versioned evaluation dataset measures groundedness, task success and safety. I record model and prompt versions, monitor production signals and define a rollback threshold.
-
-</ThemeCard>
-
-## Key takeaways
+## Key Takeaways
 
 <Takeaways>
 
-- Production readiness combines tests, evaluation, security and operations.
-- LLM quality needs a fixed, versioned evaluation dataset.
-- Limits protect reliability and cost as well as security.
-- Docker provides a repeatable runtime, not complete operational safety.
-- Monitoring and rollback complete the release system.
+- Production readiness combines tests, AI evaluation, security and operations.
+- Deterministic tests and probabilistic AI evaluations solve different problems.
+- A fixed, versioned dataset makes quality comparisons repeatable.
+- Prompt injection requires layered controls, not one warning sentence.
+- Identity, permissions and approval must protect tool boundaries.
+- Docker packages the runtime but does not prove application quality.
+- Reliability, quality, latency and cost need separate production signals.
+- Rollback must restore a known compatible release combination.
 
 </Takeaways>
+
+## Final Thought + Next Path
+
+> The handbook began with one Python function and ends with an operable AI system. The important progression is not “more AI”; it is stronger evidence at every boundary. Continue by rebuilding the project with your own domain, keeping the same contracts, validation, approvals, evaluations and recovery discipline.
+
+## FAQ + Knowledge Check
+
+<KnowledgeCheck>
+
+**Can I test an LLM by comparing exact sentences?** Usually no. Measure task criteria, required facts, structure and safety behaviour while allowing wording variation.
+
+**Does Docker make the application secure?** No. It provides repeatable packaging. Permissions, secrets, validation and runtime controls remain necessary.
+
+**Can a health check call the LLM?** Avoid expensive dependency calls in basic liveness checks. Use separate readiness or synthetic monitoring where appropriate.
+
+**What should rollback restore?** A tested, compatible combination of image, prompt, model configuration, tools and schema.
+
+1. What tests one pure function? A) Unit test B) Dashboard C) Load balancer
+2. What measures grounded recommendation quality? A) Port check B) AI evaluation C) Image size
+3. Where are secrets injected? A) Image layer B) Runtime secret system C) Git
+4. What protects cost? A) Unlimited context B) Token and request limits C) More logs
+5. What completes a release plan? A) Deployment only B) Monitoring and rollback C) Model name
+
+**Answers:** 1-A, 2-B, 3-B, 4-B, 5-B. Score 4/5 or better to complete the handbook.
+
+</KnowledgeCheck>
