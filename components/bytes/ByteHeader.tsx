@@ -7,6 +7,11 @@ import { ByteMetadata } from '@/lib/types';
 import { getCategoryBySlug } from '@/lib/categories';
 
 const handbookHeroes = {
+  '01-what-is-an-ai-agent-from-answering-to-taking-action': { label: 'REPLY TO RESOLUTION', icon: Bot, steps: [[MessageSquareText, 'Question'], [Bot, 'Choose'], [Wrench, 'Use tool'], [CheckCircle2, 'Resolve']] },
+  '02-how-an-ai-agent-works-goal-reasoning-tools-actions': { label: 'AGENT DECISION LOOP', icon: Network, steps: [[Users, 'Goal'], [Bot, 'Reason'], [Wrench, 'Act'], [ScanSearch, 'Observe']] },
+  '03-tools-knowledge-memory-explained-simply': { label: 'USE-CASE FIT', icon: Gauge, steps: [[Search, 'Find task'], [Clock3, 'Measure time'], [ShieldCheck, 'Check risk'], [CheckCircle2, 'Pilot']] },
+  '04-build-first-ai-agent-without-coding': { label: 'GUARDRAIL PATH', icon: ShieldCheck, steps: [[KeyRound, 'Limit access'], [ShieldCheck, 'Validate'], [Users, 'Approve'], [FileText, 'Log']] },
+  '05-use-ai-agents-safely-responsibly': { label: 'SAFE PILOT PATH', icon: Rocket, steps: [[Search, 'Identify'], [Sparkles, 'Try'], [TestTube2, 'Pilot'], [Gauge, 'Review']] },
   '62-how-developers-use-ai-tools': { label: 'COPILOT WORKFLOW', icon: Bot, steps: [[FileCode2, 'Your context'], [Sparkles, 'Copilot suggests'], [ScanSearch, 'You inspect'], [CheckCircle2, 'You decide']] },
   '63-api-first-thinking': { label: 'CONTEXT ENGINE', icon: Braces, steps: [[FileCode2, 'Instructions'], [Code2, 'Open files'], [Braces, 'Codebase context'], [Sparkles, 'Grounded answer']] },
   '66-ai-assisted-coding-workflow': { label: 'FEATURE DELIVERY', icon: GitPullRequestArrow, steps: [[FileCode2, 'Define task'], [Sparkles, 'Generate change'], [TestTube2, 'Run checks'], [GitPullRequestArrow, 'Review diff']] },
