@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowRight, Box, CheckCircle2, Container, Database, FileCode2, Globe2, KeyRound, Network, Play, Server, Sparkles } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowRight, Box, CheckCircle2, Container, Database, FileCode2, Globe2, KeyRound, LoaderCircle, Network, Play, RotateCcw, Server, Sparkles, TerminalSquare } from 'lucide-react';
 
 type Concept = 'imageContainer' | 'buildRun' | 'runtime' | 'compose' | 'deploy';
 type Language = 'en' | 'ta';
@@ -77,16 +77,69 @@ const labs = {
   }
 } as const;
 
+const simulations = {
+  imageContainer: {
+    en: [
+      ['Build image','docker build -t order-app:1.0 .','Docker reads the Dockerfile','Image created: order-app:1.0','IMAGE'],
+      ['Start container','docker run --name order-api order-app:1.0','Docker uses the saved image','Container running: order-api','CONTAINER'],
+    ],
+    ta: [
+      ['Image build பண்ணு','docker build -t order-app:1.0 .','Dockerfile instructions read ஆகுது','Image ready: order-app:1.0','IMAGE'],
+      ['Container start பண்ணு','docker run --name order-api order-app:1.0','Saved image use ஆகுது','Container running: order-api','CONTAINER'],
+    ],
+  },
+  buildRun: {
+    en: [['Build the app','docker build -t delivery-status:1.0 .','Installing the recorded dependencies','Image ready: delivery-status:1.0','IMAGE'],['Run and check','docker run -p 8000:8000 delivery-status:1.0','Starting the application process','Healthy response: localhost:8000/health','HEALTHY']],
+    ta: [['App image build பண்ணு','docker build -t delivery-status:1.0 .','Required libraries install ஆகுது','Image ready: delivery-status:1.0','IMAGE'],['Run செய்து check பண்ணு','docker run -p 8000:8000 delivery-status:1.0','Application process start ஆகுது','Healthy response: localhost:8000/health','HEALTHY']],
+  },
+  runtime: {
+    en: [['Open the app door','docker run -p 8080:8000 delivery-status:1.0','Connecting laptop 8080 to container 8000','Browser can reach localhost:8080','PORT'],['Attach safe storage','docker run -v delivery-data:/app/data delivery-status:1.0','Mounting storage outside the container','Volume attached: delivery-data','VOLUME']],
+    ta: [['App door open பண்ணு','docker run -p 8080:8000 delivery-status:1.0','Laptop 8080 → container 8000 connect ஆகுது','Browser localhost:8080-ஐ reach பண்ணலாம்','PORT'],['Data notebook attach பண்ணு','docker run -v delivery-data:/app/data delivery-status:1.0','Container outside storage mount ஆகுது','Volume attached: delivery-data','VOLUME']],
+  },
+  compose: {
+    en: [['Start the app team','docker compose up --build','Creating the private network and services','order-api and postgres are running','2 SERVICES'],['Check the team','docker compose ps','Reading each service state','Both services report running','READY']],
+    ta: [['App team start பண்ணு','docker compose up --build','Private network மற்றும் services create ஆகுது','order-api + postgres running','2 SERVICES'],['Team status check பண்ணு','docker compose ps','ஒவ்வொரு service state-ம் read ஆகுது','Both services running','READY']],
+  },
+  deploy: {
+    en: [['Validate the image','docker run --read-only support-app:1.0','Checking the versioned application package','Image starts without a baked-in secret','VALID'],['Release safely','deploy support-app:1.0 --traffic 10%','Sending limited traffic first','Release observed; rollback remains ready','10% LIVE']],
+    ta: [['Image validate பண்ணு','docker run --read-only support-app:1.0','Versioned app package check ஆகுது','Secret இல்லாமல் image start ஆகுது','VALID'],['Safe release பண்ணு','deploy support-app:1.0 --traffic 10%','First limited traffic மட்டும் அனுப்புது','Release observe ஆகுது; rollback ready','10% LIVE']],
+  },
+} as const;
+
 export function DockerConceptLab({concept,language='en'}:{concept:Concept;language?:Language}) {
   const lab=labs[concept][language];
   const [active,setActive]=useState(0);
   const [revealed,setRevealed]=useState(false);
+  const [simStep,setSimStep]=useState(0);
+  const [running,setRunning]=useState(false);
+  const [completed,setCompleted]=useState<number[]>([]);
   const step=lab.steps[active];
   const Icon=step[0];
+  const sim=simulations[concept][language];
+  const currentSim=sim[simStep];
+  useEffect(()=>()=>setRunning(false),[]);
+  const execute=()=>{
+    if(running)return;
+    setRunning(true);
+    window.setTimeout(()=>{
+      setRunning(false);
+      setCompleted(previous=>previous.includes(simStep)?previous:[...previous,simStep]);
+    },1100);
+  };
+  const reset=()=>{setSimStep(0);setRunning(false);setCompleted([])};
   return <section className="docker-concept-lab" aria-label={lab.title}>
     <header><small>{lab.eyebrow}</small><h3>{lab.title}</h3><p>{lab.prompt}</p></header>
     <div className="docker-concept-track">{lab.steps.map((item,index)=>{const StepIcon=item[0];return <button key={item[1]} type="button" className={index===active?'active':''} onClick={()=>{setActive(index);setRevealed(false)}}><span>{index+1}</span><StepIcon/><b>{item[1]}</b>{index<lab.steps.length-1&&<ArrowRight/>}</button>})}</div>
     <div className="docker-concept-focus"><span><Icon/></span><div><small>{step[2]}</small><p>{step[3]}</p></div></div>
+    <div className="docker-command-simulator">
+      <header><div><TerminalSquare/><span><small>GUIDED COMMAND SIMULATION</small><b>{language==='ta'?'Command run பண்ணி result பாருங்க':'Run a command and watch what Docker creates'}</b></span></div><i>LEARNING MODE</i></header>
+      <div className="docker-sim-workspace">
+        <nav>{sim.map((item,index)=><button type="button" key={item[0]} className={index===simStep?'active':''} disabled={index>0&&!completed.includes(index-1)} onClick={()=>setSimStep(index)}><span>{completed.includes(index)?<CheckCircle2/>:index+1}</span>{item[0]}</button>)}</nav>
+        <section className="docker-sim-terminal"><div><i/><i/><i/><small>SIMULATED TERMINAL</small></div><code><em>$</em> {currentSim[1]}</code><p className={running?'running':''}>{running?<><LoaderCircle/>{currentSim[2]}...</>:completed.includes(simStep)?<><CheckCircle2/>{currentSim[3]}</>:language==='ta'?'Execute click பண்ணுங்க — real system change ஆகாது':'Click execute — no real system changes are made'}</p><button type="button" onClick={execute} disabled={running||completed.includes(simStep)}>{running?<><LoaderCircle/>Running...</>:completed.includes(simStep)?<><CheckCircle2/>Completed</>:<><Play/>Execute</>}</button></section>
+        <section className={`docker-sim-output ${completed.includes(simStep)?'created':''}`}><span>{completed.includes(simStep)?<CheckCircle2/>:<Box/>}</span><small>DOCKER OUTPUT</small><strong>{completed.includes(simStep)?currentSim[4]:'WAITING'}</strong><p>{completed.includes(simStep)?currentSim[3]:language==='ta'?'Command execute ஆன பிறகு result இங்கே வரும்':'The created object will appear here'}</p></section>
+      </div>
+      <footer><span>{language==='ta'?'இது browser learning simulation; உங்கள் computer-ல் command execute ஆகாது.':'Browser learning simulation — this does not execute on your computer.'}</span><button type="button" onClick={reset}><RotateCcw/>Reset</button></footer>
+    </div>
     <div className="docker-concept-check"><div><small>QUICK PREDICTION</small><b>{lab.check}</b></div><button type="button" onClick={()=>setRevealed(v=>!v)}>{revealed?'Hide answer':'Check answer'}</button>{revealed&&<p><CheckCircle2/>{lab.answer}</p>}</div>
   </section>;
 }
