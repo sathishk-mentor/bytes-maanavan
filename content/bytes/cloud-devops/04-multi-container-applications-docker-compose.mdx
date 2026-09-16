@@ -106,6 +106,12 @@ Inside the frontend container, `localhost` means **the frontend container itself
 
 This single idea solves many beginner connection failures.
 
+<ThemeCard title="Simple Tanglish — localhost rule" badge="TAMIL LEARNER SUPPORT">
+
+Container-க்குள் `localhost` என்றால் **அந்த same container**. Backend database-ஐ call பண்ணும்போது `localhost:5432` use பண்ணக்கூடாது. Compose service name use பண்ணணும்: `postgres:5432`.
+
+</ThemeCard>
+
 ## `depends_on` is not business readiness
 
 Starting a database process does not mean it is ready to accept queries. A health check can give Compose a stronger readiness signal, and `depends_on` can wait for that condition. Your application should still handle temporary unavailability with bounded retries and clear errors because services can fail after startup.

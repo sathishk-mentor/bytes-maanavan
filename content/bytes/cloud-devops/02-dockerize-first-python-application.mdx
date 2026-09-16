@@ -11,17 +11,15 @@ order: 2
 isPopular: false
 ---
 
+## Quick Start
+
 <ThemeCard title="What you will build" badge="DOCKER HANDBOOK 02">
 
 A tiny Flask health service packaged in a Docker image. You will understand every Dockerfile instruction, build the image, run the container, test it and inspect failures instead of copying commands blindly.
 
 </ThemeCard>
 
-<DockerFlowVisual variant="buildRun" />
-
-<DockerConceptLab concept="buildRun" />
-
-## Start with a tiny working application
+## Start from Basics
 
 Before using Docker, understand what the application does. This example has one `/health` address. When it is working, that address returns a small message saying the service is healthy. It also has a `requirements.txt` file that records the Flask library it needs.
 
@@ -48,7 +46,19 @@ Flask==3.1.2
 
 Pinning a version improves reproducibility. In a real project, use your team’s dependency-locking and vulnerability-update process rather than leaving dependencies permanently frozen.
 
-## Write the Dockerfile
+## Core Explanation
+
+<DockerConceptLab concept="buildRun" />
+
+## Architecture / Flow Diagram
+
+<DockerFlowVisual variant="buildRun" />
+
+<HandbookLearningVisual variant="dockerBuild" />
+
+## Types / Components
+
+### Read the Dockerfile as seven small decisions
 
 Create a file named exactly `Dockerfile`:
 
@@ -80,7 +90,7 @@ CMD ["python", "app.py"]
 
 Copying `requirements.txt` before `app.py` helps Docker reuse the dependency layer when only application code changes. This is a practical use of the build cache.
 
-## Add a `.dockerignore`
+### Add a `.dockerignore`
 
 ```text
 __pycache__/
@@ -92,9 +102,7 @@ __pycache__/
 
 The build context is the set of files sent to the builder. A `.dockerignore` keeps irrelevant, large or sensitive local files out of that context. It is not your only secret-control mechanism, but it reduces accidental inclusion.
 
-## Build and start your first container
-
-<HandbookLearningVisual variant="dockerBuild" />
+### Build and start your first container
 
 Run these commands from the directory containing the Dockerfile:
 
@@ -113,7 +121,21 @@ curl http://localhost:8000/health
 
 The expected response is a JSON object with `status` set to `healthy`. `--rm` removes the stopped container, not the image.
 
-## Real-time analogy: preparing a repeatable lab kit
+<ThemeCard title="Simple Tanglish — build vs run" badge="TAMIL LEARNER SUPPORT">
+
+`docker build` app package-ஐ prepare செய்து **image** create பண்ணும். `docker run` அந்த image-லிருந்து **container** start பண்ணும். Code change செய்தால் first image rebuild பண்ணணும்; பிறகு new container start பண்ணணும்.
+
+</ThemeCard>
+
+## Manual Setup vs Docker Image
+
+| Question | Manual setup | Docker image |
+|---|---|---|
+| Who installs the runtime? | Every learner | Image build |
+| Who remembers dependencies? | Setup document | Dockerfile |
+| How is a version repeated? | Repeat the steps | Start the tagged image |
+
+## Real-World Example
 
 <Scenario title="Every learner receives the same kit">
 
@@ -123,7 +145,18 @@ The image is a prepared lab kit: runtime, dependency and application versions ar
 
 </Scenario>
 
-## Troubleshoot with evidence
+## Imagine Pannunga
+
+The image is like a prepared practical-lab kit. The Dockerfile is the packing list; `docker build` prepares the kit; `docker run` opens one working kit.
+
+## Use Cases
+
+- A student packages a college project for evaluation.
+- A developer gives QA the same application setup.
+- A trainer prepares one repeatable lab for every learner.
+- A small team keeps approved releases as tagged images.
+
+## Common Mistakes and Fixes
 
 | Symptom | Check | Likely cause |
 |---|---|---|
@@ -142,13 +175,11 @@ docker logs python-health
 docker inspect python-health
 ```
 
-## Improve it for production
+### Improve it later for production
 
 The development server in this learning example is not a production server. A production Python web service should normally use a suitable application server, run as a non-root user, expose a health endpoint, receive configuration at runtime and use a deliberately selected base-image version.
 
 Also avoid installing editors and debugging utilities “just in case.” Smaller, purpose-built images reduce attack surface and transfer time.
-
-## Common mistakes
 
 <Mistakes>
 
@@ -160,7 +191,22 @@ Also avoid installing editors and debugging utilities “just in case.” Smalle
 
 </Mistakes>
 
-## Interview bit
+## Key Takeaways
+
+1. Confirm that the application works before containerising it.
+2. A Dockerfile records repeatable build decisions.
+3. `docker build` creates an image.
+4. `docker run` starts a container.
+5. `.dockerignore` keeps unnecessary files out.
+6. `EXPOSE` documents a port; `-p` creates the mapping.
+7. Rebuild the image after changing application code.
+8. Logs identify failures more reliably than random rebuilds.
+
+## Final Thought + Next Path
+
+> You have now moved from a Docker mental model to a working container. The important skill is not memorising every instruction; it is reading the flow: prepare a tiny working app, record its setup in a Dockerfile, build a named image, start one container and verify the visible result. In Byte 03, you will give that container three practical capabilities: a door for browser traffic, safe storage for selected data and start-time settings that can change without rebuilding the image.
+
+## FAQ + Knowledge Check
 
 <ThemeCard title="What happens during docker build and docker run?" badge="CAREER">
 
@@ -168,17 +214,11 @@ Also avoid installing editors and debugging utilities “just in case.” Smalle
 
 </ThemeCard>
 
-## Key takeaways
+**Does `docker run` build an image?** No. `docker build` creates the image; `docker run` starts a container from it.
 
-<Takeaways>
+**Why use `.dockerignore`?** To prevent irrelevant or sensitive local files from entering the build context.
 
-- Begin with a working application and an explicit dependency contract.
-- Order Dockerfile instructions to improve clarity and cache reuse.
-- Use `.dockerignore` to control the build context.
-- `EXPOSE` documents a port; `-p` publishes it.
-- Logs and inspection commands should guide troubleshooting.
-
-</Takeaways>
+**Knowledge check:** Which instruction defines the default startup command? **`CMD`**. What must happen after `app.py` changes? **Rebuild the image.**
 
 ## Official references
 

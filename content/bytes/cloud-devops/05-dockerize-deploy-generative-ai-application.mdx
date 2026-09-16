@@ -94,6 +94,12 @@ COPY .env .
 
 Image layers may be cached, inspected, pushed to a registry or shared with other environments. Deleting the line in a later layer does not reliably erase the earlier secret history.
 
+<ThemeCard title="Simple Tanglish — image boundary" badge="TAMIL LEARNER SUPPORT">
+
+Image-க்குள் **app code + dependencies** மட்டும். API key, database password மாதிரி secrets image-க்கு outside-ல் இருக்கணும். Container start ஆகும்போது hosting platform secret setting மூலம் value கொடுக்கணும்.
+
+</ThemeCard>
+
 For local development, inject a value at runtime:
 
 ```bash

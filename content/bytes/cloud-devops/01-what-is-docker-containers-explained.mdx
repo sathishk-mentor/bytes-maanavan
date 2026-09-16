@@ -50,6 +50,12 @@ The team can keep the image in a registry, an online image store. Another team m
 
 The image is the saved source for new containers. Starting a container does not consume or change the original image. If one container stops, the image still exists and can start another container.
 
+<ThemeCard title="Simple Tanglish — short-a remember pannunga" badge="TAMIL LEARNER SUPPORT">
+
+**Dockerfile = preparation steps. Image = ready package. Container = running app.** Image-ஐ start பண்ணினால்தான் container கிடைக்கும். One container stop ஆனாலும் image safe-ஆ இருக்கும்; same image-லிருந்து new container start பண்ணலாம்.
+
+</ThemeCard>
+
 If the application changes, do not manually repair a running container and treat that as the solution. Update the source or Dockerfile, rebuild the image, test it and release a new version. That makes the result reproducible.
 
 A container is not a complete second computer. It runs as an isolated process while sharing part of the host operating system. A virtual machine includes a complete guest operating system. For a beginner, the important difference is simple: containers usually start faster and package less than virtual machines.
