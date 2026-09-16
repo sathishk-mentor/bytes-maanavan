@@ -37,22 +37,74 @@ export function DockerCommand({label,children}:{label:string;children:React.Reac
   return <div className="docker-command"><header><span><i/><i/><i/></span><small>{label}</small><b>TERMINAL</b></header><pre><code>{children}</code></pre></div>;
 }
 
-export function DockerRealWorldVisual() {
-  const examples=[
+const dockerStories={
+  basics:[
     [Truck,'Food-delivery API','Karthik’s app works, but QA is missing Python 3.12 and one library.','Karthik builds and shares order-status:1.0.','QA starts a container and sees the same health response.'],
     [ShoppingBag,'Checkout release','Developers and testers are unsure which checkout setup belongs to release 2.1.','The team tests the tagged image checkout:2.1.','Everyone tests the clearly identified release package.'],
     [Users,'New developer joining','Priya receives a long setup document, but two steps are already outdated.','Priya starts a container from the approved team image.','The project opens without rebuilding the setup from memory.'],
-  ] as const;
+  ],
+  build:[
+    [Code2,'Python health API','The app works locally, but there is no repeatable package.','Write the Dockerfile and build python-health:1.0.','A container returns the expected /health response.'],
+    [FileCode2,'Code update','Karthik changes app.py, but the old container still shows the previous response.','Rebuild the image and start a new container.','The browser shows the updated response from the new image.'],
+    [Users,'QA handoff','QA receives code but does not know the exact start command.','Share the tagged image and one docker run command.','QA starts the same prepared application.'],
+  ],
+  runtime:[
+    [Globe2,'Browser access','The API runs inside the container, but the browser cannot reach it.','Publish laptop port 8080 to container port 8000.','localhost:8080 reaches the API.'],
+    [HardDrive,'Uploaded evidence','A replacement container loses files stored in its writable layer.','Mount the app-data volume at /app/data.','The new container sees the existing files.'],
+    [KeyRound,'Test configuration','Test needs debug logs, but the team does not want another image.','Start the same image with LOG_LEVEL=debug.','Configuration changes without rebuilding.'],
+  ],
+  compose:[
+    [Network,'API and database','The API tries localhost and cannot find the database container.','Use the Compose service address postgres:5432.','The API reaches the database by service name.'],
+    [Play,'Starting the stack','Four separate docker run commands are easy to mistype.','Record the services in compose.yaml and run docker compose up.','The application team starts from one definition.'],
+    [Database,'Database replacement','The database container is recreated during development.','Attach a named volume in the Compose file.','The replacement service keeps the selected data.'],
+  ],
+  deploy:[
+    [KeyRound,'Provider key','A developer’s local API key must not travel inside the image.','Inject the key from the platform at runtime.','The same secret-free image can move safely.'],
+    [ShieldCheck,'Health check','The container process starts, but the app may not be ready for traffic.','Separate liveness and readiness checks.','The platform sends traffic only when appropriate.'],
+    [Rocket,'Controlled release','A new AI version may change latency, quality or cost.','Release the version to limited traffic and keep rollback ready.','The team observes evidence before wider rollout.'],
+  ],
+} as const;
+
+export function DockerRealWorldVisual({variant='basics'}:{variant?:keyof typeof dockerStories}) {
+  const examples=dockerStories[variant];
   return <figure className="docker-market-visual docker-story-visual"><header><small>BEFORE → ACTION → AFTER</small><strong>Read each story from the failed setup to the result the team can see.</strong></header><div>{examples.map(([Icon,title,problem,decision,result],index)=><article key={title} style={{'--market-delay':`${index*.7}s`} as React.CSSProperties}><span><Icon/></span><b>{title}</b><dl><div><dt>Before Docker</dt><dd>{problem}</dd></div><ArrowDown/><div><dt>Team action</dt><dd>{decision}</dd></div><ArrowDown/><div><dt>After Docker</dt><dd>{result}</dd></div></dl><i><CheckCircle2/> SETUP MATCHED</i></article>)}</div><figcaption>Docker does not fix application bugs. In these examples, it removes uncertainty about the Python version, libraries and selected release package.</figcaption></figure>;
 }
 
-export function DockerUseCaseVisual() {
-  const roles=[
+const dockerRoles={
+  basics:[
     [Code2,'Developer','“Will it run for my teammate?”','Create a repeatable image'],
     [UserCheck,'QA engineer','“Am I testing the same version?”','Start the approved tag'],
     [Settings2,'DevOps engineer','“Can the same release move through environments?”','Promote one versioned image'],
     [Gauge,'Platform / SRE engineer','“Can we operate and replace it safely?”','Apply limits, health checks and monitoring'],
-  ] as const;
+  ],
+  build:[
+    [Code2,'Application developer','“How do I record the app setup?”','Write and maintain the Dockerfile'],
+    [UserCheck,'QA engineer','“How do I verify the packaged app?”','Run the tagged image and check /health'],
+    [Settings2,'DevOps engineer','“How do I build it consistently?”','Automate docker build in CI'],
+    [ShieldCheck,'Security engineer','“What entered the image?”','Review base image, dependencies and context'],
+  ],
+  runtime:[
+    [Code2,'Application developer','“Which port and settings does my app expect?”','Document the runtime contract'],
+    [UserCheck,'QA engineer','“Will data survive replacement?”','Test with the mounted volume'],
+    [Settings2,'DevOps engineer','“How does each environment configure the app?”','Inject runtime configuration'],
+    [Gauge,'SRE engineer','“Where did the request or data path fail?”','Inspect ports, mounts and logs'],
+  ],
+  compose:[
+    [Code2,'Developer','“How do I start the full app locally?”','Run docker compose up'],
+    [UserCheck,'QA engineer','“Can I reproduce the connected stack?”','Use the committed Compose definition'],
+    [Settings2,'DevOps engineer','“Which services are public or internal?”','Review ports, networks and secrets'],
+    [Gauge,'SRE engineer','“Which service is unhealthy?”','Inspect service state and focused logs'],
+  ],
+  deploy:[
+    [Code2,'AI application developer','“Does the image contain only app code?”','Keep provider secrets outside'],
+    [ShieldCheck,'Security engineer','“Does it run with safe permissions?”','Scan and run as non-root'],
+    [Settings2,'DevOps engineer','“Can this version roll forward and back?”','Deploy an immutable image tag'],
+    [Gauge,'SRE / AI operations','“Is it healthy, useful and within cost?”','Monitor health, quality, latency and usage'],
+  ],
+} as const;
+
+export function DockerUseCaseVisual({variant='basics'}:{variant?:keyof typeof dockerRoles}) {
+  const roles=dockerRoles[variant];
   return <figure className="docker-role-map"><header><small>WHO USES THIS — AND WHY?</small><strong>Choose the person first; the Docker benefit becomes clearer.</strong></header><div>{roles.map(([Icon,role,question,action],index)=><article key={role} style={{'--role-delay':`${index*.16}s`} as React.CSSProperties}><span><Icon/></span><div><b>{role}</b><p>{question}</p><small>{action}</small></div><ArrowRight/></article>)}</div><figcaption><Sparkles/> Docker is useful when the learner needs the same prepared application setup in another place.</figcaption></figure>;
 }
 

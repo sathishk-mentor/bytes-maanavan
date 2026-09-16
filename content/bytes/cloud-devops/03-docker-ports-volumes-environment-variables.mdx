@@ -11,19 +11,15 @@ order: 3
 isPopular: false
 ---
 
+## Quick Start
+
 <ThemeCard title="What you will learn" badge="DOCKER HANDBOOK 03">
 
 You will understand three separate runtime concerns: ports move network traffic, volumes preserve files and environment variables provide configuration. You will also learn why none of these should be used as a careless secret-management shortcut.
 
 </ThemeCard>
 
-<DockerFlowVisual variant="runtime" />
-
-<DockerConceptLab concept="runtime" />
-
-## Three questions, three Docker features
-
-<HandbookLearningVisual variant="dockerRuntime" />
+## Start from Basics
 
 When a container starts, ask:
 
@@ -39,7 +35,19 @@ Mixing these responsibilities creates confusing systems. A port is not storage. 
 
 </ThemeCard>
 
-## Ports: container address versus host address
+## Core Explanation
+
+<DockerConceptLab concept="runtime" />
+
+## Architecture / Flow Diagram
+
+<DockerFlowVisual variant="runtime" />
+
+<HandbookLearningVisual variant="dockerRuntime" />
+
+## Types / Components
+
+### Port: connect traffic
 
 A web application can listen on port 8000 **inside** its container while your laptop exposes it on port 8080:
 
@@ -51,7 +59,7 @@ Read the mapping as `HOST_PORT:CONTAINER_PORT`. A request to `localhost:8080` is
 
 Publishing a port makes a service reachable through the host. Containers on the same user-defined Docker network can normally communicate by service or container name without publishing every internal port.
 
-## Volumes: make containers replaceable
+### Volume: keep selected data
 
 A container has a writable layer, but that layer belongs to the container lifecycle. If you remove the container, relying on that layer can lose important data. A named volume has an independent lifecycle:
 
@@ -73,7 +81,7 @@ Here, Docker mounts `app-data` at `/app/data` inside the container. A replacemen
 
 A volume improves persistence, not backup. You still need a backup and recovery plan.
 
-## Environment variables: configure at runtime
+### Environment variable: configure at startup
 
 Use one image across environments and change its external configuration:
 
@@ -100,7 +108,15 @@ docker run --env-file .env -p 8080:8000 python-health:1.0
 
 Keep `.env` out of source control when it contains sensitive or local values. In production, prefer the deployment platform’s secret store and access controls.
 
-## Real-time scenario: a course feedback service
+## Port vs Volume vs Environment Variable
+
+| Learner question | Docker feature | What it changes |
+|---|---|---|
+| How does the browser reach the app? | Port mapping | Network path |
+| What must survive container replacement? | Volume | Selected data location |
+| What setting changes between environments? | Environment variable | Startup configuration |
+
+## Real-World Examples
 
 <Scenario title="One application, three runtime needs">
 
@@ -110,7 +126,40 @@ When version 1.1 is released, the team removes the old container and starts a ne
 
 </Scenario>
 
-## Trace one request
+<DockerRealWorldVisual variant="runtime" />
+
+## Imagine Pannunga
+
+Think of a small office: the **port** is the numbered entrance, the **volume** is the records cupboard that remains when a desk is replaced, and an **environment variable** is the instruction card handed to the employee at the start of a shift.
+
+## Use Cases
+
+<DockerUseCaseVisual variant="runtime" />
+
+## Key Takeaways
+
+1. Port mappings create a path from the host to the container.
+2. Read `8080:8000` as host port followed by container port.
+3. `EXPOSE` documents a port; it does not publish it.
+4. Important data should not depend on a replaceable container layer.
+5. A named volume has a lifecycle separate from one container.
+6. A volume supports persistence but does not replace backups.
+7. Environment variables provide startup configuration.
+8. Secrets need stronger controls than committed `.env` files.
+
+## Final Thought + Next Path
+
+> Remember three separate jobs: **port = reach the app, volume = keep selected data, environment variable = change a startup setting**. In Byte 04, you will connect an API and database as separate services and manage them together with Docker Compose.
+
+## FAQ + Knowledge Check
+
+**Does `EXPOSE 8000` make the app reachable from the laptop?** No. Publish a host mapping such as `-p 8080:8000`.
+
+**Does a volume automatically create a backup?** No. Persistence and backup are different responsibilities.
+
+**Knowledge check:** Which feature changes `LOG_LEVEL` without rebuilding the image? **Environment variable.** Which feature keeps `/app/data` across replacement? **Volume.**
+
+### Trace one request
 
 ```text
 Browser: localhost:8080
@@ -124,7 +173,7 @@ Volume mount: /app/uploads
 
 If a request fails, follow the path in this order: Is the container running? Is the process listening on the expected interface and port? Is the host mapping correct? Is a firewall or platform policy blocking access?
 
-## Inspect before changing
+### Inspect before changing
 
 ```bash
 docker ps
@@ -137,7 +186,7 @@ docker volume inspect app-data
 
 `docker inspect` can reveal port bindings, mounts and environment metadata. Remember that people with sufficient Docker access may be able to inspect container configuration, another reason not to treat plain environment variables as perfect secret protection.
 
-## Common mistakes
+### Common mistakes
 
 <Mistakes>
 
@@ -150,25 +199,13 @@ docker volume inspect app-data
 
 </Mistakes>
 
-## Interview bit
+### Interview answer
 
 <ThemeCard title="How do ports, volumes and environment variables differ?" badge="CAREER">
 
 **Strong answer:** Port publishing connects a host address to a container’s listening port. Volumes store selected data independently of a container’s lifecycle. Environment variables provide runtime configuration so one image can be reused across environments. For sensitive values, I use the platform’s secret-management mechanism rather than committing them or baking them into the image.
 
 </ThemeCard>
-
-## Key takeaways
-
-<Takeaways>
-
-- Port mappings control reachability, not what port the application listens on internally.
-- Important state belongs outside a replaceable container.
-- Volumes persist data but do not replace backups.
-- Runtime configuration keeps images portable across environments.
-- Secret storage needs stronger controls than a committed environment file.
-
-</Takeaways>
 
 ## Official references
 

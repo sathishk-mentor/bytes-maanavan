@@ -135,7 +135,7 @@ The expected response is a JSON object with `status` set to `healthy`. `--rm` re
 | Who remembers dependencies? | Setup document | Dockerfile |
 | How is a version repeated? | Repeat the steps | Start the tagged image |
 
-## Real-World Example
+## Real-World Examples
 
 <Scenario title="Every learner receives the same kit">
 
@@ -145,18 +145,19 @@ The image is a prepared lab kit: runtime, dependency and application versions ar
 
 </Scenario>
 
+<DockerRealWorldVisual variant="build" />
+
 ## Imagine Pannunga
 
 The image is like a prepared practical-lab kit. The Dockerfile is the packing list; `docker build` prepares the kit; `docker run` opens one working kit.
 
 ## Use Cases
 
-- A student packages a college project for evaluation.
-- A developer gives QA the same application setup.
-- A trainer prepares one repeatable lab for every learner.
-- A small team keeps approved releases as tagged images.
+Each engineering role uses the same image for a different decision: build it, verify it, automate it or review what entered it.
 
-## Common Mistakes and Fixes
+<DockerUseCaseVisual variant="build" />
+
+### Common Mistakes and Fixes
 
 | Symptom | Check | Likely cause |
 |---|---|---|

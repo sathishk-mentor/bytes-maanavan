@@ -11,23 +11,27 @@ order: 4
 isPopular: true
 ---
 
+## Quick Start
+
 <ThemeCard title="What you will build mentally" badge="DOCKER HANDBOOK 04">
 
 A four-service application model: browser-facing frontend, backend API, PostgreSQL database and internal AI service. You will learn service discovery, startup dependencies, health checks, volumes and configuration boundaries.
 
 </ThemeCard>
 
-<DockerFlowVisual variant="compose" />
-
-<DockerConceptLab concept="compose" />
-
-## Why Compose exists
+## Start from Basics
 
 Real applications rarely run as one container. A frontend may call a backend, the backend may use a database and an AI service may handle model-specific work. Starting each container with a long `docker run` command is difficult to reproduce and review.
 
 Docker Compose lets you declare the application in `compose.yaml`. The file describes services, images or build contexts, networks, volumes, ports, health checks and runtime configuration. `docker compose up` reconciles that definition into running containers.
 
-## The application architecture
+## Core Explanation
+
+<DockerConceptLab concept="compose" />
+
+## Architecture / Flow Diagram
+
+<DockerFlowVisual variant="compose" />
 
 <HandbookLearningVisual variant="dockerCompose" />
 
@@ -45,7 +49,9 @@ Named volume
 
 Only the frontend must be public in this simple architecture. The backend can be published during local development, but internal services can communicate on the Compose network by service name.
 
-## Read a practical `compose.yaml`
+## Types / Components
+
+### Read a practical `compose.yaml`
 
 ```yaml
 services:
@@ -100,7 +106,7 @@ volumes:
 
 This is a learning configuration, not a production-ready security policy. Never use the example database password in a real environment.
 
-## The most important networking rule
+### The most important networking rule
 
 Inside the frontend container, `localhost` means **the frontend container itself**. It does not mean the backend container. Compose service discovery lets the frontend reach `http://backend:8000` and the backend reach `postgres:5432`.
 
@@ -112,11 +118,11 @@ Container-க்குள் `localhost` என்றால் **அந்த sa
 
 </ThemeCard>
 
-## `depends_on` is not business readiness
+### `depends_on` is not business readiness
 
 Starting a database process does not mean it is ready to accept queries. A health check can give Compose a stronger readiness signal, and `depends_on` can wait for that condition. Your application should still handle temporary unavailability with bounded retries and clear errors because services can fail after startup.
 
-## Operate the stack
+### Operate the stack
 
 ```bash
 docker compose up --build
@@ -128,7 +134,20 @@ docker compose down
 
 Use `docker compose down -v` only when you intentionally want to remove named volumes declared by the project. That can delete database data and should not be a casual cleanup command.
 
-## Real-time analogy: a restaurant team
+## Docker Run vs Docker Compose
+
+| Decision | Separate `docker run` commands | Docker Compose |
+|---|---|---|
+| Application definition | Spread across commands | Recorded in `compose.yaml` |
+| Service communication | Network and names configured manually | Service names available on the project network |
+| Team repeatability | Easy to miss one option | One shared definition |
+| Best fit | One quick container | Connected local application stack |
+
+## Real-World Examples
+
+<DockerRealWorldVisual variant="compose" />
+
+## Imagine Pannunga
 
 <Scenario title="One customer experience, several specialised stations">
 
@@ -138,7 +157,34 @@ Compose is the operating plan: which stations exist, how they are reached, what 
 
 </Scenario>
 
-## A disciplined debugging sequence
+## Use Cases
+
+<DockerUseCaseVisual variant="compose" />
+
+## Key Takeaways
+
+1. Compose records a multi-container application in one file.
+2. Each service should have one clear responsibility.
+3. Service names provide addresses inside the Compose network.
+4. `localhost` always refers to the current container.
+5. Publish only services that need host access.
+6. A started service may not yet be ready.
+7. Named volumes keep selected state outside one container.
+8. Focused logs identify which service failed first.
+
+## Final Thought + Next Path
+
+> Think of Compose as the operating plan for a small application team: it names each service, records how they connect and starts them from one definition. In Byte 05, you will take the packaged application toward deployment with versioned images, runtime secrets, health checks and rollback.
+
+## FAQ + Knowledge Check
+
+**Why cannot the backend use `localhost` for PostgreSQL?** Because `localhost` points back to the backend container. Use the service name `postgres`.
+
+**Does `depends_on` prove that the database is ready?** No. It helps with order; readiness needs a health signal and resilient application behaviour.
+
+**Knowledge check:** Which command starts the defined stack? **`docker compose up`**. Which command shows service states? **`docker compose ps`**.
+
+### A disciplined debugging sequence
 
 1. Run `docker compose config` to inspect the resolved configuration.
 2. Run `docker compose ps` to check service and health states.
@@ -149,7 +195,7 @@ Compose is the operating plan: which stations exist, how they are reached, what 
 
 Do not restart every service immediately; restarts can hide the first useful failure evidence.
 
-## Common mistakes
+### Common mistakes
 
 <Mistakes>
 
@@ -162,25 +208,13 @@ Do not restart every service immediately; restarts can hide the first useful fai
 
 </Mistakes>
 
-## Interview bit
+### Interview answer
 
 <ThemeCard title="How do services communicate in Docker Compose?" badge="CAREER">
 
 **Strong answer:** Compose creates a default network for the application, and services can reach one another using service names as DNS names. Internal traffic uses the container port, while published ports are for access through the host. I use health checks and application-level retry behaviour instead of assuming a started container is ready.
 
 </ThemeCard>
-
-## Key takeaways
-
-<Takeaways>
-
-- Compose describes a multi-container application as version-controlled configuration.
-- A service name—not `localhost`—addresses another Compose service.
-- Publish only the services that need host access.
-- Health checks improve startup coordination but do not replace runtime resilience.
-- Local Compose architecture must still be adapted for production operations.
-
-</Takeaways>
 
 ## Official references
 
