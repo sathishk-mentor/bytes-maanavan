@@ -12,39 +12,62 @@ Food-delivery status service use செய்து three practical questions-�
 - Container replace ஆனாலும் data எப்படி remain ஆகும்? **Volume**.
 - Environment-specific setting எப்படி change ஆகும்? **Environment variable**.
 
+<DockerConceptLab concept="runtime" language="ta" />
+
 ## Problem 1: browser-லிருந்து app open ஆகணும்
 
-`-p 8080:8000` என்றால் host port `8080`-க்கு வரும் traffic container port `8000`-க்கு forward ஆகும். App container-க்குள் `0.0.0.0:8000`-ல் listen செய்ய வேண்டும்.
+Port-ஐ door number மாதிரி நினைச்சுக்கோங்க. Browser laptop-ன் `8080` door-க்கு வரும். Docker அந்த request-ஐ container-ன் `8000` door-க்கு அனுப்பும்.
 
-Port publish செய்வது authentication இல்லை. Sensitive service-ஐ unnecessary public interface-ல் expose பண்ணாதீங்க.
+```bash
+docker run -p 8080:8000 delivery-status:1.0
+```
+
+இதைக் `laptop door : container door` என்று read பண்ணுங்க. Browser-ல் `localhost:8080` open பண்ணினால் container app response கொடுக்கும்.
+
+`EXPOSE 8000` Dockerfile-ல் information மட்டும். Browser-க்கு door open பண்ணுவது `-p` option.
 
 ## Problem 2: container delete ஆனாலும் data இருக்கணும்
 
-Container filesystem ephemeral. Database data, uploaded files அல்லது durable state-க்கு named volume அல்லது managed external storage use செய்யுங்கள். Application code-ஐ production volume-ல் hide செய்வது avoid செய்யுங்கள்.
+Container-ஐ whiteboard மாதிரி நினைச்சுக்கோங்க: erase செய்தால் அதில் எழுதியது போகலாம். Volume separate notebook மாதிரி. Container replace ஆனாலும் notebook data அப்படியே இருக்கும்.
+
+```bash
+docker volume create delivery-data
+docker run -v delivery-data:/app/data delivery-status:1.0
+```
+
+Left side `delivery-data` என்பது Docker manage செய்யும் volume name. Right side `/app/data` என்பது container-க்குள் app data எழுதும் folder.
 
 ## Problem 3: same image; different settings
 
-Database URL, log level, feature flag மாதிரியான settings-ஐ environment மூலம் inject பண்ணலாம். Secret values-ஐ image-ல் bake பண்ணாமல் secret manager மூலம் runtime-ல் கொடுக்கணும். Required setting missing என்றால் app startup-லேயே clear error காட்டணும்.
+Same food app-ஐ development-ல் `LOG_LEVEL=debug`, production-ல் `LOG_LEVEL=info` என்று run பண்ண வேண்டியிருக்கலாம். Setting change செய்ய image rebuild தேவையில்லை.
+
+```bash
+docker run -e LOG_LEVEL=debug delivery-status:1.0
+```
+
+Environment variable என்பது start time setting. Password அல்லது API key-ஐ image-க்குள் எழுதக்கூடாது; production-ல் platform secret system use பண்ண வேண்டும்.
 
 <DockerFlowVisual variant="runtime" />
-
-<DockerConceptLab concept="runtime" language="ta" />
 
 ## மூன்றையும் ஒரே delivery app-ல் connect பண்ணலாம்
 
 <Scenario title="One application, three runtime needs">
 
-Customer `8080` port மூலம் status API-ஐ access பண்ணுகிறார். Delivery events volume அல்லது database-ல் persist ஆகும். `LOG_LEVEL` மற்றும் provider endpoint ஒவ்வொரு environment-க்கும் match ஆக configure செய்யப்படும். Container update ஆனாலும் history safe-ஆ இருக்கும்.
+Customer `8080` door வழியாக app-ஐ open பண்ணுகிறார். Delivery history volume-ல் save ஆகுது. `LOG_LEVEL` start time-ல் environment variable மூலம் வருது. Container-ஐ replace செய்தாலும் history volume-ல் safe-ஆ இருக்கும்.
 
 </Scenario>
 
 ### Volume-ஆ, bind mount-ஆ?
 
-Named volume-ஐ Docker manage செய்யும்; database data போன்ற runtime state-க்கு இது நல்ல default. Bind mount host folder-ஐ container-க்கு நேரடியாக இணைக்கும்; local source-code development-க்கு பயனுள்ளதாக இருக்கும். இரண்டையும் ஒரே purpose-க்கு பயன்படுத்த வேண்டிய அவசியமில்லை.
+| Need | Use |
+|---|---|
+| Container replace ஆனாலும் app data இருக்கணும் | Named volume |
+| Laptop source file change உடனே container-க்கு தெரியணும் | Bind mount |
+| Temporary file மட்டும் | Container filesystem |
 
 ## Customer request எப்படி travel ஆகுது?
 
-Browser → host port → container port → application route → database volume/service → response. எந்த boundary-ல் failure என்று logs மற்றும் inspection மூலம் கண்டுபிடிக்க வேண்டும்.
+**Browser → laptop port → container port → app → response**. Page open ஆகலனா இந்த order-ல் check பண்ணுங்க. Data missing என்றால் volume mount check பண்ணுங்க. Wrong setting என்றால் environment variable name check பண்ணுங்க.
 
 ## Issue வந்தால் first என்ன பார்க்கணும்?
 
@@ -74,11 +97,12 @@ Port network traffic-ஐ container service-க்கு map செய்யு�
 
 <Takeaways>
 
-- Port connectivity; volume durability; environment configuration.
+- Port app-க்கு door open பண்ணும்.
+- Volume selected data-ஐ container-க்கு outside-ல் வைத்திருக்கும்.
+- Environment variable start time setting கொடுக்கும்.
 - Container replaceable-ஆக design பண்ண வேண்டும்.
-- Secrets runtime secret system-லிருந்து வர வேண்டும்.
-- Exposed port security control இல்லை.
-- Request path trace செய்தால் debugging clearer ஆகும்.
+- `EXPOSE` information; `-p` actual port mapping.
+- Volume backup இல்லை; important data-க்கு backup plan வேணும்.
 
 </Takeaways>
 

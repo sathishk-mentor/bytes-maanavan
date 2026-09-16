@@ -10,15 +10,15 @@ Frontend, order API, database மற்றும் notification service—ந�
 
 ## Single container போதாத real app
 
-Food-delivery app-க்கு frontend மட்டும் போதாது. Order API வேண்டும், database வேண்டும், notification service வேண்டும். ஒவ்வொன்றுக்கும் separate `docker run` command maintain பண்ணினால் port அல்லது environment setting miss ஆகும். Another developer same setup ready பண்ணுவதும் difficult.
+Food-delivery app-ல் order API ஒரு job செய்யும்; database order data save பண்ணும். இரண்டு containers-ஐ separate commands மூலம் start பண்ணலாம். ஆனால் name, setting, volume எல்லாம் ஒவ்வொரு முறையும் type பண்ணும்போது mistake chance அதிகம்.
 
-Docker Compose எல்லா services, network, volume, port மற்றும் health check-ஐ ஒரே readable file-ல் declare செய்ய உதவும்.
+Docker Compose அந்த setup-ஐ `compose.yaml` என்ற one file-ல் save பண்ணும். அந்த file app team-க்கான attendance sheet + contact list மாதிரி.
 
 ## நம்ம delivery app team
 
 <HandbookLearningVisual variant="dockerCompose" />
 
-Browser `localhost:3000` மூலம் frontend-ஐ access பண்ணும். Frontend, Compose network-ல் `http://order-api:8000` URL use செய்து API-ஐ call பண்ணும். API, `postgres:5432` என்ற service name மூலம் database-ஐ access பண்ணும்.
+Browser laptop port வழியாக order API-ஐ access பண்ணும். API, `postgres:5432` என்ற service name use செய்து database-ஐ contact பண்ணும். இங்கு `postgres` தான் database container-ன் contact name.
 
 ## `compose.yaml`-ஐ story மாதிரி read பண்ணலாம்
 
@@ -31,8 +31,7 @@ services:
     environment:
       DATABASE_URL: postgresql://app:app@postgres:5432/orders
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
 
   postgres:
     image: postgres:17
@@ -42,17 +41,12 @@ services:
       POSTGRES_DB: orders
     volumes:
       - order-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U app"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   order-data:
 ```
 
-இது learning configuration மட்டும். Real production password-ஐ file-ல் hardcode பண்ணக்கூடாது.
+File-ஐ story மாதிரி read பண்ணுங்க: “order-api build பண்ணு, 8000 door open பண்ணு, database address கொடு, postgres start பண்ணு, data-க்கு volume connect பண்ணு.” Real password-ஐ இப்படிப் file-ல் எழுதக்கூடாது.
 
 ## Beginners அதிகம் miss பண்ணும் `localhost` rule
 
@@ -60,7 +54,7 @@ Container-க்குள் `localhost` என்றால் அந்த same
 
 ## Start ஆனது வேறு; ready ஆனது வேறு
 
-Process start ஆனது service ready என்று அர்த்தம் இல்லை. Health check readiness-க்கு better signal கொடுக்கும். ஆனாலும் service later fail ஆகலாம்; application timeout, bounded retry மற்றும் clear error handle பண்ண வேண்டும்.
+`depends_on` start order மட்டும் help பண்ணும். Database process start ஆன உடனே query accept பண்ண ready ஆகாமல் இருக்கலாம். Next level-ல் health check add பண்ணலாம். Beginner checkpoint: **started** மற்றும் **ready** same இல்லை.
 
 ## Daily use-க்கு தேவையான commands
 
@@ -106,7 +100,7 @@ Restaurant-ல் counter, kitchen, pantry மற்றும் billing எல�
 
 <ThemeCard title="Docker Compose-ல் services எப்படி communicate செய்கின்றன?" badge="CAREER">
 
-Compose application-க்கு default network create பண்ணும். அந்த network-ல் service names, DNS names மாதிரி work ஆகும். Internal traffic container port-ஐ use பண்ணும்; host வழியாக access தேவைப்படும் service-க்கு மட்டும் port publish பண்ணப்படும். Container start ஆனாலே ready என்று assume செய்யாமல் health checks மற்றும் application-level retry use பண்ணுவேன்.
+Compose app-க்கு private network create பண்ணும். அந்த network-ல் service name contact name மாதிரி work ஆகும். அதனால் API, database-ஐ `localhost` என்று அல்ல `postgres` என்று call பண்ணும். User access செய்ய வேண்டிய service-க்கு மட்டும் host port publish பண்ணுவேன்.
 
 </ThemeCard>
 
@@ -114,11 +108,11 @@ Compose application-க்கு default network create பண்ணும். �
 
 <Takeaways>
 
-- Compose multi-container application-ஐ version-controlled configuration-ஆக describe செய்யும்.
-- Service name தான் internal DNS name.
-- Health checks startup coordination improve செய்யும்; runtime resilience-ஐ replace பண்ணாது.
-- Data persist ஆக named volume தேவை.
-- Local Compose design production architecture-க்கு starting point மட்டும்.
+- Compose multiple containers setup-ஐ one readable file-ல் save பண்ணும்.
+- `services` section app team members list.
+- Service name container-to-container contact name.
+- Another container-ஐ call பண்ண `localhost` use பண்ணக்கூடாது.
+- Database data-க்கு named volume connect பண்ண வேண்டும்.
 
 </Takeaways>
 

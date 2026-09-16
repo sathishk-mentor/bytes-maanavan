@@ -6,9 +6,11 @@
 
 <HandbookLearningVisual variant="dockerBuild" />
 
-## Docker open பண்ணும் முன் இந்த 4 questions
+## இன்று என்ன build பண்ணப் போறோம்?
 
-Dockerize செய்வதற்கு முன்: app local-ல் work ஆகுதா? Start command என்ன? எந்த port-ல் listen ஆகுது? Required packages எங்கே list பண்ணியிருக்கோம்? இதை first confirm பண்ணுங்க. Already broken-ஆ இருக்கும் app-ஐ Docker magic-ஆ fix பண்ணாது.
+ஒரு delivery-status app-ஐ container-க்குள் run பண்ணப் போறோம். Result simple: browser-ல் `/health` open பண்ணினால் `healthy` response வரணும். Dockerfile எழுதுவதற்கு முன்னாடி app normal-ஆ start ஆகுதா என்று one time check பண்ணுங்க.
+
+<DockerConceptLab concept="buildRun" language="ta" />
 
 ## Dockerfile-na app packing instruction
 
@@ -22,15 +24,23 @@ EXPOSE 8000
 CMD ["python", "app.py"]
 ```
 
-Base image runtime கொடுக்கும். `WORKDIR` container working folder define செய்யும். Dependency file-ஐ முதலில் copy செய்தால் code-only changes-க்கு build cache reuse ஆகும். Exec-form `CMD` signal handling-க்கு better.
+### File-ஐ top-to-bottom read பண்ணலாம்
 
-### ஒவ்வொரு line-மும் என்ன சொல்லுது?
+| Line | Easy meaning |
+|---|---|
+| `FROM python:3.12-slim` | “இந்த Python setup-லிருந்து start பண்ணு” |
+| `WORKDIR /app` | “Container-க்குள் `/app` folder-ல் work பண்ணு” |
+| `COPY requirements.txt .` | Required libraries list-ஐ copy பண்ணு |
+| `RUN pip install...` | அந்த libraries-ஐ image build time-ல் install பண்ணு |
+| `COPY app.py .` | நம்ம app code-ஐ copy பண்ணு |
+| `EXPOSE 8000` | App 8000 port expect பண்ணுது என்று document பண்ணு |
+| `CMD [...]` | Container start ஆனதும் app-ஐ run பண்ணு |
 
-`FROM` base runtime-ஐ select பண்ணும். `WORKDIR` next commands எந்த folder-ல் run ஆகணும் என்று set பண்ணும். Dependency file-ஐ source code-க்கு முன்னாடி copy செய்தால், code மட்டும் change ஆகும்போது installation layer cache-லிருந்து reuse ஆகும். `CMD`, container start ஆகும்போது run ஆக வேண்டிய foreground process-ஐ define பண்ணும்.
+இப்போதைக்கு cache, layers, signal handling எல்லாம் memorize பண்ண வேண்டாம். First goal: ஒவ்வொரு Dockerfile line-க்கும் ஒரு clear job இருக்கு என்று understand பண்ணுவது.
 
 ## தேவையில்லாத files image-க்குள் போகக்கூடாது
 
-`.git`, `.venv`, cache, local logs, secrets மற்றும் unnecessary files build context-க்கு போகாமல் exclude செய்யுங்கள். Smaller context build speed மற்றும் accidental data exposure reduce செய்யும்.
+Travel bag pack பண்ணும்போது room-ல இருக்கிற எல்லாத்தையும் எடுத்துட்டு போக மாட்டோம். அதே மாதிரி `.git`, `.venv`, cache, local logs, `.env` போன்ற files image-க்குள் போக வேண்டாம். `.dockerignore` file அவற்றை skip பண்ணும்.
 
 ## மூன்று commands: build → run → check
 
@@ -45,8 +55,6 @@ Browser-ல் `localhost:8000/health` open பண்ணினால் healthy 
 
 <DockerFlowVisual variant="buildRun" />
 
-<DockerConceptLab concept="buildRun" language="ta" />
-
 ## Easy analogy: practical lab kit
 
 <Scenario title="ஒவ்வொருவருக்கும் same working kit">
@@ -55,13 +63,16 @@ Training lab-க்கு code மட்டும் கொடுத்தால
 
 </Scenario>
 
-## Work ஆகலையா? இந்த order-ல் check பண்ணுங்க
+## Work ஆகலையா? One-by-one check பண்ணுங்க
 
-`docker ps -a`, `docker logs`, image tag, port mapping மற்றும் application bind address check செய்யுங்கள். Random rebuild செய்யாமல் failed layer அல்லது runtime error identify செய்யுங்கள்.
+| Problem | First check |
+|---|---|
+| Build fail ஆகுது | Error message-க்கு மேல இருக்கிற failed Dockerfile line |
+| Container உடனே stop ஆகுது | `docker logs` output |
+| Browser open ஆகல | `-p 8000:8000` இருக்கா? App `0.0.0.0`-ல் listen ஆகுதா? |
+| Code change தெரியல | Image rebuild பண்ணீங்களா? |
 
-## Local demo-விலிருந்து production-க்கு
-
-Pinned dependencies, non-root user, smaller base image, health check, vulnerability scan மற்றும் runtime secrets use செய்யுங்கள். Build tools final image-ல் தேவையில்லையென்றால் multi-stage build consider செய்யலாம்.
+Random commands try பண்ணாதீங்க. First error எங்கே வந்தது என்று கண்டுபிடிச்சு, அந்த one step-ஐ மட்டும் fix பண்ணுங்க.
 
 ## Common mistakes
 
@@ -87,11 +98,12 @@ Pinned dependencies, non-root user, smaller base image, health check, vulnerabil
 
 <Takeaways>
 
-- App contract clear ஆன பிறகு containerize செய்யுங்கள்.
-- Layer order build cache-ஐ affect செய்யும்.
-- `.dockerignore` speed மற்றும் safety improve செய்யும்.
+- App normal-ஆ work ஆகுதா first check பண்ணுங்கள்.
+- `docker build` image create பண்ணும்; `docker run` container start பண்ணும்.
+- ஒவ்வொரு Dockerfile line-க்கும் one clear job இருக்கு.
+- `.dockerignore` தேவையில்லாத local files-ஐ skip பண்ணும்.
 - Port publish மற்றும் app bind address இரண்டும் correct-ஆ இருக்க வேண்டும்.
-- Runtime fix அல்ல; image source-of-truth.
+- Code change செய்தால் image rebuild பண்ண வேண்டும்.
 
 </Takeaways>
 

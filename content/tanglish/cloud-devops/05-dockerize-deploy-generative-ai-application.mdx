@@ -10,7 +10,15 @@ LLM-powered customer-support API local-ல் work ஆகுது. இப்ப
 
 ## Image-க்குள் என்ன இருக்கணும்? Outside என்ன இருக்கணும்?
 
-Food-delivery support API user question-ஐ validate பண்ணும், approved order context-ஐ retrieve பண்ணும், LLM provider-ஐ call பண்ணும், final answer return பண்ணும். App code மற்றும் dependencies image-க்குள் இருக்கலாம். API key மற்றும் environment-specific values runtime-ல் outside-லிருந்து வரணும்.
+ஒரு AI support app “என் order எங்கே?” என்ற question receive பண்ணும். App order details check செய்து LLM-க்கு required context அனுப்பி answer return பண்ணும். இங்கு two boxes நினைவில் வைங்க:
+
+| Image-க்குள் | Image-க்கு outside |
+|---|---|
+| App code | LLM API key |
+| Python libraries | Production database password |
+| Start command | Environment-specific URL |
+
+Code team-க்கு share செய்யலாம். Secret share செய்யக்கூடாது. அதனால் இரண்டையும் same image-க்குள் mix பண்ணக்கூடாது.
 
 ```python
 import os
@@ -43,23 +51,23 @@ EXPOSE 8000
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-Small trusted base image, dependency layer caching மற்றும் non-root user நல்ல defaults. Tested versions-ஐ pin செய்து final image-ஐ scan பண்ண வேண்டும்.
+New part `USER app`. இதனால் application admin/root permission இல்லாமல் run ஆகும். Door key எல்லாம் ஒரே person-க்கு கொடுக்காதது மாதிரி, app-க்கு தேவையான permission மட்டும் கொடுப்பது safer default.
 
 ## API key image-க்குள் போகவே கூடாது
 
-`ENV LLM_API_KEY=...` அல்லது `COPY .env .` image history-ல் secret leak செய்யலாம். Local-ல் runtime environment variable; production-ல் platform secret manager மற்றும் least-privilege access use செய்யுங்கள்.
+`COPY .env .` அல்லது Dockerfile-ல் API key எழுதினால் image share ஆகும் இடமெல்லாம் secret போகும் risk இருக்கு. Local practice-ல் runtime environment variable use பண்ணலாம். Production-ல் hosting platform secret settings use பண்ணணும்.
 
 ## User question வந்ததும் என்ன நடக்குது?
 
 <HandbookLearningVisual variant="dockerAi" />
 
-User request HTTPS ingress வழியாக API container-க்கு வரும். Container secret manager, order database மற்றும் LLM provider-ஐ controlled access மூலம் use செய்யும். Logs, metrics மற்றும் traces request outcome-ஐ record செய்யும்.
+User question app URL-க்கு வரும் → API container question validate பண்ணும் → order data read பண்ணும் → LLM provider-ஐ call பண்ணும் → answer user-க்கு return ஆகும். எந்த step slow அல்லது fail என்று logs help பண்ணும்.
 
 ## Peak-time scenario: “என் order எங்கே?”
 
 <Scenario title="Demo start ஆகுவது மட்டும் success இல்லை">
 
-Hundreds of customers “என் order எங்கே?” என்று same time-ல் கேட்கலாம். Provider slow ஆகலாம்; user very long input அனுப்பலாம்; unlimited retry loop cost-ஐ increase பண்ணலாம். Team input limit, timeout, concurrency limit, token budget மற்றும் rollback policy set பண்ணும். Container running-ஆ இருக்கிறதா மட்டும் பார்க்காமல் answer safe-ஆ, right time-ல், controlled cost-ல் கிடைக்கிறதா measure பண்ணும்.
+ஒரே நேரத்தில் நிறைய customers question கேட்கலாம். LLM late-ஆ answer பண்ணலாம் அல்லது provider error கொடுக்கலாம். App unlimited-ஆ retry பண்ணினால் cost அதிகமாகும். அதனால் team question length limit, timeout, retry limit மற்றும் request cost limit set பண்ணும். Container green light காட்டுது மட்டும் success இல்லை; useful answer correct time-ல் வரணும்.
 
 </Scenario>
 
@@ -67,8 +75,8 @@ Hundreds of customers “என் order எங்கே?” என்று sam
 
 | Check | அது சொல்லும் விஷயம் |
 |---|---|
-| Liveness | Process உயிருடன் இருக்கிறதா? |
-| Readiness | New traffic receive செய்யலாமா? |
+| Liveness | App process run ஆகுதா? |
+| Readiness | New user request accept பண்ண ready-ஆ? |
 | Evaluation | Answer expected quality meet ஆகிறதா? |
 | Cost metric | Request ஒன்றுக்கு tokens/cost எவ்வளவு? |
 
@@ -76,13 +84,13 @@ Paid LLM call-ஐ frequent liveness probe-ஆக use பண்ணாதீங்
 
 ## Deploy button click பண்ணும் முன்
 
-1. Image-க்கு immutable version tag கொடுங்கள்.
-2. Dependencies மற்றும் image vulnerabilities scan செய்யுங்கள்.
-3. Non-root process confirm செய்யுங்கள்.
-4. Secrets runtime-ல் inject செய்யுங்கள்.
-5. CPU, memory, concurrency, timeout limits set செய்யுங்கள்.
-6. Quality, latency, errors மற்றும் cost observe செய்யுங்கள்.
-7. Limited traffic-க்கு release செய்து rollback path-ஐ ready-ஆக வைத்திருங்கள்.
+1. Image-க்கு clear version tag கொடுங்கள்: `support-app:1.0`.
+2. API key image-க்குள் இல்லை என்று confirm பண்ணுங்கள்.
+3. App non-root user-ஆ run ஆகுதா check பண்ணுங்கள்.
+4. Health URL response கொடுக்குதா test பண்ணுங்கள்.
+5. Timeout, retry limit மற்றும் cost limit set பண்ணுங்கள்.
+6. First small user group-க்கு release பண்ணுங்கள்.
+7. Problem வந்தால் previous version-க்கு return ஆக rollback ready வைத்திருங்கள்.
 
 ## Problem வந்தால் எங்கே start பண்ணுவது?
 
@@ -111,7 +119,7 @@ Paid LLM call-ஐ frequent liveness probe-ஆக use பண்ணாதீங்
 
 <ThemeCard title="LLM application-ஐ எப்படி safely deploy செய்வீர்கள்?" badge="CAREER">
 
-Secrets இல்லாத minimal, versioned image உருவாக்கி non-root user-ஆக run செய்வேன். Deployment platform secret manager மூலம் provider key inject செய்யும். Liveness-ஐ costly model evaluation-லிருந்து separate செய்வேன். Resource, concurrency மற்றும் timeout limits அமைத்து latency, errors, quality மற்றும் cost-ஐ observe செய்வேன். Limited traffic release மற்றும் tested rollback path வைத்திருப்பேன்.
+App code மற்றும் dependencies மட்டும் உள்ள versioned image create பண்ணுவேன். API key-ஐ hosting platform secret settings மூலம் runtime-ல் கொடுப்பேன். App non-root user-ஆ run ஆகும். Health, timeout, errors, answer quality மற்றும் cost check பண்ணி small release செய்வேன். Problem வந்தால் previous image version-க்கு rollback பண்ணுவேன்.
 
 </ThemeCard>
 
