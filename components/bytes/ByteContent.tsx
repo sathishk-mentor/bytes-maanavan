@@ -19,6 +19,7 @@ import { LangChainBuildingBlocks, LangChainFlowVisual, OfficialLangChainDiagram 
 import { HandbookLearningVisual } from './mdx/HandbookLearningVisual';
 import { AgentBoundaryVisual, AgentCapabilityVisual } from './mdx/AgentVisuals';
 import { MongoDBVisual } from './mdx/MongoDBVisuals';
+import { KnowledgeCheck } from './mdx/KnowledgeCheck';
 import { ModeText, ReadingModeToggle } from './ReadingMode';
 import { SyntaxCode } from './SyntaxCode';
 import { slugify } from '@/lib/mdx';
@@ -59,7 +60,7 @@ const createComponents = (idPrefix = '', includeContextSwitch = false) => ({
   th: ({children,...props}:any)=><th {...props}>{children}</th>, td: ({children,...props}:any)=><td {...props}>{children}</td>,
   pre: ({children}:any)=>{const child=children as any;const code=child?.props?.children?.toString?.()||'';const language=(child?.props?.className||'').replace('language-','')||'text';return <SyntaxCode code={code} language={language}/>;},
   code: ({children,...props}:any)=><code className="byte-code" {...props}>{children}</code>,
-  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual, DockerObjectArchitecture, DockerRealWorldVisual, DockerUseCaseVisual, OfficialDockerDiagram, DockerConceptLab, LangChainFlowVisual, LangChainBuildingBlocks, OfficialLangChainDiagram, HandbookLearningVisual, AgentBoundaryVisual, AgentCapabilityVisual, MongoDBVisual, ModeText, ReadingModeToggle,
+  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual, DockerObjectArchitecture, DockerRealWorldVisual, DockerUseCaseVisual, OfficialDockerDiagram, DockerConceptLab, LangChainFlowVisual, LangChainBuildingBlocks, OfficialLangChainDiagram, HandbookLearningVisual, AgentBoundaryVisual, AgentCapabilityVisual, MongoDBVisual, KnowledgeCheck, ModeText, ReadingModeToggle,
 });
 
 export function ByteContent({content,tanglishContent}:{content:string;tanglishContent?:string|null}) {

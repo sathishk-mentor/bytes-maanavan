@@ -178,11 +178,15 @@ Compose is the operating plan: which stations exist, how they are reached, what 
 
 ## FAQ + Knowledge Check
 
+<KnowledgeCheck>
+
 **Why cannot the backend use `localhost` for PostgreSQL?** Because `localhost` points back to the backend container. Use the service name `postgres`.
 
 **Does `depends_on` prove that the database is ready?** No. It helps with order; readiness needs a health signal and resilient application behaviour.
 
 **Knowledge check:** Which command starts the defined stack? **`docker compose up`**. Which command shows service states? **`docker compose ps`**.
+
+</KnowledgeCheck>
 
 ### A disciplined debugging sequence
 

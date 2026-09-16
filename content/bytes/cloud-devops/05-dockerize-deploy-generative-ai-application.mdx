@@ -171,11 +171,15 @@ The production question is no longer “Does the container start?” It is “Ca
 
 ## FAQ + Knowledge Check
 
+<KnowledgeCheck>
+
 **Should the LLM API key be copied into the image?** No. Inject it at runtime through the deployment platform.
 
 **Does a healthy process prove good AI answers?** No. Quality evaluation is separate from infrastructure health.
 
 **Knowledge check:** Which image property makes rollback clear? **An immutable version tag or digest.** What should limited traffic provide? **Evidence before wider rollout.**
+
+</KnowledgeCheck>
 
 ### Health, readiness and AI-specific checks
 

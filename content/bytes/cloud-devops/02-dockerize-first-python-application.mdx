@@ -209,6 +209,8 @@ Also avoid installing editors and debugging utilities “just in case.” Smalle
 
 ## FAQ + Knowledge Check
 
+<KnowledgeCheck>
+
 <ThemeCard title="What happens during docker build and docker run?" badge="CAREER">
 
 **Strong answer:** `docker build` processes a Dockerfile and build context to produce a layered image. `docker run` creates a container from that image, adds runtime configuration such as ports and environment variables, and starts the configured process. Build-time decisions belong in the image; environment-specific configuration belongs at runtime.
@@ -220,6 +222,8 @@ Also avoid installing editors and debugging utilities “just in case.” Smalle
 **Why use `.dockerignore`?** To prevent irrelevant or sensitive local files from entering the build context.
 
 **Knowledge check:** Which instruction defines the default startup command? **`CMD`**. What must happen after `app.py` changes? **Rebuild the image.**
+
+</KnowledgeCheck>
 
 ## Official references
 

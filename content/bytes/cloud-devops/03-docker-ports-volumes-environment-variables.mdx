@@ -153,11 +153,15 @@ Think of a small office: the **port** is the numbered entrance, the **volume** i
 
 ## FAQ + Knowledge Check
 
+<KnowledgeCheck>
+
 **Does `EXPOSE 8000` make the app reachable from the laptop?** No. Publish a host mapping such as `-p 8080:8000`.
 
 **Does a volume automatically create a backup?** No. Persistence and backup are different responsibilities.
 
 **Knowledge check:** Which feature changes `LOG_LEVEL` without rebuilding the image? **Environment variable.** Which feature keeps `/app/data` across replacement? **Volume.**
+
+</KnowledgeCheck>
 
 ### Trace one request
 
