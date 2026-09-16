@@ -1,0 +1,182 @@
+---
+title: "LangChain Byte 3: Document Loading, Embeddings & Retrieval — The Foundation of RAG"
+series: "LangChain Essentials"
+byte_number: 3
+of_bytes: 5
+level: Intermediate
+duration: "25-30 mins"
+lang: en
+pair: langchain-byte-3-document-loading-embeddings-retrieval.md
+personas: [Divya, Karthik, Rahul, Meena]
+---
+
+## Quick Start
+
+<ThemeCard title="Let an AI application answer from your documents" badge="LANGCHAIN ENGLISH 03">
+
+Load, split, embed and retrieve the right document sections before the model prepares a grounded answer.
+
+</ThemeCard>
+
+Models have a training data cutoff — they don't know your company's latest policy document, or a pricing sheet that was updated yesterday. In this byte, we'll look at how to load external documents (PDFs, company docs, FAQs), use embeddings to capture their "meaning," and retrieve the relevant information to feed the model. This is the foundation of **RAG (Retrieval-Augmented Generation)**.
+
+**Time investment:** 25-30 mins.
+
+---
+
+## Familiar Scenario
+
+PaisaWise's customer support team has a 40-page internal policy document covering refund rules, KYC requirements, and transaction limits. Customers frequently ask, "What's my transaction limit?" and support agents scroll through those 40 pages every single time to find the answer.
+
+Meena asks: "Can't we just give the chatbot this document and have it answer directly?" Karthik tried it — pasting the entire 40-page document into the prompt and sending it to the model. It worked, but it was expensive (every query paid for the whole document in tokens) and slow. Divya explains: "This is exactly what **retrieval** is for — you only pull the relevant part, not the whole document."
+
+---
+
+<LangChainScenarioVisual concept="rag" />
+
+## Core Explanation
+
+Think of this like a library. Instead of reading the entire 40-page document every time, imagine a smart librarian who, when you ask about "transaction limits," hands you exactly the right paragraph — no need to read the whole book. A **retrieval** system plays exactly that librarian's role.
+
+The process has four steps:
+
+1. **Load** — bring the document (PDF, text, webpage) into the system.
+2. **Split** — break the large document into smaller "chunks" (like splitting a library's books into chapters).
+3. **Embed** — create a "meaning fingerprint" (embedding vector) for each chunk — content with similar meaning gets a similar fingerprint.
+4. **Store & Retrieve** — store these fingerprints in a vector database. When a user asks a question, embed that question too, and pull the chunks whose fingerprints are closest to it.
+
+Rahul asks: "What exactly is an embedding?" Divya: "Think of it as a list of numbers — 'transaction limit' and 'withdrawal cap' use different words, but the meaning is similar, and that's what these numbers capture."
+
+---
+
+## Architecture / Flow Diagram
+
+**Text Splitters** — chunk size matters a lot. Too small (100 characters) and you lose context. Too large (5000 characters) and you pull in irrelevant info too. A typical choice is 500-1000 characters with some overlap (100 characters) so information doesn't get lost at chunk boundaries.
+
+**Vector Stores** — the database that stores embeddings (Chroma, Pinecone, FAISS, pgvector). When a query comes in, it's embedded too, and **similarity search** (cosine similarity) ranks and returns the closest matching chunks — this is called "top-k retrieval" (e.g., top 3 relevant chunks).
+
+**Retriever** — in LangChain, this is a Runnable — give it a query, it returns relevant documents, which then flow to the next chain step (usually a model call).
+
+---
+
+<LangChainWorkflowExplorer concept="rag" />
+
+<LangChainConceptLab concept="rag" />
+
+## Code Walkthrough
+
+```python
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
+
+# 1. Load - bring the PDF document into the system
+loader = PyPDFLoader("paisawise_policy.pdf")
+documents = loader.load()
+
+# 2. Split - break it into chunks, with overlap
+splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
+chunks = splitter.split_documents(documents)
+
+# 3. Embed + Store - create the vector database
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+vectorstore = Chroma.from_documents(chunks, embeddings)
+
+# 4. Retrieve - pull the relevant chunks (top 3)
+retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+
+# 5. RAG chain - combine retrieval with generation
+prompt = ChatPromptTemplate.from_template(
+    "Answer using ONLY this context:\n{context}\n\nQuestion: {question}"
+)
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+rag_chain = (
+    {"context": retriever, "question": lambda x: x}
+    | prompt
+    | model
+    | StrOutputParser()
+)
+
+answer = rag_chain.invoke("What's my transaction limit?")
+print(answer)
+```
+
+<LangChainCodeOutcome variant="retrieve" />
+
+---
+
+## Practical Cost Scenario
+
+In an illustrative banking support workload, feeding an entire policy manual into every request might use **8,000-10,000 input tokens**. Retrieving three relevant chunks could reduce the supplied context to roughly **1,200 tokens**. This demonstrates the cost and focus benefit of retrieval; actual currency cost varies by provider, model and date.
+
+In the fictional PaisaWise exercise, assume policy lookup drops from **4 minutes** to **8 seconds**. Learners can use those figures to calculate the potential time saved across 200 daily queries.
+
+---
+
+## Common Mistakes
+
+1. **Wrong chunk size** — too small loses context, too large brings in irrelevant noise.
+2. **No overlap between chunks** — if an important sentence falls right on a chunk boundary, it can get split across two chunks and never fully retrieved.
+3. **Wrong top-k value** — k=1 can sometimes miss the correct answer. k=10 can pull in irrelevant context and confuse the model. k=3-5 is usually a good balance.
+4. **Embedding model and query language mismatch** — for Tanglish/Tamil queries, check that your embedding model actually handles them well before relying on it.
+5. **Missing the "answer using only this context" instruction** — without it, the model can hallucinate confident-sounding info that isn't actually in the context.
+
+---
+
+## Scenario Result
+
+After launch, the support team's daily query load dropped by 60% — the chatbot answers policy-based questions directly. In the review meeting, Meena says: "This is the real ROI!" Karthik has one more question: "But Divya, if a customer asks a 5th question in the conversation, will the model remember the earlier ones?" Divya smiles: "That's next byte's topic — Memory."
+
+---
+
+## Tool / Technology Comparison
+
+| Approach | When to Use |
+|---|---|
+| Full document in prompt | Very short documents (fewer than 2 pages), one-off tasks |
+| RAG (retrieval + generation) | Large knowledge bases, frequent queries, cost-sensitive at scale |
+| Fine-tuning | Style/behavior changes needed, not for frequently-changing facts |
+
+---
+
+## Practical Task
+
+Try this: create 2-3 small text files (your favorite recipes, or a company FAQ). Build the loader + splitter + embeddings + retriever pipeline. Ask "What ingredients do I need?" and check whether only the correct file's content gets retrieved.
+
+---
+
+## Key Takeaways
+
+- **RAG** = Retrieval + Generation — inject external, up-to-date knowledge into the model's answers.
+- **Load → Split → Embed → Store → Retrieve** — these 5 steps form the backbone of RAG.
+- Chunk size and overlap directly affect retrieval quality — tuning them matters a lot.
+- RAG is far more cost-effective and accurate at scale than stuffing the full document into every prompt.
+- A retriever is itself a Runnable — it integrates seamlessly into chains.
+
+---
+
+## FAQ + Knowledge Check
+
+**Q1: What's the difference between RAG and fine-tuning?**
+RAG injects external knowledge at runtime (when you need facts). Fine-tuning changes the model's behavior/style through training. For frequently changing facts, RAG is the better choice.
+
+**Q2: Why use a vector database instead of a regular SQL database?**
+SQL databases are great for exact match/keyword search. Vector databases are designed for "meaning-based" (semantic) search — they can find matches even when the wording is different but the meaning is similar.
+
+**Q3: Are the embedding model and chat model the same thing?**
+No, they serve different purposes. The embedding model converts text into vectors (for search). The chat model generates text (for answers).
+
+**Knowledge Check:**
+1. How many main steps are in a RAG pipeline?
+2. Why do we use chunk overlap?
+3. True/False: To use RAG, you need to retrain/update the model.
+
+*(Answers: 1. Five — Load, Split, Embed, Store, Retrieve; 2. So information doesn't get lost at chunk boundaries; 3. False — RAG injects external data at runtime; no retraining needed)*
+
+---
+*Next byte: **Memory** — how to maintain context across multi-turn conversations.*

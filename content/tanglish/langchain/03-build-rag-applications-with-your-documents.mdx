@@ -1,0 +1,182 @@
+---
+title: "LangChain Byte 3: Document Loading, Embeddings & Retrieval — RAG-oda Foundation"
+series: "LangChain Essentials"
+byte_number: 3
+of_bytes: 5
+level: Intermediate
+duration: "25-30 mins"
+personas: [Divya, Karthik, Rahul, Meena]
+---
+
+## Quick Start
+
+<ThemeCard title="Indha Byte mudinja neenga enna build pannuveenga?" badge="LANGCHAIN TANGLISH 03">
+
+PDF-ai load, split, embed, store and retrieve panni, answer-ku relevant evidence mattum model-kku kudukkura RAG flow-ai build pannuveenga.
+
+</ThemeCard>
+
+Model-ku training data cutoff iruku — unga company-oda latest policy document, illa yesterday update aana pricing sheet, adhukku theriyaadhu. Indha byte-la, external documents-ah (PDFs, company docs, FAQs) eppadi load pannuradhu, embeddings use panni "meaning" capture pannuradhu, and relevant information-ah retrieve panni model-ku kudukuradhu-nu paapom. Idhu dhaan **RAG (Retrieval-Augmented Generation)**-oda foundation.
+
+**Time investment:** 25-30 mins.
+
+---
+
+## Familiar Scenario
+
+PaisaWise-oda customer support team-ku, oru 40-page internal policy document iruku — refund rules, KYC requirements, transaction limits ellam adhula iruku. Customers frequently kekkuraanga: "En transaction limit evlo?" Support agents ovvoru thadavayum andha 40 pages-ah scroll panni search pannuranga.
+
+Meena kekkuraanga: "Chatbot-ku indha document-ah kudutha, direct-a answer sollum-la?" Karthik try pannaan — whole 40-page document-ah prompt-la paste pannitu model-ku kudutha. Adhu work aachu, aana expensive-a irundhuchu (every query-kum whole document token cost) and slow-a irundhuchu. Divya solraanga: "Idhukku dhaan **retrieval** iruku — relevant part mattum edukanum, whole document illa."
+
+---
+
+<LangChainScenarioVisual concept="rag" />
+
+## Concept-ai Simple-a Purinjukonga
+
+Idha oru library madhiri nenachukonga. 40-page document-ah full-a padikardhukku பதிலா, oru smart librarian irundha, "transaction limit"-pathi kekka, andha specific paragraph mattum eduthu tharuvaanga — book full-a padikkanum-nu venaam. **Retrieval** system, adhே librarian job pannudhu.
+
+Process naalu steps:
+
+1. **Load** — document-ah (PDF, text, webpage) system-ku kondu varuradhu.
+2. **Split** — periya document-ah chinna chinna "chunks"-a pirikuradhu (library-la books, chapters-a pirikardhu madhiri).
+3. **Embed** — ovvoru chunk-ku, oru "meaning fingerprint" (embedding vector) create pannuradhu — similar meaning content-ku similar fingerprint irukum.
+4. **Store & Retrieve** — indha fingerprints-ah oru vector database-la store pannuradhu, user question vandha, adhே question-oda fingerprint-oda closest match irukura chunks-ah edukuradhu.
+
+Rahul kekkuraan: "Embedding-nu solna exact-a enna?" Divya: "Oru numbers-oda list-nu nenachuko — 'transaction limit' and 'withdrawal cap' — vaarthai vேறு, aana meaning similar-a irukanum-la, adha capture panra numbers."
+
+---
+
+## Inside Workflow
+
+**Text Splitters** — chunk size romba important. Chinna-a pannina (100 characters), context lose aagum. Periya-a pannina (5000 characters), irrelevant info-um sேருthu varum. Typical-a 500-1000 characters, konjam overlap (100 characters) vachi split pannuvom — context boundary-la information lose aagadhu.
+
+**Vector Stores** — embeddings store panra database (Chroma, Pinecone, FAISS, pgvector). User query vandha, adhே query-um embed panni, **similarity search** (cosine similarity) use panni, closest matching chunks-ah rank pannitu return pannum — idha "top-k retrieval" nu solluvom (example: top 3 relevant chunks).
+
+**Retriever** — LangChain-la idhu oru Runnable — query kudutha, relevant documents return pannum, next chain step-ku (usually model call) pogum.
+
+---
+
+<LangChainWorkflowExplorer concept="rag" />
+
+<LangChainConceptLab concept="rag" />
+
+## Code Panni Paapom
+
+```python
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
+
+# 1. Load - PDF document-ah load pannuradhu
+loader = PyPDFLoader("paisawise_policy.pdf")
+documents = loader.load()
+
+# 2. Split - chunks-a pirikuradhu, overlap vachi
+splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
+chunks = splitter.split_documents(documents)
+
+# 3. Embed + Store - vector database create pannuradhu
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+vectorstore = Chroma.from_documents(chunks, embeddings)
+
+# 4. Retrieve - relevant chunks edukuradhu (top 3)
+retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+
+# 5. RAG chain - retrieval + generation combine pannuradhu
+prompt = ChatPromptTemplate.from_template(
+    "Answer using ONLY this context:\n{context}\n\nQuestion: {question}"
+)
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+rag_chain = (
+    {"context": retriever, "question": lambda x: x}
+    | prompt
+    | model
+    | StrOutputParser()
+)
+
+answer = rag_chain.invoke("En transaction limit evlo?")
+print(answer)
+```
+
+<LangChainCodeOutcome variant="retrieve" />
+
+---
+
+## Practical Cost Scenario
+
+**Important:** Keela irukkura banking-scale numbers sample estimate mattum. HDFC-oda internal implementation or verified cost claim illa. Actual token cost provider pricing and document size-la depend aagum.
+
+HDFC madhiri banking scale-la yosichaal, whole policy manual-ah ovvoru query-kum prompt-la kudutha — oru query-ku approximately **8,000-10,000 tokens** aagum (₹3-4 per query, GPT-4-class model rate-la). RAG approach use panna, relevant 3 chunks mattum (~1,200 tokens) kudukardhala, query cost **₹0.40-0.50**-ku வந்துடுச்சு — **~85% cost reduction**, and accuracy-um improve aagum (model irrelevant info-la confuse aagadhu).
+
+PaisaWise-oda case-la, support team-oda "policy lookup" time, average **4 minutes** -la irundhu **8 seconds**-ku குறைஞ்சுடுச்சு — daily 200 queries-ku, andha saved time-ah agent-oda hourly cost-la convert pannina, **₹18,000/month** equivalent productivity gain.
+
+---
+
+## Common Mistakes
+
+1. **Chunk size wrong-a set pannuradhu** — romba chinna-na context lose aagum, romba periya-na irrelevant noise varum.
+2. **Overlap illama split pannuradhu** — important information oru sentence-oda naduvula chunk boundary vandha, adhே information rendu chunks-la split aagi, edhume complete-a retrieve aagadhu.
+3. **Top-k value wrong** — k=1 na, sometimes correct answer miss aagum. k=10 na, irrelevant context-um sேருthu, model confuse aagum. Typically k=3-5 balanced-a irukum.
+4. **Embedding model and query language mismatch** — Tanglish/Tamil queries-ku, embedding model adha well handle pannudha-nu check pannama use pannuradhu.
+5. **"Answer using only this context" instruction miss pannuradhu** — idhu illama, model hallucinate pannalam (context-la illaadha info-ah confident-a sollalam).
+
+---
+
+## Scenario Result
+
+Launch aana apram, support agents-oda daily query load 60%-ku குறைஞ்சுடுச்சு — chatbot-e direct-a policy-based answers kudukudhu. Meena review meeting-la solraanga: "Idhu than real ROI!" Karthik-ku innum ஒரு doubt iruku: "Aana Divya akka, conversation-la 5th question kekkumbodhu, previous questions-ah model ninaikkuma?" Divya smile pannitu: "Adhu next byte-oda topic — Memory."
+
+---
+
+## Compare Panni Decide Pannunga
+
+| Approach | When to Use |
+|---|---|
+| Full document in prompt | Very short documents (2 pages-kku kammi), one-off tasks |
+| RAG (retrieval + generation) | Large knowledge bases, frequent queries, cost-sensitive at scale |
+| Fine-tuning | Style/behavior changes needed, not for frequently-changing facts |
+
+---
+
+## Neenga Try Pannunga
+
+Neenga try pannunga: 2-3 chinna text files (unga favorite recipes, illa unga company FAQ) create pannunga. Loader + splitter + embeddings + retriever pipeline build pannunga. "Ingredients enna venum?"-nu kekkumbodhu, correct file-oda content mattum retrieve aaguthaa-nu check pannunga.
+
+---
+
+## Key Takeaways
+
+- **RAG** = Retrieval + Generation — external, up-to-date knowledge-ah model-oda answers-la inject pannuradhu.
+- **Load → Split → Embed → Store → Retrieve** — indha 5-step pipeline dhaan RAG-oda backbone.
+- Chunk size and overlap, retrieval quality-ah directly affect pannum — tuning romba important.
+- RAG, full-document-in-prompt approach vida, romba cost-effective and accurate at scale.
+- Retriever-um oru Runnable dhaan — chains-oda seamless-a integrate aagum.
+
+---
+
+## FAQ + Knowledge Check
+
+**Q1: RAG and fine-tuning-ku enna difference?**
+RAG, external knowledge-ah runtime-la inject pannudhu (facts venumna). Fine-tuning, model-oda behavior/style-ah training mூலம் maathudhu. Frequently changing facts-ku RAG better.
+
+**Q2: Vector database yaen venum, normal SQL database use pannalama?**
+SQL database exact match/keyword search-ku nalla irukum. Vector database "meaning-based" (semantic) search panna design pannirukku — vாrthai different-a irundhalum, meaning similar-a irundha kandupidikum.
+
+**Q3: Embedding model, chat model rendum same-aa?**
+Illa, rendum vேறு purpose. Embedding model text-ah vectors-a convert pannudhu (search-ku). Chat model text generate pannudhu (answers-ku).
+
+**Knowledge Check:**
+1. RAG pipeline-la, ethana main steps iruku?
+2. Chunk overlap yaen use pannuvom?
+3. True/False: RAG use panna, model-oda training data update pannanum.
+
+*(Answers: 1. Ainthu — Load, Split, Embed, Store, Retrieve; 2. Chunk boundary-la information lose aagama iruka; 3. False — RAG runtime-la external data inject pannudhu, training update venam)*
+
+---
+*Next byte: **Memory** — multi-turn conversations-la context epdi maintain pannuradhu.*

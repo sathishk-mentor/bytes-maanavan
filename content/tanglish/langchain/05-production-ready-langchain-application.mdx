@@ -1,0 +1,181 @@
+---
+title: "LangChain Byte 5: Agents & Tools — Model-ku 'Actions Edukum' Power Kudukuradhu"
+series: "LangChain Essentials"
+byte_number: 5
+of_bytes: 5
+level: Intermediate-Advanced
+duration: "25-30 mins"
+personas: [Divya, Karthik, Rahul, Meena]
+---
+
+## Quick Start
+
+<ThemeCard title="Indha Byte mudinja neenga enna build pannuveenga?" badge="LANGCHAIN TANGLISH 05">
+
+Agent-kku small, authorised Python tools kuduthu, tool request → execution → observation → final answer flow-ai safe-a build pannuveenga.
+
+</ThemeCard>
+
+Ippadi varaikkum naanga paathadhu — model-ku question kudutha, text answer tharum (Byte 1), pipelines build panna mudியும் (Byte 2), external documents refer panna mudியும் (Byte 3), conversation context ninaichuruma (Byte 4). Aana yedho **action edukanum** na — "en balance check pannunga" (database query pannanum), "en refund process pannunga" (API call pannanum) — adhukku enna venum? Idhu dhaan indha final byte-oda topic: **Agents & Tools**.
+
+**Time investment:** 25-30 mins.
+
+---
+
+## Familiar Scenario
+
+PaisaWise chatbot success aana apram, Meena innoru feature pull pannுraanga: "Customer 'en current balance evlo?' nu kekumbodhu, bot REAL-TIME balance database-la irundhu edutha varanum — hardcoded illa illa memory-la irundhu illa."
+
+Karthik confuse aayiduchaan: "Aana model-ku direct-a database access illaiyе, epdi live data edukum?" Divya solraanga: "Model-ku direct access venaam — நாம model-ku 'tools' kudukurom, model decide pannும் edhavadhu tool use pannanum-nu, and edhu parameters kudukanum-nu. Idha **agent** nu solluvom."
+
+---
+
+<LangChainScenarioVisual concept="agent" />
+
+## Concept-ai Simple-a Purinjukonga
+
+Agent-ah oru "smart PA (personal assistant)" madhiri nenachukonga. Neenga PA-kitta "en flight book pannunga, Chennai to Bengaluru"-nu solna, PA ready-made script follow pannuradhu illa — PA **reason** pannுவாங்க: "Idhukku flight search tool venum, apram calendar check pannanum, apram book pannanum." Ovvoru step-um, next step decide panradhukku munnadi previous result paapaanga.
+
+**Agent** = LLM + Tools + Reasoning Loop. Model-kitta oru "toolbox" kudukurom (example: `check_balance()`, `send_notification()`, `search_transactions()`). User question vandha, agent:
+
+1. **Think** — "Idha answer panna, edhu tool venum?"
+2. **Act** — andha tool-ah correct parameters-oda call pannுradhu.
+3. **Observe** — tool-oda result paakuradhu.
+4. **Repeat illa Final Answer** — innum info venumna, next tool call pannுradhu, illana final answer kudukuradhu.
+
+Idha **ReAct pattern** (Reason + Act) nu solluvom. Rahul kekkuraan: "Model wrong tool choose panna maatengala?" Divya: "Panna mudியும், adhுku dhaan tool descriptions clear-a, well-documented-a irukanum."
+
+---
+
+## Inside Workflow
+
+**Tools** — Python functions dhaan, aana LangChain-ku "idhu oru tool"-nu kaamikardhukku, name, description, and expected parameters define pannanum. Model, indha description paathu dhaan "idha eppo use pannanum"-nu decide pannும் — so description clear-a, specific-a irukanum.
+
+**Function/Tool Calling** — modern LLMs (GPT-4, Claude) natively support pannுthu "structured tool calls" — model, plain text-ku pathila, "call `check_balance` with `user_id=12345`" madhiri structured output generate pannும். LangChain idha parse panni, actual function-ah call pannும்.
+
+**Agent Executor** — indha whole loop (think → act → observe → repeat) manage panra component. Max iterations set panna mudியும் (infinite loop avoid panna), intermediate steps log panna mudியும் (debugging-ku).
+
+---
+
+<LangChainWorkflowExplorer concept="agent" />
+
+<LangChainConceptLab concept="agent" />
+
+## Code Panni Paapom
+
+```python
+from langchain.tools import tool
+from langchain.agents import create_agent
+
+# Tools define pannuradhu - clear description romba important
+@tool
+def check_balance(user_id: str) -> str:
+    """Given a user_id, returns their current account balance in INR."""
+    # Real app-la, idhu database query pannும்
+    return f"Balance for {user_id}: Rs 24,500"
+
+@tool
+def get_recent_transactions(user_id: str, count: int = 5) -> str:
+    """Returns the user's most recent N transactions."""
+    return f"Last {count} transactions for {user_id}: Swiggy Rs450, Uber Rs800..."
+
+agent = create_agent(
+    model="provider:model-name",
+    tools=[check_balance, get_recent_transactions],
+    system_prompt=(
+        "Neenga PaisaWise finance assistant. Read-only tools mattum use pannunga. "
+        "Money transfer, refund or account change execute panna koodadhu."
+    ),
+)
+
+result = agent.invoke({
+    "messages": [{
+        "role": "user",
+        "content": "PW12345 account-oda balance evlo?"
+    }]
+})
+
+print(result["messages"][-1].content)
+# Agent: tool select pannum -> Python execute pannum -> observation return aagum -> answer varum
+```
+
+<LangChainCodeOutcome variant="agent" />
+
+`verbose=True` vachu run pannina, agent-oda internal reasoning steps ("I need to call check_balance...") console-la kaamikum — idhu romba useful debugging-ku.
+
+---
+
+## Practical Cost Scenario
+
+**Important:** Keela irukkura delivery-support numbers sample learning estimate. Swiggy-oda private agent architecture or verified operating cost claim illa.
+
+Swiggy madhiri delivery platform-la, "en order எங்க iruku?" nu customer kekumbodhu — agent, `track_order` tool call pannும், real-time GPS data edukும், readable answer-a convert pannும். Manual-a, indha support-ku human agent per-query **₹8-12** cost aagும் (agent salary amortized). Agent-based automation-la, **₹0.50-1.50** per query-ku (model + tool infrastructure cost) வந்துடும் — 85%+ cost reduction, and response time seconds-la.
+
+Aana caution: agents, wrong tool choose pannுna, illa hallucinate panni fake parameters kudுthaal, wrong actions edukும் risk iruku — adhுkku dhaan production-la, sensitive actions (money transfer madhiri) -ku human confirmation step add pannுradhu best practice.
+
+---
+
+## Common Mistakes
+
+1. **Tool description vague-a iruradhu** — "get data"-nu mattum sonna, model confuse aagும். "Given a user_id, returns current account balance in INR"-nu specific-a irukanum.
+2. **Too many tools kudுthu confuse pannுradhu** — 20+ tools kudுthaal, model correct tool choose panna struggle pannும். Related tools-ah group pannunga, illa hierarchical agents consider pannunga.
+3. **Max iterations set pannaama poradhu** — agent infinite loop-la sikki, cost and latency uncontrolled-a increase aagும்.
+4. **Sensitive actions-ku confirmation illama iruradhu** — money transfer, data deletion madhiri irreversible actions-ku, agent-ah direct-a execute panna vidama, human-in-the-loop confirmation add pannunga.
+5. **Tool errors handle pannaama poradhu** — API call fail aana, agent-ku graceful-a handle panna theriyanum, illana whole conversation crash aagும்.
+
+---
+
+## Scenario Result
+
+Agent feature launch aana apram, Meena review meeting-la summarize pannுraanga: "5 bytes kazhichu, namma oru basic Q&A bot-la irundhu start pannitu, ippo real-time actions edukura full assistant build panniyachu!" Divya smile pannitu Karthik-um Rahul-um-ku solraanga: "Idhu dhaan LangChain-oda beauty — chinna building blocks (models, prompts, chains, retrieval, memory, agents), thani thaniya simple-a irukும், aana combine pannும்போது powerful systems build aagும்."
+
+Rahul: "Akka, next enna padikanum?" Divya: "Multi-agent systems, evaluation, production monitoring — aana adhு vேறு series!"
+
+---
+
+## Compare Panni Decide Pannunga
+
+| Approach | When to Use |
+|---|---|
+| Simple chain (Byte 2) | Fixed, predictable workflow — steps theriyும் |
+| RAG (Byte 3) | Knowledge lookup — facts retrieve pannanum |
+| Agent + Tools | Dynamic decision-making — model decide pannanum edhu action edukanum-nu |
+
+---
+
+## Neenga Try Pannunga
+
+Neenga try pannunga: Rendu tools create pannunga — `get_weather(city)` and `suggest_outfit(weather)`. Agent build pannunga, "Chennai-la weather epdi iruku, enna dress pannalam?"-nu kekumbodhu, agent rendு tools-ah correct order-la (weather first, apram outfit) call pannுdha-nu verify pannunga.
+
+---
+
+## Key Takeaways
+
+- **Agent = LLM + Tools + Reasoning Loop** — model dynamically decide pannும் edhu action edukanum-nu.
+- **Tools** — clear name, description, parameters-oda define panna venும் — description quality, agent accuracy-ah directly affect pannும்.
+- **ReAct pattern** (Think → Act → Observe → Repeat) — agent-oda decision-making process.
+- Max iterations, error handling, and human confirmation (sensitive actions-ku) — production agents-ku must-have safety measures.
+- 5 bytes-um combine pannா: models, prompts/chains, retrieval, memory, agents — indha building blocks vைchi, complete production-ready LLM applications build panna mudியும்.
+
+---
+
+## FAQ + Knowledge Check
+
+**Q1: Agent and Chain-ku enna basic difference?**
+Chain-la steps fixed-a, predetermined-a irukும் (A then B then C). Agent-la, model dynamically decide pannும் edhu step next-nu — flexible, aana less predictable.
+
+**Q2: Agent-ah production-la deploy panna safe-aa?**
+Safe-a panna mudியும், aana guardrails venும் — max iterations, tool access restrictions, sensitive actions-ku human confirmation, and proper error handling.
+
+**Q3: Function calling and Agent, same-aa?**
+Illa. Function calling, oru single model call-la "idha call pannunga"-nu structured output kudுkkும் feature. Agent, indha function calling-ah use panni, multi-step reasoning loop run pannும் higher-level system.
+
+**Knowledge Check:**
+1. ReAct pattern-la, ethana main steps iruku?
+2. Agent-ku tool description yaen romba important?
+3. True/False: Agents ku max_iterations set pannுradhu optional, skip pannalam.
+
+*(Answers: 1. Naalu — Think, Act, Observe, Repeat/Final Answer; 2. Model, description paathu dhaan correct tool-ah choose pannும்; 3. False — infinite loop avoid panna essential)*
+
+---
+*Idhu dhaan LangChain Essentials series-oda final byte. Ella 5 bytes-um sேருthu — LangChain-oda key components full-a cover pannிyachu: LLMs/Chat Models, Prompts/Chains, Retrieval/RAG, Memory, and Agents/Tools.*

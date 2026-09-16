@@ -1,0 +1,169 @@
+---
+title: "LangChain Byte 1: LLMs & Chat Models — Ungala First Building Block"
+series: "LangChain Essentials"
+byte_number: 1
+of_bytes: 5
+level: Beginner
+duration: "20-25 mins"
+personas: [Divya, Karthik, Rahul, Meena]
+---
+
+## Quick Start
+
+<ThemeCard title="Indha Byte mudinja neenga enna build pannuveenga?" badge="LANGCHAIN TANGLISH 01">
+
+Oru chat model-ai LangChain moolama call panni, system message, user message, normal response, streaming response difference-ai practical-a purinjupinga.
+
+</ThemeCard>
+
+Enna da, oru chat app build pandanumnu nenachadhu undaa? Illa customer support bot? Adhu ellame LangChain-oda first building block-la irundhu than start aagum: **LLMs and Chat Models**. Indha byte mudinja, neenga puriyum — LangChain ஏன் direct OpenAI API call panradhukku better option, epdi oru model-ah "plug-and-play" madhiri swap pannalam, and epdi async/streaming/batch calls work aaguthu.
+
+**Time investment:** 20-25 mins. **Prerequisite:** Python basics, REST API concept theriyum-nu assume pannuren.
+
+---
+
+## Familiar Scenario
+
+Karthik, oru Bengaluru fintech startup-la backend developer. Andha startup — "PaisaWise" — personal finance app. Product Manager Meena, oru feature pull pannuren: "Customers kitta oru chatbot venum, ivanga spending-ah pathi kekkalam — 'இந்த மாசம் food-ku evlo செலவு ஆச்சு?' nu kekka mudiyanum."
+
+Karthik first-a nenachadhu: "Naan directly OpenAI SDK use pannitu, prompt build panni, response parse pannitu... adhu ellame naane handle pannanuma?" 
+
+Andha nேரம் than Divya, senior AI engineer, walk in aaguraanga: "Karthik, adhu ellame neeye pannalam, aana ovvoru LLM provider (OpenAI, Anthropic, local model) kum vera vera SDK, vera format. Adha standardize panradhukku dhaan LangChain-oda **LLM/Chat Model interface** iruku."
+
+---
+
+<LangChainScenarioVisual concept="foundation" />
+
+## Concept-ai Simple-a Purinjukonga
+
+Simple-a solna: LangChain-la **model** nu solradhu, oru "universal remote" madhiri nenachukonga. Neenga TV company edhuvaa irundhalum, andha remote-oda basic buttons — power, volume, channel — ellam same feel pannum. Adhu madhiri, LangChain-oda model interface, provider edhuvaa irundhalum (OpenAI, Anthropic Claude, Google Gemini, illa nee local-a Ollama run pannalam), ஒரே மாதிரி code pattern-la call panna mudiyum.
+
+Rendu main types iruku:
+
+1. **LLM (text completion)** — pழைய style, plain text-ah input-ah kudutha, plain text output tharum.
+2. **ChatModel (conversation-aware)** — indha kaalathula ithu dhaan common. System message, human message, AI message-nu structure-a pesuvom. Ithu dhaan ChatGPT madhiri conversational feel kudukudhu.
+
+Rahul kekkuraan: "Divya akka, chat model-nu use pannaama LLM use pannalamla?" Divya: "Pannalam Rahul, aana chat-based apps-ku — memory, roles ellam handle panna — ChatModel dhaan best fit. 2024-kku apram almost ella major providers-um chat-first-a dhan design pannranga."
+
+---
+
+## Inside Workflow
+
+Technical-a paakalam. Chat model call panna, moonu roles use pannuvom:
+
+- **System** — model-oda behavior set pandradhu ("Neenga oru helpful finance assistant"-nu).
+- **Human** — user-oda question.
+- **AI** — model-oda previous response (conversation history maintain panna).
+
+LangChain indha moonu-ah `SystemMessage`, `HumanMessage`, `AIMessage` classes-a wrap pannudhu, so ethana provider vandhalum format automatic-a handle aagum.
+
+**Support panra key features** (chapter-la solradha madhiri):
+- **Async calls** — `ainvoke()` use panni, ஒரே நேரத்தில் multiple requests handle panna mudiyum, app block aagadhu.
+- **Streaming** — response full-a varaikkum wait pannama, token-token-a UI-la kaamikanum na `stream()` use pannuvom — ChatGPT-la typing effect paakuromla, adhu than.
+- **Batch** — 100 customer questions-ah ஒரே நேரத்தில் process pannanumna `batch()`.
+
+---
+
+<LangChainWorkflowExplorer concept="foundation" />
+
+<LangChainConceptLab concept="foundation" />
+
+## Code Panni Paapom
+
+```python
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage, HumanMessage
+
+# Model initialize pannurom - temperature low na consistent answers varum
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
+
+messages = [
+    SystemMessage(content="Neenga oru friendly personal finance assistant. Tanglish-la simple-a explain pannunga."),
+    HumanMessage(content="Indha maasam en food expense evlo?")
+]
+
+response = model.invoke(messages)
+print(response.content)
+
+# Streaming example - real-time-a token vara vara print aagum
+for chunk in model.stream(messages):
+    print(chunk.content, end="", flush=True)
+```
+
+<LangChainCodeOutcome variant="invoke" />
+
+Karthik indha code run panni paathaan — 15 lines-ku kammi-la oru working chatbot brain ready. Provider maathanumna, `ChatOpenAI`-ah `ChatAnthropic`-nu maathina podhum, remaining code same-a irukum. Adhu dhaan power.
+
+---
+
+## Practical Cost Scenario
+
+**Important:** Keela irukkura PaisaWise numbers concept explain panna use panra sample calculation. Idhu real company internal cost claim illa. Actual cost model, token usage, traffic and provider pricing-la depend aagum.
+
+PaisaWise start-la GPT-4-oda full model use panniganga, aana 10,000 daily active users-ku, monthly API cost **₹4.2 lakhs** varachu — Meena budget meeting-la shock aayiduchu. Divya suggest pannaanga: simple queries-ku ("balance evlo?") oru cheaper/smaller model (GPT-4o-mini madhiri) route pannunga, complex reasoning-ku mattum periya model use pannunga. Indha "model routing" strategy-la, cost **₹1.1 lakh**-ku வந்துடுச்சு — **~74% saving**, quality-la periya difference illama.
+
+Ithe pola, Zerodha madhiri fintech companies-um, customer support-ku tiered model approach use panranga — routine FAQ-ku light model, trading-related complex queries-ku heavier model.
+
+---
+
+## Common Mistakes
+
+1. **API key hardcode pannuradhu** — code-la direct-a key podadhinga, `.env` file use pannunga.
+2. **Temperature wrong-a set pannuradhu** — factual answers-ku (balance check) temperature=0 use pannunga, creative content-ku (marketing copy) temperature=0.7+ use pannunga.
+3. **Sync calls mattum use panni app slow aaguradhu** — production-la async/streaming consider pannama poi user-ah wait vaikuranga.
+4. **Provider lock-in nenachu design pannuradhu** — LangChain-oda whole point dhaan provider swap panna easy-a irukanum-nu, aana konjam people provider-specific features (function calling format) heavy-a use panni, andha flexibility lose pannuranga.
+
+---
+
+## Scenario Result
+
+Rendu vaaram kazhichu, Meena demo paakuraanga: "Indha maasam en food expense evlo?" nu type panna, chatbot real-time-a stream aaidhu answer tharudhu. Meena santhosham: "Ithu than exact-a naan wanted!" Karthik smile pannitu Divya-kitta solraan: "Nee sonna madhiri, model interface standardize panniten na, next time vera provider try panna 10 minutes podhum."
+
+---
+
+## Compare Panni Decide Pannunga
+
+| Approach | When to Use |
+|---|---|
+| Direct provider SDK (OpenAI SDK direct) | Single provider, simple script, prototype |
+| LangChain Model interface | Multi-provider flexibility, production apps, swap/test different models |
+| Local model (Ollama via LangChain) | Data privacy critical, no internet dependency, cost-sensitive at scale |
+
+---
+
+## Neenga Try Pannunga
+
+Neenga try pannunga: Oru `SystemMessage` create pannunga, unga favorite Indian dish recommend panra assistant persona kudunga. `HumanMessage`-la "Naan spicy food pudikum, romba busy, 20 mins-ku kammi cook panna venum"-nu kekkunga. `temperature=0.7` vaichi rendu vaati run pannunga, output vaariety-ah compare pannunga.
+
+---
+
+## Key Takeaways
+
+- LangChain-oda Model interface, LLM providers-ah standardize pannudhu — universal remote madhiri.
+- **ChatModel** (roles-based: System/Human/AI) dhaan modern conversational apps-ku standard.
+- **Async, streaming, batch** — production apps-ku must-have features, LangChain built-in support tharudhu.
+- Right model choose panradhu (size + provider) — quality vs cost trade-off-ah直接 affect pannum — model routing strategy-la real savings kidaikum.
+- Provider switch panradhu, low-effort-a irukanum-nu dhaan indha abstraction-oda main value.
+
+---
+
+## FAQ + Knowledge Check
+
+**Q1: LangChain nu solna oru puthu LLM aa?**
+Illa. LangChain oru framework/orchestration layer — existing LLMs (OpenAI, Anthropic, Gemini, etc.) ah connect panni, apps build panna help pannudhu.
+
+**Q2: Streaming yaen important?**
+User-ku "waiting" feel varama, response generate aaguravaraikkum real-time-a text kaamikardhukku. UX-ku romba முக்கியம்.
+
+**Q3: Temperature parameter enna pannum?**
+Model-oda "randomness" control pannum. Low (0-0.3) = consistent/factual, High (0.7-1) = creative/varied.
+
+**Knowledge Check:**
+1. Customer balance check bot-ku, temperature evlo set pannanum — 0.1 illa 0.9?
+2. `ChatOpenAI`-ah `ChatAnthropic`-ku maathanum na, evlo code maatha vendiyirukum — approximately?
+3. True/False: Async calls, app-ah multiple requests ஒரே நேரத்தில் handle panna help pannum.
+
+*(Answers: 1. 0.1 — factual/consistent venum; 2. Minimal — mostly one line, class name mattum; 3. True)*
+
+---
+*Next byte: **Prompts & Chains** — individual model calls-ah eppdi pipelines-a join pannalam.*

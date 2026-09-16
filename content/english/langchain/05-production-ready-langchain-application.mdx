@@ -1,0 +1,179 @@
+---
+title: "LangChain Byte 5: Agents & Tools — Giving the Model the Power to Take Action"
+series: "LangChain Essentials"
+byte_number: 5
+of_bytes: 5
+level: Intermediate-Advanced
+duration: "25-30 mins"
+lang: en
+pair: langchain-byte-5-agents-and-tools.md
+personas: [Divya, Karthik, Rahul, Meena]
+---
+
+## Quick Start
+
+<ThemeCard title="Give a model controlled access to useful tools" badge="LANGCHAIN ENGLISH 05">
+
+Build an agent that selects bounded tools, observes results and stops safely before consequential actions.
+
+</ThemeCard>
+
+So far we've covered: getting an answer back from a model (Byte 1), building pipelines (Byte 2), referencing external documents (Byte 3), and having the model remember conversation context (Byte 4). But what happens when you need the model to actually **take an action** — "check my balance" (needs a database query), "process my refund" (needs an API call)? That's what this final byte covers: **Agents & Tools**.
+
+**Time investment:** 25-30 mins.
+
+---
+
+## Familiar Scenario
+
+After the PaisaWise chatbot's success, Meena pulls in another feature: "When a customer asks 'what's my current balance?', the bot needs to pull that in real time from the database — not from memory, not hardcoded."
+
+Karthik is confused: "But the model doesn't have direct database access — how would it get live data?" Divya explains: "The model doesn't need direct access — we give it 'tools,' and the model decides which tool to use and what parameters to pass. That's called an **agent**."
+
+---
+
+<LangChainScenarioVisual concept="agent" />
+
+## Core Explanation
+
+Think of an agent as a smart personal assistant (PA). If you tell your PA "book me a flight from Chennai to Bengaluru," they don't follow a fixed script — they **reason**: "I need to search for flights, then check the calendar, then book it." At each step, they look at the previous result before deciding the next one.
+
+**Agent** = LLM + Tools + Reasoning Loop. You give the model a "toolbox" (e.g., `check_balance()`, `send_notification()`, `search_transactions()`). When a user asks something, the agent:
+
+1. **Think** — "What tool do I need to answer this?"
+2. **Act** — call that tool with the right parameters.
+3. **Observe** — look at the tool's result.
+4. **Repeat or Final Answer** — if more info is needed, call another tool; otherwise, give the final answer.
+
+This is called the **ReAct pattern** (Reason + Act). Rahul asks: "Could the model choose the wrong tool?" Divya: "It could — which is why tool descriptions need to be clear and well-documented."
+
+---
+
+## Architecture / Flow Diagram
+
+**Tools** are just Python functions, but to tell LangChain "this is a tool," you define a name, description, and expected parameters. The model uses this description to decide when to use it — so the description needs to be clear and specific.
+
+**Function/Tool Calling** — modern LLMs (GPT-4, Claude) natively support "structured tool calls" — instead of plain text, the model generates structured output like "call `check_balance` with `user_id=12345`." LangChain parses this and actually calls the function.
+
+**Agent harness** — the runtime that manages the model-and-tool loop, carries messages and returns the final result. Production controls should limit tool access, validate inputs and require approval for consequential actions.
+
+---
+
+<LangChainWorkflowExplorer concept="agent" />
+
+<LangChainConceptLab concept="agent" />
+
+## Code Walkthrough
+
+```python
+from langchain.agents import create_agent
+from langchain.tools import tool
+
+# Define tools - a clear description matters a lot
+@tool
+def check_balance(user_id: str) -> str:
+    """Given a user_id, returns their current account balance in INR."""
+    # In a real app, this would query a database
+    return f"Balance for {user_id}: Rs 24,500"
+
+@tool
+def get_recent_transactions(user_id: str, count: int = 5) -> str:
+    """Returns the user's most recent N transactions."""
+    return f"Last {count} transactions for {user_id}: Swiggy Rs450, Uber Rs800..."
+
+agent = create_agent(
+    model="openai:gpt-5-mini",
+    tools=[check_balance, get_recent_transactions],
+    system_prompt=(
+        "You are PaisaWise's finance assistant. Use tools for live account data. "
+        "Never perform a transfer or refund without explicit human approval."
+    ),
+)
+
+result = agent.invoke({
+    "messages": [
+        {"role": "user", "content": "What's my balance for user PW12345?"}
+    ]
+})
+print(result["messages"][-1].content)
+# The agent selects check_balance, observes its result and prepares the answer.
+```
+
+<LangChainCodeOutcome variant="agent" />
+
+In a real application, trace tool names, validated inputs, outcomes, latency and failures. Do not depend on hidden model reasoning as an audit trail.
+
+---
+
+## Practical Cost Scenario
+
+Consider a delivery application: when a customer asks "Where is my order?", an agent can call a read-only `track_order` tool and translate the returned status into a clear answer. The business should measure actual handling time, model usage, infrastructure cost and escalation rate instead of assuming a fixed saving.
+
+One caution: if an agent picks the wrong tool, or hallucinates fake parameters, it risks taking the wrong action — which is why, in production, sensitive actions (like transferring money) should require a human confirmation step.
+
+---
+
+## Common Mistakes
+
+1. **Vague tool descriptions** — just saying "get data" will confuse the model. Be specific: "Given a user_id, returns current account balance in INR."
+2. **Giving the agent too many tools at once** — 20+ tools makes it hard for the model to pick the right one. Group related tools, or consider hierarchical agents.
+3. **No max_iterations set** — the agent can get stuck in a loop, driving up cost and latency uncontrollably.
+4. **No confirmation step for sensitive actions** — for irreversible actions (transferring money, deleting data), don't let the agent execute directly — add a human-in-the-loop confirmation step.
+5. **Not handling tool errors** — if an API call fails, the agent needs to handle it gracefully, or the whole conversation can crash.
+
+---
+
+## Scenario Result
+
+After the agent feature launched, Meena sums it up in the review meeting: "Across 5 bytes, we went from a basic Q&A bot to a full assistant that can take real-time actions!" Divya smiles and tells Karthik and Rahul: "That's the beauty of LangChain — small building blocks (models, prompts, chains, retrieval, memory, agents) are each simple on their own, but combined, they build powerful systems."
+
+Rahul: "What should I study next?" Divya: "Multi-agent systems, evaluation, production monitoring — but that's a different series!"
+
+---
+
+## Tool / Technology Comparison
+
+| Approach | When to Use |
+|---|---|
+| Simple chain (Byte 2) | Fixed, predictable workflow — the steps are known |
+| RAG (Byte 3) | Knowledge lookup — need to retrieve facts |
+| Agent + Tools | Dynamic decision-making — the model needs to decide what action to take |
+
+---
+
+## Practical Task
+
+Try this: create two tools — `get_weather(city)` and `suggest_outfit(weather)`. Build an agent, and when you ask "What's the weather in Chennai, and what should I wear?", verify the agent calls both tools in the correct order (weather first, then outfit).
+
+---
+
+## Key Takeaways
+
+- **Agent = LLM + Tools + Reasoning Loop** — the model dynamically decides what action to take.
+- **Tools** need a clear name, description, and parameters — description quality directly affects agent accuracy.
+- **ReAct pattern** (Think → Act → Observe → Repeat) describes the agent's decision-making process.
+- Max iterations, error handling, and human confirmation (for sensitive actions) are must-have safety measures for production agents.
+- All 5 bytes combined — models, prompts/chains, retrieval, memory, agents — give you the building blocks for complete, production-ready LLM applications.
+
+---
+
+## FAQ + Knowledge Check
+
+**Q1: What's the basic difference between an agent and a chain?**
+In a chain, the steps are fixed and predetermined (A then B then C). In an agent, the model dynamically decides what the next step is — more flexible, but less predictable.
+
+**Q2: Is it safe to deploy an agent in production?**
+Yes, with the right guardrails — max iterations, restricted tool access, human confirmation for sensitive actions, and proper error handling.
+
+**Q3: Are function calling and agents the same thing?**
+No. Function calling is a feature where a single model call returns structured output saying "call this." An agent is a higher-level system that uses function calling to run a multi-step reasoning loop.
+
+**Knowledge Check:**
+1. How many main steps are in the ReAct pattern?
+2. Why does the tool description matter so much for an agent?
+3. True/False: Setting max_iterations for an agent is optional and can be skipped.
+
+*(Answers: 1. Four — Think, Act, Observe, Repeat/Final Answer; 2. The model uses the description to decide which tool is correct; 3. False — it's essential to avoid infinite loops)*
+
+---
+*This is the final byte of the LangChain Essentials series. Together, all 5 bytes cover LangChain's key components: LLMs/Chat Models, Prompts/Chains, Retrieval/RAG, Memory, and Agents/Tools.*

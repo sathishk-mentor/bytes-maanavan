@@ -1,0 +1,167 @@
+---
+title: "LangChain Byte 2: Prompts & Chains — Turning Single Calls Into Pipelines"
+series: "LangChain Essentials"
+byte_number: 2
+of_bytes: 5
+level: Beginner-Intermediate
+duration: "20-25 mins"
+lang: en
+pair: langchain-byte-2-prompts-and-chains.md
+personas: [Divya, Karthik, Rahul, Meena]
+---
+
+## Quick Start
+
+<ThemeCard title="Turn separate AI steps into one reusable pipeline" badge="LANGCHAIN ENGLISH 02">
+
+Build a prompt template, connect it to a model and parse the response through a clear LCEL chain.
+
+</ThemeCard>
+
+In Byte 1, we learned how to call a model. But real apps rarely stop at one question and one answer — you usually need multiple steps: clean the user's input, build a prompt, send it to the model, parse the output. In this byte we'll look at how to design **Prompts**, and how **Chains** (using LCEL — LangChain Expression Language) let you join these steps into a single pipeline.
+
+**Time investment:** 20-25 mins.
+
+---
+
+## Familiar Scenario
+
+Karthik's next task at PaisaWise: detect the expense category from a customer's message. When a user types "Spent 450 rupees on Swiggy," the system should automatically tag it as "Food & Dining." Karthik's first attempt used a manual f-string to build the prompt:
+
+```python
+prompt = f"Categorize this expense: {user_input}. Reply with only the category name."
+```
+
+Rahul asks: "That works, Karthik, but every time you want to reuse or edit this prompt, isn't it a pain?" Karthik admits: "Yeah, every edit means searching through the whole string." Divya chimes in: "That's exactly what **PromptTemplate** is for — reusable, variable-based prompts."
+
+---
+
+<LangChainScenarioVisual concept="chain" />
+
+## Core Explanation
+
+Think of a **PromptTemplate** as a fill-in-the-blanks letter — like a wedding invitation template: "Dear {name}, please join us on {date}." The structure stays fixed; only the variables change for each guest.
+
+Think of **Chains** as an assembly line. In a factory, raw material moves from one station to the next — cutting → stitching → packing. In a LangChain chain, it's: **Prompt → Model → Output Parser** — the output of one step becomes the input of the next. The **LCEL pipe operator** (`|`) lets you express this beautifully.
+
+Meena asks: "How many steps can a chain have?" Divya: "As many as you need — 2 steps, 10 steps, even chains nested inside chains (sequential chains)."
+
+---
+
+## Architecture / Flow Diagram
+
+In LCEL, every component is a "Runnable" — it has common methods like `.invoke()`, `.stream()`, and `.batch()`. When you connect components with `|`, the output type of one has to match the expected input type of the next — that's what makes a chain "work."
+
+**Sequential chains** — the output of step 1 becomes the input of step 2. Example: raw text → summarize it → translate it → categorize it.
+
+**Output Parsers** — convert the model's raw text response into structured data (JSON, a list, or a specific format). This matters a lot, because downstream code (saving to a database, displaying in a UI) needs structured data, not free text.
+
+---
+
+<LangChainWorkflowExplorer concept="chain" />
+
+<LangChainConceptLab concept="chain" />
+
+## Code Walkthrough
+
+```python
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
+
+# Reusable template - variables go in curly braces
+prompt = ChatPromptTemplate.from_template(
+    "Categorize this expense into ONE word (Food, Travel, Shopping, Bills, Other): {expense_text}"
+)
+
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+parser = StrOutputParser()
+
+# LCEL - use the pipe operator to build the chain
+chain = prompt | model | parser
+
+result = chain.invoke({"expense_text": "Spent 450 rupees on Swiggy"})
+print(result)  # Output: Food
+
+# Batch - process multiple expenses at once
+expenses = [
+    {"expense_text": "Uber ride to airport, 800 rs"},
+    {"expense_text": "Electricity bill 1200 rs"},
+]
+results = chain.batch(expenses)
+print(results)  # ['Travel', 'Bills']
+```
+
+<LangChainCodeOutcome variant="chain" />
+
+Karthik was genuinely surprised by the pipe operator — "3 lines and I have a whole working pipeline!"
+
+---
+
+## Practical Cost Scenario
+
+Imagine a TCS-style internal project (as a case study) that used a chain like this to auto-categorize employee expense reports. Manually, the HR team categorizing **8,000 expense entries** a month needed roughly a full-time person at **₹35,000/month**. After automating it with a chain, that same task cost about **₹2,500/month** in API costs (at GPT-4o-mini rates) — a 99% cost reduction, and the processing time dropped from 3 days to about 10 minutes.
+
+---
+
+## Common Mistakes
+
+1. **Vague instructions in the prompt** — just saying "categorize this" can get you a free-text paragraph back. Be explicit: "Reply with ONE word only."
+2. **Skipping the output parser** — trying to use the raw string directly leads to parsing errors downstream.
+3. **Over-engineering the chain** — if 2 steps get the job done, don't add 5. Start simple, add complexity only when you actually need it.
+4. **Type mismatches** — if one component's output (say, a dict) doesn't match what the next component expects (a string), the chain will fail.
+
+---
+
+## Scenario Result
+
+After the feature shipped, Meena is happy to see 95%+ auto-categorization accuracy on the expense dashboard. Rahul feels a bit more confident too: "I might try chains for my resume screening tool." Divya nods: "Exactly right, Rahul — that's what we'll look at next, adding retrieval to make your chain even smarter."
+
+---
+
+## Tool / Technology Comparison
+
+| Approach | When to Use |
+|---|---|
+| Single prompt + model call | Simple one-shot tasks, prototyping |
+| Chain (prompt \| model \| parser) | Multi-step processing, structured output needed |
+| Sequential chain (chain of chains) | Complex workflows — summarize → translate → categorize |
+
+---
+
+## Practical Task
+
+Build a chain that takes a customer review as input and returns two things: (1) sentiment (Positive/Negative/Neutral), and (2) a 5-word summary. Hint: structure the output parser as JSON so you can extract both fields separately.
+
+---
+
+## Key Takeaways
+
+- **PromptTemplate** — reusable, variable-based prompts that replace hardcoded strings.
+- **LCEL pipe operator (`|`)** — joins components into readable, composable pipelines.
+- **Chains** — enable multi-step workflows: prompt → model → parser, and beyond.
+- **Output parsers** — convert free text into structured, usable data for downstream systems.
+- Start simple, and only add complexity when you actually need it.
+
+---
+
+## FAQ + Knowledge Check
+
+**Q1: What's the difference between PromptTemplate and an f-string?**
+PromptTemplate is reusable, validatable, and integrates seamlessly with LangChain's other components. f-strings are manual and error-prone at scale.
+
+**Q2: What happens if a step in the chain fails?**
+By default, an exception is raised and the chain stops. If you need error handling, use `.with_retry()` or wrap it in try/except.
+
+**Q3: Is LCEL mandatory?**
+No, but it's recommended — it gives you readable code and automatic support for streaming, async, and batch operations.
+
+**Knowledge Check:**
+1. How many steps are in the chain `prompt | model | parser`?
+2. Why do we use an output parser?
+3. True/False: You can nest a chain inside another chain.
+
+*(Answers: 1. Three steps; 2. To get structured, usable output; 3. True)*
+
+---
+*Next byte: **Document Loading, Embeddings & Retrieval** — connecting external data to your chain (the foundation of RAG).*

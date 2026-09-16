@@ -15,12 +15,14 @@ import { CopilotHandbookVisual, OfficialScreenshot } from './mdx/CopilotHandbook
 import { FDEJourneyVisual } from './mdx/FDEVisuals';
 import { DockerCommand, DockerFlowVisual, DockerObjectArchitecture, DockerRealWorldVisual, DockerUseCaseVisual, OfficialDockerDiagram } from './mdx/DockerVisuals';
 import { DockerConceptLab } from './mdx/DockerConceptLab';
-import { LangChainBuildingBlocks, LangChainCodeResult, LangChainFlowVisual, LangChainScenarioLab, OfficialLangChainDiagram } from './mdx/LangChainVisuals';
+import { LangChainBuildingBlocks, LangChainFlowVisual, OfficialLangChainDiagram } from './mdx/LangChainVisuals';
+import { LangChainCodeOutcome, LangChainConceptLab, LangChainScenarioVisual, LangChainWorkflowExplorer } from './mdx/LangChainLearningLabs';
 import { HandbookLearningVisual } from './mdx/HandbookLearningVisual';
 import { AgentBoundaryVisual, AgentCapabilityVisual } from './mdx/AgentVisuals';
 import { MongoDBVisual } from './mdx/MongoDBVisuals';
 import { PythonConceptLab, PythonRealWorldVisual, PythonRoleVisual } from './mdx/PythonLearningVisuals';
 import { PythonCodeOutcome } from './mdx/PythonCodeOutcome';
+import { BeginnerLearningJourney } from './mdx/BeginnerLearningJourney';
 import { KnowledgeCheck } from './mdx/KnowledgeCheck';
 import { ModeText, ReadingModeToggle } from './ReadingMode';
 import { SyntaxCode } from './SyntaxCode';
@@ -62,7 +64,7 @@ const createComponents = (idPrefix = '', includeContextSwitch = false) => ({
   th: ({children,...props}:any)=><th {...props}>{children}</th>, td: ({children,...props}:any)=><td {...props}>{children}</td>,
   pre: ({children}:any)=>{const child=children as any;const code=child?.props?.children?.toString?.()||'';const language=(child?.props?.className||'').replace('language-','')||'text';return <SyntaxCode code={code} language={language}/>;},
   code: ({children,...props}:any)=><code className="byte-code" {...props}>{children}</code>,
-  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual, DockerObjectArchitecture, DockerRealWorldVisual, DockerUseCaseVisual, OfficialDockerDiagram, DockerConceptLab, PythonConceptLab, PythonCodeOutcome, PythonRealWorldVisual, PythonRoleVisual, LangChainFlowVisual, LangChainBuildingBlocks, LangChainScenarioLab, LangChainCodeResult, OfficialLangChainDiagram, HandbookLearningVisual, AgentBoundaryVisual, AgentCapabilityVisual, MongoDBVisual, KnowledgeCheck, ModeText, ReadingModeToggle,
+  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual, DockerObjectArchitecture, DockerRealWorldVisual, DockerUseCaseVisual, OfficialDockerDiagram, DockerConceptLab, PythonConceptLab, PythonCodeOutcome, PythonRealWorldVisual, PythonRoleVisual, LangChainFlowVisual, LangChainBuildingBlocks, LangChainConceptLab, LangChainScenarioVisual, LangChainWorkflowExplorer, LangChainCodeOutcome, OfficialLangChainDiagram, HandbookLearningVisual, BeginnerLearningJourney, AgentBoundaryVisual, AgentCapabilityVisual, MongoDBVisual, KnowledgeCheck, ModeText, ReadingModeToggle,
 });
 
 export function ByteContent({content,tanglishContent}:{content:string;tanglishContent?:string|null}) {

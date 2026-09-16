@@ -11,6 +11,7 @@ import {
   getAdjacentBytes,
   getBytesByCategory,
   extractHeadings,
+  getEnglishContent,
   getTanglishContent,
 } from '@/lib/mdx';
 import { getCategoryBySlug } from '@/lib/categories';
@@ -176,9 +177,10 @@ export default async function BytePage({ params }: BytePageProps) {
   const handbookBytes = await getBytesByCategory(categorySlug);
   const chapterNumber = handbookBytes.findIndex((item) => item.slug === byteSlug) + 1;
 
-  // Extract headings for accordion navigation
-  const headings = extractHeadings(byte.content);
+  const uploadedEnglishContent = await getEnglishContent(categorySlug, byteSlug);
+  const primaryContent = uploadedEnglishContent || byte.content;
   const tanglishContent = await getTanglishContent(categorySlug, byteSlug);
+  const headings = extractHeadings(primaryContent);
   const tanglishHeadings = tanglishContent ? extractHeadings(tanglishContent) : [];
 
   const canonical=`https://bytes.maanavan.com/${categorySlug}/${byteSlug}/`;
@@ -198,7 +200,7 @@ export default async function BytePage({ params }: BytePageProps) {
           <div className="byte-main-column">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} mobile />
             {tanglishContent && <ReadingModeToggle />}
-            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={byte.content} tanglishContent={tanglishContent} /><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
+            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={primaryContent} tanglishContent={tanglishContent} /><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
           <aside className="byte-trust-rail" aria-label="Handbook quick navigation">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} />

@@ -1,0 +1,183 @@
+---
+title: "LangChain Byte 4: Memory — Maintaining Context Across a Conversation"
+series: "LangChain Essentials"
+byte_number: 4
+of_bytes: 5
+level: Intermediate
+duration: "20-25 mins"
+lang: en
+pair: langchain-byte-4-memory.md
+personas: [Divya, Karthik, Rahul, Meena]
+---
+
+## Quick Start
+
+<ThemeCard title="Maintain useful context across a conversation" badge="LANGCHAIN ENGLISH 04">
+
+Understand message history, session separation and the trade-off between full, windowed and summarised memory.
+
+</ThemeCard>
+
+In Byte 3 we looked at retrieval — pulling the correct answer for a single question. But in real conversations, users ask follow-ups: "What's my transaction limit?" followed by "Can I get that increased?" — in that second question, "that" refers back to the first question's context. Without memory, the model treats the second question as standalone and gets confused. In this byte, we'll look at how LangChain handles **memory**.
+
+**Time investment:** 20-25 mins.
+
+---
+
+## Familiar Scenario
+
+Two weeks after the PaisaWise chatbot launched, Rahul (who was testing with the support team) reported an issue: "A customer asked 'what's my food expense?' and the bot answered correctly. Then they asked 'how much of that was Swiggy?' and the bot said it didn't understand the question!"
+
+Karthik investigated — every message was going out as a standalone API call, with no awareness of the previous conversation. Divya explains: "You'd need to manually track chat history and pass it with every call. LangChain has memory components to automate exactly that."
+
+---
+
+<LangChainScenarioVisual concept="memory" />
+
+## Core Explanation
+
+Think of memory as a call center agent's notebook. A good agent remembers notes from a previous call and continues with context. A bad agent asks "what's your name, what's the issue?" from scratch every single time — a frustrating experience.
+
+LangChain's memory stores conversation history and passes it along with every new call — so the model knows "what we talked about before." There are two main approaches:
+
+1. **Full history** — store every message, and pass the entire history with every call. Simple, but as the conversation grows longer, token cost increases.
+2. **Summarized/windowed memory** — keep only the last N messages, or compress a long conversation into a summary — this keeps token cost under control.
+
+Meena asks: "Is memory permanent, or does it disappear when the session ends?" Divya: "That's a design choice — you can keep it just for the chat session (in-memory), or persist it to a database so it continues even the next time the customer logs in."
+
+---
+
+## Architecture / Flow Diagram
+
+In LCEL-based apps, memory is usually implemented with the **`RunnableWithMessageHistory`** wrapper. It maintains separate history per session (using a session_id) — so Customer A's conversation never mixes with Customer B's.
+
+**Message history storage options:**
+- **In-memory** — simple, but lost when the app restarts.
+- **Database-backed** (Redis, PostgreSQL, MongoDB) — recommended for production — persists and scales.
+
+**Trimming/Summarization strategies:**
+- **Trim** — drop the oldest messages, keep only the last N.
+- **Summarize** — compress a long history into a short summary (using an LLM), so you don't lose context while keeping token cost in check.
+
+---
+
+<LangChainWorkflowExplorer concept="memory" />
+
+<LangChainConceptLab concept="memory" />
+
+## Code Walkthrough
+
+```python
+from langchain_core.chat_history import InMemoryChatMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_openai import ChatOpenAI
+
+# Session-based storage - use Redis/DB for production
+store = {}
+
+def get_session_history(session_id: str):
+    if session_id not in store:
+        store[session_id] = InMemoryChatMessageHistory()
+    return store[session_id]
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are PaisaWise's finance assistant."),
+    MessagesPlaceholder(variable_name="history"),
+    ("human", "{input}")
+])
+
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
+chain = prompt | model
+
+chain_with_memory = RunnableWithMessageHistory(
+    chain,
+    get_session_history,
+    input_messages_key="input",
+    history_messages_key="history"
+)
+
+config = {"configurable": {"session_id": "customer_12345"}}
+
+# First question
+r1 = chain_with_memory.invoke({"input": "What's my food expense?"}, config=config)
+print(r1.content)  # "Rs 4,500 this month"
+
+# Follow-up - "that" refers to the previous answer, and the model has context
+r2 = chain_with_memory.invoke({"input": "How much of that was Swiggy?"}, config=config)
+print(r2.content)  # Correctly understands "that" = food expense breakdown
+```
+
+<LangChainCodeOutcome variant="memory" />
+
+---
+
+## Practical Cost Scenario
+
+Think of a customer support chatbot at Zomato/Eternal's scale — lakhs of daily conversations, averaging 6-8 turns each. If you pass full history with every turn, token usage grows exponentially — by turn 8, you're paying roughly 8x the tokens of turn 1. Using windowed memory (last 4 turns only) cuts token cost by roughly **60%**, and most conversations have enough context anyway (customers rarely reference something from more than 4 turns back).
+
+At PaisaWise, adding memory improved the customer satisfaction score (CSAT) from **3.2/5 to 4.4/5** — customers feel like "the bot actually remembers."
+
+---
+
+## Common Mistakes
+
+1. **Not managing session IDs properly** — mixing up Customer A's and Customer B's history creates both privacy issues and confusion.
+2. **Unbounded history growth** — token cost and latency increase unnecessarily as conversations get longer.
+3. **Confusing memory with a "permanent database"** — chat memory isn't a substitute for structured data storage. Transaction records belong in a proper database, not chat history.
+4. **Storing sensitive data in memory** — things like PAN numbers or OTPs shouldn't be stored unnecessarily in chat history.
+
+---
+
+## Scenario Result
+
+After adding memory, Rahul re-tested the earlier complaint — the bot now correctly handles follow-up questions. Rahul is pleased: "Karthik, this is exactly the fix I was waiting for!" Karthik: "Yeah, but the next challenge is — when a customer says 'go ahead and check my balance,' the bot needs to actually take an action. That's agents."
+
+---
+
+## Tool / Technology Comparison
+
+| Approach | When to Use |
+|---|---|
+| No memory (stateless) | Single-turn Q&A, independent queries |
+| Full history memory | Short conversations, prioritizing accuracy over cost |
+| Windowed/summarized memory | Long conversations, production scale, cost-sensitive |
+
+---
+
+## Practical Task
+
+Try this: build a simple chatbot (a recipe recommendation assistant) and add memory. Test it: "What chicken recipes are there?" followed by "Which of those is the easiest?" — verify that the second question correctly uses the first answer's context.
+
+---
+
+## Key Takeaways
+
+- Without memory, every message is treated as standalone — follow-up questions fail.
+- **`RunnableWithMessageHistory`** helps manage session-based conversation history.
+- For production apps, database-backed storage (Redis/PostgreSQL) is recommended — in-memory storage is lost on app restart.
+- **Windowing/summarization** is essential for controlling token cost in long conversations.
+- Memory is not a substitute for structured data storage — sensitive info should be stored separately and properly.
+
+---
+
+## FAQ + Knowledge Check
+
+**Q1: Can you build a chatbot without memory?**
+Yes, but it won't handle follow-up questions in multi-turn conversations. Simple single-turn tools don't need memory.
+
+**Q2: How do we typically generate a session ID?**
+Usually from the user_id, or a unique session token (login session, browser session).
+
+**Q3: What's a risk with summarized memory?**
+Some detail can get lost — when the LLM generates a summary, it might miss edge-case details.
+
+**Knowledge Check:**
+1. In `RunnableWithMessageHistory`, why do we use session_id?
+2. What's the main limitation of in-memory storage?
+3. True/False: Chat memory can replace your app's main database.
+
+*(Answers: 1. To track each customer/user's conversation separately; 2. History is lost when the app restarts; 3. False)*
+
+---
+*Next byte: **Agents & Tools** — giving the model the power to make decisions and take action.*

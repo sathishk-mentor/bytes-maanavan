@@ -5,11 +5,13 @@ summary: "Build the mental model for document loading, chunking, embeddings, vec
 category: "langchain"
 tags: ["LangChain RAG tutorial", "retrieval augmented generation", "embeddings", "vector store", "document assistant"]
 level: "beginner"
-duration: "22 min"
-updatedAt: "2026-09-14"
+duration: "34 min"
+updatedAt: "2026-09-16"
 order: 3
 isPopular: true
 ---
+
+## Quick Start
 
 <ThemeCard title="Practical outcome" badge="LANGCHAIN HANDBOOK 03">
 
@@ -17,17 +19,23 @@ You will understand the two phases of RAG and design a document assistant that a
 
 </ThemeCard>
 
+<BeginnerLearningJourney handbook="langchain" step="3" />
+
+<LangChainConceptLab concept="rag" />
+
 <LangChainFlowVisual variant="rag" />
 
-<LangChainScenarioLab variant="rag" />
+## Start from Basics
 
-## What RAG changes
+Suppose your company changes its leave policy today. The LLM was not trained on that private update, so asking the model directly invites a guess. Copying the entire policy into every prompt is also slow, expensive and eventually too large.
 
-Retrieval-Augmented Generation gives the model selected external context at request time. It does not retrain the model. A useful RAG system first indexes documents, then retrieves relevant chunks for each question and asks the model to answer from those chunks.
+Retrieval-Augmented Generation (RAG) solves a narrower problem: **find the few relevant passages first, then give only those passages to the model as evidence.** It does not retrain the model and it does not magically make every answer correct.
 
 Without retrieval, a model cannot reliably know your current leave policy, internal course catalogue or private product manual. With retrieval, the application can supply the relevant passages and preserve links or document identifiers for citation.
 
-## Phase one: index the knowledge
+## Core Explanation
+
+RAG has two different lifecycles. **Indexing** happens when documents are prepared or updated. **Answering** happens each time a user asks a question. Keeping these phases separate prevents a common beginner confusion: documents are not split and embedded from scratch for every question.
 
 ```text
 documents → load → split → embed → store vectors + text + metadata
@@ -40,7 +48,7 @@ documents → load → split → embed → store vectors + text + metadata
 
 Metadata should preserve source, section, version and access scope. A vector without its source context is difficult to cite, filter or govern.
 
-## Phase two: answer a question
+### Query-time retrieval
 
 ```text
 question → embed → similarity search → relevant chunks → model → cited answer
@@ -48,7 +56,7 @@ question → embed → similarity search → relevant chunks → model → cited
 
 The retriever finds candidate chunks; the model synthesises an answer. Retrieval quality and generation quality are different problems. A fluent answer can still be wrong if the retriever selected irrelevant or outdated text.
 
-## A small semantic-search foundation
+## Architecture / Flow Diagram
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -68,9 +76,39 @@ retriever = vector_store.as_retriever(search_kwargs={"k": 4})
 evidence = retriever.invoke("How many casual leave days are available?")
 ```
 
+<LangChainCodeOutcome variant="retrieve" />
+
+## Types / Components
+
+| Component | Job | Beginner check |
+|---|---|---|
+| Loader | Reads text and source metadata | Did page and version survive? |
+| Splitter | Creates retrievable passages | Does each chunk preserve one useful idea? |
+| Embedding model | Represents semantic meaning | Are indexing and query models compatible? |
+| Vector store | Searches stored chunks | Are filters and access scope applied? |
+| Retriever | Returns candidate Documents | Are results relevant and current? |
+| Generator | Writes from retrieved evidence | Can it abstain when evidence is weak? |
+
+## Tool / Technology Comparison
+
+| Pattern | Best use | Limitation |
+|---|---|---|
+| Keyword search | Exact names and identifiers | Misses semantic matches |
+| Vector search | Meaning-based discovery | Similarity is not truth |
+| Hybrid search | Exact and semantic ranking | More evaluation complexity |
+| Agentic RAG | Dynamic retrieval decisions | Higher latency and control needs |
+
+## Real-World Examples
+
+An engineer asks, “How many casual leave days are available?” The retriever returns the current leave-policy paragraph and its document metadata. The model writes an answer using that evidence. If no relevant passage is found, the safe result is “I could not find this in the approved policy”—not a confident guess.
+
+For product support, the same pattern searches the correct manual version. For an incident assistant, it searches approved runbooks. In every case, access filters must run before evidence reaches the model.
+
+An employee assistant answers from the current policy version. A support assistant retrieves the correct product edition. A compliance assistant filters evidence by region and access. In all three cases, the application returns verifiable source IDs with the answer.
+
 An in-memory store is suitable for learning, not durable production storage. Choose a production vector store based on scale, filtering, latency, operations and data-governance requirements—not popularity alone.
 
-## Real-time analogy: an open-book examination
+## Imagine Pannunga
 
 <Scenario title="Find the right page before writing the answer">
 
@@ -78,7 +116,7 @@ In an open-book examination, owning the textbook is not enough. You must locate 
 
 </Scenario>
 
-## The production answer contract
+## Use Cases
 
 A document assistant should return more than prose:
 
@@ -103,8 +141,6 @@ Test the system at three layers:
 
 Also test adversarial documents, conflicting versions, empty retrieval, access-controlled content and questions that should be refused.
 
-<LangChainCodeResult variant="rag" />
-
 ## Common mistakes
 
 <Mistakes>
@@ -125,7 +161,7 @@ Also test adversarial documents, conflicting versions, empty retrieval, access-c
 
 </ThemeCard>
 
-## Key takeaways
+## Key Takeaways
 
 <Takeaways>
 
@@ -136,6 +172,28 @@ Also test adversarial documents, conflicting versions, empty retrieval, access-c
 - Evaluate retrieval, generation and product outcomes separately.
 
 </Takeaways>
+
+## Final Thought + Next Path
+
+> RAG does not give the model permanent knowledge. It finds the best permitted evidence for the current question and places that evidence inside the request. Next, you will turn retrieval and other bounded capabilities into tools an agent can choose deliberately.
+
+## FAQ + Knowledge Check
+
+<KnowledgeCheck>
+
+**Does RAG retrain the model?** No. It supplies selected external context at request time.
+
+**Why keep source metadata?** It supports citations, access filtering, freshness checks and debugging.
+
+1. What happens before vector storage? A) Chunk and embed B) Deploy C) Refund
+2. What does similarity search return? A) Guaranteed truth B) Candidate documents C) A trained model
+3. Who validates citation IDs? A) Application B) Model confidence C) Browser
+4. What should happen with no evidence? A) Guess B) Report insufficient evidence C) Invent a source
+5. Which layer needs access filtering? A) Retrieval B) Font loading C) CSS
+
+**Answers:** 1-A, 2-B, 3-A, 4-B, 5-A.
+
+</KnowledgeCheck>
 
 ## Primary sources
 

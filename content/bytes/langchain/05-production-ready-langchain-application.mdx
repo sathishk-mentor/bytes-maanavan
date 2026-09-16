@@ -1,160 +1,207 @@
 ---
-title: "Create and Deploy a Production-Ready LangChain Application"
+title: "Build LangChain Agents with Tools and Safety Controls"
 slug: "05-production-ready-langchain-application"
-summary: "Turn a working LangChain prototype into an operable service with output contracts, failure handling, traces, security controls and Docker packaging."
+summary: "Give a LangChain agent bounded Python tools, observe its decisions and require approval before consequential actions."
 category: "langchain"
-tags: ["production LangChain", "LangSmith observability", "LangChain deployment", "Docker LLM app", "LLM application security"]
-level: "intermediate"
-duration: "25 min"
-updatedAt: "2026-09-14"
+tags: ["LangChain agents", "LangChain tools", "create_agent", "human approval", "agent safety"]
+level: "beginner"
+duration: "36 min"
+updatedAt: "2026-09-16"
 order: 5
 isPopular: true
 ---
 
+## Quick Start
+
 <ThemeCard title="Practical outcome" badge="LANGCHAIN HANDBOOK 05">
 
-You will define a production readiness path for an LLM service: contract, resilience, observability, evaluation, security and one immutable Docker image promoted between environments.
+You will build a small support agent that chooses a read-only balance tool, uses the confirmed observation and stops before any consequential action.
 
 </ThemeCard>
 
-<LangChainFlowVisual variant="production" />
+<BeginnerLearningJourney handbook="langchain" step="5" />
 
-<LangChainScenarioLab variant="production" />
+<LangChainConceptLab concept="agent" />
 
-## A demo proves possibility, not reliability
+<LangChainFlowVisual variant="agent" />
 
-A notebook that answers one question proves that an API call works. Production must handle simultaneous users, timeouts, rate limits, invalid output, unsafe input, changing models, cost limits, private data and releases that need rollback.
+## Start from Basics
 
-Production readiness is therefore a system property. LangChain can provide model and agent abstractions; LangSmith can trace and evaluate runs; your API, infrastructure and organisational controls must complete the design.
+A model can write, “I checked your balance,” without checking anything. A **tool** is the real Python function that performs a bounded operation. An **agent** is a model running inside a harness that can request an allowed tool, receive its observation and continue until the task is complete.
 
-## Start with an explicit service contract
+Do not start with an agent when normal Python already knows the steps. Use a fixed chain for `prompt → model → schema`. Consider an agent when the correct next tool genuinely depends on the user’s request.
 
-```python
-from pydantic import BaseModel, Field
+<Scenario title="Easy Tanglish connection">
 
-class Answer(BaseModel):
-    response: str
-    source_ids: list[str] = Field(default_factory=list)
-    needs_review: bool
-```
-
-Validate inputs before the model call and outputs before returning them. Set maximum lengths, allowed file types and business-specific rules. For high-impact decisions, return a recommendation and evidence—not an automatically executed action.
-
-## Make failures visible and controlled
-
-Plan for provider timeouts, throttling, malformed output, empty retrieval and tool failures. Use bounded retries only for transient failures. Retrying authentication errors or invalid requests wastes time and money.
-
-Return a safe public error with a request identifier. Record the internal cause in protected telemetry. Add idempotency when a retry might otherwise duplicate a side effect.
-
-## Observe the full run
-
-An LLM trace should help answer:
-
-- Which model, prompt version and configuration ran?
-- What documents were retrieved?
-- Which tools were called and how long did they take?
-- How many tokens and how much latency did the request consume?
-- Where did an error or unexpected decision occur?
-
-LangSmith tracing can inspect model calls, tool calls and state transitions. Traces are operational data and may contain user content; apply redaction, access control and retention policies before enabling them broadly.
-
-## Evaluate before and after release
-
-Create a versioned dataset of representative requests, difficult edge cases and expected behaviours. Run offline evaluation before deployment and monitor sampled production outcomes after release. Track task-specific measures such as groundedness, tool selection, resolution rate, latency and cost.
-
-Averages can hide dangerous failures. Segment by request type, language, document set and model version.
-
-## Package the service with Docker
-
-```dockerfile
-FROM python:3.12-slim
-
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY app ./app
-RUN useradd --create-home appuser
-USER appuser
-
-EXPOSE 8000
-CMD ["uvicorn", "app.main:api", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-```bash
-docker build -t course-assistant:1.0.0 .
-docker run --rm -p 8000:8000 --env-file .env course-assistant:1.0.0
-```
-
-The image contains code and dependencies. Secrets enter at runtime. Pin dependencies, scan the image, run as a non-root user, expose a health endpoint and use the same tested image in staging and production.
-
-## Production architecture
-
-```text
-client
-  ↓ authenticated HTTPS
-API service → validation → LangChain application → model provider
-                    ↘ retriever / approved tools
-                    ↘ protected traces + metrics
-```
-
-Place authentication and rate limiting before expensive model work. Keep private data access behind authorised services. Add queues for long tasks and time budgets for agent loops.
-
-## Real-time scenario: model provider slowdown
-
-<Scenario title="A production response is more than a retry">
-
-The provider begins timing out during enrolment season. A bounded retry handles brief network faults, but repeated retries increase queue depth and cost. The service opens a circuit, returns a clear temporary response, preserves a request ID and alerts operators. If a tested fallback model exists, routing follows an explicit quality policy rather than silently changing behaviour.
+Agent-na unlimited power illa. Junior operations engineer-kitta approved read-only tools kudukra madhiri. Status check pannalaam; production restart or refund execute panna approval venum.
 
 </Scenario>
 
-## Release checklist
+## Core Explanation
 
-- Input limits, output schema and business validation are enforced.
-- Secrets are injected at runtime and sensitive traces are redacted.
-- Timeout, retry, rate-limit and cost budgets are configured.
-- Representative evaluation datasets pass the release threshold.
-- Health checks, dashboards, alerts and rollback are tested.
-- The container runs without root and the image is scanned.
+The beginner mental model has five parts:
 
-<LangChainCodeResult variant="production" />
+1. **Goal:** what the user wants.
+2. **Tool list:** operations the application permits.
+3. **Decision:** the model chooses whether a tool is needed.
+4. **Observation:** application code executes the tool and returns its result.
+5. **Stop:** the agent answers, reaches a limit or requests human approval.
 
-## Common mistakes
+The model does not directly enter your database. LangChain passes tool definitions to the model, validates the requested arguments and runs the Python function through the agent harness.
+
+## Architecture / Flow Diagram
+
+```text
+User goal
+   │
+   ▼
+Agent model ── chooses ──► approved tool
+   ▲                           │
+   │                           ▼
+   └──── observation ◄── application executes
+   │
+   ├── enough evidence ──► final answer
+   └── consequential action ──► human approval
+```
+
+The loop needs a stopping condition. More iterations do not automatically mean a better answer; they may mean repeated cost, latency or an unsafe retry.
+
+## Types / Components
+
+First create one read-only tool:
+
+```python
+from langchain.tools import tool
+
+@tool
+def check_balance(account_id: str) -> str:
+    """Return the current available balance for an authorised account ID."""
+    # Learning stub. A real implementation verifies the caller first.
+    balances = {"PW-104": 24500}
+    amount = balances.get(account_id)
+    return "Account not found" if amount is None else f"₹{amount:,}"
+```
+
+The name, type hints and docstring form the tool contract. A vague tool such as `get_data(query: str)` gives the model too much freedom and gives reviewers too little clarity.
+
+Create the agent with the current LangChain API:
+
+```python
+from langchain.agents import create_agent
+
+agent = create_agent(
+    model="provider:model-name",
+    tools=[check_balance],
+    system_prompt=(
+        "Help with account questions. Use read-only tools when needed. "
+        "Never transfer money, issue refunds or claim an action succeeded "
+        "unless a tool confirms it."
+    ),
+)
+
+result = agent.invoke({
+    "messages": [
+        {"role": "user", "content": "Check the balance for PW-104."}
+    ]
+})
+
+print(result["messages"][-1].content)
+```
+
+<LangChainCodeOutcome variant="tool" />
+
+Expected sequence: the model requests `check_balance`, Python executes it, the tool observation returns and the model writes the final response. A drafted request is not a completed external action.
+
+## Tool / Technology Comparison
+
+| Pattern | Who chooses the next step? | Best fit | Predictability |
+|---|---|---|---|
+| Python function | Developer | One operation | Highest |
+| Fixed chain | Developer | Known sequence | High |
+| Router | Classifier/rules | Choose one known path | Medium-high |
+| Agent | Model | Dynamic tool sequence | Lower; needs stronger controls |
+
+Choose the least autonomous pattern that solves the problem. “Agent” is an architectural trade-off, not an upgrade badge.
+
+## Real-World Examples
+
+In the fictional **PaisaWise** application:
+
+- “What is my current balance?” may use a read-only lookup tool.
+- “Show my last three transactions” may use a separately scoped history tool.
+- “Transfer ₹5,000” must not reuse either read tool; it needs identity checks, policy validation and explicit approval.
+- If the lookup fails, the agent must report failure instead of inventing a balance.
+
+For an SRE assistant, the same pattern allows health checks and log searches but keeps restart, scaling and deletion tools behind approval.
+
+## Imagine Pannunga
+
+<Scenario title="Hotel front desk with controlled keys">
+
+A receptionist can check a reservation and prepare a change, but cannot open every room or approve every refund. Tools are the authorised keys. The agent may choose which permitted key fits the request; management defines which doors remain locked.
+
+</Scenario>
+
+## Use Cases
+
+- **Backend engineer:** implement tools with authentication, validation and idempotency.
+- **AI application engineer:** design tool descriptions, agent prompts and stop rules.
+- **QA engineer:** test wrong-tool selection, invalid arguments, timeouts and repeated loops.
+- **DevOps/SRE:** expose read-only diagnostics and trace model/tool latency.
+- **Security engineer:** separate read and write permissions and review approval boundaries.
+
+## Guardrails that matter
 
 <Mistakes>
 
-- Treating LangSmith tracing as permission to store all prompts forever.
-- Deploying mutable dependencies without a tested lock file.
-- Retrying every failure and multiplying cost or side effects.
-- Switching models in production without re-running evaluations.
-- Reporting only uptime while ignoring answer quality and task outcomes.
+- Giving a broad SQL, shell or arbitrary-URL tool to a narrow support agent.
+- Treating the user’s account ID as proof that they own the account.
+- Allowing money movement, deletion or access changes without human approval.
+- Retrying a failed write and accidentally duplicating the side effect.
+- Claiming “completed” when the tool returned an error or never ran.
+- Logging secrets or private tool results without redaction.
 
 </Mistakes>
 
-## Interview bit
-
-<ThemeCard title="How would you productionise a LangChain application?" badge="CAREER">
-
-**Strong answer:** I begin with validated input and structured output contracts, then add bounded retries, timeouts, rate and cost limits. I trace model, retrieval and tool behaviour with privacy controls, evaluate representative datasets before release and monitor quality in production. I package an immutable, non-root Docker image, inject secrets at runtime and maintain health checks, alerts and rollback.
-
-</ThemeCard>
-
-## Key takeaways
+## Key Takeaways
 
 <Takeaways>
 
-- Production readiness combines application, model, data and infrastructure controls.
-- Observability should reveal behaviour without unnecessarily retaining sensitive content.
-- Evaluation gates model, prompt and retrieval changes before release.
-- Docker packages the service; it does not replace security or operations.
-- Reliability includes quality, latency, cost and safe failure—not uptime alone.
+- A tool is a callable operation with a clear input and output contract.
+- An agent is a model calling tools in a loop inside an application harness.
+- Use deterministic Python or a chain when the steps are already known.
+- Tool descriptions influence selection, but application code must enforce permission.
+- Observations prove what the tool returned; model text alone proves nothing happened.
+- Read and write tools need different risk controls.
+- Consequential actions require approval, limits and auditable results.
+- Test tool errors and stopping behaviour, not only successful answers.
 
 </Takeaways>
 
+## Final Thought + Next Path
+
+> The useful agent is not the one with the most tools. It is the one that chooses among a small authorised set, reports observations honestly and stops at the right boundary. You have now connected models, prompts, retrieval, memory and tools into one explainable LangChain application path.
+
+## FAQ + Knowledge Check
+
+<KnowledgeCheck>
+
+**Is every tool-using model an agent?** A single tool call may be enough without a multi-step agent loop. Use the simplest pattern that fits.
+
+**Can the prompt enforce permissions?** No. Prompts guide behaviour; application code and infrastructure enforce access.
+
+1. What performs the real operation? A) Tool function B) Model prose C) Temperature
+2. Who enforces account authorisation? A) Prompt only B) Application code C) User message
+3. When is a fixed chain preferable? A) Known steps B) Unknown tool order C) Always
+4. What should happen before a consequential write? A) More temperature B) Human approval C) Longer memory
+5. If a tool fails, may the agent claim success? A) Yes B) No C) Only once
+
+**Answers:** 1-A, 2-B, 3-A, 4-B, 5-B. Score 4/5 or better to complete the handbook.
+
+</KnowledgeCheck>
+
 ## Primary sources
 
-- [LangChain overview](https://docs.langchain.com/oss/python/langchain/overview)
-- [LangSmith observability quickstart](https://docs.langchain.com/langsmith/observability-quickstart)
-- [LangSmith evaluation concepts](https://docs.langchain.com/langsmith/evaluation-concepts)
-- [Docker build best practices](https://docs.docker.com/build/building/best-practices/)
-- [OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/)
+- [LangChain agents](https://docs.langchain.com/oss/python/langchain/agents)
+- [LangChain tools](https://docs.langchain.com/oss/python/langchain/tools)
+- [LangChain short-term memory](https://docs.langchain.com/oss/python/langchain/short-term-memory)

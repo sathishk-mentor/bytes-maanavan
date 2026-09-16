@@ -1,0 +1,183 @@
+---
+title: "LangChain Byte 4: Memory — Conversation-la Context Maintain Pannuradhu"
+series: "LangChain Essentials"
+byte_number: 4
+of_bytes: 5
+level: Intermediate
+duration: "20-25 mins"
+personas: [Divya, Karthik, Rahul, Meena]
+---
+
+## Quick Start
+
+<ThemeCard title="Indha Byte mudinja neenga enna build pannuveenga?" badge="LANGCHAIN TANGLISH 04">
+
+Same thread-la previous messages-ai preserve panni, “adhula” or “adha increase panna mudiyuma?” madhiri follow-up questions-ai chatbot understand panna vaippeenga.
+
+</ThemeCard>
+
+Byte 3-la retrieval paathom — oru single question-ku correct answer edukardhu. Aana real conversations-la, user follow-up questions kekkuvaanga: "En transaction limit evlo?" apram "Adha increase panna mudiyuma?" — indha rendaavadhu question-la "adha" nu solradhu, first question-oda context-ah refer pannudhu. Model-ku indha "memory" illana, rendaavadhu question standalone-a treat panni confuse aagum. Indha byte-la, LangChain-la **memory** epdi handle pannuradhu-nu paapom.
+
+**Time investment:** 20-25 mins.
+
+---
+
+## Familiar Scenario
+
+PaisaWise chatbot launch aana rendu vaaram apram, Rahul (support team-la testing pannaraan) complaint report pannaan: "Oru customer 'en food expense evlo?' nu kekaraanga, bot correct-a solradhu. Apram 'adhula Swiggy evlo?' nu kekaraanga, bot 'unga question puriyala'-nu solradhu!" 
+
+Karthik investigate pannaan — ovvoru message-um standalone API call-a poguthu, previous conversation model-ku theriyadhu. Divya explain pannaanga: "Neenga chat history-ah manually track panni, ovvoru call-kum kudukanum. Adha automate panradhukku dhaan LangChain-la memory components iruku."
+
+---
+
+<LangChainScenarioVisual concept="memory" />
+
+## Concept-ai Simple-a Purinjukonga
+
+Memory-ah oru "call center agent-oda notebook" madhiri nenachukonga. Nalla agent, customer call panna, previous conversation notes paathu, context-oda continue pannuvaanga. Bad agent, ovvoru thadavayum "Yenga peru enna, prachana enna"-nu முதலில் இருந்து கேக்குவாங்க — irritating experience.
+
+LangChain-la memory, conversation history-ah store panni, ovvoru new call-oda kudukum — so model-ku "idhukku munnadi enna pesinom"-nu theriyum. Rendu main approaches:
+
+1. **Full history** — ella messages-um store panni, ovvoru call-kum full history kudukuradhu. Simple, aana conversation neela neela, token cost increase aagum.
+2. **Summarized/windowed memory** — recent N messages mattum vைthukonga, illa periya conversation-ah summary-a compress pannunga — token cost control-la vைthukonga.
+
+Meena kekkuraanga: "Memory permanent-a irukuma, illa session mudinja poidumaa?" Divya: "Design choice dhaan — chat session mattum-ku (in-memory), illa database-la persist panni customer next login-la um continue pannalam."
+
+---
+
+## Inside Workflow
+
+LCEL-based apps-la, memory usually **`RunnableWithMessageHistory`** wrapper use panni implement pannuvom. Idhu ovvoru session-ku (session_id use panni) separate history maintain pannum — so Customer A-oda conversation, Customer B-oda conversation-oda mix aagadhu.
+
+**Message history storage options:**
+- **In-memory** — simple, aana app restart aana lose aagum.
+- **Database-backed** (Redis, PostgreSQL, MongoDB) — production apps-ku recommended — persist aagum, scale aagum.
+
+**Trimming/Summarization strategies:**
+- **Trim** — oldest messages-ah drop pannuradhu, recent N mattum vைthukoradhu.
+- **Summarize** — periya history-ah, oru chinna summary-a compress pannuradhu (LLM use panni), so context lose aagama, token cost-um control-la irukum.
+
+---
+
+<LangChainWorkflowExplorer concept="memory" />
+
+<LangChainConceptLab concept="memory" />
+
+## Code Panni Paapom
+
+```python
+from langchain_core.chat_history import InMemoryChatMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_openai import ChatOpenAI
+
+# Session-based storage - production-la Redis/DB use pannunga
+store = {}
+
+def get_session_history(session_id: str):
+    if session_id not in store:
+        store[session_id] = InMemoryChatMessageHistory()
+    return store[session_id]
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "Neenga PaisaWise-oda finance assistant. Tanglish-la pesunga."),
+    MessagesPlaceholder(variable_name="history"),
+    ("human", "{input}")
+])
+
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
+chain = prompt | model
+
+chain_with_memory = RunnableWithMessageHistory(
+    chain,
+    get_session_history,
+    input_messages_key="input",
+    history_messages_key="history"
+)
+
+config = {"configurable": {"session_id": "customer_12345"}}
+
+# First question
+r1 = chain_with_memory.invoke({"input": "En food expense evlo?"}, config=config)
+print(r1.content)  # "Rs 4,500 daa indha maasam"
+
+# Follow-up - "adhula" refers to previous answer, model-ku context therியும்
+r2 = chain_with_memory.invoke({"input": "Adhula Swiggy evlo?"}, config=config)
+print(r2.content)  # Correctly understands "adhula" = food expense breakdown
+```
+
+<LangChainCodeOutcome variant="memory" />
+
+---
+
+## Practical Cost Scenario
+
+**Important:** Keela irukkura scale and CSAT numbers learning scenario mattum. Zomato/Eternal அல்லது PaisaWise verified internal metrics illa.
+
+Zomato/Eternal-oda customer support chatbot madhiri scale-la nenachukonga — daily lakhs conversations, average 6-8 turns per conversation. Full history ovvoru turn-kum kudutha, token usage exponentially increase aagum — 8th turn-ku, first turn-oda 8 times tokens venum. Windowed memory (last 4 turns mattum) use panna, token cost **~60% குறையும்**, aana most conversations-ku context sufficient-a irukum (customers rarely 4 turns-ku appuram old topic refer pannuvaanga).
+
+PaisaWise-oda case-la, memory add pannina apram, customer satisfaction score (CSAT) **3.2/5 to 4.4/5**-ku improve aachu — "bot ninaichukudhu" nu customers feel pannuraanga.
+
+---
+
+## Common Mistakes
+
+1. **Session ID manage pannaama poradhu** — Customer A and Customer B-oda history mix aana, privacy issue-um confusion-um varum.
+2. **Unlimited history growth** — token cost and latency, conversation neela neela unnecessary-a increase aagum.
+3. **Memory-ah "permanent database"-nu confuse pannuradhu** — chat memory, structured data storage-ku substitute illa. Transaction records-ah database-la than store pannanum, chat history-la illa.
+4. **Sensitive data memory-la store pannuradhu** — PAN number, OTP madhiri sensitive info, chat history-la unnecessary-a store panna kudathu.
+
+---
+
+## Scenario Result
+
+Rahul, memory add pannina apram, andha customer complaint issue test pannaan — inime bot correctly follow-up questions handle pannுthu. Rahul happy-a: "Karthik anna, idhu than en waiting-ku iruntha fix!" Karthik: "Yeah, aana next challenge — customer 'en balance check pannunga' nu keta, bot yedho action edukanumla — adhu than agents."
+
+---
+
+## Compare Panni Decide Pannunga
+
+| Approach | When to Use |
+|---|---|
+| No memory (stateless) | Single-turn Q&A, independent queries |
+| Full history memory | Short conversations, accuracy > cost priority |
+| Windowed/summarized memory | Long conversations, production scale, cost-sensitive |
+
+---
+
+## Neenga Try Pannunga
+
+Neenga try pannunga: Oru simple chatbot build pannunga (recipe recommend panra assistant), memory add pannunga. Test pannunga: "Chicken recipe evlo iruku?" apram "Adhula easiest edhu?" — rendaavadhu question correctly first answer-oda context use pannுdha-nu verify pannunga.
+
+---
+
+## Key Takeaways
+
+- Memory illama, ovvoru message standalone-a treat aagum — follow-up questions fail aagum.
+- **`RunnableWithMessageHistory`** — session-based conversation history manage panna help pannum.
+- Production apps-ku, database-backed storage (Redis/PostgreSQL) recommended — in-memory app restart-la lose aagum.
+- **Windowing/summarization** — long conversations-la token cost control panna essential.
+- Memory, structured data storage-ku substitute illa — sensitive info separate-a, properly store pannanum.
+
+---
+
+## FAQ + Knowledge Check
+
+**Q1: Memory illama chatbot build panna mudiyumaa?**
+Mudiyum, aana multi-turn conversations-la follow-up questions handle panna mudiyaadhu. Simple single-turn tools-ku memory venaam.
+
+**Q2: Session ID enna vைchi generate pannuvom?**
+Usually user_id, illa unique session token (login session, browser session) use panni generate pannuvom.
+
+**Q3: Summarized memory-la, oru risk enna?**
+Summarization-la, konjam detail lose aagalam — LLM summary generate pannumbodhu, edge-case details miss aagalam.
+
+**Knowledge Check:**
+1. `RunnableWithMessageHistory`-la, ethuku session_id use pannuvom?
+2. In-memory storage-oda main limitation enna?
+3. True/False: Chat memory, unga app-oda main database-ah replace pannalam.
+
+*(Answers: 1. Ovvoru customer/user-oda conversation separate-a track panna; 2. App restart aana, history lose aagum; 3. False)*
+
+---
+*Next byte: **Agents & Tools** — model-ah "decisions edukum, actions edukum" madhiri maathuradhu.*

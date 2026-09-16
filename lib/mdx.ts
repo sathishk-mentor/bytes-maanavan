@@ -5,7 +5,14 @@ import { ByteMetadata, Byte } from './types';
 import { handbooks } from './handbooks';
 
 const contentDirectory = path.join(process.cwd(), 'content/bytes');
+const englishDirectory = path.join(process.cwd(), 'content/english');
 const tanglishDirectory = path.join(process.cwd(), 'content/tanglish');
+
+export async function getEnglishContent(category: string, slug: string): Promise<string | null> {
+  const filePath = path.join(englishDirectory, category, `${slug}.mdx`);
+  if (!fs.existsSync(filePath)) return null;
+  return matter(fs.readFileSync(filePath, 'utf8')).content;
+}
 
 export async function getTanglishContent(category: string, slug: string): Promise<string | null> {
   const filePath = path.join(tanglishDirectory, category, `${slug}.mdx`);

@@ -1,0 +1,167 @@
+---
+title: "LangChain Byte 2: Prompts & Chains — Individual Calls-ah Pipeline-a Maathradhu"
+series: "LangChain Essentials"
+byte_number: 2
+of_bytes: 5
+level: Beginner-Intermediate
+duration: "20-25 mins"
+personas: [Divya, Karthik, Rahul, Meena]
+---
+
+## Quick Start
+
+<ThemeCard title="Indha Byte mudinja neenga enna build pannuveenga?" badge="LANGCHAIN TANGLISH 02">
+
+Reusable prompt template, model and output result-ai `|` operator use panni oru fixed chain-a connect pannuveenga.
+
+</ThemeCard>
+
+Byte 1-la naanga model-ah call panradhu paathom. Aana real apps-la, one single question-answer podhaadhu — multiple steps venum: user input clean pannanum, prompt build pannanum, model-ku kudukanum, output parse pannanum. Indha byte-la, **Prompts** epdi design pannuradhu, and **Chains** (LCEL — LangChain Expression Language) use panni, indha steps-ah ஒரு pipeline-a எப்படி join pannalam-nu paapom.
+
+**Time investment:** 20-25 mins.
+
+---
+
+## Familiar Scenario
+
+PaisaWise-la Karthik-oda next task: customer-oda expense category detect panna venum. User "Swiggy-la 450 rupees செலவு பண்ணேன்" nu type panna, system automatic-a "Food & Dining" category-ku tag pannanum. Karthik first attempt-la, prompt string-ah manual-a f-string use panni build pannaan:
+
+```python
+prompt = f"Categorize this expense: {user_input}. Reply with only the category name."
+```
+
+Rahul kekkuraan: "Idhu work aagudhu than Karthik anna, but ethana thadava prompt reuse pandreenga, edit panna easy-aa irukku?" Karthik: "Illa da, ovvoru edit-kum whole string search pannanum." Divya solraanga: "Adhukku dhaan **PromptTemplate** iruku — reusable, variable-based prompts."
+
+---
+
+<LangChainScenarioVisual concept="chain" />
+
+## Concept-ai Simple-a Purinjukonga
+
+**PromptTemplate**-ah oru "fill-in-the-blanks" letter madhiri nenachukonga — wedding invitation print pandringalla, "Dear {name}, please join us on {date}"-nu template vachu, ovvoru guest-kum name/date mattum maathringa. Adhu madhiri than, PromptTemplate-la fixed structure irukum, variables mattum maarum.
+
+**Chains** — idhu "assembly line" madhiri. Factory-la, raw material ஒரு station-ல் இருந்து அடுத்த station-ku pogum — cutting → stitching → packing. Adhu madhiri, LangChain chain-la: **Prompt → Model → Output Parser** — ஒரு step-oda output, அடுத்த step-oda input-a become aagum. Idha **LCEL pipe operator** (`|`) use panni beautiful-a express pannalam.
+
+Meena kekkuraanga: "Chain-nu solna, evlo steps podalam?" Divya: "Evlo venumaa — 2 steps, 10 steps, even chain-ku-ulla chain-um podalam (sequential chains)."
+
+---
+
+## Inside Workflow
+
+LCEL-la ovvoru component-um oru "Runnable" — adhukku `.invoke()`, `.stream()`, `.batch()` methods common-a irukum. `|` operator use panna, output-oda type, next component-oda expected input-type-oda match aaganum — adhu dhaan chain "work aaguradhu" nu solradhu.
+
+**Sequential chains** — step 1-oda output, step 2-ku input-a pogudhu. Example: raw text → summarize pannu → adha translate pannu → adha categorize pannu.
+
+**Output Parsers** — model-oda raw text response-ah, structured data-a (JSON, list, specific format) convert pannuradhu. Idhu romba important — because downstream code-ku (database save panna, UI-la kaamikka) structured data than venum, free-text illa.
+
+---
+
+<LangChainWorkflowExplorer concept="chain" />
+
+<LangChainConceptLab concept="chain" />
+
+## Code Panni Paapom
+
+```python
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
+
+# Reusable template - variables curly braces-la
+prompt = ChatPromptTemplate.from_template(
+    "Categorize this expense into ONE word (Food, Travel, Shopping, Bills, Other): {expense_text}"
+)
+
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+parser = StrOutputParser()
+
+# LCEL - pipe operator use panni chain build pannuradhu
+chain = prompt | model | parser
+
+result = chain.invoke({"expense_text": "Swiggy-la 450 rupees செலவு"})
+print(result)  # Output: Food
+
+# Batch - multiple expenses ஒரே நேரத்தில்
+expenses = [
+    {"expense_text": "Uber ride to airport, 800 rs"},
+    {"expense_text": "Electricity bill 1200 rs"},
+]
+results = chain.batch(expenses)
+print(results)  # ['Travel', 'Bills']
+```
+
+<LangChainCodeOutcome variant="chain" />
+
+Karthik-ku indha pipe operator paathu ஆச்சரியமா irundhuchu — "3 lines-la whole pipeline ready!"
+
+---
+
+## Practical Cost Scenario
+
+**Important:** Keela irukkura expense-processing numbers fictional learning estimate. TCS or vera company-oda private architecture/cost claim illa.
+
+TCS-oda oru internal project (case study-a nenachukonga), employee expense reports auto-categorize panna indha madhiri chain use pannaanga. Manual-a HR team, monthly **8,000 expense entries**-ah categorize panna, oru person full-time **₹35,000/month** salary-la vachiruntha. Chain automate panna apram, adhே task **₹2,500/month** API cost-la aayiduchu (GPT-4o-mini rate-la) — 99% cost reduction, and processing time 3 naal-la irundhu 10 minutes-ku வந்துடுச்சு.
+
+---
+
+## Common Mistakes
+
+1. **Prompt-la clear instructions illama iruradhu** — "categorize this" nu mattum solna, model free-text paragraph return pannalam. "Reply with ONE word only" madhiri explicit-a solanum.
+2. **Output parser skip pannuradhu** — raw string-ah nேரடி-a use panna try pannuranga, apram downstream code-la parsing errors varum.
+3. **Chain-ah over-engineer pannuradhu** — 2 steps podhum-nu irukku na, 5 steps venaam. Simple-a irunga first, complexity venumna mattum add pannunga.
+4. **Type mismatch** — ஒரு component output (dict) அடுத்த component expect panra input (string) match aagalana, chain fail aagum.
+
+---
+
+## Scenario Result
+
+Feature ship aana apram, Meena expense report dashboard-la 95%+ auto-categorization accuracy paathu happy aaraanga. Rahul-kum konjam confidence vandhuchu: "Naanum konjam chains try pannuren, en oda resume screening tool-kum use pannalam nu thonudhu." Divya: "Correct-a puriyudhu Rahul, adhu than next byte-la paapom — retrieval add pannina, unga chain innum smart-a work pannum."
+
+---
+
+## Compare Panni Decide Pannunga
+
+| Approach | When to Use |
+|---|---|
+| Single prompt + model call | Simple one-shot tasks, prototyping |
+| Chain (prompt \| model \| parser) | Multi-step processing, structured output needed |
+| Sequential chain (chain of chains) | Complex workflows — summarize → translate → categorize |
+
+---
+
+## Neenga Try Pannunga
+
+Oru chain build pannunga, adhu customer review text edukum, and rendu things return pannanum: (1) sentiment (Positive/Negative/Neutral), (2) oru 5-word summary. Hint: output parser-ah JSON format-la structure pannunga, so rendu fields-um separate-a extract panna mudiyum.
+
+---
+
+## Key Takeaways
+
+- **PromptTemplate** — reusable, variable-based prompts, hardcoded strings-ah replace pannudhu.
+- **LCEL pipe operator (`|`)** — components-ah readable, composable pipelines-a join pannudhu.
+- **Chains** — multi-step workflows enable pannudhu: prompt → model → parser, and beyond.
+- **Output parsers** — free-text-ah structured data-a convert panni, downstream systems-ku usable-a maathudhu.
+- Simple-a start pannunga, complexity venumna mattum add pannunga.
+
+---
+
+## FAQ + Knowledge Check
+
+**Q1: PromptTemplate and f-string-ku enna difference?**
+PromptTemplate reusable, validatable, and LangChain-oda other components-oda seamless-a integrate aagum. f-string manual, error-prone at scale.
+
+**Q2: Chain-la ஒரு step fail aana enna aagum?**
+Default-a, exception raise aagi chain stop aagum. Error handling venumna, `.with_retry()` illa try/except wrap pannalam.
+
+**Q3: LCEL mandatory-aa?**
+Illa, aana recommended — readable-a, streaming/async/batch automatic-a support pannum.
+
+**Knowledge Check:**
+1. `prompt | model | parser` — indha chain-la evlo steps iruku?
+2. Output parser yaen use pannuvom?
+3. True/False: Chain-ku-ulla chain podalam.
+
+*(Answers: 1. Moonu steps; 2. Structured, usable output kidaikardhukku; 3. True)*
+
+---
+*Next byte: **Document Loading, Embeddings & Retrieval** — external data-ah unga chain-oda connect pannuradhu (RAG-oda foundation).*

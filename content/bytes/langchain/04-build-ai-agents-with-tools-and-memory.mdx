@@ -1,145 +1,193 @@
 ---
-title: "Build AI Agents with Tools and Memory"
+title: "Add Conversation Memory to LangChain Applications"
 slug: "04-build-ai-agents-with-tools-and-memory"
-summary: "Create an agent that interprets a goal, chooses bounded tools and maintains conversation state while your application controls permissions and stopping rules."
+summary: "Understand thread-level memory, preserve follow-up context safely and prevent different users’ conversations from mixing."
 category: "langchain"
-tags: ["LangChain agents", "AI agents with tools", "LangChain memory", "create_agent", "agentic AI Python"]
-level: "intermediate"
-duration: "23 min"
-updatedAt: "2026-09-14"
+tags: ["LangChain memory", "conversation history", "short-term memory", "thread ID", "LangGraph checkpointer"]
+level: "beginner"
+duration: "32 min"
+updatedAt: "2026-09-16"
 order: 4
 isPopular: true
 ---
 
+## Quick Start
+
 <ThemeCard title="Practical outcome" badge="LANGCHAIN HANDBOOK 04">
 
-You will design a course-support agent that can search a catalogue and check enrolment status while maintaining thread-scoped context and respecting action boundaries.
+You will make a support assistant understand a follow-up such as “Can I increase it?” while keeping each customer’s conversation separate and controlling how much history reaches the model.
 
 </ThemeCard>
 
-<LangChainFlowVisual variant="agent" />
+<BeginnerLearningJourney handbook="langchain" step="4" />
 
-<LangChainScenarioLab variant="agent" />
+<LangChainConceptLab concept="memory" />
 
-## What makes this an agent?
+## Start from Basics
 
-A fixed workflow follows steps chosen by the developer. An agent uses a model to decide which available action to take next. The loop is usually: receive goal, reason over state, call a tool, observe its result and continue until a final answer or stop condition.
+In Byte 03, retrieval supplied knowledge from documents. Memory solves a different problem: it supplies relevant information from the **current conversation**.
 
-“Autonomous” does not mean unlimited. A dependable agent has a narrow purpose, carefully described tools, access checks, iteration limits and human approval for consequential actions.
+Consider two messages:
 
-<OfficialLangChainDiagram variant="agent-loop" />
+1. “My transaction limit is ₹50,000.”
+2. “Can I increase it?”
 
-Read the official loop clockwise: a request reaches the model; the model either returns a result or selects an action; the tool executes; its observation returns to the model. The loop continues only until the task is complete or your application’s limit is reached.
+The word **it** has no useful meaning by itself. A chat model is stateless between API calls unless the application sends earlier messages again. LangChain memory helps the application organise that history by conversation thread.
 
-## Define a bounded tool
+<Scenario title="Easy Tanglish connection">
 
-```python
-from langchain.tools import tool
+Call centre agent previous notes paarkama each time “problem enna?” nu ketta frustrating-a irukkum. Conversation memory is like the agent opening the correct customer’s current call notes. It is not the bank’s permanent account database.
 
-@tool
-def search_course_catalogue(topic: str) -> str:
-    """Return matching published courses for a learning topic."""
-    return catalogue.search(topic)
+</Scenario>
+
+## Core Explanation
+
+Four terms are enough to begin:
+
+| Term | Beginner meaning | Example |
+|---|---|---|
+| Message history | Ordered user and AI messages | Question, answer, follow-up |
+| Thread | One conversation boundary | `customer-42-support-7` |
+| Thread ID | Key used to resume the correct thread | Never reuse across customers |
+| Checkpointer | Stores and reloads thread state | Memory locally; database in production |
+
+Short-term memory belongs to one thread. Long-term memory stores information that may be useful across different conversations. A customer’s verified balance, identity or transaction history belongs in an authorised business system—not in chat memory.
+
+## Architecture / Flow Diagram
+
+```text
+Turn 1                             Turn 2
+“Limit is ₹50,000”                 “Can I increase it?”
+        │                                  │
+        ▼                                  ▼
+thread_id: customer-42 ──► checkpointer ──► load earlier messages
+                                                   │
+                                                   ▼
+                                  model receives both turns
+                                                   │
+                                                   ▼
+                                  “it” = transaction limit
 ```
 
-The docstring is part of the tool contract the model sees. Give tools specific names, typed arguments and narrow outputs. Do not expose a generic “run SQL” or “call any URL” tool when the task only needs catalogue search.
+The thread ID is an isolation boundary. Authentication must prove that the current user is allowed to resume that thread. A random-looking ID alone is not authorisation.
 
-## Create the agent
+## Types / Components
+
+For current LangChain agents, attach a checkpointer when creating the agent:
 
 ```python
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
 
 agent = create_agent(
-    model="openai:gpt-4.1-mini",
-    tools=[search_course_catalogue, get_enrolment_status],
-    system_prompt=(
-        "Help learners choose and access courses. "
-        "Never purchase, refund or modify an account."
-    ),
+    model="provider:model-name",
+    tools=[],
+    system_prompt="Explain account policies using simple language.",
     checkpointer=InMemorySaver(),
 )
 
-config = {"configurable": {"thread_id": "learner-1042"}}
+thread = {"configurable": {"thread_id": "customer-42"}}
+
+agent.invoke(
+    {"messages": [{"role": "user", "content": "My limit is ₹50,000."}]},
+    thread,
+)
+
 result = agent.invoke(
-    {"messages": [{"role": "user", "content": "Find a beginner Docker course."}]},
-    config,
+    {"messages": [{"role": "user", "content": "Can I increase it?"}]},
+    thread,
 )
 ```
 
-Use a durable checkpointer in production. An in-memory saver is appropriate only for local learning because state disappears when the process restarts.
+`InMemorySaver` is for learning and local tests. Its content disappears when the process restarts. Production systems need a durable checkpointer supported by the application’s availability, access-control and retention requirements.
 
-## Memory is state, not intelligence
+## Tool / Technology Comparison
 
-Short-term memory stores the current thread’s state so later requests can refer to earlier messages. Long conversations can exceed the model context window, increase cost and reduce attention quality. Production agents need a strategy to trim, summarise or selectively retain context.
+| Approach | What the model receives | Best fit | Main risk |
+|---|---|---|---|
+| Stateless | Current message only | Independent classification | Follow-ups lose context |
+| Full history | Every earlier message | Short conversations | Cost and distraction grow |
+| Sliding window | Recent messages | Longer support threads | Older useful detail may disappear |
+| Summarised history | Compact conversation summary | Very long sessions | Summary may omit an important fact |
 
-Do not mix users by reusing a thread identifier. Treat thread ownership as an authorisation concern, not merely a naming convention.
+Do not choose a memory strategy only by token cost. Test whether users can still complete the actual task after trimming or summarisation.
 
-## Real-time scenario: “continue my learning path”
+## Real-World Examples
 
-<Scenario title="Context helps; authority still belongs to the application">
+Imagine the fictional **PaisaWise** support assistant:
 
-A learner first asks for a beginner Docker course and later says, “Show the second option.” Thread state helps interpret “second option.” The agent may search the catalogue and check whether the learner already has access. It must not purchase the course, reveal another learner’s enrolment or alter the account unless a separately authorised workflow and explicit confirmation allow that action.
+- Turn 1: “Why was transfer TX-104 delayed?”
+- Turn 2: “Was it completed now?”
+- Memory resolves **it** to transaction `TX-104`.
+- A separate authorised tool—not memory—checks the current transaction status.
+
+This distinction prevents a dangerous error: remembering an old status is not the same as reading the live system of record.
+
+## Imagine Pannunga
+
+<Scenario title="Conversation notes versus official register">
+
+A doctor’s consultation notes help continue the conversation, but the pharmacy inventory system decides whether a medicine is available. Similarly, memory helps interpret the user’s follow-up; live facts must still come from an authorised database or tool.
 
 </Scenario>
 
-## Tool loop versus deterministic workflow
+## Use Cases
 
-| Choose an agent when | Choose ordinary workflow code when |
-|---|---|
-| The correct next action depends on the request | The steps are known in advance |
-| Several tools may be needed in different orders | Every request follows the same sequence |
-| Natural-language ambiguity is central | Rules can be expressed directly |
-| A model’s routing value exceeds its added risk | Predictability and auditability dominate |
-
-Hybrid designs are common: an agent chooses a bounded path, while deterministic services validate and execute important actions.
-
-## Guardrails that matter
-
-- Validate tool arguments before execution.
-- Authorise every data access using the authenticated user, not the model’s claim.
-- Set time, cost and iteration budgets.
-- Require approval for payments, deletion, messages or account changes.
-- Log tool names, safe metadata and outcomes without leaking secrets.
-- Test prompt injection arriving through retrieved content and tool results.
-
-<LangChainCodeResult variant="agent" />
+- **Backend engineer:** map authenticated sessions to thread IDs and durable storage.
+- **AI application engineer:** decide what history, summary and retrieved context enter each model call.
+- **QA engineer:** test pronouns, topic changes, long conversations and cross-user isolation.
+- **Platform/SRE engineer:** monitor state-store latency, failures, retention and storage growth.
 
 ## Common mistakes
 
 <Mistakes>
 
-- Calling chat history “memory” without defining scope, retention and ownership.
-- Giving the agent broad tools because they are convenient during a demo.
-- Trusting tool arguments generated by the model without validation.
-- Allowing an agent to loop indefinitely.
-- Assuming a system prompt is an access-control mechanism.
+- Reusing one thread ID for multiple users.
+- Sending unlimited history until cost and latency become unpredictable.
+- Storing OTPs, secrets or unnecessary personal data in messages.
+- Treating conversation history as the source of truth for balances or order status.
+- Assuming a summary preserves every business-critical detail.
 
 </Mistakes>
 
-## Interview bit
-
-<ThemeCard title="How do tools and memory work in a LangChain agent?" badge="CAREER">
-
-**Strong answer:** `create_agent` runs a model-driven tool loop. Tools expose narrow typed capabilities; their results return as messages for the next decision. A checkpointer persists thread-scoped state for short-term memory. I keep authorisation, validation, budgets and approval gates in application code because prompts and model decisions are not security boundaries.
-
-</ThemeCard>
-
-## Key takeaways
+## Key Takeaways
 
 <Takeaways>
 
-- An agent dynamically chooses actions; a workflow follows predetermined steps.
-- Tool descriptions, schemas and permissions form the agent’s action boundary.
-- Short-term memory is persisted thread state and needs lifecycle controls.
-- Consequential actions require deterministic validation and approval.
-- Start narrow and expand capability only after observing evidence.
+- Model calls are stateless unless the application supplies earlier context.
+- A thread groups related turns; a checkpointer persists and reloads its state.
+- Thread ownership must be authorised, not merely guessed from an ID.
+- Short-term memory and long-term business data have different responsibilities.
+- Long conversations require trimming, summarisation or selective context.
+- In-memory storage is suitable for learning, not resilient production state.
+- Retrieval brings external knowledge; memory brings conversational continuity.
+- Test isolation and forgotten-context cases before release.
 
 </Takeaways>
 
+## Final Thought + Next Path
+
+> Memory does not make the model permanently intelligent. It is controlled context management: save the correct messages, reload them for the correct thread and forget what is no longer useful. In Byte 05, the assistant will move beyond remembering and request bounded tools for live information.
+
+## FAQ + Knowledge Check
+
+<KnowledgeCheck>
+
+**Does the model remember automatically?** No. The application must provide prior messages or persisted thread state.
+
+**Should a verified balance be stored in chat memory?** No. Read current financial facts from an authorised source of truth.
+
+1. What separates two conversations? A) Temperature B) Thread ID C) Embedding
+2. What stores and reloads agent state? A) Checkpointer B) Prompt variable C) Parser
+3. What happens to `InMemorySaver` after restart? A) It persists B) It may be lost C) It becomes SQL
+4. Which technique controls long history? A) Summarisation B) Higher temperature C) More tools
+5. Is a thread ID alone sufficient authorisation? A) Yes B) No C) Only locally
+
+**Answers:** 1-B, 2-A, 3-B, 4-A, 5-B. Score 4/5 or better before continuing.
+
+</KnowledgeCheck>
+
 ## Primary sources
 
-- [LangChain agents](https://docs.langchain.com/oss/python/langchain/agents)
-- [LangChain tools](https://docs.langchain.com/oss/python/langchain/tools)
 - [LangChain short-term memory](https://docs.langchain.com/oss/python/langchain/short-term-memory)
-- [LangChain guardrails](https://docs.langchain.com/oss/python/langchain/guardrails)
+- [LangChain messages](https://docs.langchain.com/oss/python/langchain/messages)

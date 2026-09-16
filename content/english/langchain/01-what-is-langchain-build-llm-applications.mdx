@@ -1,0 +1,167 @@
+---
+title: "LangChain Byte 1: LLMs & Chat Models — Your First Building Block"
+series: "LangChain Essentials"
+byte_number: 1
+of_bytes: 5
+level: Beginner
+duration: "20-25 mins"
+lang: en
+pair: langchain-byte-1-llms-and-chat-models.md
+personas: [Divya, Karthik, Rahul, Meena]
+---
+
+## Quick Start
+
+<ThemeCard title="Build your first model-powered interaction" badge="LANGCHAIN ENGLISH 01">
+
+Understand the role of LangChain, connect a chat model and see how invoke, streaming and batch requests behave.
+
+</ThemeCard>
+
+Ever thought about building a chat app? Or a customer support bot? All of that starts with LangChain's first building block: **LLMs and Chat Models**. By the end of this byte, you'll understand why LangChain is a better option than calling a provider's API directly, how to swap models in and out like plug-and-play components, and how async, streaming, and batch calls work.
+
+**Time investment:** 20-25 mins. **Prerequisite:** basic Python and a general idea of what a REST API is.
+
+---
+
+## Familiar Scenario
+
+Karthik is a backend developer at a Bengaluru fintech startup — "PaisaWise," a personal finance app. Product Manager Meena pulls in a new feature request: "Customers need a chatbot where they can ask about their spending — like 'how much did I spend on food this month?'"
+
+Karthik's first instinct: "Should I just call the OpenAI SDK directly, build the prompt myself, and parse the response by hand?"
+
+That's when Divya, the senior AI engineer, walks over: "Karthik, you could do all that yourself, but every LLM provider — OpenAI, Anthropic, a local model — has its own SDK and its own format. LangChain's **LLM/Chat Model interface** exists to standardize all of that."
+
+---
+
+<LangChainScenarioVisual concept="foundation" />
+
+## Core Explanation
+
+Think of LangChain's **model** interface as a universal remote control. No matter which TV brand you own, the basic buttons — power, volume, channel — feel the same. Similarly, LangChain's model interface lets you call any provider (OpenAI, Anthropic Claude, Google Gemini, or even a local model via Ollama) using the same code pattern.
+
+There are two main types:
+
+1. **LLM (text completion)** — the older style: plain text in, plain text out.
+2. **ChatModel (conversation-aware)** — the modern standard. It's structured around system, human, and AI messages, which is what gives it that ChatGPT-style conversational feel.
+
+Rahul asks: "Divya, can't I just use an LLM instead of a chat model?" Divya replies: "You can, Rahul, but for chat-based apps — where you need memory and role structure — ChatModel is the better fit. By now, pretty much every major provider is chat-first by design."
+
+---
+
+## Architecture / Flow Diagram
+
+Let's get technical. A chat model call uses three roles:
+
+- **System** — sets the model's behavior ("You are a helpful finance assistant").
+- **Human** — the user's question.
+- **AI** — the model's previous response (used to maintain conversation history).
+
+LangChain wraps these three into `SystemMessage`, `HumanMessage`, and `AIMessage` classes, so the format is handled automatically regardless of provider.
+
+**Key supported features:**
+- **Async calls** — using `ainvoke()`, you can handle multiple requests at the same time without blocking your app.
+- **Streaming** — instead of waiting for the full response, you get it token by token with `stream()` — this is the "typing" effect you see in ChatGPT.
+- **Batch** — need to process 100 customer questions at once? Use `batch()`.
+
+---
+
+<LangChainWorkflowExplorer concept="foundation" />
+
+<LangChainConceptLab concept="foundation" />
+
+## Code Walkthrough
+
+```python
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage, HumanMessage
+
+# Initialize the model - low temperature keeps answers consistent
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
+
+messages = [
+    SystemMessage(content="You are a friendly personal finance assistant. Keep answers simple."),
+    HumanMessage(content="How much did I spend on food this month?")
+]
+
+response = model.invoke(messages)
+print(response.content)
+
+# Streaming example - tokens print in real time as they arrive
+for chunk in model.stream(messages):
+    print(chunk.content, end="", flush=True)
+```
+
+<LangChainCodeOutcome variant="invoke" />
+
+Karthik ran this and was surprised — in under 15 lines, he had a working chatbot brain. Swap providers by changing `ChatOpenAI` to `ChatAnthropic`, and the rest of the code stays the same. That's the whole point.
+
+---
+
+## Practical Cost Scenario
+
+Consider an illustrative fintech workload with 10,000 daily users. If every request goes to the most capable model, the monthly bill might reach **₹4.2 lakhs**. Routing routine questions to a smaller model and reserving the larger model for complex reasoning could reduce the same sample bill to **₹1.1 lakh**. These figures are learning estimates; real cost depends on model pricing, token usage, caching and traffic.
+
+---
+
+## Common Mistakes
+
+1. **Hardcoding the API key** — never put it directly in your code; use a `.env` file.
+2. **Wrong temperature setting** — for factual answers (like a balance check), use temperature=0. For creative content (like marketing copy), use 0.7 or higher.
+3. **Relying only on sync calls in production** — this makes your app slow and leaves users waiting when async or streaming would work better.
+4. **Designing around provider lock-in without meaning to** — the whole point of LangChain is that swapping providers should be easy, but some teams lean heavily on provider-specific features (like a particular function-calling format), which quietly erodes that flexibility.
+
+---
+
+## Scenario Result
+
+Two weeks later, Meena runs a demo: she types "how much did I spend on food this month?" and the chatbot streams back a real-time answer. Meena is thrilled: "This is exactly what I wanted!" Karthik smiles and tells Divya: "Since we standardized the model interface like you suggested, trying a different provider next time will take maybe 10 minutes."
+
+---
+
+## Tool / Technology Comparison
+
+| Approach | When to Use |
+|---|---|
+| Direct provider SDK (OpenAI SDK directly) | Single provider, simple script, prototyping |
+| LangChain Model interface | Multi-provider flexibility, production apps, swapping/testing different models |
+| Local model (Ollama via LangChain) | Data privacy is critical, no internet dependency, cost-sensitive at scale |
+
+---
+
+## Practical Task
+
+Try this: create a `SystemMessage` that gives the assistant a persona recommending Indian dishes. Then send a `HumanMessage` asking "I like spicy food, I'm really busy, I need something that takes under 20 minutes to cook." Run it twice with `temperature=0.7` and compare how varied the outputs are.
+
+---
+
+## Key Takeaways
+
+- LangChain's Model interface standardizes LLM providers — like a universal remote.
+- **ChatModel** (role-based: System/Human/AI) is the standard for modern conversational apps.
+- **Async, streaming, and batch** — must-have features for production apps, and LangChain supports them natively.
+- Choosing the right model (size + provider) directly affects the quality-vs-cost trade-off — model routing can deliver real savings.
+- Switching providers should be low-effort — that's the core value of this abstraction.
+
+---
+
+## FAQ + Knowledge Check
+
+**Q1: Is LangChain a new LLM?**
+No. LangChain is a framework/orchestration layer — it connects to existing LLMs (OpenAI, Anthropic, Gemini, etc.) and helps you build applications with them.
+
+**Q2: Why does streaming matter?**
+It keeps the user from feeling like they're "waiting" — they see text appear in real time as it's generated. It's a big deal for UX.
+
+**Q3: What does the temperature parameter do?**
+It controls the model's "randomness." Low (0-0.3) = consistent/factual, high (0.7-1) = creative/varied.
+
+**Knowledge Check:**
+1. For a customer balance-check bot, should temperature be set to 0.1 or 0.9?
+2. Roughly how much code changes if you switch from `ChatOpenAI` to `ChatAnthropic`?
+3. True/False: Async calls let your app handle multiple requests at the same time.
+
+*(Answers: 1. 0.1 — you want factual/consistent answers; 2. Minimal — mostly just the class name; 3. True)*
+
+---
+*Next byte: **Prompts & Chains** — how to join individual model calls into pipelines.*

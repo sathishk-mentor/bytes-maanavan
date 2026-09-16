@@ -1,15 +1,17 @@
 ---
-title: "Connect Python with LLMs Using LangChain"
+title: "Build Reusable Prompts and Chains with LangChain"
 slug: "02-connect-python-with-llms-using-langchain"
-summary: "Configure a chat model safely, send role-based messages and turn an AI response into validated data that a Python application can use."
+summary: "Turn one model call into a reusable prompt-to-model-to-output pipeline, then validate the result before Python uses it."
 category: "langchain"
-tags: ["LangChain Python tutorial", "chat models", "API keys", "structured output", "LLM Python"]
+tags: ["LangChain prompts", "LangChain chains", "LCEL", "structured output", "LLM Python"]
 level: "beginner"
-duration: "19 min"
-updatedAt: "2026-09-14"
+duration: "32 min"
+updatedAt: "2026-09-16"
 order: 2
 isPopular: true
 ---
+
+## Quick Start
 
 <ThemeCard title="Practical outcome" badge="LANGCHAIN HANDBOOK 02">
 
@@ -17,15 +19,26 @@ You will build a small support-ticket classifier while keeping the API key outsi
 
 </ThemeCard>
 
+<BeginnerLearningJourney handbook="langchain" step="2" />
+
+<LangChainConceptLab concept="chain" />
+
 <LangChainFlowVisual variant="model" />
 
-<LangChainScenarioLab variant="model" />
+## Start from Basics
 
-## The project: support-ticket triage
+A customer writes: “Payment succeeded, but the course is still locked.” A person understands that this is probably an urgent access issue. Python does not automatically understand a paragraph, however. It needs dependable fields such as `category`, `urgency` and `reason`.
 
-A customer writes: “Payment succeeded, but the course is still locked.” Our application should return a category, urgency and short routing reason. Free-form prose is awkward for downstream code; a typed result is safer.
+First we will turn the instruction into a reusable prompt template. Then we will connect that template to a model and a typed output contract. This fixed route—**input → prompt → model → validated result**—is a chain.
 
-## Set up the environment
+## Core Explanation
+
+There are four pieces in the first working chain:
+
+1. **API key:** proves your application may use the provider; it is a secret, not Python code.
+2. **Model configuration:** selects the provider/model and sets limits such as timeout and retries.
+3. **Prompt template:** keeps stable instructions separate while inserting the changing ticket.
+4. **Output contract:** turns the model response into fields Python can validate.
 
 Create a virtual environment and install LangChain with the integration for your chosen provider. Provider packages are separate so applications do not install every integration.
 
@@ -64,11 +77,12 @@ class TicketResult(BaseModel):
 
 The schema restricts shape and allowed values. It does not prove the classification is correct; it makes errors easier to detect and handle.
 
-## Initialise and call the model
+## Build and run the chain
 
 ```python
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
+from langchain_core.prompts import ChatPromptTemplate
 
 load_dotenv()
 
@@ -79,30 +93,67 @@ model = init_chat_model(
     max_retries=3,
 )
 
-classifier = model.with_structured_output(TicketResult)
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "Classify support tickets. Do not invent facts."),
+    ("user", "{ticket_text}"),
+])
+
+typed_model = model.with_structured_output(TicketResult)
+classifier_chain = prompt | typed_model
 
 ticket = "Payment succeeded, but the course is still locked."
-result = classifier.invoke([
-    {"role": "system", "content": "Classify support tickets. Do not invent facts."},
-    {"role": "user", "content": ticket},
-])
+result = classifier_chain.invoke({"ticket_text": ticket})
 
 print(result.category, result.urgency, result.reason)
 ```
 
-Use a currently supported model in your account; model availability and names change. The key design is provider-prefixed configuration, explicit parameters, role-based messages and a validated result.
+<LangChainCodeOutcome variant="schema" />
 
-## Why messages matter
+The pipe operator does not ask the model to decide what comes next. Python fixes the order: the template creates messages, the typed model generates fields and Pydantic validates them. Use a currently supported model in your account; model availability and names change.
+
+## Architecture / Flow Diagram
+
+The complete path is: protected configuration → template variables → role-based messages → chat model → schema validation → application decision. A failure at one stage must not be disguised as a successful classification.
+
+## Types / Components
+
+| Component | Responsibility | Beginner check |
+|---|---|---|
+| Secret configuration | Supplies provider credentials | Is the key outside Git and browser code? |
+| Prompt template | Holds roles, instructions and variables | Are stable and changing parts separated? |
+| Input dictionary | Supplies the current ticket value | Does its key match `{ticket_text}`? |
+| Chat model | Produces candidate fields | Are timeout and retry limits explicit? |
+| Pydantic schema | Validates shape and allowed values | Can invalid categories be rejected? |
+| Workflow service | Decides routing and review | Are consequential actions still authorised? |
+
+## Tool / Technology Comparison
+
+| Option | Good choice when | Watch for |
+|---|---|---|
+| Free-form text | A human only reads the answer | Fragile parsing |
+| JSON mode | Valid JSON is enough | Values can still violate business rules |
+| Structured output | Python needs typed fields | Schema validity is not factual correctness |
+| Deterministic rules | Categories are fully rule-based | Limited language understanding |
+
+## Real-World Examples
+
+**Input:** “Payment succeeded, but the course is still locked.” **Model task:** classify only from the supplied text. **Validated result:** `category="access"`, `urgency="high"`, plus a short reason. **Application action:** route it to the access queue; do not automatically issue a refund.
+
+A QA engineer can now test whether the allowed fields are always present. A backend engineer can route the object. An operations engineer can measure timeouts and retries. The model generates a candidate classification; normal Python still owns the workflow.
+
+A support team can route access, billing and technical tickets; an HR team can classify policy questions; an engineering team can label incident summaries. In every case, the AI suggests a structured result while the workflow owns permissions and final actions.
+
+## Imagine Pannunga
 
 The system message defines stable behaviour. The user message carries the current task. An AI message represents a previous model response, and tool messages return tool results. Keep trusted instructions separate from untrusted user content; concatenating everything into one string makes boundaries less clear.
 
-## Failure handling is part of the feature
+## Use Cases
 
 ```python
 from pydantic import ValidationError
 
 try:
-    result = classifier.invoke(messages)
+    result = classifier_chain.invoke({"ticket_text": ticket})
 except TimeoutError:
     result = None  # retry later or show a temporary failure
 except ValidationError:
@@ -111,15 +162,13 @@ except ValidationError:
 
 In a real API, map failures to controlled responses. Do not show provider stack traces or secret-bearing request data to users. Add request identifiers so operators can trace a failure without exposing private content.
 
-## Real-time scenario: routing without auto-closing
+### Familiar scenario: routing without auto-closing
 
 <Scenario title="AI suggests; the workflow controls">
 
 The classifier routes the ticket to “access” with high urgency. It should not automatically refund a payment or change an account. The application can place the result in a review queue, show the evidence to an agent and execute account changes only through an authorised backend action.
 
 </Scenario>
-
-<LangChainCodeResult variant="model" />
 
 ## Common mistakes
 
@@ -141,7 +190,7 @@ The classifier routes the ticket to “access” with high urgency. It should no
 
 </ThemeCard>
 
-## Key takeaways
+## Key Takeaways
 
 <Takeaways>
 
@@ -152,6 +201,28 @@ The classifier routes the ticket to “access” with high urgency. It should no
 - A valid structure is not the same as a correct business decision.
 
 </Takeaways>
+
+## Final Thought + Next Path
+
+> A useful model integration produces a result the rest of the application can understand, reject and trace. In Byte 03, you will add external documents so the model can answer from retrieved evidence instead of general memory.
+
+## FAQ + Knowledge Check
+
+<KnowledgeCheck>
+
+**Does temperature zero guarantee correctness?** No. It can reduce variation but cannot prove business accuracy.
+
+**Why use a schema?** It converts a model response into named, validated fields that Python can handle safely.
+
+1. Where should an API key live? A) Frontend B) Runtime secret C) Prompt
+2. What carries stable instructions? A) System message B) User ID C) Retry
+3. What rejects an unknown category? A) Schema B) Token counter C) CSS
+4. Should a classifier issue a refund? A) Automatically B) Only through an authorised workflow C) Always
+5. What should a timeout become? A) Fake answer B) Controlled failure C) Infinite retry
+
+**Answers:** 1-B, 2-A, 3-A, 4-B, 5-B.
+
+</KnowledgeCheck>
 
 ## Primary sources
 
