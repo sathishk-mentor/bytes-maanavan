@@ -9,6 +9,8 @@ import './docker-concept-lab.css';
 import './tutorial-reading.css';
 import './langchain-learning.css';
 import './beginner-learning.css';
+import './fde-learning.css';
+import './fde-scenarios.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { NavigationStability } from '@/components/navigation/NavigationStability';

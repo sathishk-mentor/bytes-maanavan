@@ -1,0 +1,159 @@
+---
+title: "The FDE Engagement Lifecycle: Discovery to Production"
+slug: "03-forward-deployed-engineer-engagement-lifecycle"
+summary: "Follow a structured customer engagement from discovery and success definition through a thin production slice, deployment and handoff."
+category: "forward-deployed-engineer"
+tags: ["Forward Deployed Engineer", "FDE career", "customer engineering", "AI deployment", "technology careers"]
+level: "intermediate"
+duration: "28 min"
+updatedAt: "2026-09-16"
+order: 3
+isPopular: false
+---
+
+<ThemeCard title="Learning outcome" badge="FDE HANDBOOK 03">
+
+Follow a structured customer engagement from discovery and success definition through a thin production slice, deployment and handoff.
+
+</ThemeCard>
+
+## Quick Start
+
+We've covered who an FDE is and what skills they need. Now let's look at how an actual client engagement starts and finishes. It's not "the client called, let's go help" — there's a structured lifecycle behind it. In this byte, we'll walk through all the phases, from discovery to production deployment.
+
+**Time investment:** 25-30 mins.
+
+---
+
+## Why Coding Should Not Start Immediately
+
+OrbitAI lands another major client — "QuickLogix," a logistics company. Their request: "We need real-time delivery tracking integrated with the AI-ops platform, within 6 weeks." Karthik gets excited and jumps in: "Sure, let me start writing code right away." Divya stops him: "Karthik, we need **discovery** first. Jumping straight to code is FDE mistake number one."
+
+---
+
+<FDEScenarioExplorer variant="lifecycle" />
+
+## Core Explanation
+
+Think of an FDE engagement like a house construction project. A good contractor doesn't start building walls immediately — they survey the site first, check the foundation, design the blueprint, and only then start construction. An FDE engagement follows the same kind of structured phases.
+
+Per the Umbrex playbook, there's a **5-phase lifecycle**:
+
+1. **Qualification & Scoping** — is this engagement worth taking on? How many resources does it need?
+2. **Discovery & Workflow Mapping** — understand the client's actual workflow, pain points, and constraints.
+3. **Prototyping / Proof-of-Value** — build something small, fast, to demonstrate value quickly.
+4. **Production Deployment** — the actual build, test, and roll-out.
+5. **Expansion & Learning Capture** — once it succeeds, expand it, and turn the learnings into a reusable template.
+
+The whole cycle typically runs about **12 weeks**, with distinct phases for architecture design, build, testing, and adoption support.
+
+---
+
+<FDEWorkflowExplorer variant="lifecycle" />
+
+## Inside the Workflow
+
+Per PostHog's philosophy, an FDE's core value is "judgement" — finding the root cause of a client's problem, then planning and executing the best solution that actually fits their culture.
+
+Not every client request deserves an FDE's involvement. PostHog uses **three triggers**, and an engagement only gets picked up if one of them applies:
+
+1. A **high-value customer** facing an adoption blocker
+2. A **complex implementation** requiring hands-on engineering
+3. A **repeatable problem** worth templating organization-wide
+
+This filter matters a lot — saying "yes" to every request wastes the FDE team's time on low-value work.
+
+---
+
+<FDEConceptLab variant="lifecycle" />
+
+## Practical Example
+
+Let's trace the QuickLogix engagement:
+
+**Week 1 (Qualification):** Meena assesses QuickLogix's deal size, complexity, and strategic value. "Yes, this is high-value, worth investing in."
+
+**Week 2 (Discovery):** Divya goes on-site and maps QuickLogix's actual delivery tracking workflow — how their legacy GPS system works, and exactly where the data gets stuck.
+
+**Week 3-4 (Prototype):** Karthik builds a small proof-of-value — real-time tracking demoed for just one delivery route. QuickLogix's ops team is impressed.
+
+**Week 5-10 (Production):** The full build — integration across all routes, testing, and adoption support.
+
+**Week 11-12 (Expansion):** After the success, they expand to two more of QuickLogix's warehouses. The learnings from this engagement get turned into OrbitAI's "logistics integration template" — so the next logistics client can be deployed much faster.
+
+---
+
+## Illustrative OrbitAI Scenario
+
+> **Learning scenario:** OrbitAI, QuickLogix and the numerical outcomes in this section are illustrative examples created to explain FDE decisions; they are not published company case studies.
+
+
+What happens if you skip discovery? At an earlier OrbitAI client, the team skipped a proper discovery phase and went straight to building — 4 weeks in, they discovered an API rate-limit issue with the client's legacy system, requiring a full architecture redesign. That wasted roughly **₹15 lakhs** worth of engineering time. A proper discovery phase would have surfaced this issue as early as Week 2.
+
+---
+
+<FDEOutcomeVisual variant="lifecycle" />
+
+## Common Mistakes
+
+1. **Skipping discovery** — jumping straight to build means missing hidden constraints.
+2. **Saying "yes" to every request** — without PostHog's 3-trigger filter, teams waste time on low-value engagements.
+3. **Over-building the prototype's scope** — the Proof-of-Value phase should demonstrate value small and fast, not be a full production-level build.
+4. **Not capturing learnings during the expansion phase** — treating every engagement as a "one-off" prevents building reusable, organization-wide patterns.
+
+---
+
+## What the Team Learned
+
+After the QuickLogix engagement succeeds, Rahul reflects: "Karthik, when you jumped straight to writing code earlier, it looks like that could've been a real problem." Karthik smiles: "Exactly right, Rahul — like Divya said, skipping discovery puts the whole project at risk." In the review meeting, Meena adds: "This is now a repeatable playbook for us."
+
+---
+
+## Compare and Contrast
+
+| Phase | Goal | Risk of Skipping |
+|---|---|---|
+| Qualification & Scoping | Decide if the engagement is worth it | Wasted time on low-value work |
+| Discovery | Identify real constraints | Hidden blockers surface later |
+| Prototype/PoV | Demonstrate value fast | Over-building, slow time-to-value |
+| Production | Full deploy, test, adopt | — |
+| Expansion & Learning | Scale and create a template | Reusable patterns get missed |
+
+---
+
+## Practice Task
+
+Try this: imagine a client engagement in your own domain. For each of the 5 phases, write one concrete action item — "what would I ask in the discovery phase?" "how much scope would I keep in the prototype?" — and so on.
+
+---
+
+## Key Takeaways
+
+- An FDE engagement follows a **5-phase structured lifecycle**: Qualification → Discovery → Prototype → Production → Expansion.
+- PostHog's philosophy: an FDE's core value is "judgement" — finding root causes and planning the best-fit solution.
+- Not every request deserves a "yes" — use the 3-trigger filter: high-value, complex, or repeatable.
+- A typical engagement runs about **12 weeks**, with clear phase boundaries.
+- In the expansion phase, turning learnings into reusable templates speeds up future engagements.
+
+---
+
+## FAQ and Knowledge Check
+
+**Q1: Why shouldn't you skip the discovery phase?**
+Discovery is where hidden constraints (legacy system limitations, data issues) get caught early. Skipping it can turn into a much bigger risk later.
+
+**Q2: What are PostHog's 3 engagement triggers?**
+A high-value customer adoption blocker, a complex implementation, and a repeatable/templatable problem.
+
+**Q3: How long does a typical FDE engagement take?**
+Roughly 12 weeks, across distinct phases.
+
+**Knowledge Check:**
+1. In the 5-phase lifecycle, which phase is about demonstrating value fast?
+2. What risk comes from skipping discovery?
+3. True/False: An FDE should take on every client request as an engagement.
+
+*(Answers: 1. Prototyping/Proof-of-Value; 2. Hidden constraints surface later, causing delays or rework across the whole project; 3. False)*
+
+---
+*Next byte: **Building Trust & Customer Operating** — how to build client trust quickly.*

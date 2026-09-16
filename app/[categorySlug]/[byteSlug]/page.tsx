@@ -95,6 +95,14 @@ const movedRoutes:Record<string,string>={
   '75-secure-ai-coding':'05-use-github-copilot-responsibly',
 };
 
+const movedFdeRoutes:Record<string,string>={
+  '01-what-does-a-forward-deployed-engineer-do':'01-what-is-a-forward-deployed-engineer',
+  '02-problem-discovery-and-workflow-mapping':'03-forward-deployed-engineer-engagement-lifecycle',
+  '03-design-thin-production-slice':'03-forward-deployed-engineer-engagement-lifecycle',
+  '04-deploy-observe-and-improve':'04-build-customer-trust-as-an-fde',
+  '05-turn-field-learning-into-product':'02-forward-deployed-engineer-skillset',
+};
+
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
@@ -109,7 +117,8 @@ export async function generateStaticParams() {
     .map(([categorySlug, byteSlug]) => ({ categorySlug, byteSlug }));
 
   const moved = Object.keys(movedRoutes).map((byteSlug)=>({categorySlug:'software-engineering',byteSlug}));
-  return [...published, ...legacy, ...moved, { categorySlug: 'ai-agents', byteSlug: 'introduction-to-ai-agents' }]
+  const movedFde = Object.keys(movedFdeRoutes).map((byteSlug)=>({categorySlug:'forward-deployed-engineer',byteSlug}));
+  return [...published, ...legacy, ...moved, ...movedFde, { categorySlug: 'ai-agents', byteSlug: 'introduction-to-ai-agents' }]
     .filter((route, index, routes) => routes.findIndex((item) => item.categorySlug === route.categorySlug && item.byteSlug === route.byteSlug) === index);
 }
 
@@ -163,6 +172,9 @@ export default async function BytePage({ params }: BytePageProps) {
 
   if (categorySlug === 'software-engineering' && movedRoutes[byteSlug]) {
     permanentRedirect(`/software-engineering/${movedRoutes[byteSlug]}/`);
+  }
+  if (categorySlug === 'forward-deployed-engineer' && movedFdeRoutes[byteSlug]) {
+    permanentRedirect(`/forward-deployed-engineer/${movedFdeRoutes[byteSlug]}/`);
   }
 
   // Get byte and validate category matches

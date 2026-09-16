@@ -35,15 +35,15 @@ export const handbooks: Handbook[] = [
   },
   {
     slug: 'forward-deployed-engineer', title: 'The Forward Deployed Engineer Handbook', shortTitle: 'FDE',
-    audience: 'Engineers · Consultants', tone: 'orange', status: 'available', category: 'technology-careers', label: 'CUSTOMER TO PRODUCTION',
-    description: 'Connect customer problems, product capability and production delivery in one field-facing engineering role.',
-    promise: 'Move from customer discovery to measurable production adoption.',
+    audience: 'Engineers · Consultants · AI Builders', tone: 'orange', status: 'available', category: 'technology-careers', label: 'CUSTOMER REALITY TO PRODUCTION OUTCOME',
+    description: 'Understand the FDE role, balanced skillset, engagement lifecycle, customer trust and evidence-based career path.',
+    promise: 'Learn how FDEs combine engineering depth, business judgement and field delivery.',
     chapters: [
-      { title: 'What an FDE actually does', outcome: 'Distinguish FDE from consultant and product engineer.', href: '/forward-deployed-engineer/01-what-does-a-forward-deployed-engineer-do/' },
-      { title: 'Problem discovery in the field', outcome: 'Turn ambiguity into testable requirements.', href: '/forward-deployed-engineer/02-problem-discovery-and-workflow-mapping/' },
-      { title: 'Design the thin production slice', outcome: 'Choose the smallest valuable architecture.', href: '/forward-deployed-engineer/03-design-thin-production-slice/' },
-      { title: 'Deploy, observe and adapt', outcome: 'Learn from real users and system evidence.', href: '/forward-deployed-engineer/04-deploy-observe-and-improve/' },
-      { title: 'From delivery to reusable product', outcome: 'Convert field learning into product leverage.', href: '/forward-deployed-engineer/05-turn-field-learning-into-product/' },
+      { title: 'What is a Forward Deployed Engineer?', outcome: 'Distinguish FDE work from adjacent customer-facing roles.', href: '/forward-deployed-engineer/01-what-is-a-forward-deployed-engineer/' },
+      { title: 'The FDE skillset', outcome: 'Balance technical depth, commercial thinking and ambiguity.', href: '/forward-deployed-engineer/02-forward-deployed-engineer-skillset/' },
+      { title: 'The engagement lifecycle', outcome: 'Move from discovery to production and handoff.', href: '/forward-deployed-engineer/03-forward-deployed-engineer-engagement-lifecycle/' },
+      { title: 'Build customer trust', outcome: 'Build with the customer through visible evidence.', href: '/forward-deployed-engineer/04-build-customer-trust-as-an-fde/' },
+      { title: 'Career path and compensation', outcome: 'Plan a transition and interpret market figures carefully.', href: '/forward-deployed-engineer/05-forward-deployed-engineer-career-path-compensation/' },
     ],
   },
   {

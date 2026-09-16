@@ -13,6 +13,7 @@ import { LLMAnswerFlow } from './mdx/LLMAnswerFlow';
 import { ContextAssemblyVisual, GroundedAnswerVisual, ProductVsModelVisual, TokenisationVisual } from './mdx/LLMConceptVisuals';
 import { CopilotHandbookVisual, OfficialScreenshot } from './mdx/CopilotHandbookVisuals';
 import { FDEJourneyVisual } from './mdx/FDEVisuals';
+import { FDEConceptLab, FDEOutcomeVisual, FDEScenarioExplorer, FDEWorkflowExplorer } from './mdx/FDELearningLabs';
 import { DockerCommand, DockerFlowVisual, DockerObjectArchitecture, DockerRealWorldVisual, DockerUseCaseVisual, OfficialDockerDiagram } from './mdx/DockerVisuals';
 import { DockerConceptLab } from './mdx/DockerConceptLab';
 import { LangChainBuildingBlocks, LangChainFlowVisual, OfficialLangChainDiagram } from './mdx/LangChainVisuals';
@@ -64,7 +65,7 @@ const createComponents = (idPrefix = '', includeContextSwitch = false) => ({
   th: ({children,...props}:any)=><th {...props}>{children}</th>, td: ({children,...props}:any)=><td {...props}>{children}</td>,
   pre: ({children}:any)=>{const child=children as any;const code=child?.props?.children?.toString?.()||'';const language=(child?.props?.className||'').replace('language-','')||'text';return <SyntaxCode code={code} language={language}/>;},
   code: ({children,...props}:any)=><code className="byte-code" {...props}>{children}</code>,
-  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, DockerCommand, DockerFlowVisual, DockerObjectArchitecture, DockerRealWorldVisual, DockerUseCaseVisual, OfficialDockerDiagram, DockerConceptLab, PythonConceptLab, PythonCodeOutcome, PythonRealWorldVisual, PythonRoleVisual, LangChainFlowVisual, LangChainBuildingBlocks, LangChainConceptLab, LangChainScenarioVisual, LangChainWorkflowExplorer, LangChainCodeOutcome, OfficialLangChainDiagram, HandbookLearningVisual, BeginnerLearningJourney, AgentBoundaryVisual, AgentCapabilityVisual, MongoDBVisual, KnowledgeCheck, ModeText, ReadingModeToggle,
+  ThemeCard, BulletList, Scenario, Takeaways, PromptBox, Mistakes, AIComparisonFlow, RealUseCaseFlows, GenAIDecisionGuide, LLMAnswerFlow, ContextAssemblyVisual, TokenisationVisual, ProductVsModelVisual, GroundedAnswerVisual, CopilotHandbookVisual, OfficialScreenshot, FDEJourneyVisual, FDEConceptLab, FDEOutcomeVisual, FDEScenarioExplorer, FDEWorkflowExplorer, DockerCommand, DockerFlowVisual, DockerObjectArchitecture, DockerRealWorldVisual, DockerUseCaseVisual, OfficialDockerDiagram, DockerConceptLab, PythonConceptLab, PythonCodeOutcome, PythonRealWorldVisual, PythonRoleVisual, LangChainFlowVisual, LangChainBuildingBlocks, LangChainConceptLab, LangChainScenarioVisual, LangChainWorkflowExplorer, LangChainCodeOutcome, OfficialLangChainDiagram, HandbookLearningVisual, BeginnerLearningJourney, AgentBoundaryVisual, AgentCapabilityVisual, MongoDBVisual, KnowledgeCheck, ModeText, ReadingModeToggle,
 });
 
 export function ByteContent({content,tanglishContent}:{content:string;tanglishContent?:string|null}) {
