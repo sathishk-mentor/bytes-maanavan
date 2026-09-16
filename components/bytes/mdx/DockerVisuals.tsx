@@ -39,11 +39,11 @@ export function DockerCommand({label,children}:{label:string;children:React.Reac
 
 export function DockerRealWorldVisual() {
   const examples=[
-    [Truck,'Delivery tracking','QA cannot start the API','Share order-status:1.0','Same tested setup'],
-    [GraduationCap,'College project','Evaluator misses a library','Share the project image','Demo starts predictably'],
-    [Users,'New developer','Setup guide is outdated','Start the team image','Project opens faster'],
+    [Truck,'Food-delivery API','Karthik’s app works, but QA is missing Python 3.12 and one library.','Karthik builds and shares order-status:1.0.','QA starts a container and sees the same health response.'],
+    [ShoppingBag,'Checkout release','Developers and testers are unsure which checkout setup belongs to release 2.1.','The team tests the tagged image checkout:2.1.','Everyone tests the clearly identified release package.'],
+    [Users,'New developer joining','Priya receives a long setup document, but two steps are already outdated.','Priya starts a container from the approved team image.','The project opens without rebuilding the setup from memory.'],
   ] as const;
-  return <figure className="docker-market-visual docker-story-visual"><header><small>PROBLEM → DOCKER DECISION → RESULT</small><strong>Watch Docker remove one setup problem in each situation.</strong></header><div>{examples.map(([Icon,title,problem,decision,result],index)=><article key={title} style={{'--market-delay':`${index*.7}s`} as React.CSSProperties}><span><Icon/></span><b>{title}</b><dl><div><dt>Problem</dt><dd>{problem}</dd></div><ArrowDown/><div><dt>Docker decision</dt><dd>{decision}</dd></div><ArrowDown/><div><dt>Visible result</dt><dd>{result}</dd></div></dl><i><CheckCircle2/> READY TO TEST</i></article>)}</div><figcaption>Each example uses the same beginner pattern: prepare one versioned image, then start containers from that known package.</figcaption></figure>;
+  return <figure className="docker-market-visual docker-story-visual"><header><small>BEFORE → ACTION → AFTER</small><strong>Read each story from the failed setup to the result the team can see.</strong></header><div>{examples.map(([Icon,title,problem,decision,result],index)=><article key={title} style={{'--market-delay':`${index*.7}s`} as React.CSSProperties}><span><Icon/></span><b>{title}</b><dl><div><dt>Before Docker</dt><dd>{problem}</dd></div><ArrowDown/><div><dt>Team action</dt><dd>{decision}</dd></div><ArrowDown/><div><dt>After Docker</dt><dd>{result}</dd></div></dl><i><CheckCircle2/> SETUP MATCHED</i></article>)}</div><figcaption>Docker does not fix application bugs. In these examples, it removes uncertainty about the Python version, libraries and selected release package.</figcaption></figure>;
 }
 
 export function DockerUseCaseVisual() {
