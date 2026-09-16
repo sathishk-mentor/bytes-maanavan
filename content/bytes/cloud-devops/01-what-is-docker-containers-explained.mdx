@@ -102,11 +102,7 @@ Neither is universally better. Choose according to workload, security and operat
 
 ## Real-World Examples
 
-- **Food-delivery tracking:** The team packages an order-status service as `order-status:1.0`. Development and QA start containers from that same image.
-- **Online shopping checkout:** Developers test `checkout:2.1` instead of asking every tester to rebuild the setup manually.
-- **College project evaluation:** Rahul shares the project image with the evaluator, reducing “missing library” problems during the demo.
-- **Small-business billing:** Meena's developer keeps each approved billing release as a versioned image, making the selected version clear.
-- **New team member onboarding:** A developer starts a container from the team image instead of following a long, outdated installation document.
+These examples answer one question: **where does a repeatable application package remove confusion?** Follow each card from the original setup problem to the visible result.
 
 <DockerRealWorldVisual />
 
@@ -118,10 +114,9 @@ A Docker image follows the same packaging idea: prepare the application once, th
 
 ## Use Cases
 
-- **Karthik — Developer:** Make project setup repeatable for the team.
-- **Divya — HR:** Confirm that the tested recruitment-service version is deployed.
-- **Rahul — MBA student:** Run a project consistently on another evaluator’s system.
-- **Meena — SME owner:** Release a controlled version of a billing service.
+The same Docker idea creates a different benefit for each role. Start with the person's question, then connect it to the correct Docker action.
+
+<DockerUseCaseVisual />
 
 ## Key Takeaways
 
@@ -136,7 +131,7 @@ A Docker image follows the same packaging idea: prepare the application once, th
 
 ## Final Thought + Next Path
 
-> Keep one picture in your mind: a Dockerfile is the recipe, an image is the prepared package and a container is that package running. This distinction prevents many beginner mistakes. You do not “run a Dockerfile,” and an image is not already an active application. Docker reads the Dockerfile to build an image; Docker then uses the image to start a container. A registry simply helps the team store and share the same image version. This workflow reduces setup differences, but it does not prove that the application code is correct or secure. Those checks still matter. In Byte 02, you will practise only the next logical step: write a short Dockerfile, build your first image and start one container. After that foundation is stable, Byte 03 will explain how a browser reaches the container, how data survives replacement and how settings change safely. Byte 04 will connect multiple containers. Byte 05 will prepare the application for deployment. Each new idea will build on something you have already used.
+> Remember one flow: **Dockerfile prepares the instructions → image stores the package → container runs the app.** In Byte 02, you will use that flow yourself: write a small Dockerfile, build one image and start one container. Do not move to ports or storage yet—the next Byte has only one goal: make your first packaged app run.
 
 ## FAQ + Knowledge Check
 

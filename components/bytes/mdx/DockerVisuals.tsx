@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowRight, Box, CheckCircle2, Cloud, Code2, Container, Database, ExternalLink, FileCode2, Globe2, HardDrive, KeyRound, Network, PackageOpen, Play, Rocket, Server, ShieldCheck, ShoppingBag, Sparkles, Truck, UploadCloud, Users } from 'lucide-react';
+import { ArrowDown, ArrowRight, Box, CheckCircle2, Cloud, Code2, Container, Database, ExternalLink, FileCode2, Globe2, GraduationCap, HardDrive, KeyRound, Network, PackageOpen, Play, Rocket, Server, ShieldCheck, ShoppingBag, Sparkles, Store, Truck, UploadCloud, UserCheck, Users } from 'lucide-react';
 
 const visuals = {
   mentalModel: {
@@ -38,8 +38,22 @@ export function DockerCommand({label,children}:{label:string;children:React.Reac
 }
 
 export function DockerRealWorldVisual() {
-  const examples=[[Truck,'Delivery API','Same image · many containers'],[ShoppingBag,'Sale traffic','Scale a tested service'],[Users,'Project team','Dev · QA · Cloud consistency']] as const;
-  return <figure className="docker-market-visual"><header><small>FROM ONE IMAGE TO REAL WORK</small><strong>Three teams. One repeatable delivery idea.</strong></header><div>{examples.map(([Icon,title,note],index)=><article key={title} style={{'--market-delay':`${index*.9}s`} as React.CSSProperties}><span><Icon/></span><b>{title}</b><small>{note}</small><i><CheckCircle2/> READY</i></article>)}</div><figcaption>Illustrative Indian product scenarios—not claims about private company infrastructure.</figcaption></figure>;
+  const examples=[
+    [Truck,'Delivery tracking','QA cannot start the API','Share order-status:1.0','Same tested setup'],
+    [GraduationCap,'College project','Evaluator misses a library','Share the project image','Demo starts predictably'],
+    [Users,'New developer','Setup guide is outdated','Start the team image','Project opens faster'],
+  ] as const;
+  return <figure className="docker-market-visual docker-story-visual"><header><small>PROBLEM → DOCKER DECISION → RESULT</small><strong>Watch Docker remove one setup problem in each situation.</strong></header><div>{examples.map(([Icon,title,problem,decision,result],index)=><article key={title} style={{'--market-delay':`${index*.7}s`} as React.CSSProperties}><span><Icon/></span><b>{title}</b><dl><div><dt>Problem</dt><dd>{problem}</dd></div><ArrowDown/><div><dt>Docker decision</dt><dd>{decision}</dd></div><ArrowDown/><div><dt>Visible result</dt><dd>{result}</dd></div></dl><i><CheckCircle2/> READY TO TEST</i></article>)}</div><figcaption>Each example uses the same beginner pattern: prepare one versioned image, then start containers from that known package.</figcaption></figure>;
+}
+
+export function DockerUseCaseVisual() {
+  const roles=[
+    [Code2,'Developer','“Will it run for my teammate?”','Create a repeatable image'],
+    [UserCheck,'QA engineer','“Am I testing the same version?”','Start the approved tag'],
+    [GraduationCap,'Student','“Will my project open during evaluation?”','Share the project image'],
+    [Store,'Small business','“Which billing release is active?”','Use a clear version tag'],
+  ] as const;
+  return <figure className="docker-role-map"><header><small>WHO USES THIS — AND WHY?</small><strong>Choose the person first; the Docker benefit becomes clearer.</strong></header><div>{roles.map(([Icon,role,question,action],index)=><article key={role} style={{'--role-delay':`${index*.16}s`} as React.CSSProperties}><span><Icon/></span><div><b>{role}</b><p>{question}</p><small>{action}</small></div><ArrowRight/></article>)}</div><figcaption><Sparkles/> Docker is useful when the learner needs the same prepared application setup in another place.</figcaption></figure>;
 }
 
 export function DockerObjectArchitecture() {
