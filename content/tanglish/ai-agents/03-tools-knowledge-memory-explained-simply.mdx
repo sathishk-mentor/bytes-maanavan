@@ -1,98 +1,85 @@
 <ThemeCard title="Neenga learn panna poradhu" badge="AI AGENTS HANDBOOK 03">
 
-Tools, knowledge, memory மற்றும் policy-ன் different responsibilities-ஐ புரிந்து, agent-க்கு unnecessary access கொடுக்காமல் information boundary design பண்ணுவீங்க.
+AI Agent enga useful, endha workflow first pilot-ku suitable, adoption numbers-ai epdi careful-aa understand pannanum-nu learn pannuveenga.
 
 </ThemeCard>
 
 <HandbookLearningVisual variant="agentContext" />
 
-## 60 seconds-ல் core concepts
+## Meena kekkura kelvi: agents enga useful?
 
-AI model language generate பண்ணும். Real work complete செய்ய agent-க்கு கூடுதல் layers தேவை:
+Ella problem-kum AI Agent thevai illa. Steps situation-ku thagundha madhiri maarum, task repeat aagum, correct data available-aa irukkum, result measure panna mudiyum endraal agent pilot useful-aa irukkalam.
 
-- **Tools:** Model-க்கு வெளியே information inspect அல்லது system change செய்ய உதவும்.
-- **Knowledge:** Current task-க்கு relevant trusted evidence கொடுக்கும்.
-- **Memory:** Steps அல்லது conversations இடையில் useful state preserve பண்ணும்.
-- **Policy:** என்ன access, remember அல்லது change செய்யலாம் என்று decide பண்ணும்.
+Common use cases:
 
-Tool connect செய்ததால் எல்லா operations-மும் safe ஆகாது. Document retrieve ஆனதால் அது current அல்லது true என்று guarantee இல்லை. Information remember செய்ததால் forever store செய்ய permission கிடைக்காது.
+1. **Customer service:** approved account data check panni reply draft pannuradhu.
+2. **Internal operations:** onboarding checklist prepare panni missing items flag pannuradhu.
+3. **Research and analysis:** authorised sources collect panni cited brief prepare pannuradhu.
+4. **Software work:** repository inspect panni test-oda reviewable change propose pannuradhu.
 
-## Workplace analogy
+## Endha workflow pilot-ku suitable?
 
-| Agent layer | Workplace equivalent | Example |
-|---|---|---|
-| Tool | Application அல்லது equipment | Calendar, email, CRM, calculator |
-| Knowledge | Approved reference | Policy, project plan, product manual |
-| Working memory | Current task notes | Checked sources list |
-| Long-term memory | Retained preference | Preferred report format |
-| Policy | Role மற்றும் access rules | Read only; approval இல்லாமல் send செய்யாதே |
+<AgentFitLab />
 
-Finance system use செய்ய தெரிந்த coordinator-க்கு payment approve செய்ய permission இருக்க வேண்டியதில்லை. Capability மற்றும் authority separate.
+Best starting point: **high repetition + high time consumption + low risk**. Data ready-aa irukkanum, owner clear-aa irukkanum, success measure panna mudiyanum.
 
-## Tools எப்படி outside world-ஐ reach பண்ணும்?
+## Moonu perukku moonu starting points
 
-Tool என்பது system அல்லது function-க்கு controlled interface. Web search, file retrieval, database query, calendar, email மற்றும் calculator common examples. `manage_email` போன்ற broad tool-க்கு பதில் `search_approved_email`, `draft_reply`, `send_approved_reply` போன்ற narrow tools clear boundaries கொடுக்கும்.
+| Person | Pilot idea | Safe boundary | Success signal |
+|---|---|---|---|
+| Karthik | Order-status questions | Status read panni reply draft | Correct status; lookup time kammi |
+| Meena | Employee onboarding | Checklist prepare panni gaps flag | Omissions kammi; faster preparation |
+| Rahul | Company research | Public sources mattum search | Relevant evidence; working links |
 
-<Scenario title="Guess செய்வதை விட calculator safe">
+<Scenario title="Full rollout-ku munnadi small support pilot">
 
-Sales total prepare செய்ய agent language-model arithmetic-ஐ நம்பாமல் calculator அல்லது validated spreadsheet formula use பண்ண வேண்டும். Model result-ஐ explain பண்ணலாம்; deterministic tool calculate பண்ண வேண்டும்.
+Support team agent-ku oru approved status system-la read-only access kudukkudhu. Agent reply prepare panni source kaattum; automatic-aa send pannaadhu. Team accuracy, time, escalation and reviewer effort-ai measure pannum.
 
 </Scenario>
 
-## Knowledge என்பது தேவையான நேரத்தில் கிடைக்கும் evidence
+## India adoption numbers-ai careful-aa padikkanum
 
-Approved documents, company wiki, product manual அல்லது database-லிருந்து knowledge வரலாம். RAG flow: question receive → authorised source search → relevant passages retrieve → model-க்கு evidence கொடு → citation-உடன் answer generate செய். Evidence கிடைக்கவில்லை என்றால் agent அதை clear-ஆ சொல்ல வேண்டும்.
+Different reports different percentage sollalaam. Sample yaaru, “agent” definition enna, pilot-aa production-aa, report date enna-nu check pannunga. “AI use pannuranga,” “agent pilot pannuranga,” “fully autonomous workflow run pannuranga” moonum same illa.
 
-## Memory useful continuity; unlimited recording இல்லை
+Vera company ROI unga result-ku guarantee illa. Unga current baseline and pilot evidence dhaan mukkiyam.
 
-- **Step memory:** Next action-க்கு தேவையான latest result.
-- **Session memory:** Current conversation context.
-- **Long-term memory:** User expect செய்து retain செய்ய அனுமதித்த preference.
+## Practice: unga workflow-ai score pannunga
 
-Travel dates current booking task-க்கு தேவை. Passport details-ஐ indefinitely store செய்வது different risk. Necessity, consent, sensitivity, correction, deletion மற்றும் expiry define பண்ணுங்க.
+<PromptBox label="Responsible first agent pilot choose pannunga">
 
-## MCP simple explanation
+Indha workflow-ai assess pannunga: [task describe pannunga]
 
-Model Context Protocol AI applications-ஐ external tools மற்றும் data sources-க்கு common interface மூலம் connect செய்யும் standard. Universal connector மாதிரி இருந்தாலும் authentication, permission, validation மற்றும் audit automatic-ஆ கிடைக்காது.
+Repetition, time, data readiness, mistake impact and human judgement-ku Low / Medium / High score kudunga. Chatbot, normal automation, AI-agent pilot illa human-led process edhu suitable-nu explain pannunga. Smallest safe pilot, approval point and three measures define pannunga.
 
-## Minimum access set design
-
-Read-only access மற்றும் draft output-லிருந்து start பண்ணுங்க. Workflow prove ஆன பிறகே write actions add பண்ணுங்க. One user-ன் memory அல்லது documents இன்னொருவரின் session-க்கு leak ஆகாமல் tenant isolation enforce பண்ண வேண்டும்.
+</PromptBox>
 
 ## Common mistakes
 
 <Mistakes>
 
-- Broad connector-க்கு read மற்றும் destructive write access இரண்டும் கொடுப்பது.
-- Source/date check செய்யாமல் retrieved text-ஐ trusted என்று assume பண்ணுவது.
-- “Later useful ஆகலாம்” என்று sensitive data store பண்ணுவது.
-- MCP business permission கொடுக்கும் என்று நினைப்பது.
-- Model invent செய்த tool result-ஐ success என்று accept பண்ணுவது.
+- Measurable workflow-ai vida impressive demo-ai first choose pannuradhu.
+- Normal automation podhum idathula agent use pannuradhu.
+- Survey sample and definition illama adoption number quote pannuradhu.
+- Read-only test-ku munnadi write access connect pannuradhu.
+- Speed mattum measure panni accuracy and review effort-ai ignore pannuradhu.
 
 </Mistakes>
 
-## Interview-ல் எப்படி explain பண்ணுவது?
-
-<ThemeCard title="Tools, knowledge மற்றும் memory எப்படி different?" badge="BEGINNER ANSWER">
-
-Tools operations perform செய்யும் capability கொடுக்கும். Knowledge current task-க்கு relevant evidence கொடுக்கும். Memory steps அல்லது sessions இடையில் selected state preserve பண்ணும். Policy எந்த tool, source மற்றும் memory permitted என்பதை control பண்ணும்.
-
-</ThemeCard>
-
-## நினைவில் வைக்க வேண்டிய key points
+## Key takeaways
 
 <Takeaways>
 
-- Tool capability உருவாக்கும்; permission authority-ஐ decide பண்ணும்.
-- Knowledge relevant, authorised, current மற்றும் traceable-ஆ இருக்க வேண்டும்.
-- Working memory மற்றும் long-term memory different problems solve பண்ணும்.
-- Minimum information-ஐ minimum required time மட்டும் retain பண்ணுங்க.
-- MCP connection standard; security replacement இல்லை.
+- Customer service, operations, research and software common agent areas.
+- First pilot repetitive, measurable and low-risk-aa irukkanum.
+- Adoption number-ku source, sample, date and definition thevai.
+- Narrow boundary-oda start pannunga.
+- Generic ROI headline-ai vida unga own evidence mukkiyam.
 
 </Takeaways>
 
-## Primary sources
+<KnowledgeCheck question="First AI-agent pilot-ku best task edhu?" options={['Unclear data-oda rare legal decision','Approved data and human review-oda repetitive status lookup','Ella systems-kum access irukkura unrestricted agent']} answer={1} explanation="Repetitive, measurable, low-risk workflow safe-aa useful learning kudukkum." />
 
-- [Model Context Protocol](https://modelcontextprotocol.io/docs/getting-started/intro)
-- [Google Cloud: Retrieval-Augmented Generation](https://cloud.google.com/use-cases/retrieval-augmented-generation)
+## Trusted references
+
+- [NASSCOM research and insights](https://nasscom.in/knowledge-center/publications)
 - [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)
