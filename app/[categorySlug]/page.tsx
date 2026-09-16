@@ -14,10 +14,10 @@ const handbookDetails = {
   'ai-agents': {
     searchTitle: 'AI Agents Handbook for Everyone',
     eyebrow: 'FROM ANSWERING TO TAKING ACTION',
-    intro: 'A beginner-friendly guide to AI agents using familiar examples—understand goals, decisions, tools, actions and human approval without needing to code.',
+    intro: 'A beginner-friendly guide to AI agents using familiar examples—understand how agents work, evaluate real use cases, apply guardrails and plan a safe first pilot without coding.',
     audience: 'Non-technical beginners, professionals and educators',
     prerequisite: 'No coding or AI background required',
-    result: 'A goal → plan → tool → action → check mental model',
+    result: 'Understand → evaluate → protect → pilot',
     keywords: ['AI agents for beginners', 'what is an AI agent', 'AI agent examples', 'agentic AI explained', 'chatbot vs copilot vs agent'],
   },
   'software-engineering': {
