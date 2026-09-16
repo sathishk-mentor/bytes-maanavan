@@ -19,6 +19,8 @@ You will define a production readiness path for an LLM service: contract, resili
 
 <LangChainFlowVisual variant="production" />
 
+<LangChainScenarioLab variant="production" />
+
 ## A demo proves possibility, not reliability
 
 A notebook that answers one question proves that an API call works. Production must handle simultaneous users, timeouts, rate limits, invalid output, unsafe input, changing models, cost limits, private data and releases that need rollback.
@@ -114,6 +116,8 @@ The provider begins timing out during enrolment season. A bounded retry handles 
 - Representative evaluation datasets pass the release threshold.
 - Health checks, dashboards, alerts and rollback are tested.
 - The container runs without root and the image is scanned.
+
+<LangChainCodeResult variant="production" />
 
 ## Common mistakes
 

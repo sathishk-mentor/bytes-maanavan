@@ -19,6 +19,8 @@ You will design a course-support agent that can search a catalogue and check enr
 
 <LangChainFlowVisual variant="agent" />
 
+<LangChainScenarioLab variant="agent" />
+
 ## What makes this an agent?
 
 A fixed workflow follows steps chosen by the developer. An agent uses a model to decide which available action to take next. The loop is usually: receive goal, reason over state, call a tool, observe its result and continue until a final answer or stop condition.
@@ -100,6 +102,8 @@ Hybrid designs are common: an agent chooses a bounded path, while deterministic 
 - Require approval for payments, deletion, messages or account changes.
 - Log tool names, safe metadata and outcomes without leaking secrets.
 - Test prompt injection arriving through retrieved content and tool results.
+
+<LangChainCodeResult variant="agent" />
 
 ## Common mistakes
 

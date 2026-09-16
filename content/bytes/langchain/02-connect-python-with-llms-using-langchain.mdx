@@ -19,6 +19,8 @@ You will build a small support-ticket classifier while keeping the API key outsi
 
 <LangChainFlowVisual variant="model" />
 
+<LangChainScenarioLab variant="model" />
+
 ## The project: support-ticket triage
 
 A customer writes: “Payment succeeded, but the course is still locked.” Our application should return a category, urgency and short routing reason. Free-form prose is awkward for downstream code; a typed result is safer.
@@ -116,6 +118,8 @@ In a real API, map failures to controlled responses. Do not show provider stack 
 The classifier routes the ticket to “access” with high urgency. It should not automatically refund a payment or change an account. The application can place the result in a review queue, show the evidence to an agent and execute account changes only through an authorised backend action.
 
 </Scenario>
+
+<LangChainCodeResult variant="model" />
 
 ## Common mistakes
 

@@ -19,6 +19,8 @@ You will understand the two phases of RAG and design a document assistant that a
 
 <LangChainFlowVisual variant="rag" />
 
+<LangChainScenarioLab variant="rag" />
+
 ## What RAG changes
 
 Retrieval-Augmented Generation gives the model selected external context at request time. It does not retrain the model. A useful RAG system first indexes documents, then retrieves relevant chunks for each question and asks the model to answer from those chunks.
@@ -100,6 +102,8 @@ Test the system at three layers:
 | Product | Did the user complete the task? | Resolution or escalation rate |
 
 Also test adversarial documents, conflicting versions, empty retrieval, access-controlled content and questions that should be refused.
+
+<LangChainCodeResult variant="rag" />
 
 ## Common mistakes
 
