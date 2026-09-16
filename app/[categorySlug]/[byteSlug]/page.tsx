@@ -32,9 +32,9 @@ interface BytePageProps {
 const searchTitles:Record<string,string>={
   '01-what-is-an-ai-agent-from-answering-to-taking-action':'What Is an AI Agent? A Beginner-Friendly Explanation',
   '02-how-an-ai-agent-works-goal-reasoning-tools-actions':'How AI Agents Work: Goal, Tools and Actions',
-  '03-tools-knowledge-memory-explained-simply':'AI Agent Tools, Knowledge and Memory Explained',
-  '04-build-first-ai-agent-without-coding':'Build Your First No-Code AI Agent',
-  '05-use-ai-agents-safely-responsibly':'AI Agent Safety: Permissions, Privacy and Human Review',
+  '03-tools-knowledge-memory-explained-simply':'AI Agent Use Cases and Adoption in India',
+  '04-build-first-ai-agent-without-coding':'AI Agent Risks and Guardrails for Beginners',
+  '05-use-ai-agents-safely-responsibly':'Getting Started with AI Agents: A Safe Pilot Plan',
   '01-github-copilot-for-developers':'GitHub Copilot Explained for Developers',
   '02-give-github-copilot-better-context':'Give GitHub Copilot Better Context',
   '03-debug-test-refactor-with-github-copilot':'Debug, Test and Refactor with GitHub Copilot',
