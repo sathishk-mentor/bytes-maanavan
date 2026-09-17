@@ -55,10 +55,16 @@ export function CategoryPageClient({ bytes }: CategoryPageClientProps) {
           </div>
         </div>
 
+        {filteredBytes.length > 0 && (
+          <div className="journey-route" aria-label={`${filteredBytes.length} Byte connected learning path`}>
+            <span>START</span><i/><b>{filteredBytes.length} guided Bytes</b><i/><span>PRACTICAL OUTCOME</span>
+          </div>
+        )}
+
         {/* Bytes List */}
         <div className="library-grid category-byte-grid">
           {filteredBytes.map((byte) => (
-            <ByteLibraryCard key={byte.slug} chapter={byte} chapterNumber={bytes.findIndex((item) => item.slug === byte.slug) + 1}/>
+            <ByteLibraryCard key={byte.slug} chapter={byte} chapterNumber={bytes.findIndex((item) => item.slug === byte.slug) + 1} totalChapters={bytes.length}/>
           ))}
         </div>
 
