@@ -1,67 +1,52 @@
+import type { CSSProperties } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, Clock3, Code2, Container, Database, FileText, Gauge, GitPullRequestArrow, HardDrive, MessageSquareText, Network, Rocket, Search, ShieldCheck, Workflow, Wrench } from 'lucide-react';
+import {
+  ArrowUpRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, Clock3, Code2, Compass,
+  Container, Database, FileText, Gauge, GitPullRequestArrow, HardDrive, Layers3,
+  MessageSquareText, Network, Rocket, Search, ShieldCheck, Sparkles, TerminalSquare,
+  Workflow, Wrench,
+} from 'lucide-react';
 import type { ByteMetadata } from '@/lib/types';
 
-const cardVisuals = {
-  '62-how-developers-use-ai-tools': { icon: Bot, label: 'Copilot Foundations', tone: 'blue' },
-  '63-api-first-thinking': { icon: Braces, label: 'Context Engineering', tone: 'teal' },
-  '66-ai-assisted-coding-workflow': { icon: GitPullRequestArrow, label: 'Feature Workflow', tone: 'indigo' },
-  '64-debugging-ai-generated-code': { icon: Bug, label: 'Debug & Test', tone: 'violet' },
-  '75-secure-ai-coding': { icon: ShieldCheck, label: 'Responsible Coding', tone: 'emerald' },
-  '01-github-copilot-for-developers': { icon: Bot, label: 'Copilot Foundations', tone: 'blue' },
-  '02-give-github-copilot-better-context': { icon: Braces, label: 'Context Engineering', tone: 'teal' },
-  '03-debug-test-refactor-with-github-copilot': { icon: Bug, label: 'Debug & Test', tone: 'violet' },
-  '04-build-feature-with-github-copilot': { icon: GitPullRequestArrow, label: 'Feature Workflow', tone: 'indigo' },
-  '05-use-github-copilot-responsibly': { icon: ShieldCheck, label: 'Responsible Coding', tone: 'emerald' },
-  '01-what-does-a-forward-deployed-engineer-do': { icon: BriefcaseBusiness, label: 'FDE Foundations', tone: 'violet' },
-  '02-problem-discovery-and-workflow-mapping': { icon: Search, label: 'Problem Discovery', tone: 'teal' },
-  '03-design-thin-production-slice': { icon: Network, label: 'Solution Architecture', tone: 'indigo' },
-  '04-deploy-observe-and-improve': { icon: Gauge, label: 'Production Learning', tone: 'emerald' },
-  '05-turn-field-learning-into-product': { icon: Blocks, label: 'Product Loop', tone: 'blue' },
-  '01-what-is-docker-containers-explained': { icon: Container, label: 'Docker Foundations', tone: 'blue' },
-  '02-dockerize-first-python-application': { icon: Box, label: 'Build an Image', tone: 'teal' },
-  '03-docker-ports-volumes-environment-variables': { icon: HardDrive, label: 'Container Runtime', tone: 'indigo' },
-  '04-multi-container-applications-docker-compose': { icon: Network, label: 'Docker Compose', tone: 'violet' },
-  '05-dockerize-deploy-generative-ai-application': { icon: Rocket, label: 'AI Deployment', tone: 'emerald' },
-  '01-what-is-langchain-build-llm-applications': { icon: Network, label: 'LangChain Foundations', tone: 'emerald' },
-  '02-connect-python-with-llms-using-langchain': { icon: MessageSquareText, label: 'Models & Messages', tone: 'teal' },
-  '03-build-rag-applications-with-your-documents': { icon: FileText, label: 'RAG Architecture', tone: 'blue' },
-  '04-build-ai-agents-with-tools-and-memory': { icon: Wrench, label: 'Agents & Tools', tone: 'violet' },
-  '05-production-ready-langchain-application': { icon: ShieldCheck, label: 'Production AI', tone: 'indigo' },
-  '01-what-is-an-ai-agent-from-answering-to-taking-action': { icon: Bot, label: 'Agent Foundations', tone: 'violet' },
-  'what-is-mongodb-documents-collections-databases': { icon: Database, label: 'MongoDB Foundations', tone: 'emerald' },
-  'mongodb-data-modeling-embedding-vs-referencing': { icon: Blocks, label: 'Document Modeling', tone: 'teal' },
-  'mongodb-queries-updates-aggregation-pipeline': { icon: Gauge, label: 'Query & Aggregation', tone: 'blue' },
-  'mongodb-python-fastapi-ai-application': { icon: Network, label: 'AI App Integration', tone: 'violet' },
-  'production-mongodb-indexing-security-deployment': { icon: ShieldCheck, label: 'Production MongoDB', tone: 'indigo' },
-  'python-foundations-for-ai-applications': { icon: Code2, label: 'Python Foundations', tone: 'blue' },
-  'python-apis-json-llm-responses': { icon: Braces, label: 'APIs & JSON', tone: 'teal' },
-  'build-generative-ai-application-python': { icon: MessageSquareText, label: 'GenAI Application', tone: 'violet' },
-  'build-ai-agents-tools-memory-python': { icon: Wrench, label: 'Agents & Tools', tone: 'emerald' },
-  'test-secure-deploy-python-ai-applications': { icon: ShieldCheck, label: 'Production AI', tone: 'indigo' },
+const journeyProfiles = {
+  'software-engineering': { category: 'Software Engineering', handbook: 'GitHub Copilot Handbook', accent: '#2f6fed', glow: '#8bb8ff', stages: ['Orient', 'Give context', 'Validate', 'Build', 'Ship responsibly'], icons: [Bot, Braces, ShieldCheck, GitPullRequestArrow, Rocket] },
+  'forward-deployed-engineer': { category: 'Technology Careers', handbook: 'Forward Deployed Engineer', accent: '#7657d6', glow: '#c9b9ff', stages: ['Understand', 'Discover', 'Shape', 'Deliver', 'Scale learning'], icons: [BriefcaseBusiness, Search, Layers3, Gauge, Blocks] },
+  'cloud-devops': { category: 'Cloud & DevOps', handbook: 'Docker Handbook', accent: '#1678c8', glow: '#87d7ff', stages: ['Understand', 'Package', 'Configure', 'Compose', 'Deploy'], icons: [Container, Box, HardDrive, Network, Rocket] },
+  langchain: { category: 'Generative AI & Agents', handbook: 'LangChain Handbook', accent: '#0c8b74', glow: '#7ae8cd', stages: ['Understand', 'Connect', 'Ground', 'Orchestrate', 'Operate'], icons: [Network, MessageSquareText, FileText, Wrench, ShieldCheck] },
+  'ai-agents': { category: 'Generative AI & Agents', handbook: 'AI Agents Handbook', accent: '#6b57d9', glow: '#b9afff', stages: ['Understand', 'Reason & act', 'See adoption', 'Add guardrails', 'Start building'], icons: [Bot, Workflow, BriefcaseBusiness, ShieldCheck, Rocket] },
+  mongodb: { category: 'Database & AI Engineering', handbook: 'MongoDB for AI Applications', accent: '#07805c', glow: '#83e5be', stages: ['Understand', 'Model', 'Query', 'Integrate', 'Operate'], icons: [Database, Blocks, Gauge, Network, ShieldCheck] },
+  'python-genai-agentic-ai': { category: 'Python & AI Engineering', handbook: 'Python for GenAI & Agents', accent: '#2672c9', glow: '#8fc9ff', stages: ['Build foundations', 'Connect APIs', 'Create GenAI', 'Build agents', 'Ship safely'], icons: [Code2, Braces, MessageSquareText, Wrench, ShieldCheck] },
+  'sql-data-ai-applications': { category: 'Data & AI Engineering', handbook: 'SQL for Data & AI Applications', accent: '#176dc1', glow: '#84c7ff', stages: ['Query', 'Analyse', 'Search meaning', 'Engineer features', 'Add agents'], icons: [Database, Gauge, Search, Blocks, Bot] },
+  'rag-application-engineering': { category: 'Generative AI & Knowledge', handbook: 'RAG Application Engineering', accent: '#7657d6', glow: '#ccbaff', stages: ['Understand', 'Prepare knowledge', 'Retrieve', 'Generate', 'Evaluate'], icons: [Compass, FileText, Search, MessageSquareText, Gauge] },
+  'fastapi-ai-applications': { category: 'Backend & AI Engineering', handbook: 'FastAPI for AI Applications', accent: '#078a78', glow: '#7ce7d2', stages: ['Route', 'Validate', 'Stream', 'Build RAG', 'Operate'], icons: [TerminalSquare, Braces, Workflow, Network, ShieldCheck] },
+  'modern-java-spring-boot-genai': { category: 'Java & Enterprise AI', handbook: 'Modern Java, Spring Boot & GenAI', accent: '#b16428', glow: '#ffc285', stages: ['Modernise', 'Build APIs', 'Connect AI', 'Orchestrate', 'Operate'], icons: [Code2, Braces, MessageSquareText, Workflow, ShieldCheck] },
 } as const;
 
-export function ByteLibraryCard({ chapter, chapterNumber }: { chapter: ByteMetadata; chapterNumber: number }) {
-  const visual = cardVisuals[chapter.slug as keyof typeof cardVisuals] || { icon: Workflow, label: 'Technology Guide', tone: 'blue' };
-  const Icon = visual.icon;
-  const isFde = chapter.category === 'forward-deployed-engineer';
-  const isDocker = chapter.category === 'cloud-devops';
-  const isLangChain = chapter.category === 'langchain';
-  const isAgent = chapter.category === 'ai-agents';
-  const isMongoDB = chapter.category === 'mongodb';
-  const isPythonAI = chapter.category === 'python-genai-agentic-ai';
-  const category = isPythonAI ? 'Python & AI Engineering' : isMongoDB ? 'Database & AI Engineering' : isFde ? 'Technology Careers' : isDocker ? 'Cloud & DevOps' : isLangChain || isAgent ? 'Generative AI & Agents' : 'Software Engineering';
-  const handbook = isPythonAI ? 'Python for GenAI & Agents' : isMongoDB ? 'MongoDB for AI Handbook' : isFde ? 'FDE Handbook' : isDocker ? 'Docker Handbook' : isLangChain ? 'LangChain Handbook' : isAgent ? 'AI Agents Handbook' : 'GitHub Copilot Handbook';
+const defaultProfile = { category: 'Technology Learning', handbook: 'MaanavaN Handbook', accent: '#087f87', glow: '#7ce5e9', stages: ['Understand', 'Explore', 'Apply', 'Practise', 'Master'], icons: [Compass, Blocks, Workflow, Wrench, Rocket] } as const;
 
-  return <Link className={`library-byte-card tone-${visual.tone}`} href={`/${chapter.category}/${chapter.slug}/`}>
-    <div className="byte-card-cover"><span>MAANAVAN BYTE</span><Icon/><i>BYTE {String(chapterNumber).padStart(2, '0')}</i></div>
-    <div className="byte-card-title-tab"><span><Icon/></span><div><small>{category}</small><strong>{visual.label}</strong></div></div>
-    <div className="byte-card-body">
-      <div className="byte-card-meta"><i>{chapter.level}</i><i><Clock3/>{chapter.duration}</i></div>
-      <h3>{chapter.title}</h3>
-      <p className="byte-card-description">{chapter.summary}</p>
-      <small className="byte-card-handbook">{handbook}</small>
+export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: { chapter: ByteMetadata; chapterNumber: number; totalChapters?: number }) {
+  const profile = journeyProfiles[chapter.category as keyof typeof journeyProfiles] ?? defaultProfile;
+  const safeIndex = Math.max(0, Math.min(chapterNumber - 1, profile.stages.length - 1));
+  const Icon = profile.icons[safeIndex];
+  const cardStyle = { '--path-accent': profile.accent, '--path-glow': profile.glow, '--path-index': chapterNumber - 1 } as CSSProperties;
+
+  return <Link className="library-byte-card journey-byte-card" href={`/${chapter.category}/${chapter.slug}/`} style={cardStyle} aria-label={`Byte ${chapterNumber}: ${chapter.title}`}>
+    <span className="journey-connector" aria-hidden="true"><i/></span>
+    <div className="journey-card-visual" aria-hidden="true">
+      <span className="journey-grid"/><span className="journey-orbit journey-orbit-one"/><span className="journey-orbit journey-orbit-two"/>
+      <Icon/><b>{String(chapterNumber).padStart(2, '0')}</b>
     </div>
-    <footer><b>Start Learning <ArrowRight/></b></footer>
+    <div className="journey-card-content">
+      <header className="journey-card-header">
+        <span><small>BYTE</small><b>{String(chapterNumber).padStart(2, '0')}</b></span>
+        <div><small>{profile.category}</small><strong>{profile.stages[safeIndex]}</strong></div>
+        <i>{chapterNumber} / {totalChapters}</i>
+      </header>
+      <div className="journey-card-copy">
+        <div className="journey-card-meta"><span>{chapter.level}</span><span><Clock3/>{chapter.duration}</span></div>
+        <h3>{chapter.title}</h3><p>{chapter.summary}</p>
+      </div>
+      <footer><span><Sparkles/>{profile.handbook}</span><b>Open Byte <ArrowUpRight/></b></footer>
+    </div>
   </Link>;
 }
