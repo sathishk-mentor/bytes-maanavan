@@ -5,6 +5,7 @@ import './maanavan-brand.css';
 import './handbook-quick-nav.css';
 import './reading-mode.css';
 import './ai-agents.css';
+import './sql-learning.css';
 import './docker-concept-lab.css';
 import './tutorial-reading.css';
 import './langchain-learning.css';

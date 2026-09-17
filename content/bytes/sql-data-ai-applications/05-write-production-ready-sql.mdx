@@ -1,118 +1,152 @@
 ---
-title: "Write Production-Ready SQL"
+title: "Text-to-SQL and Safe AI Agents"
 slug: "05-write-production-ready-sql"
-summary: "Make SQL efficient, transactional, least-privileged and injection-resistant with plans, indexes, parameters and audit evidence."
+summary: "Design a governed natural-language-to-SQL workflow with clarification, validation, least privilege, execution limits and audit evidence."
 category: "sql-data-ai-applications"
-tags: ["SQL query optimisation", "SQL indexes", "SQL transactions", "SQL injection prevention", "production SQL"]
+tags: ["text to SQL", "SQL AI agent", "safe AI agents", "natural language SQL"]
 level: "intermediate"
-duration: "27 min"
-updatedAt: "2026-09-14"
+duration: "25 min"
+updatedAt: "2026-09-16"
 order: 5
+isPopular: true
 ---
 
-<ThemeCard title="Practical outcome" badge="SQL HANDBOOK 05">
+<ThemeCard title="What you will build" badge="TEXT-TO-SQL · BYTE 05">
 
-You will create a production checklist for the Business Data Analyst covering performance, correctness, permissions, injection defence and auditability.
+You will trace a natural-language question through clarification, generation, structural validation and read-only execution—then see unsafe SQL stopped before it reaches the database.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="sqlProduction" />
+<SQLProjectPath current={5} />
 
-## Correct is necessary—not sufficient
+## “Show our best customers” is not ready for SQL
 
-A production query must also be bounded, efficient, authorised and observable. A correct query that scans millions of rows for every chat request can still make the application fail.
+Does **best** mean revenue, margin, number of orders or on-time payment? Generating SQL before resolving that ambiguity can produce a valid query that answers the wrong question.
 
-## Read the plan before adding an index
+<SQLStoryVisual variant="agent" />
+
+## The safe workflow has gates
+
+1. Understand the question and authorised user context.
+2. Clarify ambiguous metrics and time ranges.
+3. Retrieve approved schema and business definitions.
+4. Generate a bounded query.
+5. Parse and validate structure, tables, columns and operations.
+6. Execute with a read-only role, timeout, cost and row limits.
+7. Explain the result with query and source context.
+8. Log the request, decision, SQL and execution metadata.
+
+The agent must pass these gates in order. It should clarify before generation, validate before execution and stop before any action outside its permission.
+
+<SQLAgentLab />
+
+## A governed query template
+
+User question: **“Which five customers generated the highest paid revenue in September 2026?”**
 
 ```sql
-EXPLAIN (ANALYZE, BUFFERS)
-SELECT product_id, SUM(amount)
-FROM orders
-WHERE status = 'PAID'
-  AND ordered_at >= DATE '2026-06-01'
-GROUP BY product_id;
+SELECT c.customer_id,
+       c.name,
+       SUM(o.total_amount) AS paid_revenue
+FROM analytics.customers AS c
+JOIN analytics.orders AS o
+  ON o.customer_id = c.customer_id
+WHERE o.status = 'PAID'
+  AND o.ordered_at >= DATE '2026-09-01'
+  AND o.ordered_at < DATE '2026-10-01'
+GROUP BY c.customer_id, c.name
+ORDER BY paid_revenue DESC, c.customer_id
+LIMIT 5;
 ```
 
-Use execution plans to see the work performed. An index can improve selective reads but adds storage and write cost. Design it around demonstrated access patterns—not every column.
+The request defines the metric, state, time range and result size. A business definition layer can supply those meanings, but a SQL view alone is only one implementation building block—not a complete semantic governance system.
+
+### Example result returned to the agent
+
+| customer_id | name | paid_revenue |
+|---|---|---:|
+| C101 | Meena | ₹48,900 |
+| C208 | Farah | ₹41,250 |
+| C145 | Arun | ₹38,600 |
+
+The agent should explain that this ranking uses **paid revenue during September 2026**, rather than presenting “best customer” as an undefined fact.
+
+## Permissions enforce what prompts cannot
 
 ```sql
-CREATE INDEX idx_orders_paid_date_course
-ON orders (ordered_at, product_id)
-WHERE status = 'PAID';
+CREATE ROLE reporting_agent NOLOGIN;
+GRANT USAGE ON SCHEMA analytics TO reporting_agent;
+GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO reporting_agent;
+ALTER DEFAULT PRIVILEGES IN SCHEMA analytics
+GRANT SELECT ON TABLES TO reporting_agent;
 ```
 
-## Protect values with parameterised queries
+Production configuration needs an appropriate login/session role and must follow the organisation’s database policy. Crucially, a prompt saying “do not delete” is not access control. Database privilege should make prohibited actions impossible.
 
-Unsafe:
+<Scenario title="Real-world application: finance question">
 
-```python
-sql = "SELECT * FROM customers WHERE email = '" + email + "'"
-```
-
-Safe values remain separate from SQL code:
-
-```python
-statement = text("SELECT customer_id FROM customers WHERE email = :email")
-connection.execute(statement, {"email": email})
-```
-
-OWASP recommends prepared statements with parameter binding because the database can distinguish code from data. Dynamic identifiers such as table names need a strict allow-list; they cannot be protected as ordinary values.
-
-## Transactions protect complete changes
-
-A payment record and its order confirmation should either both commit or both roll back. Keep transactions focused, handle failures explicitly and avoid network calls to an LLM while locks remain open.
-
-## Production controls for AI-generated queries
-
-| Control | Purpose |
-|---|---|
-| Read-only role | Prevent mutation |
-| Table/column allow-list | Limit data exposure |
-| Query timeout | Bound resource use |
-| Mandatory limit | Bound returned rows |
-| Audit event | Preserve who asked and what ran |
-| Redaction | Protect sensitive values in logs and model context |
-
-<Scenario title="Real-time scenario: a popular analytics question">
-
-A dashboard and AI assistant both request three-month revenue. The team turns the validated calculation into a governed query, indexes the measured filter path, limits the service role to approved reporting views and monitors latency. The AI layer explains the returned facts; it does not redefine revenue.
+An executive asks an agent for overdue invoice totals. The agent may prepare and execute an approved read-only query. Changing an invoice, issuing a refund or sending a collection notice crosses into consequential action and requires a separate workflow with explicit approval.
 
 </Scenario>
 
-## Common mistakes
+## Validate before execution
+
+String matching alone is fragile. Parse the SQL and apply an allowlist:
+
+- Permit only approved statement types, schemas, tables, columns and functions.
+- Reject multiple statements, comments used for evasion and unbounded operations.
+- Apply statement timeout, maximum rows and resource controls.
+- Consider `EXPLAIN` or a database-specific dry run before costly queries.
+- Keep an audit trail and redact sensitive values from logs.
+
+## Common text-to-SQL mistakes
 
 <Mistakes>
 
-- Adding indexes without checking the execution plan and workload.
-- Building SQL by concatenating user or model-generated text.
-- Giving a reporting service write permissions.
-- Keeping transactions open during slow external API calls.
-- Logging sensitive parameters or complete result sets.
+- Treating a syntactically valid query as a semantically correct answer.
+- Allowing direct access to every production table.
+- Depending on the model prompt instead of database permissions.
+- Executing before clarifying vague metrics or dates.
+- Returning a number without showing the definition, query context or freshness.
 
 </Mistakes>
 
-## Interview bit
+## Practice the safety decision
 
-<ThemeCard title="How do you optimise a slow SQL query?" badge="CAREER">
+For the request “Remove customers who have not purchased this year,” list the clarifications required, explain why read-only execution must block it and design a human-approved operational workflow instead.
 
-I confirm the business result, reproduce with representative data, inspect the execution plan and row estimates, reduce unnecessary work, verify predicates and joins, then consider an index aligned to the measured access path. I compare before-and-after plans and check write-side cost.
+<KnowledgeCheck question="What is the strongest control against a generated DELETE statement?" options={["Ask the model politely", "Use a database role that has no DELETE privilege", "Hide the SQL preview"]} answer={1} explanation="Least-privilege database permissions enforce the boundary even if generation or validation fails." />
+
+## Interview-ready explanation
+
+<ThemeCard title="Why is prompt-only SQL safety insufficient?" badge="CLEAR ANSWER">
+
+Model instructions are probabilistic and can be misunderstood or bypassed. Safety needs independent enforcement: parsed-query allowlists, least-privilege database roles, execution limits, approval boundaries and audit logs.
 
 </ThemeCard>
 
-## Key takeaways
+## Questions beginners usually ask
+
+**Should every generated query require approval?** Not necessarily. Low-risk, read-only queries can run inside strict controls; high-cost, sensitive or consequential requests should stop or require review.
+
+**What should the answer show?** Include the interpreted metric, time range, data freshness and enough query or source context for a person to verify the result.
+
+## What to remember
 
 <Takeaways>
 
-- Use evidence from execution plans before optimising.
-- Indexes trade faster reads for storage and write work.
-- Parameterisation keeps values separate from query structure.
-- Least privilege, limits and auditing are mandatory for AI-driven SQL.
+- Text-to-SQL begins with business meaning, not generation.
+- Validation should understand SQL structure and enforce explicit allowlists.
+- Read-only privilege, timeouts and row limits provide independent protection.
+- High-impact actions belong behind a separate human approval boundary.
+- Audit evidence makes results explainable and incidents diagnosable.
 
 </Takeaways>
 
-## Primary sources
+**Project complete:** your Business Data Analyst can retrieve exact facts, analyse trends, search meaning, build time-safe ML features and answer natural-language questions within governed database boundaries.
 
-- [PostgreSQL using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html)
-- [PostgreSQL indexes](https://www.postgresql.org/docs/current/indexes.html)
-- [PostgreSQL transaction tutorial](https://www.postgresql.org/docs/current/tutorial-transactions.html)
-- [OWASP SQL Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)
+## Primary references
+
+- [PostgreSQL privileges](https://www.postgresql.org/docs/current/ddl-priv.html)
+- [PostgreSQL role attributes](https://www.postgresql.org/docs/current/role-attributes.html)
+- [OWASP: SQL Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)

@@ -16,7 +16,7 @@ export async function GET() {
 - [The RAG Application Engineering Handbook](https://bytes.maanavan.com/rag-application-engineering/): Document preparation, semantic retrieval, cited answers, evaluation, security and deployment.
 - [FastAPI for AI Applications Handbook](https://bytes.maanavan.com/fastapi-ai-applications/): Python APIs, validation, databases, streamed GenAI responses, authentication, testing and Docker deployment.
 - [Modern Java with Spring Boot and GenAI Handbook](https://bytes.maanavan.com/modern-java-spring-boot-genai/): Modern Java, Spring REST APIs, JPA persistence, grounded AI and secure Docker deployment.
-- [SQL for Data and AI Applications Handbook](https://bytes.maanavan.com/sql-data-ai-applications/): SQL foundations, business analysis, joins, safe text-to-SQL and production query engineering.
+- [SQL for Data and AI Applications Handbook](https://bytes.maanavan.com/sql-data-ai-applications/): SQL fundamentals, window analysis, pgvector search, point-in-time ML features and safe text-to-SQL agents.
 - [MongoDB for AI Application Engineering Handbook](https://bytes.maanavan.com/mongodb/): Documents, query-first data modelling, aggregation, Python and FastAPI integration, Atlas Vector Search, indexing, security and production operations.
 - [Python for GenAI and Agentic AI Handbook](https://bytes.maanavan.com/python-genai-agentic-ai/): Python foundations, APIs and JSON, grounded LLM applications, tool-using agents, evaluation, security, Docker and production operations.
 

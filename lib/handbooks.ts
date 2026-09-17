@@ -117,11 +117,11 @@ export const handbooks: Handbook[] = [
     description: 'Query, analyse and safely power analytics, data engineering, RAG and AI-agent applications with SQL.',
     promise: 'Turn business questions into safe, validated SQL insights.',
     chapters: [
-      { title: 'SQL foundations: ask questions using data', outcome: 'Read tables with SELECT, filters, sorting and limits.', href: '/sql-data-ai-applications/01-sql-foundations-ask-questions-using-data/' },
-      { title: 'Analyse business data with SQL', outcome: 'Use aggregates, groups, conditions and dates for insight.', href: '/sql-data-ai-applications/02-analyse-business-data-with-sql/' },
-      { title: 'Connect data across tables using joins', outcome: 'Combine customers, orders and courses through reliable keys.', href: '/sql-data-ai-applications/03-connect-data-across-tables-joins/' },
-      { title: 'Use SQL in data, RAG and AI-agent workflows', outcome: 'Generate, validate and execute bounded SQL from natural language.', href: '/sql-data-ai-applications/04-sql-data-rag-ai-agent-workflows/' },
-      { title: 'Write production-ready SQL', outcome: 'Optimise, secure, audit and protect database operations.', href: '/sql-data-ai-applications/05-write-production-ready-sql/' },
+      { title: 'SQL fundamentals for AI applications', outcome: 'Retrieve dependable application facts with focused, parameterised SQL.', href: '/sql-data-ai-applications/01-sql-foundations-ask-questions-using-data/' },
+      { title: 'Aggregations and window functions', outcome: 'Summarise business events, then rank and compare the results.', href: '/sql-data-ai-applications/02-analyse-business-data-with-sql/' },
+      { title: 'Vector search in SQL with pgvector', outcome: 'Store embeddings and retrieve semantic matches with measured trade-offs.', href: '/sql-data-ai-applications/03-connect-data-across-tables-joins/' },
+      { title: 'Feature engineering for machine learning', outcome: 'Create point-in-time-correct features without leaking future data.', href: '/sql-data-ai-applications/04-sql-data-rag-ai-agent-workflows/' },
+      { title: 'Text-to-SQL and safe AI agents', outcome: 'Clarify, validate and execute natural-language SQL with least privilege.', href: '/sql-data-ai-applications/05-write-production-ready-sql/' },
     ],
   },
   {

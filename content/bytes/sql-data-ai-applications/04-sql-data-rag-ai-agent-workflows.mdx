@@ -1,110 +1,131 @@
 ---
-title: "Use SQL in Data, RAG and AI-Agent Workflows"
+title: "Feature Engineering for Machine Learning with SQL"
 slug: "04-sql-data-rag-ai-agent-workflows"
-summary: "Connect Python to structured data and place validation, read-only access and result limits around LLM-generated SQL."
+summary: "Turn transaction history into point-in-time-correct ML features while preventing leakage and keeping training and serving logic consistent."
 category: "sql-data-ai-applications"
-tags: ["text to SQL tutorial", "SQL AI agent", "Python SQLAlchemy", "SQL for RAG", "LLM generated SQL safety"]
+tags: ["SQL feature engineering", "ML data leakage", "point in time features", "machine learning SQL"]
 level: "intermediate"
-duration: "28 min"
-updatedAt: "2026-09-14"
+duration: "23 min"
+updatedAt: "2026-09-16"
 order: 4
-isPopular: true
+isPopular: false
 ---
 
-<ThemeCard title="Practical outcome" badge="SQL HANDBOOK 04">
+<ThemeCard title="What you will build" badge="ML FEATURES · BYTE 04">
 
-You will design the safe request path for an AI-Powered Business Data Analyst—without giving the model direct database authority.
+You will convert raw transactions into customer features using a fixed prediction cutoff and detect the leakage that makes offline models look unrealistically good.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="sqlAi" />
+<SQLProjectPath current={4} />
 
-## The correct control boundary
+## Nila’s model accidentally sees the future
 
-The model is a query **proposer**, not a database administrator.
+Nila is predicting whether a customer will purchase in October. If her training features include an October transaction, the model receives information that would not have existed at prediction time. That is **target leakage**.
 
-```text
-Question → approved schema context → draft SQL → deterministic validation
-         → read-only execution → bounded rows → business explanation
+<SQLStoryVisual variant="feature" />
+
+## A feature is a model-ready signal
+
+Raw transaction rows are events. Useful customer features may include order count over 30 days, total spend over 90 days, days since last purchase or average order value. The definition must include an entity, calculation, time window and cutoff.
+
+<SQLFeatureLab />
+
+## Build features with an explicit cutoff
+
+```sql
+WITH parameters AS (
+  SELECT DATE '2026-10-01' AS cutoff_date
+)
+SELECT c.customer_id,
+       COUNT(t.transaction_id) FILTER (
+         WHERE t.transaction_date >= p.cutoff_date - INTERVAL '30 days'
+           AND t.transaction_date < p.cutoff_date
+       ) AS orders_30d,
+       COALESCE(SUM(t.amount) FILTER (
+         WHERE t.transaction_date >= p.cutoff_date - INTERVAL '90 days'
+           AND t.transaction_date < p.cutoff_date
+       ), 0) AS spend_90d,
+       COALESCE(STDDEV_SAMP(t.amount) FILTER (
+         WHERE t.transaction_date < p.cutoff_date
+       ), 0) AS spend_variability
+FROM customers AS c
+CROSS JOIN parameters AS p
+LEFT JOIN transactions AS t
+  ON t.customer_id = c.customer_id
+ AND t.transaction_date < p.cutoff_date
+GROUP BY c.customer_id;
 ```
 
-The application should reject multiple statements, write operations, unapproved tables, unrestricted results and queries that exceed time or cost limits.
+`CURRENT_DATE` would change every day and make a historical training set hard to reproduce. A stored cutoff makes the observation time explicit. `COALESCE` handles customers with no rows and the `NULL` returned by sample standard deviation when there are too few values.
 
-## Connect Python with bound parameters
+### Example feature output
 
-```python
-from sqlalchemy import create_engine, text
+| customer_id | orders_30d | spend_90d | spend_variability |
+|---|---:|---:|---:|
+| C101 | 7 | ₹18,420 | ₹640.50 |
+| C102 | 2 | ₹3,100 | ₹0.00 |
 
-engine = create_engine(database_url)
+## Point-in-time correctness is more than a WHERE clause
 
-statement = text("""
-    SELECT name, price
-    FROM products
-    WHERE category = :category
-    ORDER BY price DESC
-    LIMIT :limit
-""")
+Features from changing profiles, prices or account states must use the version known at the cutoff. Training and online prediction must also apply the same definitions; otherwise **training-serving skew** appears even without target leakage.
 
-with engine.connect() as connection:
-    rows = connection.execute(
-        statement, {"category": "Headphones", "limit": 5}
-    ).mappings().all()
-```
+<Scenario title="Real-world application: churn prediction">
 
-Bound parameters keep values separate from SQL structure. They do not make arbitrary LLM-generated SQL safe; structural validation and least-privilege execution are still required.
-
-## Structured data versus RAG
-
-Use SQL for exact structured questions such as revenue, count and status. Use document RAG for unstructured policy text. A combined application may retrieve policy passages and query authorised aggregates, then provide one answer with separate source types.
-
-## Agent safety checklist
-
-1. Expose only approved schema descriptions.
-2. Use a dedicated read-only database user.
-3. Parse and allow-list query structure.
-4. Enforce row, runtime and cost limits.
-5. Require approval for sensitive datasets.
-6. Log the question, proposed query, decision and execution outcome safely.
-
-<Scenario title="Real-time scenario: highest-revenue products">
-
-The user asks, “Which products generated the highest revenue in the last three months?” The model drafts a grouped query. The application confirms it is one read-only statement over approved tables, injects a row limit, executes with a restricted role and lets the model explain only the returned result.
+A churn model might use support-ticket count, payment failures and recent usage. Every input must be reconstructed as it was before the prediction moment. The eventual churn label belongs after that moment and must never leak into the feature columns.
 
 </Scenario>
 
-## Common mistakes
+## Validate the feature table
+
+Check null rate, range, freshness, duplicate entities and distribution changes. SQL can express many checks, but whether SQL or Python is faster depends on data size, engine, network movement, implementation and workload. Benchmark instead of making a blanket claim.
+
+## Common feature-engineering mistakes
 
 <Mistakes>
 
-- Giving an agent owner-level database credentials.
-- Trusting a prompt instruction such as “generate SELECT only” as enforcement.
-- Exposing the complete production schema and sensitive column names.
-- Sending unlimited result sets back to the model.
-- Mixing calculated SQL facts with unsupported model interpretation.
+- Using `CURRENT_DATE` when rebuilding historical training examples.
+- Including events at or after the prediction cutoff.
+- Treating `NULL` as zero without a documented business meaning.
+- Computing features differently in training and production.
+- Reporting model accuracy gains without a reproducible experiment.
 
 </Mistakes>
 
-## Interview bit
+## Practice point-in-time thinking
 
-<ThemeCard title="How do you secure text-to-SQL?" badge="CAREER">
+Create `days_since_last_order` for a cutoff of `2026-10-01`. Decide what value represents a customer who has never ordered, and document that decision.
 
-I use defence in depth: limited schema context, parsed allow-list validation, a read-only database role, parameter binding for values, statement and row limits, timeouts, sensitive-data controls, audit logs and an approval gate where risk requires it.
+<KnowledgeCheck question="Why is a fixed cutoff date important for training data?" options={["It makes historical features reproducible and blocks future information", "It automatically creates an ML model", "It removes the need for validation"]} answer={0} explanation="Every training row must contain only information that existed when the prediction would have been made." />
+
+## Interview-ready explanation
+
+<ThemeCard title="What is point-in-time correctness?" badge="CLEAR ANSWER">
+
+For every training example, each feature must be reconstructed using only information available at that example’s prediction time. This prevents future events or later record updates from leaking into model inputs.
 
 </ThemeCard>
 
-## Key takeaways
+## Questions beginners usually ask
+
+**Is every missing value zero?** No. Missing may mean no activity, unavailable data or a pipeline problem. Decide and document the meaning before filling it.
+
+**Is leakage the same as training-serving skew?** No. Leakage exposes unavailable future information during training; skew means training and production compute or source features differently.
+
+## What to remember
 
 <Takeaways>
 
-- The LLM proposes; deterministic application controls authorise execution.
-- SQL serves structured facts while RAG serves unstructured evidence.
-- Read-only credentials and bounded results reduce impact.
-- Preserve a trace from question to query to result to explanation.
+- Feature definitions need an entity, calculation, window and observation cutoff.
+- Point-in-time correctness prevents future information from entering training data.
+- Null handling is a modelling decision, not only a SQL convenience.
+- Reuse or rigorously align feature logic across training and serving.
 
 </Takeaways>
 
-## Primary sources
+**Next Byte:** allow natural-language questions while keeping generated SQL inside enforceable safety boundaries.
 
-- [SQLAlchemy connections and transactions](https://docs.sqlalchemy.org/en/latest/core/connections.html)
-- [SQLAlchemy SELECT tutorial](https://docs.sqlalchemy.org/en/latest/tutorial/data_select.html)
-- [OWASP LLM Prompt Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html)
+## Primary references
+
+- [PostgreSQL aggregate functions](https://www.postgresql.org/docs/current/functions-aggregate.html)
+- [Google Cloud: data leakage in machine learning](https://developers.google.com/machine-learning/crash-course/overfitting/data-leakage)

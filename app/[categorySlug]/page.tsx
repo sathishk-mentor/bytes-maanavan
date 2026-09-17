@@ -86,11 +86,11 @@ const handbookDetails = {
   'sql-data-ai-applications': {
     searchTitle: 'SQL for Data and AI Applications Handbook',
     eyebrow: 'DATA FOUNDATIONS FOR INTELLIGENT SYSTEMS',
-    intro: 'Learn SQL as a foundational capability for analytics, data engineering, RAG and AI agents—from first queries and joins to validated natural-language SQL and production security.',
+    intro: 'Learn SQL for modern AI applications—from focused queries and window analysis to pgvector search, point-in-time ML features and governed natural-language SQL agents.',
     audience: 'Beginners, analysts, data engineers and AI builders',
     prerequisite: 'No database experience required',
-    result: 'A question → query → validate → execute → explain workflow',
-    keywords: ['SQL tutorial for beginners', 'SQL for data analysis', 'SQL for AI applications', 'text to SQL tutorial', 'SQL AI agent', 'production SQL security'],
+    result: 'A query → analysis → vector search → ML feature → safe AI-agent workflow',
+    keywords: ['SQL tutorial for beginners', 'SQL for AI applications', 'SQL window functions', 'pgvector tutorial', 'SQL feature engineering', 'text to SQL AI agent'],
   },
   mongodb: {
     searchTitle: 'MongoDB for AI Application Engineering Handbook',

@@ -1,113 +1,140 @@
 ---
-title: "Connect Data Across Tables Using Joins"
+title: "Vector Search in SQL with pgvector"
 slug: "03-connect-data-across-tables-joins"
-summary: "Use keys, inner and left joins, subqueries and CTEs to connect customers, orders and courses without duplicating meaning."
+summary: "Store embeddings in PostgreSQL, rank semantic matches with pgvector and understand exact search, HNSW indexes and distance metrics."
 category: "sql-data-ai-applications"
-tags: ["SQL joins tutorial", "INNER JOIN LEFT JOIN", "SQL CTE", "primary key foreign key"]
+tags: ["pgvector tutorial", "vector search SQL", "PostgreSQL embeddings", "semantic search"]
 level: "beginner"
-duration: "25 min"
-updatedAt: "2026-09-14"
+duration: "24 min"
+updatedAt: "2026-09-16"
 order: 3
+isPopular: true
 ---
 
-<ThemeCard title="Practical outcome" badge="SQL HANDBOOK 03">
+<ThemeCard title="What you will build" badge="VECTOR SEARCH · BYTE 03">
 
-You will answer “Which products generated the highest revenue?” by connecting product and order facts through trusted keys.
+You will create a small semantic document search in PostgreSQL, inspect ranked matches and decide when an approximate index is useful.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="sqlJoins" />
+<SQLProjectPath current={3} />
 
-## Why data lives in different tables
+## A refund question without the words “refund policy”
 
-Repeating a product name and price in every order record creates inconsistency. Relational design stores each concept once and connects it with keys.
+A learner asks, **“Can I get my money back?”** Keyword search may miss a document titled “Cancellation and refund policy.” An embedding represents meaning as numbers, allowing similar meanings to be placed near one another.
 
-```sql
-SELECT
-    p.name,
-    SUM(o.amount) AS revenue
-FROM products AS p
-JOIN orders AS o ON o.product_id = p.product_id
-WHERE o.status = 'PAID'
-GROUP BY p.product_id, p.name
-ORDER BY revenue DESC;
-```
+<SQLStoryVisual variant="vector" />
 
-The `ON` clause explains the relationship. Without it, rows can multiply into a Cartesian product and produce believable but incorrect totals.
+## Text becomes a vector before SQL searches it
 
-## Choose the join by the question
+The application uses the **same embedding model** for stored documents and the incoming query. That model determines the vector dimension. A `vector(1536)` column cannot accept a vector with a different number of dimensions.
 
-| Join | Rows preserved | Useful question |
-|---|---|---|
-| `INNER JOIN` | only matches | Which products have paid orders? |
-| `LEFT JOIN` | every left row | Which products have no orders? |
+## Enable pgvector and create the table
 
 ```sql
-SELECT p.name, COUNT(o.order_id) AS order_count
-FROM products p
-LEFT JOIN orders o
-  ON o.product_id = p.product_id AND o.status = 'PAID'
-GROUP BY p.product_id, p.name
-HAVING COUNT(o.order_id) = 0;
+CREATE EXTENSION IF NOT EXISTS vector;
+
+CREATE TABLE knowledge_chunks (
+  chunk_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  document_id bigint NOT NULL,
+  content text NOT NULL,
+  embedding vector(1536) NOT NULL
+);
 ```
 
-Placing the paid-status condition in `ON` preserves products with no matching paid order. Putting it in `WHERE` would remove their `NULL` rows and accidentally behave like an inner join.
+Store the source text and its embedding together so a retrieved vector can still be traced to human-readable evidence.
 
-## Use a CTE to name a reasoning step
+## Rank by cosine distance
 
 ```sql
-WITH recent_paid_orders AS (
-  SELECT product_id, amount
-  FROM orders
-  WHERE status = 'PAID'
-    AND ordered_at >= CURRENT_DATE - INTERVAL '3 months'
-)
-SELECT p.name, SUM(r.amount) AS revenue
-FROM products p
-JOIN recent_paid_orders r USING (product_id)
-GROUP BY p.product_id, p.name
-ORDER BY revenue DESC;
+SELECT chunk_id,
+       content,
+       1 - (embedding <=> $1::vector) AS similarity
+FROM knowledge_chunks
+ORDER BY embedding <=> $1::vector
+LIMIT 3;
 ```
 
-<Scenario title="Real-time analogy: matching receipts to a catalogue">
+`<=>` is pgvector’s cosine-distance operator. Smaller distance means closer vectors; the example converts it to a similarity-style value for display. `$1` is a parameter supplied by the application—not raw text concatenated into SQL.
 
-A receipt contains a product code, not the full catalogue description. The code is the foreign key. Joining the receipt to the catalogue reveals the name and category while keeping one authoritative product record.
+### Example result
+
+| chunk_id | content | similarity |
+|---:|---|---:|
+| 42 | Refunds are available within the stated return window… | 0.91 |
+| 18 | Cancel an order before dispatch… | 0.72 |
+| 67 | Product warranty coverage… | 0.48 |
+
+## Add HNSW when the workload needs it
+
+```sql
+CREATE INDEX knowledge_chunks_embedding_hnsw
+ON knowledge_chunks
+USING hnsw (embedding vector_cosine_ops);
+```
+
+Without an approximate index, PostgreSQL can compare the query with every vector and return exact nearest neighbours. HNSW can reduce search work on larger collections, but speed, memory, build time and recall must be measured with representative data.
+
+Now use the lab to compare those two paths. Change `top-k` only after you understand that it controls result count, while the index toggle changes how candidates are found.
+
+<SQLVectorLab />
+
+<Scenario title="Real-world application: grounded policy assistant">
+
+The application embeds a question, retrieves the closest authorised policy chunks and gives only those chunks to the language model. Vector search finds candidates; it does not prove that the final answer is correct. The app still needs access control, relevance thresholds, citations and evaluation.
 
 </Scenario>
 
-## Common mistakes
+## pgvector or a separate vector service?
+
+PostgreSQL with pgvector is attractive when structured records, permissions, transactions and vectors belong together. A specialised vector service may be appropriate when scale, distributed search, operational ownership or retrieval features require it. The decision depends on measured workload—not one universal row-count rule.
+
+## Common vector-search mistakes
 
 <Mistakes>
 
-- Joining on similar names instead of stable keys.
-- Missing an `ON` condition and multiplying rows.
-- Counting `*` after a left join when you mean to count matched IDs.
-- Filtering the right table in `WHERE` and unintentionally losing unmatched rows.
-- Using a CTE to hide rather than clarify a complex query.
+- Storing vectors from different embedding models in one comparable column.
+- Copying an ellipsis such as `[0.12, ...]` into supposedly runnable SQL.
+- Creating an index with an operator class that does not match the query metric.
+- Treating similarity as factual correctness.
+- Adding approximate search without measuring recall and latency.
 
 </Mistakes>
 
-## Interview bit
+## Practice the retrieval design
 
-<ThemeCard title="INNER JOIN versus LEFT JOIN?" badge="CAREER">
+Design a `support_articles` table with `article_id`, `title`, `content` and `embedding vector(768)`. Write a parameterised cosine-distance query that returns five matches.
 
-An inner join returns only matched relationships. A left join preserves every row from the left side and fills missing right-side values with `NULL`. I choose based on whether unmatched left-side records are meaningful to the question.
+<KnowledgeCheck question="Why must stored and query embeddings use the same model and dimension?" options={["So their vector positions are comparable", "So SQL can create customer IDs", "So LIMIT is unnecessary"]} answer={0} explanation="Similarity is meaningful only when both vectors were created in the same embedding space with compatible dimensions." />
+
+## Interview-ready explanation
+
+<ThemeCard title="Exact search vs HNSW" badge="CLEAR ANSWER">
+
+Exact search compares the query against every eligible vector and returns the true nearest neighbours for that metric. HNSW searches an index for likely neighbours, usually improving latency at scale while introducing memory, build-time and recall trade-offs.
 
 </ThemeCard>
 
-## Key takeaways
+## Questions beginners usually ask
+
+**Is similarity the same as confidence?** No. It measures closeness in an embedding space, not whether the passage or final answer is factually correct.
+
+**Do I always need HNSW?** No. Start with correctness and measurement. Add an approximate index when representative latency, scale and recall tests justify it.
+
+## What to remember
 
 <Takeaways>
 
-- Join on stable primary-key and foreign-key relationships.
-- Choose the join type from the business question.
-- Validate row counts before trusting aggregates.
-- Use CTEs to name meaningful reasoning stages.
+- Embeddings enable meaning-based retrieval; SQL ranks vectors by a chosen distance metric.
+- pgvector keeps relational data and vector retrieval in PostgreSQL.
+- Exact search and approximate indexes have different performance and recall trade-offs.
+- Retrieval still needs authorisation, evaluation and traceable source content.
 
 </Takeaways>
 
-## Primary sources
+**Next Byte:** use SQL to turn event history into reproducible, point-in-time-correct machine-learning features.
 
-- [PostgreSQL tutorial: joins](https://www.postgresql.org/docs/current/tutorial-join.html)
-- [PostgreSQL table expressions](https://www.postgresql.org/docs/current/queries-table-expressions.html)
-- [PostgreSQL WITH queries](https://www.postgresql.org/docs/current/queries-with.html)
+## Primary references
+
+- [pgvector documentation](https://github.com/pgvector/pgvector)
+- [PostgreSQL CREATE EXTENSION](https://www.postgresql.org/docs/current/sql-createextension.html)

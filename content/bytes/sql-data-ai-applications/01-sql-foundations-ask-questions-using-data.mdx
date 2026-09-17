@@ -1,98 +1,143 @@
 ---
-title: "SQL Foundations: Ask Questions Using Data"
+title: "SQL Fundamentals for AI Applications"
 slug: "01-sql-foundations-ask-questions-using-data"
-summary: "Learn SQL fundamentals for beginners and answer focused business questions using relational tables, SELECT, WHERE, ORDER BY and LIMIT."
+summary: "Learn how AI applications use relational tables, keys, SELECT, filtering, sorting and joins to retrieve dependable data."
 category: "sql-data-ai-applications"
-tags: ["SQL tutorial for beginners", "SELECT WHERE ORDER BY", "relational database basics", "SQL for data analysis"]
+tags: ["SQL fundamentals", "SQL for AI applications", "SELECT WHERE JOIN", "SQL tutorial for beginners"]
 level: "beginner"
-duration: "21 min"
-updatedAt: "2026-09-14"
+duration: "20 min"
+updatedAt: "2026-09-16"
 order: 1
 isPopular: true
 ---
 
-<ThemeCard title="Practical outcome" badge="SQL HANDBOOK 01">
+<ThemeCard title="What you will build" badge="SQL FOR AI APPS · BYTE 01">
 
-You will query an e-commerce product catalogue and explain exactly how SQL turns a business question into a result.
+You will turn a product question into a focused SQL query, inspect the exact result and understand why AI applications still need structured data.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="sqlFoundation" />
+<SQLProjectPath current={1} />
 
-## Start with the business question
+## Priya’s AI assistant needs facts, not guesses
 
-SQL is a language for asking a relational database precise questions. A database contains tables; a table has named columns; each row represents one occurrence of the thing being stored.
+Priya asks a shopping assistant, **“Show two active headphones, highest price first.”** A language model can understand the sentence, but the latest product name, status and price live in a database. SQL retrieves those facts in a controlled way.
 
-| Table | One row means | Example columns |
+<SQLStoryVisual variant="foundation" />
+
+## Tables give business data a dependable shape
+
+| Table | One row represents | Important columns |
 |---|---|---|
-| `products` | one product | `product_id`, `name`, `category`, `price` |
-| `customers` | one customer | `customer_id`, `name`, `country` |
-| `orders` | one purchase | `order_id`, `customer_id`, `ordered_at` |
+| `products` | one product | `product_id`, `name`, `category`, `price`, `status` |
+| `customers` | one customer | `customer_id`, `name`, `city` |
+| `orders` | one order | `order_id`, `customer_id`, `ordered_at`, `total_amount` |
 
-## Read only what you need
+A **primary key** identifies one row. A **foreign key** links it to another table. `orders.customer_id`, for example, points to the customer who placed the order.
 
-Question: “Show the five highest-priced active headphones.”
+## How the database answers the request
+
+1. `FROM` chooses the table.
+2. `WHERE` keeps matching rows.
+3. `SELECT` returns approved columns.
+4. `ORDER BY` arranges the rows.
+5. `LIMIT` bounds the response.
+
+<SQLQueryLab />
+
+## Walk through the SQL
 
 ```sql
 SELECT product_id, name, price
 FROM products
-WHERE category = 'Headphones' AND status = 'ACTIVE'
+WHERE category = 'Headphones'
+  AND status = 'ACTIVE'
 ORDER BY price DESC
-LIMIT 5;
+LIMIT 2;
 ```
 
-Read it in this logical sequence:
+### Exact result
 
-1. `FROM` identifies the data source.
-2. `WHERE` keeps matching rows.
-3. `SELECT` returns approved columns.
-4. `ORDER BY` arranges the result.
-5. `LIMIT` caps its size.
+| product_id | name | price |
+|---:|---|---:|
+| 101 | Wireless Headphones | ₹4,999 |
+| 104 | Studio Headphones | ₹3,499 |
 
-Avoid `SELECT *` in application queries. Explicit columns reduce unnecessary data transfer and protect the contract when a table later gains sensitive fields.
+The output has a predictable three-column contract. Avoid `SELECT *` in an application: a later schema change could expose unnecessary data or silently change the response shape.
 
-## Relationships give rows context
+## Connect customers to orders
 
-A **primary key** uniquely identifies a row. A **foreign key** points to a related row in another table. For example, `orders.customer_id` connects a purchase to one customer. Byte 3 will use these keys in joins.
+```sql
+SELECT o.order_id, c.name, o.total_amount
+FROM orders AS o
+JOIN customers AS c ON c.customer_id = o.customer_id
+WHERE o.ordered_at >= DATE '2026-09-01'
+ORDER BY o.ordered_at DESC;
+```
 
-<Scenario title="Real-time analogy: asking a librarian">
+The `JOIN` condition connects matching keys. Without it, every order could be paired with every customer, creating incorrect duplicate combinations.
 
-“Show every product” is expensive and unclear. “Show the name and price of five active headphones, highest price first” tells an online store the category, filter, fields, order and limit. A good SQL query is equally explicit.
+<Scenario title="Real-world application: support answer">
+
+An AI support assistant may understand “Where is Meena’s latest order?” but it should not invent the status. The application extracts the authorised customer ID, runs a parameterised SQL query and gives the returned status to the model for explanation.
 
 </Scenario>
 
-## Common mistakes
+## SQL and the AI model have different jobs
+
+| Capability | SQL | Language model |
+|---|---|---|
+| Retrieve exact approved rows | Strong | Should use a tool |
+| Apply deterministic filters | Strong | May be inconsistent |
+| Explain conversationally | Limited | Strong |
+| Enforce database permission | Database responsibility | Not a substitute |
+
+## Common mistakes to catch early
 
 <Mistakes>
 
-- Using `SELECT *` when only two or three columns are required.
-- Forgetting that `NULL` needs `IS NULL`, not `= NULL`.
-- Applying `LIMIT` without a deterministic `ORDER BY`.
-- Mixing text and numeric values without understanding types.
-- Updating data while still learning a read-only query.
+- Using `SELECT *` when the application needs only three columns.
+- Writing `price = NULL`; use `price IS NULL` instead.
+- Using `LIMIT` without `ORDER BY` when “top” or “latest” matters.
+- Joining on names instead of stable IDs.
+- Building SQL by concatenating user text instead of using parameters.
 
 </Mistakes>
 
-## Interview bit
+## Practice before moving on
 
-<ThemeCard title="What is the difference between WHERE and ORDER BY?" badge="CAREER">
+Write a query that returns the three lowest-priced active products in the `Keyboard` category. Return only `product_id`, `name` and `price`.
 
-`WHERE` determines which rows qualify. `ORDER BY` arranges the qualifying rows. Filtering changes membership of the result; sorting changes presentation order.
+<KnowledgeCheck question="Which clause decides whether a product row qualifies for the result?" options={["ORDER BY", "WHERE", "LIMIT"]} answer={1} explanation="WHERE filters rows. ORDER BY sorts the qualifying rows, while LIMIT caps how many are returned." />
+
+## Interview-ready explanation
+
+<ThemeCard title="Why does an AI application still need SQL?" badge="CLEAR ANSWER">
+
+A language model can interpret a natural-language request, but SQL retrieves current structured facts deterministically. The application combines language understanding with parameterised queries, explicit permissions and a predictable result contract.
 
 </ThemeCard>
 
-## Key takeaways
+## Questions beginners usually ask
+
+**Does SQL execute in the order it is written?** Not exactly. A useful beginner mental model starts with FROM and WHERE, then considers SELECT, ORDER BY and LIMIT.
+
+**Should the model connect directly to production?** No. An application layer should enforce identity, permissions, validation, parameters and logs.
+
+## What to remember
 
 <Takeaways>
 
-- Begin with a precise business question.
-- Tables store related rows under a consistent column structure.
-- Select explicit columns, filter intentionally and bound results.
-- Keys allow reliable relationships across tables.
+- SQL retrieves structured facts that an AI application should not guess.
+- Tables, primary keys and foreign keys create reliable relationships.
+- Select explicit columns, filter intentionally, sort deterministically and bound the response.
+- Permissions and parameterised queries remain necessary when AI is involved.
 
 </Takeaways>
 
-## Primary sources
+**Next Byte:** turn many order rows into business totals, rankings and trends with aggregations and window functions.
 
-- [PostgreSQL tutorial: querying a table](https://www.postgresql.org/docs/current/tutorial-select.html)
-- [PostgreSQL SELECT reference](https://www.postgresql.org/docs/current/sql-select.html)
+## Primary references
+
+- [PostgreSQL SELECT tutorial](https://www.postgresql.org/docs/current/tutorial-select.html)
+- [PostgreSQL table expressions and joins](https://www.postgresql.org/docs/current/queries-table-expressions.html)

@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {url:'https://bytes.maanavan.com/rag-application-engineering/',lastModified:new Date('2026-09-14'),changeFrequency:'monthly',priority:.9},
     {url:'https://bytes.maanavan.com/fastapi-ai-applications/',lastModified:new Date('2026-09-14'),changeFrequency:'monthly',priority:.9},
     {url:'https://bytes.maanavan.com/modern-java-spring-boot-genai/',lastModified:new Date('2026-09-14'),changeFrequency:'monthly',priority:.9},
-    {url:'https://bytes.maanavan.com/sql-data-ai-applications/',lastModified:new Date('2026-09-14'),changeFrequency:'monthly',priority:.9},
+    {url:'https://bytes.maanavan.com/sql-data-ai-applications/',lastModified:new Date('2026-09-16'),changeFrequency:'monthly',priority:.9},
     {url:'https://bytes.maanavan.com/mongodb/',lastModified:new Date('2026-09-15'),changeFrequency:'monthly',priority:.9},
     {url:'https://bytes.maanavan.com/python-genai-agentic-ai/',lastModified:new Date('2026-09-16'),changeFrequency:'monthly',priority:.9},
   ];

@@ -1,85 +1,112 @@
-<ThemeCard title="Neenga learn panna poradhu" badge="SQL HANDBOOK 01">
+<ThemeCard title="இந்த Byte-ல் நீங்கள் உருவாக்குவது" badge="SQL FOR AI APPS · BYTE 01">
 
-E-commerce product catalogue-ல் query எழுதி, ஒரு business question-ஐ SQL எப்படி exact result-ஆக மாற்றுகிறது என்பதை explain பண்ணுவீங்க.
+Product question-ஐ focused SQL query-ஆக மாற்றி, exact output-ஐ புரிந்துகொள்வீர்கள்.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="sqlFoundation" />
+<SQLProjectPath current={1} />
 
-## Business question-லிருந்து start பண்ணுங்க
+## Priya-வின் AI assistant-க்கு guess வேண்டாம், facts வேண்டும்
 
-SQL என்பது relational database-கிட்ட precise question கேட்கும் language. Database-ல் tables இருக்கும்; table-க்கு named columns இருக்கும்; ஒவ்வொரு row-வும் store செய்யப்படும் ஒரு item அல்லது event-ஐ represent பண்ணும்.
+Priya, **“Active-ஆ இருக்கும் இரண்டு headphones-ஐ highest price first காட்டு”** என்று கேட்கிறார். Language model கேள்வியைப் புரிந்துகொள்ளும். ஆனால் current product name, status, price எல்லாம் database-ல் இருக்கும். சரியான rows-ஐ controlled-ஆ retrieve செய்ய SQL பயன்படும்.
 
-| Table | ஒரு row எதை குறிக்கும்? | Example columns |
+<SQLStoryVisual variant="foundation" />
+
+## Tables business data-க்கு தெளிவான structure கொடுக்கும்
+
+| Table | ஒரு row எதைக் குறிக்கும்? | முக்கிய columns |
 |---|---|---|
-| `products` | ஒரு product | `product_id`, `name`, `category`, `price` |
-| `customers` | ஒரு learner | `customer_id`, `name`, `country` |
-| `orders` | ஒரு purchase | `order_id`, `customer_id`, `ordered_at` |
+| `products` | ஒரு product | `product_id`, `name`, `category`, `price`, `status` |
+| `customers` | ஒரு customer | `customer_id`, `name`, `city` |
+| `orders` | ஒரு order | `order_id`, `customer_id`, `ordered_at`, `total_amount` |
 
-## தேவையான data மட்டும் read பண்ணுங்க
+**Primary key** ஒரு row-ஐ unique-ஆ identify செய்யும். **Foreign key** மற்றொரு table-ல் இருக்கும் related row-உடன் connect செய்யும்.
 
-Question: “Highest price கொண்ட active headphones-ல் முதல் ஐந்தை காட்டுங்க.”
+## Database request-ஐ எப்படி answer செய்கிறது?
+
+1. `FROM` எந்த table என்று தேர்வு செய்கிறது.
+2. `WHERE` தேவையான rows மட்டும் filter செய்கிறது.
+3. `SELECT` வேண்டிய columns மட்டும் return செய்கிறது.
+4. `ORDER BY` result order-ஐ நிர்ணயிக்கிறது.
+5. `LIMIT` response size-ஐ கட்டுப்படுத்துகிறது.
+
+<SQLQueryLab />
+
+## SQL-ஐ step by step படிப்போம்
 
 ```sql
 SELECT product_id, name, price
 FROM products
-WHERE category = 'Headphones' AND status = 'ACTIVE'
+WHERE category = 'Headphones'
+  AND status = 'ACTIVE'
 ORDER BY price DESC
-LIMIT 5;
+LIMIT 2;
 ```
 
-இதை இந்த logical order-ல் புரிந்துகொள்ளலாம்:
+| product_id | name | price |
+|---:|---|---:|
+| 101 | Wireless Headphones | ₹4,999 |
+| 104 | Studio Headphones | ₹3,499 |
 
-1. `FROM` எந்த table-லிருந்து data வேண்டும் என்று சொல்லும்.
-2. `WHERE` matching rows மட்டும் retain பண்ணும்.
-3. `SELECT` தேவையான columns மட்டும் return பண்ணும்.
-4. `ORDER BY` result-ஐ arrange பண்ணும்.
-5. `LIMIT` எத்தனை rows வேண்டும் என்று control பண்ணும்.
+Application query-ல் `SELECT *` avoid செய்யுங்கள். Explicit columns பயன்படுத்தினால் data transfer குறையும்; future schema change sensitive data-ஐ accidental-ஆ expose செய்யாது.
 
-Application query-ல் `SELECT *` avoid பண்ணுங்க. Explicit columns use செய்தால் unnecessary data transfer குறையும்; future-ல் table-க்கு sensitive field add ஆனாலும் அது accidental-ஆக response-ல் வராது.
+## Customer மற்றும் order-ஐ connect செய்வது
 
-## Keys மூலம் rows-க்கு context கிடைக்கும்
+```sql
+SELECT o.order_id, c.name, o.total_amount
+FROM orders AS o
+JOIN customers AS c ON c.customer_id = o.customer_id
+WHERE o.ordered_at >= DATE '2026-09-01'
+ORDER BY o.ordered_at DESC;
+```
 
-**Primary key** ஒரு row-ஐ uniquely identify பண்ணும். **Foreign key** வேறு table-ல் இருக்கும் related row-ஐ point பண்ணும். Example: `orders.customer_id` ஒரு purchase-ஐ சரியான customer-உடன் connect பண்ணும். Byte 3-ல் இதை joins-ல் use பண்ணுவோம்.
+`JOIN` stable ID மூலமாக related rows-ஐ connect செய்கிறது. Name மூலம் join செய்தால் duplicate names காரணமாக wrong result வரலாம்.
 
-<Scenario title="Library-ல் precise request கேட்பது">
+<Scenario title="Practical scenario: support answer">
 
-“எல்லா products-ஐயும் காட்டுங்க” என்பது expensive மற்றும் unclear request. “Active headphones-ல் name, price மட்டும், highest price first, five results” என்று கேட்டால் category, filter, fields, order மற்றும் limit எல்லாம் clear. Good SQL query-யும் இதே மாதிரி explicit-ஆக இருக்கும்.
+“Meena-வின் latest order எங்கே?” என்று கேட்டால் AI status-ஐ guess செய்யக்கூடாது. Authorised customer ID கொண்டு parameterised SQL query run செய்து, வந்த result-ஐ மட்டும் explain செய்ய வேண்டும்.
 
 </Scenario>
 
-## Beginners செய்யும் common mistakes
+## பொதுவான mistakes
 
 <Mistakes>
 
-- இரண்டு columns மட்டும் தேவைப்படும்போது `SELECT *` use பண்ணுவது.
-- `NULL`-ஐ `= NULL` மூலம் check பண்ணுவது; சரியான syntax `IS NULL`.
-- Deterministic `ORDER BY` இல்லாமல் `LIMIT` use பண்ணுவது.
-- Text மற்றும் numeric values-ன் type difference புரியாமல் compare பண்ணுவது.
-- Read-only query learn செய்யும் நேரத்திலேயே data update பண்ணுவது.
+- தேவையில்லாமல் `SELECT *` பயன்படுத்துவது.
+- `= NULL` எழுதுவது; சரியான syntax `IS NULL`.
+- “latest” query-ல் `ORDER BY` இல்லாமல் `LIMIT` பயன்படுத்துவது.
+- Stable ID-க்கு பதிலாக name மூலம் join செய்வது.
+- User text-ஐ SQL string-உடன் concatenate செய்வது.
 
 </Mistakes>
 
-## Interview-ல் எப்படி explain பண்ணுவது?
+## நீங்களே முயற்சி செய்யுங்கள்
 
-<ThemeCard title="WHERE மற்றும் ORDER BY வித்தியாசம் என்ன?" badge="CAREER">
+`Keyboard` category-ல் active-ஆ இருக்கும் மூன்று lowest-price products-ஐ return செய்ய query எழுதுங்கள். `product_id`, `name`, `price` மட்டும் select செய்யுங்கள்.
 
-`WHERE` எந்த rows result-க்கு qualify ஆகிறது என்பதை decide பண்ணும். `ORDER BY` qualify ஆன rows எந்த order-ல் display ஆக வேண்டும் என்பதை decide பண்ணும். Filtering result membership-ஐ change பண்ணும்; sorting presentation order-ஐ change பண்ணும்.
+<KnowledgeCheck question="ஒரு product row result-க்கு qualify ஆகிறதா என்பதை எந்த clause தீர்மானிக்கிறது?" options={["ORDER BY", "WHERE", "LIMIT"]} answer={1} explanation="WHERE rows-ஐ filter செய்கிறது. ORDER BY sort செய்கிறது; LIMIT எண்ணிக்கையை கட்டுப்படுத்துகிறது." />
+
+## Interview-ல் எப்படி explain செய்வது?
+
+<ThemeCard title="AI application-க்கு ஏன் SQL தேவை?" badge="CLEAR ANSWER">
+
+Language model user request-ஐ புரிந்துகொள்ளும்; SQL current structured facts-ஐ deterministic-ஆ retrieve செய்யும். இரண்டிற்கும் நடுவில் application permissions, parameters, validation, logs enforce செய்ய வேண்டும்.
 
 </ThemeCard>
 
-## நினைவில் வைக்க வேண்டிய key points
+## Beginner FAQ
+
+**Model direct-ஆ production database-க்கு connect ஆகலாமா?** வேண்டாம். Controlled application layer மூலமாக மட்டுமே access கொடுக்க வேண்டும்.
+
+## நினைவில் வைத்துக்கொள்ளுங்கள்
 
 <Takeaways>
 
-- Precise business question-லிருந்து SQL query-ஐ start பண்ணுங்க.
-- Table ஒரு consistent column structure-ல் related rows-ஐ store பண்ணும்.
-- Explicit columns select செய்து, intentional filter மற்றும் bounded result use பண்ணுங்க.
-- Keys tables இடையில் reliable relationship உருவாக்கும்.
+- AI application guess செய்யக்கூடாத structured facts-ஐ SQL retrieve செய்கிறது.
+- Primary key மற்றும் foreign key reliable relationships உருவாக்குகின்றன.
+- Explicit columns, intentional filters, deterministic sorting முக்கியம்.
+- AI இருந்தாலும் permissions மற்றும் parameterised queries அவசியம்.
 
 </Takeaways>
 
-## Primary sources
-
-- [PostgreSQL tutorial: querying a table](https://www.postgresql.org/docs/current/tutorial-select.html)
-- [PostgreSQL SELECT reference](https://www.postgresql.org/docs/current/sql-select.html)
+**Next Byte:** order rows-ஐ totals, ranks, trends-ஆக மாற்றலாம்.

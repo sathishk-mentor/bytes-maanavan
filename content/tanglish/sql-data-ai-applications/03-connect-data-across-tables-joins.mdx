@@ -1,98 +1,107 @@
-<ThemeCard title="Neenga learn panna poradhu" badge="SQL HANDBOOK 03">
+<ThemeCard title="இந்த Byte-ல் நீங்கள் உருவாக்குவது" badge="VECTOR SEARCH · BYTE 03">
 
-Product மற்றும் order facts-ஐ trusted keys மூலம் connect செய்து, “எந்த products highest revenue generate செய்தது?” என்ற question-க்கு answer கண்டுபிடிப்பீங்க.
+PostgreSQL மற்றும் pgvector பயன்படுத்தி semantic document search உருவாக்குவீர்கள்.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="sqlJoins" />
+<SQLProjectPath current={3} />
 
-## Data ஏன் different tables-ல் இருக்கும்?
+## “Refund” என்ற word இல்லாத refund question
 
-ஒவ்வொரு order record-லும் product name மற்றும் price-ஐ repeat செய்தால் inconsistency வரும். Relational design ஒவ்வொரு concept-ஐயும் ஒரே authoritative இடத்தில் store செய்து keys மூலம் connect பண்ணும்.
+Learner, **“எனக்கு பணம் திரும்ப கிடைக்குமா?”** என்று கேட்கிறார். Keyword search “Refund policy” document-ஐ miss செய்யலாம். Embedding meaning-ஐ numbers-ஆக represent செய்வதால் similar meanings அருகில் வரும்.
 
-```sql
-SELECT p.name, SUM(o.amount) AS revenue
-FROM products AS p
-JOIN orders AS o ON o.product_id = p.product_id
-WHERE o.status = 'PAID'
-GROUP BY p.product_id, p.name
-ORDER BY revenue DESC;
-```
+<SQLStoryVisual variant="vector" />
 
-`ON` clause இரண்டு tables எப்படி related என்பதை சொல்லும். அது missing ஆனால் rows Cartesian product-ஆக multiply ஆகி, believable ஆனால் wrong totals வரலாம்.
+## Text முதலில் vector-ஆக மாறும்
 
-## Question-க்கு ஏற்ற join-ஐ choose பண்ணுங்க
+Stored documents மற்றும் incoming query இரண்டிற்கும் **same embedding model** பயன்படுத்த வேண்டும். Model தான் vector dimension-ஐ தீர்மானிக்கும். `vector(1536)` column வேறு dimension vector-ஐ accept செய்யாது.
 
-| Join | எந்த rows preserve ஆகும்? | Useful question |
-|---|---|---|
-| `INNER JOIN` | Matching rows மட்டும் | Paid orders கொண்ட products எவை? |
-| `LEFT JOIN` | Left table-ன் எல்லா rows | Orders இல்லாத products எவை? |
+## pgvector setup
 
 ```sql
-SELECT p.name, COUNT(o.order_id) AS order_count
-FROM products p
-LEFT JOIN orders o
-  ON o.product_id = p.product_id AND o.status = 'PAID'
-GROUP BY p.product_id, p.name
-HAVING COUNT(o.order_id) = 0;
+CREATE EXTENSION IF NOT EXISTS vector;
+
+CREATE TABLE knowledge_chunks (
+  chunk_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  document_id bigint NOT NULL,
+  content text NOT NULL,
+  embedding vector(1536) NOT NULL
+);
 ```
 
-Paid-status condition-ஐ `ON`-ல் வைத்தால் paid order இல்லாத products-ன் `NULL` rows preserve ஆகும். அதையே `WHERE`-ல் வைத்தால் unmatched rows remove ஆகி query inner join மாதிரி behave பண்ணும்.
-
-## CTE மூலம் reasoning step-க்கு name கொடுங்க
+## Cosine distance மூலம் rank செய்வது
 
 ```sql
-WITH recent_paid_orders AS (
-  SELECT product_id, amount FROM orders
-  WHERE status = 'PAID'
-    AND ordered_at >= CURRENT_DATE - INTERVAL '3 months'
-)
-SELECT p.name, SUM(r.amount) AS revenue
-FROM products p
-JOIN recent_paid_orders r USING (product_id)
-GROUP BY p.product_id, p.name
-ORDER BY revenue DESC;
+SELECT chunk_id, content,
+       1 - (embedding <=> $1::vector) AS similarity
+FROM knowledge_chunks
+ORDER BY embedding <=> $1::vector
+LIMIT 3;
 ```
 
-<Scenario title="Receipt-ஐ catalogue-உடன் match பண்ணுவது">
+`<=>` cosine-distance operator. Smaller distance என்றால் closer vectors. `$1` application வழங்கும் parameter; user text-ஐ SQL-உடன் concatenate செய்யக்கூடாது.
 
-Receipt-ல் product code இருக்கும்; full product description இருக்காது. அந்த code foreign key மாதிரி. Receipt-ஐ catalogue-உடன் join செய்தால் authoritative product record-லிருந்து name மற்றும் category கிடைக்கும்.
+| chunk_id | content | similarity |
+|---:|---|---:|
+| 42 | Refunds are available within the return window… | 0.91 |
+| 18 | Cancel an order before dispatch… | 0.72 |
+| 67 | Product warranty coverage… | 0.48 |
+
+## HNSW index எப்போது?
+
+```sql
+CREATE INDEX knowledge_chunks_embedding_hnsw
+ON knowledge_chunks
+USING hnsw (embedding vector_cosine_ops);
+```
+
+Exact search எல்லா vectors-உடனும் compare செய்யலாம். Larger collection-ல் HNSW search work-ஐ குறைக்கலாம். ஆனால் speed, memory மற்றும் recall-ஐ real data மூலம் measure செய்ய வேண்டும்.
+
+இப்போது lab-ல் exact scan மற்றும் HNSW candidate search-ஐ compare செய்யுங்கள். `top-k` result count-ஐ மாற்றும்; index toggle candidate search path-ஐ மாற்றும்.
+
+<SQLVectorLab />
+
+<Scenario title="Practical scenario: grounded policy assistant">
+
+Application question-ஐ embed செய்து authorised policy chunks-ஐ retrieve செய்கிறது. அந்த evidence மட்டும் model-க்கு கொடுக்கிறது. Similarity factual correctness அல்ல; access control, threshold, citation, evaluation தேவை.
 
 </Scenario>
 
-## Beginners செய்யும் common mistakes
+## பொதுவான mistakes
 
 <Mistakes>
 
-- Stable key-க்கு பதில் similar name வைத்து join பண்ணுவது.
-- `ON` condition miss செய்து rows-ஐ multiply பண்ணுவது.
-- Left join-க்கு பிறகு matched IDs-க்கு பதில் `COUNT(*)` use பண்ணுவது.
-- Right-table filter-ஐ `WHERE`-ல் வைத்து unmatched rows-ஐ accidental-ஆ remove பண்ணுவது.
-- Complex query-ஐ clarify செய்யாமல் hide செய்ய CTE use பண்ணுவது.
+- Different embedding models-ன் vectors-ஐ compare செய்வது.
+- `[0.12, ...]` போன்ற incomplete vector-ஐ runnable SQL என்று காட்டுவது.
+- Query metric-க்கு match ஆகாத operator class index உருவாக்குவது.
+- Similarity score-ஐ truth score என்று நினைப்பது.
+- Recall test இல்லாமல் approximate search enable செய்வது.
 
 </Mistakes>
 
-## Interview-ல் எப்படி explain பண்ணுவது?
+<KnowledgeCheck question="Stored vector மற்றும் query vector ஏன் same model மற்றும் dimension பயன்படுத்த வேண்டும்?" options={["Comparable embedding space-ல் இருக்க", "Customer ID உருவாக்க", "LIMIT நீக்க"]} answer={0} explanation="Same embedding space-ல் உருவான vectors மட்டுமே meaningful similarity கொடுக்கும்." />
 
-<ThemeCard title="INNER JOIN மற்றும் LEFT JOIN வித்தியாசம்?" badge="CAREER">
+## Interview-ல் எப்படி explain செய்வது?
 
-Inner join matching relationships மட்டும் return பண்ணும். Left join left side-ன் எல்லா rows-ஐயும் preserve செய்து missing right-side values-க்கு `NULL` கொடுக்கும். Unmatched left records business question-க்கு meaningful-ஆ இருக்கிறதா என்பதை வைத்து join type choose பண்ணுவேன்.
+<ThemeCard title="Exact search vs HNSW" badge="CLEAR ANSWER">
+
+Exact search eligible vectors அனைத்தையும் compare செய்கிறது. HNSW likely neighbours-ஐ index மூலம் வேகமாக தேடும்; அதற்கு memory, build time, recall trade-offs உள்ளன.
 
 </ThemeCard>
 
-## நினைவில் வைக்க வேண்டிய key points
+## Beginner FAQ
+
+**Similarity score confidence score-ஆ?** இல்லை. அது embedding-space closeness மட்டும்; factual correctness அல்ல.
+
+## நினைவில் வைத்துக்கொள்ளுங்கள்
 
 <Takeaways>
 
-- Stable primary-key மற்றும் foreign-key relationship-ல் join பண்ணுங்க.
-- Business question அடிப்படையில் join type choose பண்ணுங்க.
-- Aggregates trust செய்வதற்கு முன் row counts validate பண்ணுங்க.
-- Meaningful reasoning stages-க்கு CTE மூலம் clear name கொடுங்க.
+- Embeddings meaning-based retrieval-ஐ enable செய்கின்றன.
+- pgvector relational data மற்றும் vector search-ஐ PostgreSQL-ல் ஒன்றாக வைத்திருக்கிறது.
+- Exact மற்றும் approximate search வெவ்வேறு trade-offs கொண்டவை.
+- Retrieval-க்கு authorization, evaluation, source traceability அவசியம்.
 
 </Takeaways>
 
-## Primary sources
-
-- [PostgreSQL tutorial: joins](https://www.postgresql.org/docs/current/tutorial-join.html)
-- [PostgreSQL table expressions](https://www.postgresql.org/docs/current/queries-table-expressions.html)
-- [PostgreSQL WITH queries](https://www.postgresql.org/docs/current/queries-with.html)
+**Next Byte:** event history-ஐ leakage இல்லாத ML features-ஆக மாற்றலாம்.

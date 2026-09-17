@@ -1,104 +1,144 @@
 ---
-title: "Analyse Business Data with SQL"
+title: "Aggregations and Window Functions"
 slug: "02-analyse-business-data-with-sql"
-summary: "Learn SQL data analysis using aggregates, GROUP BY, HAVING, conditional logic and clear date boundaries to turn transactions into business insight."
+summary: "Summarise business data with GROUP BY, then calculate ranks, running totals and comparisons without losing useful rows."
 category: "sql-data-ai-applications"
-tags: ["SQL aggregate functions", "GROUP BY HAVING", "SQL business analysis", "SQL date analysis"]
+tags: ["SQL aggregation", "SQL window functions", "GROUP BY", "RANK SQL"]
 level: "beginner"
-duration: "23 min"
-updatedAt: "2026-09-14"
+duration: "22 min"
+updatedAt: "2026-09-16"
 order: 2
+isPopular: false
 ---
 
-<ThemeCard title="Practical outcome" badge="SQL HANDBOOK 02">
+<ThemeCard title="What you will build" badge="SQL ANALYSIS · BYTE 02">
 
-You will calculate e-commerce revenue by month and product category, then separate a correct number from a useful business explanation.
+You will calculate customer spending first, rank the summaries second and see why window functions preserve rows that ordinary aggregation would collapse.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="sqlAnalysis" />
+<SQLProjectPath current={2} />
 
-## Rows become measures
+## Kavya needs a leaderboard, not a pile of orders
 
-Aggregate functions summarise many rows:
+An `orders` table may contain thousands of payment events. Kavya’s dashboard needs one total per customer and a rank across those totals. These are two distinct steps: **aggregate**, then **compare**.
 
-| Function | Business meaning |
-|---|---|
-| `COUNT(*)` | number of purchases |
-| `SUM(amount)` | total revenue |
-| `AVG(amount)` | average order value |
-| `MIN` / `MAX` | smallest or largest value |
+<SQLStoryVisual variant="aggregate" />
+
+## GROUP BY changes the level of detail
 
 ```sql
-SELECT
-    product_id,
-    COUNT(*) AS orders,
-    SUM(amount) AS revenue
+SELECT customer_id, COUNT(*) AS order_count,
+       SUM(total_amount) AS total_spend
 FROM orders
-WHERE ordered_at >= CURRENT_DATE - INTERVAL '3 months'
-GROUP BY product_id
-HAVING SUM(amount) > 10000
-ORDER BY revenue DESC;
+WHERE status = 'PAID'
+GROUP BY customer_id;
 ```
 
-`WHERE` removes individual rows before aggregation. `HAVING` removes completed groups after aggregation.
+Before grouping, one row means one order. After grouping, one row means one customer summary. Every selected column must identify the group or be produced by an aggregate.
 
-## Make date boundaries explicit
+## A window adds context without collapsing rows
 
-“Last three months” may mean a rolling 90-day window or three complete calendar months. Those are different questions. Confirm the definition before writing SQL and use half-open boundaries (`>= start` and `< end`) when possible.
-
-## Add business categories safely
+<SQLWindowLab />
 
 ```sql
-SELECT
-  CASE
-    WHEN amount >= 2000 THEN 'High value'
-    WHEN amount >= 1000 THEN 'Mid value'
-    ELSE 'Entry value'
-  END AS value_band,
-  COUNT(*) AS purchases
-FROM orders
-GROUP BY value_band;
+WITH customer_spend AS (
+  SELECT c.customer_id, c.name,
+         SUM(o.total_amount) AS total_spend
+  FROM customers AS c
+  JOIN orders AS o ON o.customer_id = c.customer_id
+  WHERE o.status = 'PAID'
+  GROUP BY c.customer_id, c.name
+)
+SELECT customer_id, name, total_spend,
+       RANK() OVER (ORDER BY total_spend DESC) AS spend_rank
+FROM customer_spend
+ORDER BY spend_rank, customer_id
+LIMIT 10;
 ```
 
-<Scenario title="Real-time analogy: a shop’s closing report">
+Grouping by ID and name prevents different customers with the same name from being merged. The final `ORDER BY` guarantees display order; `LIMIT 10` alone does not mean “top ten.”
 
-Individual bills are rows. The owner does not read every bill to make a decision; the report groups them by product or day and calculates totals. SQL aggregation performs that controlled summarisation without losing the ability to trace back to transactions.
+## Read the exact output
+
+| customer_id | name | total_spend | spend_rank |
+|---|---|---:|---:|
+| C101 | Meena | ₹12,000 | 1 |
+| C103 | Arun | ₹9,500 | 2 |
+| C102 | Farah | ₹7,200 | 3 |
+
+`RANK()` gives ties the same rank and leaves a gap afterward. `DENSE_RANK()` removes the gap; `ROW_NUMBER()` gives every row a unique sequence.
+
+## Running total and moving average
+
+```sql
+SELECT order_day, daily_revenue,
+       SUM(daily_revenue) OVER (
+         ORDER BY order_day
+         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_revenue,
+       AVG(daily_revenue) OVER (
+         ORDER BY order_day
+         ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+       ) AS seven_row_average
+FROM daily_sales
+ORDER BY order_day;
+```
+
+The explicit frame states which rows contribute. A seven-row window is not automatically seven calendar days when dates are missing.
+
+<Scenario title="Real-world application: retention dashboard">
+
+A subscription team can group events into one monthly total per plan, then use `LAG()` to compare each month with the previous month. Every month remains visible while the query adds trend context.
 
 </Scenario>
 
-## Common mistakes
+## Common analysis mistakes
 
 <Mistakes>
 
-- Selecting a non-aggregated column that is not in `GROUP BY`.
-- Using `HAVING` for filters that belong in `WHERE`.
-- Ignoring refunds, currencies or cancelled orders in revenue.
-- Treating missing values as zero without a business rule.
-- Using an ambiguous definition of “month” or “recent.”
+- Mixing row-level columns with aggregates without defining a group.
+- Grouping only by a customer name that may not be unique.
+- Claiming a window replaces `GROUP BY`; useful queries can use both in stages.
+- Applying `LIMIT` before a deterministic final sort.
+- Forgetting that the window frame changes moving calculations.
 
 </Mistakes>
 
-## Interview bit
+## Practice the two-stage pattern
 
-<ThemeCard title="Why can two correct revenue queries disagree?" badge="CAREER">
+Build one row per category with `SUM(total_amount)`, then apply `DENSE_RANK()` to rank categories by revenue. Keep aggregation in a CTE and ranking in the outer query.
 
-They may use different time boundaries, order statuses, refund treatment, currencies or grain. I confirm the metric definition and inspect the underlying rows before optimising the query.
+<KnowledgeCheck question="Why aggregate in a CTE before applying RANK()?" options={["To delete duplicate tables", "To make the summary level explicit before comparing rows", "To avoid ORDER BY"]} answer={1} explanation="The CTE creates one dependable row per entity. The outer window function then compares those summary rows clearly." />
+
+## Interview-ready explanation
+
+<ThemeCard title="GROUP BY vs window function" badge="CLEAR ANSWER">
+
+GROUP BY collapses detail rows into one row per group. A window function calculates across related rows while keeping the current result rows visible. They solve different problems and can be combined in stages.
 
 </ThemeCard>
 
-## Key takeaways
+## Questions beginners usually ask
+
+**Which ranking function should I choose?** Use ROW_NUMBER for a unique sequence, RANK for ties with gaps and DENSE_RANK for ties without gaps.
+
+**Why specify a window frame?** It makes a running or moving calculation’s participating rows explicit and avoids database-default surprises.
+
+## What to remember
 
 <Takeaways>
 
-- Aggregates turn transactions into measures.
-- `GROUP BY` defines the reporting grain.
-- `WHERE` filters rows; `HAVING` filters groups.
-- A metric is incomplete without a clear business definition.
+- `GROUP BY` changes detail rows into summary rows.
+- Window functions calculate across related rows without hiding them.
+- Aggregate first and rank second when the business question needs both.
+- Stable IDs, explicit frames and a final `ORDER BY` prevent reporting errors.
 
 </Takeaways>
 
-## Primary sources
+**Next Byte:** move beyond keyword matching and retrieve semantically related documents with PostgreSQL and pgvector.
+
+## Primary references
 
 - [PostgreSQL aggregate functions](https://www.postgresql.org/docs/current/functions-aggregate.html)
-- [PostgreSQL date and time functions](https://www.postgresql.org/docs/current/functions-datetime.html)
+- [PostgreSQL window functions tutorial](https://www.postgresql.org/docs/current/tutorial-window.html)

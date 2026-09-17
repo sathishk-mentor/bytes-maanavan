@@ -1,106 +1,120 @@
-<ThemeCard title="Neenga prepare panna poradhu" badge="SQL HANDBOOK 05">
+<ThemeCard title="இந்த Byte-ல் நீங்கள் உருவாக்குவது" badge="TEXT-TO-SQL · BYTE 05">
 
-Performance, correctness, permissions, injection defence மற்றும் auditability cover செய்யும் Business Data Analyst production checklist-ஐ create பண்ணுவீங்க.
+Question clarification முதல் read-only execution மற்றும் audit வரை safe Text-to-SQL flow-ஐ புரிந்துகொள்வீர்கள்.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="sqlProduction" />
+<SQLProjectPath current={5} />
 
-## Correct result மட்டும் போதாது
+## “Best customers” என்பது இன்னும் SQL-ready question இல்லை
 
-Production query bounded, efficient, authorised மற்றும் observable-ஆகவும் இருக்க வேண்டும். Correct result கொடுக்கும் query ஒவ்வொரு chat request-க்கும் millions of rows scan செய்தால் application fail ஆகலாம்.
+**Best** என்றால் revenue-ஆ, margin-ஆ, order count-ஆ? இந்த ambiguity-ஐ resolve செய்யாமல் SQL generate செய்தால் syntax சரியாக இருந்தாலும் wrong business question-க்கு answer வரலாம்.
 
-## Index add செய்வதற்கு முன் execution plan படிங்க
+<SQLStoryVisual variant="agent" />
+
+## Safe workflow-ல் பல gates இருக்க வேண்டும்
+
+1. Question மற்றும் authorised user context-ஐ புரிந்துகொள்ளுங்கள்.
+2. Ambiguous metric மற்றும் time range-ஐ clarify செய்யுங்கள்.
+3. Approved schema, business definitions மட்டும் retrieve செய்யுங்கள்.
+4. Bounded query generate செய்யுங்கள்.
+5. Statement, tables, columns, operations validate செய்யுங்கள்.
+6. Read-only role, timeout, cost, row limits-உடன் execute செய்யுங்கள்.
+7. Result மற்றும் query context-ஐ explain செய்யுங்கள்.
+8. Request, decision, SQL, execution metadata-ஐ audit log-ல் பதிவு செய்யுங்கள்.
+
+Agent இந்த gates-ஐ order-ஆக pass செய்ய வேண்டும்: generate செய்வதற்கு முன்பு clarify, execute செய்வதற்கு முன்பு validate, permission boundary வந்தால் stop.
+
+<SQLAgentLab />
+
+## தெளிவான question-க்கு governed query
 
 ```sql
-EXPLAIN (ANALYZE, BUFFERS)
-SELECT product_id, SUM(amount)
-FROM orders
-WHERE status = 'PAID'
-  AND ordered_at >= DATE '2026-06-01'
-GROUP BY product_id;
+SELECT c.customer_id, c.name,
+       SUM(o.total_amount) AS paid_revenue
+FROM analytics.customers AS c
+JOIN analytics.orders AS o
+  ON o.customer_id = c.customer_id
+WHERE o.status = 'PAID'
+  AND o.ordered_at >= DATE '2026-09-01'
+  AND o.ordered_at < DATE '2026-10-01'
+GROUP BY c.customer_id, c.name
+ORDER BY paid_revenue DESC, c.customer_id
+LIMIT 5;
 ```
 
-Execution plan database உண்மையில் எவ்வளவு work செய்தது என்பதை காட்டும். Index selective reads-ஐ faster ஆக்கலாம்; ஆனால் storage மற்றும் write cost add பண்ணும். எல்லா columns-க்கும் index உருவாக்காமல் measured access pattern அடிப்படையில் design பண்ணுங்க.
+இந்த request metric, status, time range, result size அனைத்தையும் define செய்கிறது. ஒரு SQL view useful building block; ஆனால் அது மட்டும் complete semantic governance system அல்ல.
+
+### Agent-க்கு கிடைக்கும் example result
+
+| customer_id | name | paid_revenue |
+|---|---|---:|
+| C101 | Meena | ₹48,900 |
+| C208 | Farah | ₹41,250 |
+| C145 | Arun | ₹38,600 |
+
+Agent “best customer” என்று vague-ஆ சொல்லாமல், இது **September 2026 paid revenue ranking** என்று explain செய்ய வேண்டும்.
+
+## Prompt அல்ல, permissions தான் boundary enforce செய்யும்
 
 ```sql
-CREATE INDEX idx_orders_paid_date_course
-ON orders (ordered_at, product_id)
-WHERE status = 'PAID';
+CREATE ROLE reporting_agent NOLOGIN;
+GRANT USAGE ON SCHEMA analytics TO reporting_agent;
+GRANT SELECT ON ALL TABLES IN SCHEMA analytics TO reporting_agent;
 ```
 
-## Parameterised query மூலம் values-ஐ protect பண்ணுங்க
+“DELETE செய்யாதே” என்று prompt-ல் எழுதுவது access control அல்ல. Database role-க்கு DELETE privilege இல்லாமல் வைத்தால் generation தவறினாலும் action block ஆகும்.
 
-Unsafe:
+<Scenario title="Practical scenario: finance question">
 
-```python
-sql = "SELECT * FROM customers WHERE email = '" + email + "'"
-```
-
-Safe approach-ல் value SQL code-லிருந்து separate-ஆக இருக்கும்:
-
-```python
-statement = text("SELECT customer_id FROM customers WHERE email = :email")
-connection.execute(statement, {"email": email})
-```
-
-Prepared statement மற்றும் parameter binding use செய்தால் database code மற்றும் data-வை distinguish பண்ண முடியும். Table name போன்ற dynamic identifiers-க்கு strict allow-list தேவை; ordinary value மாதிரி parameterise பண்ண முடியாது.
-
-## Transaction complete change-ஐ protect பண்ணும்
-
-Payment record மற்றும் order confirmation இரண்டும் commit ஆக வேண்டும் அல்லது இரண்டும் rollback ஆக வேண்டும். Transaction-ஐ focused-ஆ வைத்திருங்க, failures-ஐ explicit-ஆ handle பண்ணுங்க, database locks open-ஆ இருக்கும்போது slow LLM network call பண்ணாதீங்க.
-
-## AI-generated query-க்கு production controls
-
-| Control | ஏன் தேவை? |
-|---|---|
-| Read-only role | Mutation prevent பண்ண |
-| Table/column allow-list | Data exposure limit பண்ண |
-| Query timeout | Resource use bound பண்ண |
-| Mandatory limit | Returned rows control பண்ண |
-| Audit event | யார் என்ன query கேட்டார் என்று preserve பண்ண |
-| Redaction | Logs மற்றும் model context-ல் sensitive values protect பண்ண |
-
-<Scenario title="Popular analytics question">
-
-Dashboard மற்றும் AI assistant இரண்டும் three-month revenue கேட்கிறது. Team validated calculation-ஐ governed query-ஆக மாற்றி, measured filter path-க்கு index add பண்ணும், service role-ஐ approved reporting views-க்கு limit பண்ணும் மற்றும் latency monitor பண்ணும். AI returned facts-ஐ explain பண்ணும்; revenue definition-ஐ மாற்றாது.
+Agent overdue invoice total-ஐ read-only query மூலம் prepare செய்யலாம். Invoice மாற்றுவது, refund செய்வது, collection message அனுப்புவது consequential action; separate workflow மற்றும் explicit human approval தேவை.
 
 </Scenario>
 
-## Beginners செய்யும் common mistakes
+## Execute செய்வதற்கு முன்பு validate செய்யுங்கள்
+
+- Approved statements, schemas, tables, columns மட்டும் allow செய்யுங்கள்.
+- Multiple statements மற்றும் evasion patterns-ஐ reject செய்யுங்கள்.
+- Statement timeout, maximum rows, resource limits பயன்படுத்துங்கள்.
+- Costly query-க்கு `EXPLAIN` அல்லது dry run consider செய்யுங்கள்.
+- Sensitive values-ஐ redact செய்து audit trail வைத்திருங்கள்.
+
+## பொதுவான mistakes
 
 <Mistakes>
 
-- Execution plan மற்றும் workload check பண்ணாமல் index add பண்ணுவது.
-- User அல்லது model text-ஐ concatenate செய்து SQL build பண்ணுவது.
-- Reporting service-க்கு write permission கொடுப்பது.
-- External API wait செய்யும்போது transaction open-ஆ வைத்திருப்பது.
-- Sensitive parameters அல்லது complete result sets-ஐ log பண்ணுவது.
+- Valid syntax என்றால் correct answer என்று நினைப்பது.
+- எல்லா production tables-க்கும் direct access கொடுப்பது.
+- Database permission-க்கு பதிலாக model prompt-ஐ நம்புவது.
+- Vague metric அல்லது date-ஐ clarify செய்யாமல் execute செய்வது.
+- Definition மற்றும் freshness இல்லாமல் ஒரு number மட்டும் return செய்வது.
 
 </Mistakes>
 
-## Interview-ல் எப்படி explain பண்ணுவது?
+<KnowledgeCheck question="Generated DELETE statement-க்கு strongest control எது?" options={["Model-ஐ politely கேட்பது", "DELETE privilege இல்லாத database role", "SQL preview-ஐ hide செய்வது"]} answer={1} explanation="Least-privilege permission generation அல்லது validation fail ஆனாலும் boundary-ஐ enforce செய்கிறது." />
 
-<ThemeCard title="Slow SQL query-ஐ எப்படி optimise பண்ணுவீங்க?" badge="CAREER">
+## Interview-ல் எப்படி explain செய்வது?
 
-முதலில் business result correct-ஆ என்று confirm செய்வேன். Representative data-ல் reproduce செய்து execution plan மற்றும் row estimates inspect பண்ணுவேன். Unnecessary work reduce செய்து predicates, joins verify செய்த பிறகு measured access path-க்கு suitable index consider பண்ணுவேன். Before/after plans compare செய்து write-side cost-ஐயும் check பண்ணுவேன்.
+<ThemeCard title="Prompt-only SQL safety ஏன் போதாது?" badge="CLEAR ANSWER">
+
+Model instructions probabilistic. Parsed-query allowlist, least-privilege role, execution limits, approval boundary, audit logs ஆகிய independent controls தேவை.
 
 </ThemeCard>
 
-## நினைவில் வைக்க வேண்டிய key points
+## Beginner FAQ
+
+**ஒவ்வொரு query-க்கும் approval வேண்டுமா?** Strict controls உள்ள low-risk read-only query automatic-ஆ run ஆகலாம். Sensitive, costly அல்லது consequential request review கேட்க வேண்டும்.
+
+## நினைவில் வைத்துக்கொள்ளுங்கள்
 
 <Takeaways>
 
-- Optimise செய்வதற்கு முன் execution plan evidence use பண்ணுங்க.
-- Index faster read கொடுக்கும்; storage மற்றும் write cost add பண்ணும்.
-- Parameterisation values-ஐ query structure-லிருந்து separate பண்ணும்.
-- AI-driven SQL-க்கு least privilege, limits மற்றும் auditing mandatory.
+- Text-to-SQL business meaning-ல் தொடங்க வேண்டும்; generation-ல் அல்ல.
+- Structural validation explicit allowlist-ஐ enforce செய்ய வேண்டும்.
+- Read-only permission, timeout, row limit independent protection தருகின்றன.
+- High-impact actions human approval boundary-க்கு பின்னால் இருக்க வேண்டும்.
+- Audit evidence result-ஐ explain மற்றும் diagnose செய்ய உதவும்.
 
 </Takeaways>
 
-## Primary sources
-
-- [PostgreSQL using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html)
-- [PostgreSQL indexes](https://www.postgresql.org/docs/current/indexes.html)
-- [PostgreSQL transaction tutorial](https://www.postgresql.org/docs/current/tutorial-transactions.html)
-- [OWASP SQL Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)
+**Project complete:** exact facts, trend analysis, semantic search, time-safe ML features மற்றும் governed Text-to-SQL அனைத்தையும் ஒரே Business Data Analyst journey-ல் இணைத்துள்ளீர்கள்.

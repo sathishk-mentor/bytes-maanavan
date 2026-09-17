@@ -1,87 +1,116 @@
-<ThemeCard title="Neenga learn panna poradhu" badge="SQL HANDBOOK 02">
+<ThemeCard title="இந்த Byte-ல் நீங்கள் உருவாக்குவது" badge="SQL ANALYSIS · BYTE 02">
 
-E-commerce revenue-ஐ month மற்றும் product category அடிப்படையில் calculate செய்து, correct number-க்கும் useful business explanation-க்கும் உள்ள difference-ஐ புரிந்துகொள்வீங்க.
+Customer spend-ஐ aggregate செய்து, summary rows-ஐ window function மூலம் rank செய்வீர்கள்.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="sqlAnalysis" />
+<SQLProjectPath current={2} />
 
-## Rows எப்படி measures-ஆக மாறும்?
+## Kavya-க்கு order list வேண்டாம்; leaderboard வேண்டும்
 
-Aggregate functions பல rows-ஐ ஒரு meaningful summary-ஆக மாற்றும்:
+`orders` table-ல் ஆயிரக்கணக்கான rows இருக்கலாம். Dashboard-க்கு customer ஒன்றுக்கு ஒரு total மற்றும் அந்த totals-க்கு rank வேண்டும். முதலில் **aggregate**, அடுத்து **compare** செய்ய வேண்டும்.
 
-| Function | Business meaning |
-|---|---|
-| `COUNT(*)` | Purchase count |
-| `SUM(amount)` | Total revenue |
-| `AVG(amount)` | Average order value |
-| `MIN` / `MAX` | Smallest அல்லது largest value |
+<SQLStoryVisual variant="aggregate" />
+
+## GROUP BY detail level-ஐ மாற்றும்
 
 ```sql
-SELECT product_id, COUNT(*) AS orders, SUM(amount) AS revenue
+SELECT customer_id, COUNT(*) AS order_count,
+       SUM(total_amount) AS total_spend
 FROM orders
-WHERE ordered_at >= CURRENT_DATE - INTERVAL '3 months'
-GROUP BY product_id
-HAVING SUM(amount) > 10000
-ORDER BY revenue DESC;
+WHERE status = 'PAID'
+GROUP BY customer_id;
 ```
 
-`WHERE` aggregation நடப்பதற்கு முன் individual rows-ஐ filter பண்ணும். `HAVING` aggregation முடிந்த பிறகு completed groups-ஐ filter பண்ணும்.
+Grouping-க்கு முன்பு ஒரு row என்பது ஒரு order. Grouping-க்கு பிறகு ஒரு row என்பது ஒரு customer summary.
 
-## Date boundary-ஐ explicit-ஆக define பண்ணுங்க
+## Window function rows-ஐ மறைக்காமல் context சேர்க்கும்
 
-“Last three months” என்பது rolling 90 days ஆகவும் இருக்கலாம்; previous three complete calendar months ஆகவும் இருக்கலாம். இரண்டும் different answers கொடுக்கும். SQL எழுதுவதற்கு முன் business definition confirm பண்ணி, possible என்றால் `>= start` மற்றும் `< end` போன்ற half-open boundaries use பண்ணுங்க.
-
-## Business categories-ஐ safely add பண்ணுவது
+<SQLWindowLab />
 
 ```sql
-SELECT CASE
-  WHEN amount >= 2000 THEN 'High value'
-  WHEN amount >= 1000 THEN 'Mid value'
-  ELSE 'Entry value'
-END AS value_band, COUNT(*) AS purchases
-FROM orders
-GROUP BY value_band;
+WITH customer_spend AS (
+  SELECT c.customer_id, c.name,
+         SUM(o.total_amount) AS total_spend
+  FROM customers AS c
+  JOIN orders AS o ON o.customer_id = c.customer_id
+  WHERE o.status = 'PAID'
+  GROUP BY c.customer_id, c.name
+)
+SELECT customer_id, name, total_spend,
+       RANK() OVER (ORDER BY total_spend DESC) AS spend_rank
+FROM customer_spend
+ORDER BY spend_rank, customer_id
+LIMIT 10;
 ```
 
-<Scenario title="Shop closing report">
+Customer ID மற்றும் name இரண்டையும் group செய்தால் same name கொண்ட இரண்டு customers merge ஆகமாட்டார்கள். Final `ORDER BY` தான் top-ten display order-ஐ guarantee செய்கிறது.
 
-ஒவ்வொரு bill-மும் ஒரு row. Decision எடுக்க owner எல்லா bills-ஐயும் ஒன்றாக படிக்க மாட்டார்; product அல்லது day அடிப்படையில் group செய்து totals பார்ப்பார். SQL aggregation transactions-ஐ trace செய்யும் ability-ஐ இழக்காமல் controlled summary கொடுக்கும்.
+| customer_id | name | total_spend | spend_rank |
+|---|---|---:|---:|
+| C101 | Meena | ₹12,000 | 1 |
+| C103 | Arun | ₹9,500 | 2 |
+| C102 | Farah | ₹7,200 | 3 |
+
+## Running total எப்படி உருவாகிறது?
+
+```sql
+SELECT order_day, daily_revenue,
+       SUM(daily_revenue) OVER (
+         ORDER BY order_day
+         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_revenue
+FROM daily_sales
+ORDER BY order_day;
+```
+
+Window frame எந்த rows calculation-ல் சேர வேண்டும் என்பதை explicit-ஆ கூறுகிறது.
+
+<Scenario title="Practical scenario: retention dashboard">
+
+Subscription team monthly totals-ஐ `GROUP BY` மூலம் உருவாக்கி, `LAG()` மூலம் previous month-உடன் compare செய்யலாம். ஒவ்வொரு month row-வும் visible-ஆ இருக்கும்.
 
 </Scenario>
 
-## Beginners செய்யும் common mistakes
+## பொதுவான mistakes
 
 <Mistakes>
 
-- Aggregate ஆகாத column-ஐ `GROUP BY`-ல் சேர்க்காமல் select பண்ணுவது.
-- `WHERE`-ல் இருக்க வேண்டிய filter-ஐ `HAVING`-ல் வைப்பது.
-- Revenue calculate செய்யும்போது refund, currency அல்லது cancelled order-ஐ ignore பண்ணுவது.
-- Business rule இல்லாமல் missing value-ஐ zero என்று treat பண்ணுவது.
-- “Month” அல்லது “recent” என்பதற்கு ambiguous definition use பண்ணுவது.
+- Group definition இல்லாமல் row columns மற்றும் aggregates mix செய்வது.
+- Unique அல்லாத customer name மட்டும் group செய்வது.
+- Window function எப்போதும் `GROUP BY`-ஐ replace செய்கிறது என்று நினைப்பது.
+- Final sorting இல்லாமல் `LIMIT` பயன்படுத்துவது.
+- Window frame-ஐ கவனிக்காமல் moving calculation செய்வது.
 
 </Mistakes>
 
-## Interview-ல் எப்படி explain பண்ணுவது?
+## Practice
 
-<ThemeCard title="இரண்டு correct revenue queries ஏன் different result கொடுக்கலாம்?" badge="CAREER">
+ஒவ்வொரு category-க்கும் revenue total உருவாக்கி, outer query-ல் `DENSE_RANK()` பயன்படுத்துங்கள்.
 
-Time boundary, order status, refund handling, currency அல்லது reporting grain different-ஆக இருக்கலாம். Query optimise செய்வதற்கு முன் metric definition-ஐ confirm செய்து underlying rows-ஐ inspect பண்ணுவேன்.
+<KnowledgeCheck question="RANK() பயன்படுத்துவதற்கு முன்பு CTE-ல் aggregate செய்வதன் பயன் என்ன?" options={["Tables delete செய்ய", "Summary level-ஐ தெளிவாக்கி பிறகு rows-ஐ compare செய்ய", "ORDER BY avoid செய்ய"]} answer={1} explanation="CTE ஒவ்வொரு entity-க்கும் dependable summary row உருவாக்குகிறது; outer window அதை compare செய்கிறது." />
+
+## Interview-ல் எப்படி explain செய்வது?
+
+<ThemeCard title="GROUP BY vs window function" badge="CLEAR ANSWER">
+
+GROUP BY detail rows-ஐ one-row-per-group summary-ஆக collapse செய்கிறது. Window function current rows-ஐ retain செய்து comparison அல்லது rank சேர்க்கிறது.
 
 </ThemeCard>
 
-## நினைவில் வைக்க வேண்டிய key points
+## Beginner FAQ
+
+**RANK, DENSE_RANK, ROW_NUMBER எப்படி தேர்வு செய்வது?** Unique sequence-க்கு ROW_NUMBER, tie மற்றும் gap-க்கு RANK, tie ஆனால் gap இல்லாமல் இருக்க DENSE_RANK.
+
+## நினைவில் வைத்துக்கொள்ளுங்கள்
 
 <Takeaways>
 
-- Aggregates transactions-ஐ measures-ஆக மாற்றும்.
-- `GROUP BY` reporting grain-ஐ define பண்ணும்.
-- `WHERE` rows-ஐ filter பண்ணும்; `HAVING` groups-ஐ filter பண்ணும்.
-- Clear business definition இல்லாமல் metric complete ஆகாது.
+- `GROUP BY` detail rows-ஐ summary rows-ஆக மாற்றுகிறது.
+- Window functions rows-ஐ retain செய்து comparison சேர்க்கின்றன.
+- Business question தேவைப்பட்டால் aggregate first, rank second.
+- Stable IDs, explicit frames, final ordering முக்கியம்.
 
 </Takeaways>
 
-## Primary sources
-
-- [PostgreSQL aggregate functions](https://www.postgresql.org/docs/current/functions-aggregate.html)
-- [PostgreSQL date and time functions](https://www.postgresql.org/docs/current/functions-datetime.html)
+**Next Byte:** keyword match-ஐ தாண்டி semantic vector search உருவாக்கலாம்.

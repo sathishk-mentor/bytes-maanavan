@@ -1,94 +1,98 @@
-<ThemeCard title="Neenga design panna poradhu" badge="SQL HANDBOOK 04">
+<ThemeCard title="இந்த Byte-ல் நீங்கள் உருவாக்குவது" badge="ML FEATURES · BYTE 04">
 
-Model-க்கு direct database authority கொடுக்காமல் **AI-Powered Business Data Analyst**-க்கான safe request path-ஐ design பண்ணுவீங்க.
+Fixed prediction cutoff பயன்படுத்தி leakage இல்லாத customer features உருவாக்குவீர்கள்.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="sqlAi" />
+<SQLProjectPath current={4} />
 
-## சரியான control boundary
+## Nila-வின் model future data-ஐ பார்த்துவிட்டது
 
-Model ஒரு query **proposer**; database administrator இல்லை.
+October purchase-ஐ predict செய்யும்போது October transaction-ஐ feature-ல் சேர்த்தால், prediction நேரத்தில் கிடைக்காத future information model-க்கு கிடைக்கும். இதுதான் **target leakage**.
 
-```text
-Question → approved schema context → draft SQL → deterministic validation
-         → read-only execution → bounded rows → business explanation
+<SQLStoryVisual variant="feature" />
+
+## Feature என்பது model-ready signal
+
+Order count, 90-day spend, last purchase-க்கு பிறகு கடந்த days போன்றவை features. ஒவ்வொரு definition-லும் entity, calculation, time window, cutoff இருக்க வேண்டும்.
+
+<SQLFeatureLab />
+
+## Fixed cutoff கொண்டு features உருவாக்குங்கள்
+
+```sql
+WITH parameters AS (
+  SELECT DATE '2026-10-01' AS cutoff_date
+)
+SELECT c.customer_id,
+       COUNT(t.transaction_id) FILTER (
+         WHERE t.transaction_date >= p.cutoff_date - INTERVAL '30 days'
+           AND t.transaction_date < p.cutoff_date
+       ) AS orders_30d,
+       COALESCE(SUM(t.amount) FILTER (
+         WHERE t.transaction_date >= p.cutoff_date - INTERVAL '90 days'
+           AND t.transaction_date < p.cutoff_date
+       ), 0) AS spend_90d
+FROM customers AS c
+CROSS JOIN parameters AS p
+LEFT JOIN transactions AS t
+  ON t.customer_id = c.customer_id
+ AND t.transaction_date < p.cutoff_date
+GROUP BY c.customer_id;
 ```
 
-Multiple statements, write operations, unapproved tables, unlimited results மற்றும் time/cost limit exceed செய்யும் queries-ஐ application reject பண்ண வேண்டும். Prompt-ல் “SELECT மட்டும் generate பண்ணு” என்று எழுதுவது enforcement இல்லை.
+Historical training set-ல் `CURRENT_DATE` பயன்படுத்தினால் result தினமும் மாறும். Fixed cutoff observation time-ஐ reproducible-ஆ வைத்திருக்கும்.
 
-## Python-ஐ bound parameters-உடன் connect பண்ணுவது
+| customer_id | orders_30d | spend_90d |
+|---|---:|---:|
+| C101 | 7 | ₹18,420 |
+| C102 | 2 | ₹3,100 |
 
-```python
-from sqlalchemy import create_engine, text
+## Point-in-time correctness ஏன் முக்கியம்?
 
-engine = create_engine(database_url)
-statement = text("""
-    SELECT name, price FROM products
-    WHERE category = :category
-    ORDER BY price DESC LIMIT :limit
-""")
+Changing profile அல்லது price போன்ற data-க்கும் cutoff நேரத்தில் தெரிந்த version மட்டுமே பயன்படுத்த வேண்டும். Training மற்றும் production prediction ஒரே feature definition பயன்படுத்தாவிட்டால் **training-serving skew** வரும்.
 
-with engine.connect() as connection:
-    rows = connection.execute(
-        statement, {"category": "Headphones", "limit": 5}
-    ).mappings().all()
-```
+<Scenario title="Practical scenario: churn prediction">
 
-Bound parameters values-ஐ SQL structure-லிருந்து separate பண்ணும். ஆனால் arbitrary LLM-generated SQL-ஐ இது மட்டும் safe ஆக்காது; structural validation மற்றும் least-privilege execution இன்னும் தேவை.
-
-## Structured data மற்றும் RAG எப்போது?
-
-Revenue, count, status போன்ற exact structured questions-க்கு SQL use பண்ணுங்க. Policy அல்லது handbook போன்ற unstructured text-க்கு document RAG use பண்ணுங்க. Combined application approved aggregates-ஐ SQL-ல் query செய்து, policy passages-ஐ RAG மூலம் retrieve செய்து separate source labels-உடன் answer கொடுக்கலாம்.
-
-## Agent safety checklist
-
-1. Approved schema descriptions மட்டும் expose பண்ணுங்க.
-2. Dedicated read-only database user use பண்ணுங்க.
-3. Query structure-ஐ parse செய்து allow-list validate பண்ணுங்க.
-4. Row, runtime மற்றும் cost limits enforce பண்ணுங்க.
-5. Sensitive datasets-க்கு approval require பண்ணுங்க.
-6. Question, proposed query, validation decision மற்றும் result status-ஐ safely log பண்ணுங்க.
-
-<Scenario title="Highest-revenue products">
-
-User “Last three months-ல் highest revenue generate செய்த products எவை?” என்று கேட்கிறார். Model grouped query draft பண்ணும். Application அது approved tables பயன்படுத்தும் single read-only statement-ஆ என்று verify செய்து row limit inject பண்ணும். Restricted role query execute செய்த பிறகு returned result மட்டும் model explain பண்ணும்.
+Churn model support tickets, payment failures, recent usage ஆகியவற்றைப் பயன்படுத்தலாம். ஒவ்வொரு input-மும் prediction moment-க்கு முன்பு இருந்த நிலையை மட்டும் காட்ட வேண்டும். Churn label future-ல் இருக்கும்; அது feature columns-ல் வரக்கூடாது.
 
 </Scenario>
 
-## Beginners செய்யும் common mistakes
+## பொதுவான mistakes
 
 <Mistakes>
 
-- Agent-க்கு owner-level database credentials கொடுப்பது.
-- Prompt instruction-ஐ security enforcement என்று நம்புவது.
-- Complete production schema மற்றும் sensitive column names expose பண்ணுவது.
-- Unlimited result set-ஐ model-க்கு send பண்ணுவது.
-- SQL calculate செய்த facts-உடன் unsupported model interpretation mix பண்ணுவது.
+- Historical features-க்கு `CURRENT_DATE` பயன்படுத்துவது.
+- Cutoff-க்கு பிறகான events-ஐ சேர்ப்பது.
+- Business meaning இல்லாமல் `NULL`-ஐ zero-ஆக மாற்றுவது.
+- Training மற்றும் serving-ல் வேறு feature logic பயன்படுத்துவது.
+- Reproducible experiment இல்லாமல் accuracy claim செய்வது.
 
 </Mistakes>
 
-## Interview-ல் எப்படி explain பண்ணுவது?
+<KnowledgeCheck question="Training data-க்கு fixed cutoff ஏன் தேவை?" options={["Historical features reproducible ஆகவும் future data வராமல் இருக்கவும்", "Model automatic-ஆ உருவாக", "Validation வேண்டாம் என்பதற்காக"]} answer={0} explanation="Prediction நேரத்தில் கிடைத்த information மட்டும் ஒவ்வொரு training row-லும் இருக்க வேண்டும்." />
 
-<ThemeCard title="Text-to-SQL-ஐ எப்படி secure பண்ணுவீங்க?" badge="CAREER">
+## Interview-ல் எப்படி explain செய்வது?
 
-Limited schema context, parsed allow-list validation, read-only role, values-க்கு parameter binding, statement/row limits, timeout, sensitive-data controls, audit logs மற்றும் risk தேவைப்படும் இடத்தில் approval gate use பண்ணுவேன்.
+<ThemeCard title="Point-in-time correctness என்றால் என்ன?" badge="CLEAR ANSWER">
+
+ஒவ்வொரு training example-க்கும் அந்த prediction moment-ல் கிடைத்த information மட்டும் feature-ஆக reconstruct செய்வது. Future event அல்லது later update input-ல் leak ஆகக்கூடாது.
 
 </ThemeCard>
 
-## நினைவில் வைக்க வேண்டிய key points
+## Beginner FAQ
+
+**Missing value எல்லாம் zero-ஆ?** இல்லை. No activity, unavailable data, pipeline issue என பல meanings இருக்கலாம்; fill செய்வதற்கு முன்பு document செய்ய வேண்டும்.
+
+## நினைவில் வைத்துக்கொள்ளுங்கள்
 
 <Takeaways>
 
-- LLM propose பண்ணும்; deterministic application controls execution-ஐ authorise பண்ணும்.
-- SQL structured facts-க்கு; RAG unstructured evidence-க்கு.
-- Read-only credentials மற்றும் bounded results impact-ஐ reduce பண்ணும்.
-- Question → query → result → explanation trace preserve பண்ண வேண்டும்.
+- Feature definition-க்கு entity, calculation, window, cutoff தேவை.
+- Point-in-time correctness future leakage-ஐ தடுக்கிறது.
+- Null handling ஒரு modelling decision.
+- Training மற்றும் serving logic align ஆக வேண்டும்.
 
 </Takeaways>
 
-## Primary sources
-
-- [SQLAlchemy connections and transactions](https://docs.sqlalchemy.org/en/latest/core/connections.html)
-- [SQLAlchemy SELECT tutorial](https://docs.sqlalchemy.org/en/latest/tutorial/data_select.html)
-- [OWASP LLM Prompt Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html)
+**Next Byte:** natural-language SQL-ஐ enforceable safety controls-உடன் இயக்கலாம்.
