@@ -1,129 +1,171 @@
 ---
-title: "Connect Spring Boot with a Database"
+title: "Build RAG in Spring Boot with Spring AI"
 slug: "03-connect-spring-boot-database"
-summary: "Persist policies with Spring Data JPA, relational modelling, transactions and configuration that keeps secrets outside source code."
+summary: "Connect VectorStore retrieval, Advisors and ChatClient to answer from approved enterprise documents."
 category: "modern-java-spring-boot-genai"
-tags: ["Spring Data JPA tutorial", "Spring Boot database", "Java CRUD application", "JPA relationships", "Spring transactions"]
+tags: ["Modern Java", "Spring Boot", "Spring AI", "Java GenAI", "enterprise AI"]
 level: "beginner"
-duration: "25 min"
-updatedAt: "2026-09-14"
+duration: "24 min"
+updatedAt: "2026-09-18"
 order: 3
+isPopular: true
 ---
 
-<ThemeCard title="Practical outcome" badge="JAVA HANDBOOK 03">
+<ThemeCard title="Your outcome" badge="JAVA & SPRING AI 03">
 
-You will store policy metadata in a relational database and understand the boundary between entity, repository, transaction and API response.
+Connect VectorStore retrieval, Advisors and ChatClient to answer from approved enterprise documents.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="javaData" />
+## Quick Start
 
-## Four objects beginners often mix up
+Our RAG Handbook series explained retrieval-augmented generation conceptually — an AI model answering from your own documents, like an open-book exam. Now let's see how Spring AI brings that same capability into Java, so PaisaWise's Spring Boot backend can answer questions from real policy documents.
 
-| Object | Responsibility | Should it cross the API boundary? |
-|---|---|---|
-| Entity | Maps application state to a table | Usually no |
-| Repository | Loads and saves entities | No |
-| Service | Coordinates a business transaction | No |
-| Response DTO | Presents approved fields to clients | Yes |
+**Time investment:** 20-25 mins.
 
-## Map the policy table
 
-```java
-@Entity
-@Table(name = "policies")
-class PolicyEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+## Meet the Scenario
 
-    @Column(nullable = false)
-    private String title;
+Rahul, now comfortable with `ChatClient` from Byte 2, asks Divya: "Our summarizer is nice, but it doesn't actually know PaisaWise's refund policy — it just summarizes what's given to it. How do we make it answer from our real documents, in Java?" Divya says: "That's RAG, and Spring AI has built-in support for exactly this, through something called the Advisors API."
 
-    @Column(nullable = false)
-    private String department;
 
-    @Column(nullable = false)
-    private LocalDate effectiveFrom;
+## Core Concept
 
-    protected PolicyEntity() {}
-    // focused constructor and accessors
-}
-```
+Recall the RAG Handbook's four stages: chunking documents, creating "meaning fingerprints" (embeddings), storing them in a searchable index, and retrieving the right pieces before answering. In our Python LangChain series, we wired this manually using Chroma. In Java, Spring AI provides a **`VectorStore`** abstraction — the same core idea, just as an interchangeable Spring Bean, and a **`QuestionAnswerAdvisor`** that automatically handles the "search, then answer" flow for you.
 
-```java
-interface PolicyRepository extends JpaRepository<PolicyEntity, Long> {
-    List<PolicyEntity> findByDepartmentIgnoreCase(String department);
-}
-```
+Think of the `VectorStore` as a plug socket — PostgreSQL/pgvector, MongoDB Atlas, Pinecone, Qdrant, and others all fit the same socket. You write your RAG logic once, and swap the underlying storage the same way you'd swap a database driver.
 
-Spring Data implements the repository interface, but you still own the query semantics, indexes and transaction boundary.
 
-## Make one use case one transaction
+## How It Works Under the Hood
+
+**Step 1: Load and store documents (usually done once, as a setup/ingestion task):**
 
 ```java
 @Service
-class PolicyService {
-    @Transactional
-    public PolicyResponse create(CreatePolicyRequest request) {
-        var entity = new PolicyEntity(
-            request.title(), request.department(), request.effectiveFrom());
-        return PolicyResponse.from(repository.save(entity));
+public class PolicyIngestionService {
+
+    private final VectorStore vectorStore;
+
+    public PolicyIngestionService(VectorStore vectorStore) {
+        this.vectorStore = vectorStore;
+    }
+
+    public void ingest(List<Document> policyChunks) {
+        vectorStore.add(policyChunks);
     }
 }
 ```
 
-A transaction should protect a complete business operation. Avoid keeping it open while waiting for a slow LLM or external network call.
+`Document` here is Spring AI's representation of one chunk — conceptually identical to the "index cards" from our RAG Handbook's Byte 1.
 
-## Keep configuration outside code
+**Step 2: Answer questions using retrieved context, via the Advisors API:**
 
-```properties
-spring.datasource.url=${DB_URL}
-spring.datasource.username=${DB_USERNAME}
-spring.datasource.password=${DB_PASSWORD}
-spring.jpa.hibernate.ddl-auto=validate
+```java
+@Service
+public class PolicyQAService {
+
+    private final ChatClient chatClient;
+
+    public PolicyQAService(ChatClient.Builder builder, VectorStore vectorStore) {
+        this.chatClient = builder
+                .defaultAdvisors(new QuestionAnswerAdvisor(vectorStore))
+                .build();
+    }
+
+    public String answer(String question) {
+        return chatClient.prompt()
+                .user(question)
+                .call()
+                .content();
+    }
+}
 ```
 
-Use schema migrations for controlled environments. `ddl-auto=create` is convenient for experiments but dangerous for durable data.
+Notice the method body looks almost identical to Byte 2's `ComplaintSummaryService`. The difference is entirely in the setup: attaching `QuestionAnswerAdvisor` means every call now automatically searches `vectorStore` for relevant chunks and includes them before the model answers — the retrieval step from our RAG Handbook happens transparently, behind this one line of configuration.
 
-<Scenario title="Real-time analogy: a governed records room">
 
-The repository is the records clerk, not the records room. It accepts a precise request and retrieves or stores an approved record. The service decides why that operation is allowed, while the database preserves it durably.
+<JavaStoryVisual variant="rag" />
 
-</Scenario>
+<JavaRAGLab />
 
-## Common mistakes
+## Try It Yourself (Small Snippet)
 
-<Mistakes>
+**Configuring pgvector as the storage backend** (an `application.properties` change, connecting back to our SQL Handbook's pgvector byte):
 
-- Returning JPA entities from controllers.
-- Using eager relationships everywhere and triggering oversized queries.
-- Assuming generated repository methods remove the need to understand SQL.
-- Placing passwords in `application.properties` committed to Git.
-- Calling external AI services inside long database transactions.
+```properties
+spring.ai.vectorstore.pgvector.index-type=HNSW
+spring.ai.vectorstore.pgvector.dimensions=1536
+```
 
-</Mistakes>
+Notice this is the exact same `HNSW` indexing concept from our SQL Handbook's vector search byte — Spring AI isn't reinventing vector search, it's wiring Java into the same underlying pgvector technology.
 
-## Interview bit
 
-<ThemeCard title="What does `@Transactional` provide?" badge="CAREER">
+## Real Company Angle
 
-It defines a transaction boundary so related database operations succeed or fail as one unit. I place it around an application use case, keep the boundary focused and avoid slow external calls inside it.
+Spring AI's Advisors API and auto-configuration for vector stores like PostgreSQL/pgvector, MongoDB Atlas, Pinecone, and Qdrant reflect a broader industry pattern: Java teams don't need to build RAG pipelines from scratch. With Document ETL support that handles ingesting PDFs, S3 files, and other formats with proper chunking, enterprises can go from "raw policy PDFs" to a working, queryable knowledge base largely through configuration and a handful of service classes — rather than the substantial custom pipeline work RAG required just a couple of years ago.
 
-</ThemeCard>
 
-## Key takeaways
+## Common Mistakes
 
-<Takeaways>
+1. **Re-ingesting the same documents on every application restart** — ingestion should typically be a separate, controlled step, not something that runs automatically every time the app boots.
+2. **Forgetting that chunking quality still matters in Java, exactly as covered in our RAG Handbook** — Spring AI handles the plumbing, but poor chunking still leads to poor answers, regardless of language.
+3. **Assuming `QuestionAnswerAdvisor` guarantees correct answers** — as our RAG Handbook's Byte 3 covered, retrieval can still miss the right chunk, or the model can still add unsupported detail; evaluation is still necessary.
+4. **Hardcoding vector dimensions incorrectly** — the `dimensions` property must match your embedding model's actual output size, or storage/retrieval will silently misbehave.
 
-- Entities model persistence; DTOs model the external contract.
-- Repositories provide a data-access boundary, not business policy.
-- Transactions protect complete state changes.
-- Database credentials belong in runtime configuration or a secret manager.
 
-</Takeaways>
+## Persona Wrap-Up
 
-## Primary sources
+Rahul is impressed: "So the entire RAG concept from the earlier handbook — chunk, embed, store, retrieve, generate — maps almost one-to-one onto Spring AI's `VectorStore` and `QuestionAnswerAdvisor`." Meena tests it: "Now it actually answers using our real refund policy, not a generic guess." Divya: "Exactly — and everything we learned about evaluating RAG quality and catching failures still applies here, just running on Java instead of Python."
 
-- [Spring guide: Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa)
-- [Spring Data JPA reference](https://docs.spring.io/spring-data/jpa/reference/)
-- [Spring transaction management](https://docs.spring.io/spring-framework/reference/data-access/transaction.html)
+
+## Compare & Contrast
+
+| Concept | Python (LangChain) | Java (Spring AI) |
+|---|---|---|
+| Storage abstraction | Vector store (e.g., Chroma) | `VectorStore` interface |
+| One chunk of content | `Document` object | `Document` object (same name, same idea) |
+| Automatic retrieval + answer | Custom RAG chain | `QuestionAnswerAdvisor` |
+| Underlying vector databases | Chroma, pgvector, others | pgvector, MongoDB Atlas, Pinecone, Qdrant, others |
+
+
+## Mini Practice Task
+
+Sketch (on paper) how you'd extend `PolicyQAService` to only search a specific category of documents (say, only "refund policy" documents, not all company documents). What would you need to add when calling `vectorStore.add(...)` during ingestion to make that possible later at search time?
+
+
+## Key Takeaways
+
+- Spring AI's `VectorStore` interface plays the same role as Chroma/pgvector in our Python RAG series — an interchangeable storage backend for document chunks.
+- `QuestionAnswerAdvisor` automates the "retrieve relevant chunks, then answer" flow, attached to `ChatClient` with one line of configuration.
+- The underlying concepts — chunking, embeddings, retrieval quality, evaluation — are unchanged from our RAG Handbook; only the implementation language differs.
+- Spring AI supports the same production-grade vector databases (pgvector, MongoDB Atlas, Pinecone, Qdrant) our SQL Handbook covered, so enterprise infrastructure choices carry over.
+- RAG's known failure modes (stale documents, bad chunking, poor retrieval) apply just as much in Java — the language changes, the underlying discipline doesn't.
+
+
+## FAQ / Knowledge Check
+
+**Q1: What Spring AI class automates the "search documents, then answer" RAG flow?**
+`QuestionAnswerAdvisor`, attached to a `ChatClient` via `.defaultAdvisors(...)`.
+
+**Q2: Does moving RAG from Python to Java change the underlying vector database options?**
+No — Spring AI supports the same production vector databases (pgvector, MongoDB Atlas, Pinecone, Qdrant, and others).
+
+**Q3: Does using `QuestionAnswerAdvisor` eliminate the need for RAG evaluation?**
+No — retrieval can still miss the right chunk and the model can still add unsupported detail; the evaluation practices from our RAG Handbook still apply.
+
+**Knowledge Check:**
+1. What Spring AI interface plays the role of a vector database abstraction?
+2. True/False: Chunking quality no longer matters once you're using Spring AI's `QuestionAnswerAdvisor`.
+3. Name one vector database supported by both our SQL Handbook (pgvector) and Spring AI.
+
+*(Answers: 1. `VectorStore`; 2. False — chunking quality still directly affects answer quality, regardless of language; 3. pgvector (PostgreSQL))*
+
+
+*Next byte: **AI Agents and Tool Calling in Spring Boot** — giving your Java-based AI assistant the ability to take actions, not just answer questions.*
+
+
+## References and Further Reading
+
+- [Spring AI Reference](https://docs.spring.io/spring-ai/reference/)
+- [Spring AI ChatClient](https://docs.spring.io/spring-ai/reference/api/chatclient.html)
+- [Spring Boot Reference](https://docs.spring.io/spring-boot/reference/)
