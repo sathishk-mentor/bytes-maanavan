@@ -28,7 +28,7 @@ Retrieval-augmented generation, or **RAG**, lets an AI answer using approved doc
 
 ## Meet the Scenario
 
-Rahul, now comfortable with `ChatClient` from Byte 2, asks Divya: "Our summarizer is nice, but it doesn't actually know PaisaWise's refund policy — it just summarizes what's given to it. How do we make it answer from our real documents, in Java?" Divya says: "That's RAG, and Spring AI has built-in support for exactly this, through something called the Advisors API."
+Rahul asks Divya: "A model can write a fluent answer, but how does it know PaisaWise's actual refund policy?" Divya says: "We retrieve evidence from the approved documents before generating the answer. Spring AI supports this RAG flow through `VectorStore` and the Advisors API."
 
 
 ## Core Concept
