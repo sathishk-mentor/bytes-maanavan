@@ -23,14 +23,14 @@ export const handbooks: Handbook[] = [
   {
     slug: 'github-copilot', title: 'The GitHub Copilot Handbook', shortTitle: 'GitHub Copilot',
     audience: 'Developers', tone: 'blue', status: 'available', category: 'software-engineering', label: 'AI-ASSISTED SOFTWARE ENGINEERING',
-    description: 'Use Copilot as an engineering partner—from context and feature work to debugging, testing and safer delivery.',
-    promise: 'Build a repeatable AI-assisted software engineering workflow.',
+    description: 'Learn inline suggestions, Copilot Chat, effective prompting, agent mode and responsible engineering governance.',
+    promise: 'Use GitHub Copilot productively without giving up engineering judgement.',
     chapters: [
-      { title: 'GitHub Copilot for developers', outcome: 'Choose the right mode for the task.', href: '/software-engineering/01-github-copilot-for-developers/' },
-      { title: 'Give Copilot better context', outcome: 'Supply the goal, files, rules and acceptance checks.', href: '/software-engineering/02-give-github-copilot-better-context/' },
-      { title: 'Debug, test and refactor', outcome: 'Use evidence to find and verify corrections.', href: '/software-engineering/03-debug-test-refactor-with-github-copilot/' },
-      { title: 'Build a feature with Copilot', outcome: 'Plan, implement and verify a focused change.', href: '/software-engineering/04-build-feature-with-github-copilot/' },
-      { title: 'Use Copilot responsibly', outcome: 'Protect security, quality and ownership.', href: '/software-engineering/05-use-github-copilot-responsibly/' },
+      { title: 'What is GitHub Copilot?', outcome: 'Inspect inline suggestions instead of accepting blindly.', href: '/software-engineering/01-github-copilot-for-developers/' },
+      { title: 'Use Copilot Chat with context', outcome: 'Combine code, evidence and expected behaviour.', href: '/software-engineering/02-give-github-copilot-better-context/' },
+      { title: 'Prompt engineering for Copilot', outcome: 'Define goals, constraints and acceptance checks.', href: '/software-engineering/03-debug-test-refactor-with-github-copilot/' },
+      { title: 'Agent mode and multi-file work', outcome: 'Supervise planning, edits, tools and validation.', href: '/software-engineering/04-build-feature-with-github-copilot/' },
+      { title: 'Review and governance', outcome: 'Match safeguards to the impact of a change.', href: '/software-engineering/05-use-github-copilot-responsibly/' },
     ],
   },
   {
