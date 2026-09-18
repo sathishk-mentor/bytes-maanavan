@@ -1,114 +1,177 @@
 ---
-title: "Add Generative AI and RAG to a Java Application"
+title: "AI Agents and Tool Calling in Spring Boot"
 slug: "04-add-generative-ai-rag-java"
-summary: "Use Spring AI to retrieve authorised policy evidence, construct a grounded prompt and return an answer with traceable sources."
+summary: "Expose bounded Java methods as AI tools with validation, authorisation, approval and audit controls."
 category: "modern-java-spring-boot-genai"
-tags: ["Spring AI tutorial", "Java RAG application", "Spring Boot Generative AI", "LangChain4j RAG", "Java document assistant"]
-level: "intermediate"
-duration: "28 min"
-updatedAt: "2026-09-14"
+tags: ["Modern Java", "Spring Boot", "Spring AI", "Java GenAI", "enterprise AI"]
+level: "beginner"
+duration: "24 min"
+updatedAt: "2026-09-18"
 order: 4
-isPopular: true
+isPopular: false
 ---
 
-<ThemeCard title="Practical outcome" badge="JAVA HANDBOOK 04">
+<ThemeCard title="Your outcome" badge="JAVA & SPRING AI 04">
 
-You will understand the complete RAG request path for an Enterprise Policy Assistant and implement a bounded Spring AI service.
+Expose bounded Java methods as AI tools with validation, authorisation, approval and audit controls.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="javaRag" />
+## Quick Start
 
-## Why a model alone is not enough
+Our AI Agents Handbook explained agents as systems that can "perceive, think, and act" — not just answer questions, but actually do things. In this byte, we bring that capability into Java: Spring AI's `@Tool` annotation lets an LLM call your real Spring-managed methods.
 
-The model was not trained on your latest private policies. Asking it directly may produce a fluent but unsupported answer. Retrieval-Augmented Generation finds relevant evidence at request time and places that evidence in the model context.
+**Time investment:** 20-25 mins.
 
-```text
-Question → authorise → retrieve policy chunks → ground prompt → generate → attach citations
-```
 
-RAG does not retrain the model. Your Java application owns retrieval, permissions, prompt rules and source references.
+## Meet the Scenario
 
-## Ingestion and answering are separate paths
+Meena wants to go further than the RAG-based Q&A from Byte 3: "Customers shouldn't just get an answer about their balance — they should be able to ask the assistant to actually check their current balance." Karthik asks: "Isn't that exactly what we covered as an 'agent' in the AI Agents Handbook — but now in Java?" Divya nods: "Exactly — and Spring AI makes this feel just like calling any other Spring service."
 
-| Path | Happens when | Main work |
-|---|---|---|
-| Ingestion | A policy is published or changed | load, clean, chunk, embed, store metadata |
-| Answering | A user asks a question | authorise, retrieve, generate, cite |
 
-Store metadata such as policy ID, department, version, effective date and access group with every chunk. Retrieval must filter by the caller’s permissions before evidence reaches the model.
+## Core Concept
 
-## A bounded Spring AI service
+Recall the AI Agents Handbook's core idea: an agent doesn't just answer from memory or documents — it can call real tools (check a database, call an API) to get live, current information or take an action, then use that result to respond. In Spring AI, "giving the model a tool" is as simple as annotating an existing Java method with `@Tool` — the model can then decide, based on the conversation, when it needs to call that method to answer accurately.
+
+Think of it like a bank teller who has a phone line directly to the vault. The teller doesn't guess the balance from memory — mid-conversation, they place a real call, get the real number, and answer with confidence.
+
+
+## How It Works Under the Hood
+
+**Step 1: Mark an existing method as a tool the model can call:**
 
 ```java
 @Service
-class PolicyAssistant {
-    private final ChatClient chatClient;
+public class AccountTools {
 
-    PolicyAssistant(ChatClient.Builder builder) {
-        this.chatClient = builder.build();
+    private final AccountService accountService;
+
+    public AccountTools(AccountService accountService) {
+        this.accountService = accountService;
     }
 
-    PolicyAnswer ask(String question) {
-        String answer = chatClient.prompt()
-            .system("Answer only from retrieved company policy context. " +
-                    "If evidence is insufficient, say you do not know.")
-            .user(question)
-            .advisors(new QuestionAnswerAdvisor(vectorStore))
-            .call()
-            .content();
-
-        return new PolicyAnswer(answer);
+    @Tool(description = "Get the current account balance for a given account ID")
+    public BalanceResponse getBalance(String accountId) {
+        return accountService.getBalance(accountId);
     }
 }
 ```
 
-This shows the mental model, not a complete production contract. A real response should carry source identifiers collected from retrieval rather than asking the model to invent citations.
+The `description` matters — the model reads it to decide *when* this tool is relevant, exactly like a well-written docstring in our earlier LangChain `@tool` examples.
 
-## Spring AI or LangChain4j?
+**Step 2: Register the tool with `ChatClient`:**
 
-Both provide Java abstractions for models, retrieval and tools. For this handbook, Spring AI is the primary path because the project already uses Spring Boot. Evaluate LangChain4j when its APIs, integrations or team experience better fit the system. Do not mix both merely to appear flexible.
+```java
+@Service
+public class BankingAssistantService {
 
-<Scenario title="Real-time analogy: an HR policy librarian">
+    private final ChatClient chatClient;
 
-The librarian first checks which documents you may access, finds the relevant pages and places them on the desk. Only then is an explanation written, with the document IDs attached. The explanation is useful because the evidence path remains visible.
+    public BankingAssistantService(ChatClient.Builder builder, AccountTools accountTools) {
+        this.chatClient = builder
+                .defaultTools(accountTools)
+                .build();
+    }
 
-</Scenario>
+    public String chat(String userMessage) {
+        return chatClient.prompt()
+                .user(userMessage)
+                .call()
+                .content();
+    }
+}
+```
 
-## Common mistakes
+Now, if a customer asks "What's my balance for account 4521?", the model recognizes it needs live data, calls `getBalance("4521")` behind the scenes, and weaves the real result into its natural-language reply — without the developer writing any manual "if the user asks about balance, call this" logic.
 
-<Mistakes>
 
-- Sending the full policy library to the model for every question.
-- Retrieving first and checking permissions later.
-- Asking the model to create citations without preserving source metadata.
-- Treating a similar chunk as automatically sufficient evidence.
-- Logging private prompts and retrieved text without redaction controls.
+<JavaStoryVisual variant="tools" />
 
-</Mistakes>
+<JavaToolLab />
 
-## Interview bit
+## Try It Yourself (Small Snippet)
 
-<ThemeCard title="Where does RAG responsibility live?" badge="CAREER">
+**Applying the "least-privilege" principle from our AI Agents Handbook, in Java:** restrict a sensitive tool with a check inside the method itself:
 
-The application owns ingestion, access control, retrieval, context construction, citations and evaluation. The model generates within the supplied context. This division keeps private knowledge governed and the answer traceable.
+```java
+@Tool(description = "Process a refund for a given transaction ID")
+public RefundResponse processRefund(String transactionId, String requestingUserRole) {
+    if (!"ADMIN".equals(requestingUserRole)) {
+        throw new AccessDeniedException("Refunds require admin privileges");
+    }
+    return refundService.process(transactionId);
+}
+```
 
-</ThemeCard>
+This mirrors exactly the `require_admin` pattern from our FastAPI Handbook's production byte — the language changed, the guardrail principle didn't.
 
-## Key takeaways
 
-<Takeaways>
+## Real Company Angle
 
-- RAG supplies current evidence without retraining the model.
-- Ingestion and request-time retrieval are different workflows.
-- Authorisation must constrain retrieval before model invocation.
-- Citations come from retrieved metadata, not model memory.
+Spring AI's tool-calling support also integrates the **Model Context Protocol (MCP)**, functioning as both a client and a server — meaning a Spring Boot application's tools can be exposed to, or can consume tools from, external AI agent ecosystems using a shared standard, rather than one-off custom integrations for each system. MCP can reduce one-off integration work when systems need a shared protocol for exposing or consuming tools, but permissions and trust boundaries still require application-level design.
 
-</Takeaways>
 
-## Primary sources
+## Common Mistakes
 
-- [Spring AI reference](https://docs.spring.io/spring-ai/reference/)
-- [Spring AI Retrieval-Augmented Generation](https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html)
-- [Spring AI vector databases](https://docs.spring.io/spring-ai/reference/api/vectordbs.html)
-- [LangChain4j RAG tutorial](https://docs.langchain4j.dev/tutorials/rag)
+1. **Writing a vague `@Tool` description** — if the description doesn't clearly explain when and why to use the tool, the model may call it at the wrong time or not call it when it should.
+2. **Giving every tool method unrestricted access** — as covered in S5, sensitive actions need explicit checks inside the method, not just trust that "the model will behave."
+3. **Forgetting that tool calls can fail** — a database timeout or downstream API error inside a `@Tool` method should be handled gracefully, not left to crash the whole request.
+4. **Registering too many unrelated tools on one `ChatClient`** — this can confuse the model about which tool applies when; grouping related tools (like all `AccountTools`) keeps behavior predictable.
+
+
+## Persona Wrap-Up
+
+Karthik is excited: "So this is the exact same agent concept from the AI Agents Handbook — perceive, think, act — just expressed as a `@Tool` annotation in Java!" Meena tests it: "Customers can now ask natural questions and get real, live answers, not just canned responses." Divya adds: "And critically, the guardrails we learned — least-privilege, careful tool descriptions — carry over directly. The concepts don't change; only the syntax does."
+
+
+## Compare & Contrast
+
+| Concept | Python (LangChain/AI Agents) | Java (Spring AI) |
+|---|---|---|
+| Marking a function as callable by the model | `@tool` decorator | `@Tool` annotation |
+| Registering tools with the model | Passed to `AgentExecutor` | `.defaultTools(...)` on `ChatClient` |
+| Restricting sensitive actions | `require_admin` dependency (FastAPI) | In-method role check |
+| Cross-system tool sharing standard | MCP | MCP (same protocol, same idea) |
+
+
+## Mini Practice Task
+
+Design (on paper) a `@Tool`-annotated method called `freezeCard(String cardId, String requestingUserRole)` that should only be callable by users with the `"ADMIN"` or `"FRAUD_TEAM"` role. Write the `@Tool` description you'd use, and the access-check logic inside the method.
+
+
+## Key Takeaways
+
+- Spring AI's `@Tool` annotation turns an ordinary Java method into something an LLM can call, bringing the AI Agents Handbook's "perceive, think, act" idea into Java.
+- A clear, descriptive `description` on `@Tool` is what helps the model decide when to use it — vague descriptions lead to unreliable behavior.
+- The "least-privilege" guardrail principle from our AI Agents and FastAPI Handbooks applies identically here — sensitive tools need explicit access checks inside the method.
+- Spring AI integrates the Model Context Protocol (MCP), letting Java-based tools interoperate with a broader, standardized AI agent ecosystem.
+- The underlying agent concepts are unchanged from earlier handbooks — only the Java-specific syntax (`@Tool`, `.defaultTools(...)`) is new.
+
+
+## FAQ / Knowledge Check
+
+**Q1: What Spring AI annotation lets an LLM call a real Java method?**
+`@Tool` — placed on a method, with a `description` that tells the model when to use it.
+
+**Q2: Does adding `@Tool` to a sensitive method automatically make it safe?**
+No — sensitive actions still need explicit access/role checks inside the method itself, following the same "least-privilege" principle from our AI Agents Handbook.
+
+**Q3: What does MCP support in Spring AI enable?**
+It lets Java-based tools be exposed to, or consume tools from, external AI agent systems using a shared, standardized protocol.
+
+**Knowledge Check:**
+1. What determines whether the model correctly decides when to call a given `@Tool` method?
+2. True/False: Once a method is marked `@Tool`, no additional access control is needed inside it.
+3. What earlier handbook's guardrail principle directly applies to restricting sensitive `@Tool` methods?
+
+*(Answers: 1. The clarity and accuracy of its `description`; 2. False — sensitive tools still need explicit in-method access checks; 3. The AI Agents Handbook's "least-privilege" principle)*
+
+
+*Next byte: **Production Concerns for Java/Spring Boot GenAI Apps** — security, observability, scaling, and cost as these systems go live.*
+
+
+## References and Further Reading
+
+- [Spring AI Reference](https://docs.spring.io/spring-ai/reference/)
+- [Spring AI ChatClient](https://docs.spring.io/spring-ai/reference/api/chatclient.html)
+- [Spring Boot Reference](https://docs.spring.io/spring-boot/reference/)
