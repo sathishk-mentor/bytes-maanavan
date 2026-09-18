@@ -19,14 +19,14 @@ Secure, observe and protect AI endpoints with timeouts, bounded retries, fallbac
 
 ## Quick Start
 
-We've built Spring Boot basics, connected to LLMs, added RAG, and given our assistant tools to take real actions. In this final byte, let's cover what changes when this Java-based AI system goes from working prototype to real, production banking feature.
+A working AI endpoint is only the starting point. This Byte explains what a Java AI service needs before real users depend on it: security, timeouts, bounded retries, fallbacks, observability and operational testing. It can be read independently as a production-readiness guide.
 
 **Time investment:** 20-25 mins.
 
 
 ## Meet the Scenario
 
-With PaisaWise's Java-based AI assistant now working end-to-end, Meena raises the same concern we heard in our FastAPI Handbook: "This needs to be secure, observable, and reliable before 200,000 customers touch it." Karthik asks: "Isn't this the same conversation we already had for our Python API?" Divya says: "Almost identical concerns — just with Java/Spring Boot's own tools for solving them."
+With PaisaWise's Java-based AI assistant working end-to-end, Meena raises the production question: "This must be secure, observable and reliable before customers depend on it." Karthik asks: "What happens when the model is slow or unavailable?" Divya replies: "We design those failure paths before launch, using Java and Spring's operational controls."
 
 
 ## Core Concept
@@ -65,7 +65,7 @@ public String generateReport(String accountId) {
 }
 ```
 
-**4. Observability** — Spring Boot's Actuator, combined with standard logging, gives visibility into which tools were called, how long LLM calls took, and where failures happened — the same audit-trail principle from our AI Agents and FastAPI Handbooks, using Java's own mature tooling.
+**4. Observability** — Spring Boot Actuator, metrics and structured logging can reveal which tools were called, how long model requests took and where failures occurred. Record useful operational facts without logging sensitive prompts or customer data.
 
 
 <JavaStoryVisual variant="production" />
@@ -98,12 +98,12 @@ Production teams need evidence from their own traffic: authentication failures, 
 1. **Assuming Spring Security "just works" on new AI endpoints without configuration** — new controllers still need explicit `@PreAuthorize` or equivalent rules; nothing is secure by default.
 2. **Retrying LLM calls indefinitely** — `@Retryable` needs a sensible `maxAttempts`; unlimited retries on a genuinely failing dependency can make an outage worse, not better.
 3. **No concurrency limits on expensive AI operations** — without `@ConcurrencyLimit` or similar, a traffic spike can let too many simultaneous LLM calls overwhelm the application or blow through API rate limits.
-4. **Treating observability as optional** — without visibility into tool calls and LLM latency, diagnosing a production issue (as we saw could happen in our RAG Handbook) becomes guesswork.
+4. **Treating observability as optional** — without visibility into retrieval, tool calls, model latency and failures, diagnosing a production incident becomes guesswork.
 
 
 ## Persona Wrap-Up
 
-At the end of the full handbook, Meena reflects: "We started by asking whether to abandon our Python prototype — and instead, we brought the same AI capability into Java with the same reliability our banking systems already require." Karthik adds: "The concepts were consistent throughout — RAG, agents, guardrails — only the syntax changed from Python to Java." Rahul, thinking of his career: "This shows me enterprise AI engineering isn't about picking one language forever — it's about knowing which tool fits which part of the system." Divya closes: "Exactly — and that completes the full picture: LangChain, AI Agents, SQL, FastAPI, RAG, and now enterprise Java — the same principles, expressed in the languages that actually run production systems."
+Meena reviews the launch checklist: "The feature works, but now we can also explain who may use it, what happens during a timeout and how the team detects failures." Karthik adds: "Production readiness is not one annotation—it is a set of controls working together." Divya closes: "Exactly. A reliable AI service has safe defaults, visible behaviour and a tested recovery path."
 
 
 ## Compare & Contrast
@@ -123,7 +123,7 @@ Design (on paper) a `@Retryable` configuration for a `checkFraudSignal(String tr
 
 ## Key Takeaways
 
-- Production Java/Spring Boot AI systems need the same three pillars as any production API: authentication, error handling, and observability — covered in our FastAPI Handbook.
+- Production Java/Spring Boot AI systems need three core pillars: authentication and authorization, resilient error handling, and observability.
 - Production AI endpoints need explicit timeout, bounded retry, concurrency, fallback and observability policies.
 - Least-privilege access control can be applied at the method level (Byte 4) or the whole-controller level (`@PreAuthorize` on the class) depending on how broadly a restriction should apply.
 - Enterprises prioritize built-in security, observability, and long-term support — areas where Java's mature ecosystem offers a head start over building equivalent tooling from scratch.
@@ -143,14 +143,20 @@ It prevents too many simultaneous calls to an expensive operation (like an LLM c
 No — it still needs explicit security configuration, such as `@PreAuthorize`, just like any other REST endpoint.
 
 **Knowledge Check:**
-1. Name the three production pillars carried over from our FastAPI Handbook to Java/Spring Boot.
+1. Name the three production pillars required by a Java/Spring Boot AI service.
 2. True/False: `@Retryable` should generally be configured with unlimited retry attempts for maximum reliability.
 3. Why do concurrency limits matter specifically for LLM-calling operations, beyond just reliability?
 
 *(Answers: 1. Authentication, error handling, and observability/monitoring; 2. False — a sensible `maxAttempts` is needed, since unlimited retries on a failing dependency can worsen an outage; 3. LLM calls are often the most expensive operation in a request, so limiting concurrency also controls cost, not just system load)*
 
 
-*This concludes the **Modern Java with Spring Boot and GenAI Handbook**. Across all 5 bytes — Spring Boot fundamentals, Spring AI's `ChatClient`, RAG with `VectorStore`, agentic tool calling, and production resilience — PaisaWise's Java backend now carries the same AI capabilities as its Python prototypes, with the reliability enterprise banking systems require. Combined with our LangChain, AI Agents, SQL, FastAPI, and RAG series, this completes a full-stack view of building trustworthy AI applications across languages. All the best on your Java + GenAI journey!*
+*You now have a practical path from a Spring Boot endpoint to a production-aware Java AI service: connect the model, ground answers when needed, expose only controlled tools, and design for failure. Continue with whichever topic matches your next task; related Bytes are linked below as optional references.*
+
+### Related Bytes
+
+- [What Is RAG?](/rag-application-engineering/01-what-is-rag-give-ai-access-to-your-knowledge/) — understand document-grounded answers.
+- [How an AI Agent Works](/ai-agents/02-how-an-ai-agent-works-goal-reasoning-tools-actions/) — explore goals, tools, actions and checks.
+- [Secure and Deploy a Production FastAPI Service](/fastapi-ai-applications/05-secure-test-deploy-production-fastapi/) — compare production safeguards in a Python API.
 
 
 ## References and Further Reading
