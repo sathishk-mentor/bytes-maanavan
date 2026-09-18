@@ -19,19 +19,21 @@ Expose bounded Java methods as AI tools with validation, authorisation, approval
 
 ## Quick Start
 
-Our AI Agents Handbook explained agents as systems that can "perceive, think, and act" — not just answer questions, but actually do things. In this byte, we bring that capability into Java: Spring AI's `@Tool` annotation lets an LLM call your real Spring-managed methods.
+An AI assistant becomes agentic when it can use controlled tools—not only generate text. This Byte introduces that idea from the beginning and shows how Spring AI's `@Tool` annotation lets an LLM call approved Spring-managed methods.
+
+> **Optional foundation:** New to agents and tools? Read [How an AI Agent Works](/ai-agents/02-how-an-ai-agent-works-goal-reasoning-tools-actions/) for a simple conceptual walkthrough.
 
 **Time investment:** 20-25 mins.
 
 
 ## Meet the Scenario
 
-Meena wants to go further than the RAG-based Q&A from Byte 3: "Customers shouldn't just get an answer about their balance — they should be able to ask the assistant to actually check their current balance." Karthik asks: "Isn't that exactly what we covered as an 'agent' in the AI Agents Handbook — but now in Java?" Divya nods: "Exactly — and Spring AI makes this feel just like calling any other Spring service."
+Meena wants the assistant to do more than answer from documents: "Customers should be able to ask it to check their current balance." Karthik asks: "How can a language model safely access live banking data?" Divya replies: "We expose a narrowly scoped Java method as a tool, then enforce permissions inside the application."
 
 
 ## Core Concept
 
-Recall the AI Agents Handbook's core idea: an agent doesn't just answer from memory or documents — it can call real tools (check a database, call an API) to get live, current information or take an action, then use that result to respond. In Spring AI, "giving the model a tool" is as simple as annotating an existing Java method with `@Tool` — the model can then decide, based on the conversation, when it needs to call that method to answer accurately.
+An agent can call a real tool—such as a database query or API—to obtain current information or perform an approved action, then use the result in its response. In Spring AI, annotating a Java method with `@Tool` makes its purpose and inputs available to the model. The application still controls authentication, authorization and execution.
 
 Think of it like a bank teller who has a phone line directly to the vault. The teller doesn't guess the balance from memory — mid-conversation, they place a real call, get the real number, and answer with confidence.
 
@@ -57,7 +59,7 @@ public class AccountTools {
 }
 ```
 
-The `description` matters — the model reads it to decide *when* this tool is relevant, exactly like a well-written docstring in our earlier LangChain `@tool` examples.
+The `description` matters because the model reads it to decide *when* the tool is relevant. Write a precise purpose, expected inputs and important limits.
 
 **Step 2: Register the tool with `ChatClient`:**
 
@@ -91,7 +93,7 @@ Now, if a customer asks "What's my balance for account 4521?", the model recogni
 
 ## Try It Yourself (Small Snippet)
 
-**Applying the "least-privilege" principle from our AI Agents Handbook, in Java:** restrict a sensitive tool with a check inside the method itself:
+**Apply least privilege in Java:** restrict a sensitive tool with a check inside the method itself:
 
 ```java
 @Tool(description = "Process a refund for a given transaction ID")
@@ -103,7 +105,7 @@ public RefundResponse processRefund(String transactionId, String requestingUserR
 }
 ```
 
-This mirrors exactly the `require_admin` pattern from our FastAPI Handbook's production byte — the language changed, the guardrail principle didn't.
+The key guardrail is language-independent: authenticate the caller and authorize the specific action before sensitive code runs.
 
 
 ## Real Company Angle
@@ -121,7 +123,7 @@ Spring AI's tool-calling support also integrates the **Model Context Protocol (M
 
 ## Persona Wrap-Up
 
-Karthik is excited: "So this is the exact same agent concept from the AI Agents Handbook — perceive, think, act — just expressed as a `@Tool` annotation in Java!" Meena tests it: "Customers can now ask natural questions and get real, live answers, not just canned responses." Divya adds: "And critically, the guardrails we learned — least-privilege, careful tool descriptions — carry over directly. The concepts don't change; only the syntax does."
+Karthik summarizes: "The model interprets the request, selects an approved tool and uses its result." Meena tests it: "Customers can ask natural questions and receive current information." Divya adds: "The tool description guides selection, but Java-side permissions remain the final authority."
 
 
 ## Compare & Contrast
@@ -141,11 +143,11 @@ Design (on paper) a `@Tool`-annotated method called `freezeCard(String cardId, S
 
 ## Key Takeaways
 
-- Spring AI's `@Tool` annotation turns an ordinary Java method into something an LLM can call, bringing the AI Agents Handbook's "perceive, think, act" idea into Java.
+- Spring AI's `@Tool` annotation exposes an approved Java method for model-directed tool calling.
 - A clear, descriptive `description` on `@Tool` is what helps the model decide when to use it — vague descriptions lead to unreliable behavior.
-- The "least-privilege" guardrail principle from our AI Agents and FastAPI Handbooks applies identically here — sensitive tools need explicit access checks inside the method.
+- Least privilege applies to every sensitive tool: grant only the permissions required for the requested action.
 - Spring AI integrates the Model Context Protocol (MCP), letting Java-based tools interoperate with a broader, standardized AI agent ecosystem.
-- The underlying agent concepts are unchanged from earlier handbooks — only the Java-specific syntax (`@Tool`, `.defaultTools(...)`) is new.
+- `@Tool` and `.defaultTools(...)` provide Java-specific integration, while the application remains responsible for validation, authorization and audit logging.
 
 
 ## FAQ / Knowledge Check
@@ -154,7 +156,7 @@ Design (on paper) a `@Tool`-annotated method called `freezeCard(String cardId, S
 `@Tool` — placed on a method, with a `description` that tells the model when to use it.
 
 **Q2: Does adding `@Tool` to a sensitive method automatically make it safe?**
-No — sensitive actions still need explicit access/role checks inside the method itself, following the same "least-privilege" principle from our AI Agents Handbook.
+No. Sensitive actions still need explicit access and role checks inside the application method.
 
 **Q3: What does MCP support in Spring AI enable?**
 It lets Java-based tools be exposed to, or consume tools from, external AI agent systems using a shared, standardized protocol.
@@ -162,9 +164,9 @@ It lets Java-based tools be exposed to, or consume tools from, external AI agent
 **Knowledge Check:**
 1. What determines whether the model correctly decides when to call a given `@Tool` method?
 2. True/False: Once a method is marked `@Tool`, no additional access control is needed inside it.
-3. What earlier handbook's guardrail principle directly applies to restricting sensitive `@Tool` methods?
+3. Which security principle should restrict sensitive `@Tool` methods?
 
-*(Answers: 1. The clarity and accuracy of its `description`; 2. False — sensitive tools still need explicit in-method access checks; 3. The AI Agents Handbook's "least-privilege" principle)*
+*(Answers: 1. The clarity and accuracy of its `description`; 2. False—sensitive tools still need explicit application-side access checks; 3. Least privilege)*
 
 
 *Next byte: **Production Concerns for Java/Spring Boot GenAI Apps** — security, observability, scaling, and cost as these systems go live.*
