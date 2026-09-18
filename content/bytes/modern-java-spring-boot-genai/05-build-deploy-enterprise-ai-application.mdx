@@ -1,118 +1,160 @@
 ---
-title: "Build and Deploy an Enterprise AI Application"
+title: "Production Java and Spring Boot GenAI Applications"
 slug: "05-build-deploy-enterprise-ai-application"
-summary: "Learn how to secure, test, observe, containerise and deploy a Java Enterprise Policy Assistant with practical production controls."
+summary: "Secure, observe and protect AI endpoints with timeouts, bounded retries, fallbacks, tests and cost controls."
 category: "modern-java-spring-boot-genai"
-tags: ["Spring Boot security", "Spring Boot Docker", "Java AI deployment", "Spring Boot testing", "production GenAI application"]
-level: "intermediate"
-duration: "27 min"
-updatedAt: "2026-09-14"
+tags: ["Modern Java", "Spring Boot", "Spring AI", "Java GenAI", "enterprise AI"]
+level: "beginner"
+duration: "25 min"
+updatedAt: "2026-09-18"
 order: 5
+isPopular: false
 ---
 
-<ThemeCard title="Practical outcome" badge="JAVA HANDBOOK 05">
+<ThemeCard title="Your outcome" badge="JAVA & SPRING AI 05">
 
-You will turn the working assistant into a release candidate with identity, tests, telemetry, safe configuration and repeatable packaging.
+Secure, observe and protect AI endpoints with timeouts, bounded retries, fallbacks, tests and cost controls.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="javaProduction" />
+## Quick Start
 
-## Production-ready means evidence, not confidence
+We've built Spring Boot basics, connected to LLMs, added RAG, and given our assistant tools to take real actions. In this final byte, let's cover what changes when this Java-based AI system goes from working prototype to real, production banking feature.
 
-A successful local response proves only one path. Enterprise readiness requires evidence across several boundaries:
+**Time investment:** 20-25 mins.
 
-| Boundary | Question to prove |
-|---|---|
-| Identity | Who is calling and what may they access? |
-| Contract | Are valid and invalid API behaviours tested? |
-| AI quality | Is the answer supported by retrieved policy evidence? |
-| Operations | Can we see latency, failures and model cost? |
-| Deployment | Can we reproduce, roll back and recover the service? |
 
-## Apply least-privilege access
+## Meet the Scenario
+
+With PaisaWise's Java-based AI assistant now working end-to-end, Meena raises the same concern we heard in our FastAPI Handbook: "This needs to be secure, observable, and reliable before 200,000 customers touch it." Karthik asks: "Isn't this the same conversation we already had for our Python API?" Divya says: "Almost identical concerns — just with Java/Spring Boot's own tools for solving them."
+
+
+## Core Concept
+
+Recall the bank-branch analogy: a production system needs authentication, defined failure handling and observable operations. For external LLM calls, add explicit timeouts, bounded retries where safe, concurrency controls and a controlled fallback using well-supported Spring libraries and infrastructure.
+
+
+## How It Works Under the Hood
+
+**1. Authentication and access control** — Spring Security integrates the same way it always has, protecting AI-powered endpoints exactly like any other REST endpoint:
 
 ```java
-@Bean
-SecurityFilterChain security(HttpSecurity http) throws Exception {
-    return http
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/actuator/health").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/policies/**")
-                .hasRole("POLICY_ADMIN")
-            .anyRequest().authenticated())
-        .oauth2ResourceServer(oauth -> oauth.jwt())
-        .build();
+@PreAuthorize("hasRole('CUSTOMER')")
+@PostMapping("/assistant/chat")
+public String chat(@RequestBody String message, Authentication auth) {
+    return bankingAssistantService.chat(message);
 }
 ```
 
-Endpoint permission is only the first gate. Retrieval must also filter policy chunks by the authenticated user’s scope.
+**2. Resilience around external calls** — configure a timeout first, then use bounded retry only for safe transient failures. Libraries such as Spring Retry or Resilience4j can apply these policies explicitly:
 
-## Test the failure paths
-
-- Unit-test policy rules without Spring.
-- Slice-test controller validation and status codes.
-- Integration-test database mappings with a real compatible database.
-- Evaluate retrieval using known questions and expected sources.
-- Test model timeout, provider throttling and insufficient evidence.
-
-## Package the application
-
-```dockerfile
-FROM eclipse-temurin:21-jre
-WORKDIR /app
-COPY target/policy-assistant.jar app.jar
-USER 10001
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+```java
+@Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500))
+public String callModelSafely(String prompt) {
+    return chatClient.prompt().user(prompt).call().content();
+}
 ```
 
-Build the JAR outside this runtime stage or use a multi-stage build. Inject database and model credentials at runtime; never bake them into the image.
+**3. Concurrency limiting (the "bulkhead" pattern)** — `@ConcurrencyLimit` controls how many simultaneous calls hit an expensive AI operation, preventing one busy feature from overwhelming the whole application:
 
-## Observe the complete answer path
+```java
+@ConcurrencyLimit(10)
+public String generateReport(String accountId) {
+    // expensive LLM call, limited to 10 concurrent executions
+    ...
+}
+```
 
-Capture request ID, authenticated scope, retrieval duration, retrieved document IDs, model latency, token usage and final status. Avoid recording raw private policy text by default. Alerts should distinguish dependency failure from low retrieval quality.
+**4. Observability** — Spring Boot's Actuator, combined with standard logging, gives visibility into which tools were called, how long LLM calls took, and where failures happened — the same audit-trail principle from our AI Agents and FastAPI Handbooks, using Java's own mature tooling.
 
-<Scenario title="Real-time scenario: a policy answer after a rule change">
 
-A travel policy changes on Friday. Ingestion creates new versioned chunks and retires the previous version. On Monday, an employee’s authorised query retrieves only the active policy, returns its source ID and produces a trace linking the API request, retrieval and model call. If the model provider times out, the API returns a controlled failure rather than an invented answer.
+<JavaStoryVisual variant="production" />
 
-</Scenario>
+<JavaProductionLab />
 
-## Common mistakes
+## Try It Yourself (Small Snippet)
 
-<Mistakes>
+**Applying least-privilege to a whole controller, not just one method:**
 
-- Protecting the endpoint but not filtering retrieved documents.
-- Testing only successful model responses.
-- Logging secrets, prompts or private evidence indiscriminately.
-- Running the container as root without a reason.
-- Deploying without health checks, timeouts or rollback criteria.
+```java
+@RestController
+@RequestMapping("/api/admin/refunds")
+@PreAuthorize("hasRole('ADMIN')")
+public class RefundAdminController {
+    // every endpoint here requires ADMIN role automatically
+}
+```
 
-</Mistakes>
+Compare this to Byte 4's in-method role check — Spring Security lets you apply the same guardrail at the class level, reducing the chance of forgetting the check on a new method later.
 
-## Interview bit
 
-<ThemeCard title="How would you productionise a Java RAG application?" badge="CAREER">
+## Real Company Angle
 
-I would secure both API and retrieval scopes, validate contracts, evaluate retrieval and grounded answers, add timeouts and controlled failure behaviour, capture privacy-aware traces and metrics, inject secrets at runtime, package a minimal non-root container and deploy with health checks and rollback support.
+Production teams need evidence from their own traffic: authentication failures, model latency, token usage, timeout rate, fallback rate and cost per use case. Spring Security and Actuator provide important building blocks, while resilience and cost controls must be configured for the application’s actual provider and risk profile.
 
-</ThemeCard>
 
-## Key takeaways
+## Common Mistakes
 
-<Takeaways>
+1. **Assuming Spring Security "just works" on new AI endpoints without configuration** — new controllers still need explicit `@PreAuthorize` or equivalent rules; nothing is secure by default.
+2. **Retrying LLM calls indefinitely** — `@Retryable` needs a sensible `maxAttempts`; unlimited retries on a genuinely failing dependency can make an outage worse, not better.
+3. **No concurrency limits on expensive AI operations** — without `@ConcurrencyLimit` or similar, a traffic spike can let too many simultaneous LLM calls overwhelm the application or blow through API rate limits.
+4. **Treating observability as optional** — without visibility into tool calls and LLM latency, diagnosing a production issue (as we saw could happen in our RAG Handbook) becomes guesswork.
 
-- Security must cover the endpoint and the evidence retrieved behind it.
-- Test deterministic code, integration boundaries and AI quality separately.
-- Observability should follow one request from API to retrieval to model.
-- Docker creates a repeatable package; deployment still needs health and recovery controls.
 
-</Takeaways>
+## Persona Wrap-Up
 
-## Primary sources
+At the end of the full handbook, Meena reflects: "We started by asking whether to abandon our Python prototype — and instead, we brought the same AI capability into Java with the same reliability our banking systems already require." Karthik adds: "The concepts were consistent throughout — RAG, agents, guardrails — only the syntax changed from Python to Java." Rahul, thinking of his career: "This shows me enterprise AI engineering isn't about picking one language forever — it's about knowing which tool fits which part of the system." Divya closes: "Exactly — and that completes the full picture: LangChain, AI Agents, SQL, FastAPI, RAG, and now enterprise Java — the same principles, expressed in the languages that actually run production systems."
 
-- [Spring Security reference](https://docs.spring.io/spring-security/reference/)
-- [Spring Boot testing](https://docs.spring.io/spring-boot/reference/testing/)
-- [Spring Boot Actuator](https://docs.spring.io/spring-boot/reference/actuator/)
-- [Spring Boot container images](https://docs.spring.io/spring-boot/reference/packaging/container-images/)
+
+## Compare & Contrast
+
+| Concern | FastAPI (Python) | Spring Boot (Java) |
+|---|---|---|
+| Authentication | JWT + OAuth2 via `Depends()` | Spring Security via `@PreAuthorize` |
+| Retrying failed calls | Manual try/except logic | Built-in `@Retryable` annotation |
+| Limiting concurrent load | Manual rate limiting | Built-in `@ConcurrencyLimit` |
+| Observability | Structured logging | Actuator + structured logging |
+
+
+## Mini Practice Task
+
+Design (on paper) a `@Retryable` configuration for a `checkFraudSignal(String transactionId)` method that calls an external fraud-detection AI service. Decide: how many retry attempts feel reasonable, and what should happen if all retries fail (should the transaction proceed, or pause for manual review)?
+
+
+## Key Takeaways
+
+- Production Java/Spring Boot AI systems need the same three pillars as any production API: authentication, error handling, and observability — covered in our FastAPI Handbook.
+- Production AI endpoints need explicit timeout, bounded retry, concurrency, fallback and observability policies.
+- Least-privilege access control can be applied at the method level (Byte 4) or the whole-controller level (`@PreAuthorize` on the class) depending on how broadly a restriction should apply.
+- Enterprises prioritize built-in security, observability, and long-term support — areas where Java's mature ecosystem offers a head start over building equivalent tooling from scratch.
+- Cost control matters as much as reliability — concurrency limits and caching directly affect what an AI feature costs to run at real customer scale.
+
+
+## FAQ / Knowledge Check
+
+**Q1: Why must retries be bounded?**
+
+Because repeated model calls can amplify latency, overload and cost. Retry only safe transient failures with strict limits.
+
+**Q2: What does `@ConcurrencyLimit` protect against?**
+It prevents too many simultaneous calls to an expensive operation (like an LLM call) from overwhelming the application — the "bulkhead" pattern.
+
+**Q3: Is a new AI-powered controller secure by default in Spring Boot?**
+No — it still needs explicit security configuration, such as `@PreAuthorize`, just like any other REST endpoint.
+
+**Knowledge Check:**
+1. Name the three production pillars carried over from our FastAPI Handbook to Java/Spring Boot.
+2. True/False: `@Retryable` should generally be configured with unlimited retry attempts for maximum reliability.
+3. Why do concurrency limits matter specifically for LLM-calling operations, beyond just reliability?
+
+*(Answers: 1. Authentication, error handling, and observability/monitoring; 2. False — a sensible `maxAttempts` is needed, since unlimited retries on a failing dependency can worsen an outage; 3. LLM calls are often the most expensive operation in a request, so limiting concurrency also controls cost, not just system load)*
+
+
+*This concludes the **Modern Java with Spring Boot and GenAI Handbook**. Across all 5 bytes — Spring Boot fundamentals, Spring AI's `ChatClient`, RAG with `VectorStore`, agentic tool calling, and production resilience — PaisaWise's Java backend now carries the same AI capabilities as its Python prototypes, with the reliability enterprise banking systems require. Combined with our LangChain, AI Agents, SQL, FastAPI, and RAG series, this completes a full-stack view of building trustworthy AI applications across languages. All the best on your Java + GenAI journey!*
+
+
+## References and Further Reading
+
+- [Spring AI Reference](https://docs.spring.io/spring-ai/reference/)
+- [Spring AI ChatClient](https://docs.spring.io/spring-ai/reference/api/chatclient.html)
+- [Spring Boot Reference](https://docs.spring.io/spring-boot/reference/)
