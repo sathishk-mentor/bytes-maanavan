@@ -30,11 +30,18 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
   const Icon = profile.icons[safeIndex];
   const cardStyle = { '--path-accent': profile.accent, '--path-glow': profile.glow, '--path-index': chapterNumber - 1 } as CSSProperties;
 
-  return <Link className="library-byte-card journey-byte-card" href={`/${chapter.category}/${chapter.slug}/`} style={cardStyle} aria-label={`Byte ${chapterNumber}: ${chapter.title}`}>
+  return <Link className={`library-byte-card journey-byte-card journey-scene-${safeIndex + 1}`} href={`/${chapter.category}/${chapter.slug}/`} style={cardStyle} aria-label={`Byte ${chapterNumber}: ${chapter.title}`}>
     <span className="journey-connector" aria-hidden="true"><i/></span>
     <div className="journey-card-visual" aria-hidden="true">
-      <span className="journey-grid"/><span className="journey-orbit journey-orbit-one"/><span className="journey-orbit journey-orbit-two"/>
-      <Icon/><b>{String(chapterNumber).padStart(2, '0')}</b>
+      <span className="journey-grid"/>
+      <span className="journey-scene-label">{profile.stages[safeIndex]}</span>
+      <div className="journey-scene">
+        <span className="scene-node scene-node-a"><Icon/></span>
+        <span className="scene-line scene-line-a"/><span className="scene-line scene-line-b"/>
+        <span className="scene-node scene-node-b"><i/></span><span className="scene-node scene-node-c"><i/></span>
+        <span className="scene-signal"><i/><i/><i/></span>
+      </div>
+      <b>{String(chapterNumber).padStart(2, '0')}</b>
     </div>
     <div className="journey-card-content">
       <header className="journey-card-header">
