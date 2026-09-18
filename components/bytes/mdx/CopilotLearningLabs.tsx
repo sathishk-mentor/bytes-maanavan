@@ -1,4 +1,5 @@
 'use client';
+// Five purpose-built practice interactions for the Copilot learning path.
 import { useState } from 'react';
 import { CheckCircle2, Play, ShieldCheck, Sparkles } from 'lucide-react';
 function Shell({title,intro,children}:{title:string;intro:string;children:React.ReactNode}){return <section className="copilot-lab"><header><span><Sparkles/>INTERACTIVE COPILOT LAB</span><h3>{title}</h3><p>{intro}</p></header>{children}</section>}
