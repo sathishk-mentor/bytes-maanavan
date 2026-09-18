@@ -1,179 +1,128 @@
 ---
-title: "Embeddings, Vector Databases and Semantic Search"
+title: "Why RAG Answers Go Wrong"
 slug: "03-embeddings-vector-databases-semantic-search"
-summary: "Understand embeddings without mathematics overload and improve retrieval with metadata filters, hybrid search and reranking."
+summary: "Diagnose stale sources, broken chunks, weak retrieval and unsupported generation before users are affected."
 category: "rag-application-engineering"
-tags: ["embeddings explained", "vector database tutorial", "semantic search", "hybrid search RAG", "RAG retrieval"]
+tags: ["RAG for beginners", "retrieval augmented generation", "grounded AI", "RAG evaluation", "enterprise AI"]
 level: "beginner"
-duration: "21 min"
-updatedAt: "2026-09-14"
+duration: "22 min"
+updatedAt: "2026-09-18"
 order: 3
-isPopular: true
+isPopular: false
 ---
 
 <ThemeCard title="Your outcome" badge="RAG HANDBOOK 03">
 
-You will understand what embeddings and vector databases actually do, then design a retrieval pipeline that balances meaning, exact terms, permissions and ranking.
+Diagnose stale sources, broken chunks, weak retrieval and unsupported generation before users are affected.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="ragSearch" />
+## Quick Start
 
-## Search by meaning, not only matching words
+We've seen how RAG is supposed to work. Now let's be honest about where it breaks — because in real deployments, it does, more often than most people expect. Understanding the failure patterns is the first step to preventing them.
 
-A keyword engine may struggle when the document says **“carry forward unused leave”** and the user asks **“Can remaining vacation days move to next year?”** The wording differs, but the intent is similar.
+**Time investment:** 20-25 mins.
 
-An **embedding model** converts text into a fixed-length vector—a list of numbers that represents aspects of meaning. Similar ideas tend to occupy nearby regions in that model’s vector space.
 
-```text
-"carry forward unused leave"  ┐
-                               ├── close in vector space
-"move vacation to next year" ┘
-```
+## Meet the Scenario
 
-Embeddings are not summaries and individual numbers are not human-readable facts. Their value comes from comparing vectors created by the same compatible model.
+Meena asks: “If RAG can still fail in production, is it unreliable?” Divya replies: “It means every stage needs evidence and testing. Once we recognise the failure pattern, we can design the correct control.”
 
-## What a vector database stores
 
-For each chunk, a vector store typically keeps:
+## Core Concept
 
-- a vector used for similarity search;
-- original chunk text used as evidence;
-- metadata used for filters and citations; and
-- a stable identifier used for update and deletion.
+Think of a RAG system as a **relay race with four runners**: the source documents, the chunking process, the retrieval search, and the AI model's final answer. If any one runner drops the baton, the whole race fails — even if the other three ran perfectly. Most people blame the last runner (the AI model, for "hallucinating"), but research shows the baton is usually dropped much earlier, in stages most people never think to check.
 
-At query time the application embeds the question, searches for nearby chunk vectors and returns the top candidates.
 
-```python
-from langchain_openai import OpenAIEmbeddings
-from langchain_core.vectorstores import InMemoryVectorStore
+## How It Works Under the Hood
 
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-store = InMemoryVectorStore(embeddings)
-store.add_documents(chunks)
+Here are the four places a RAG system typically breaks, explained plainly:
 
-results = store.similarity_search(
-    "Can unused vacation move to next year?",
-    k=5,
-)
-```
+**1. The source documents are messy or outdated.** If PaisaWise updates a refund policy but the old version is still sitting in the document library, the system can confidently retrieve and quote the *wrong, outdated* policy — sounding completely sure of itself while being wrong.
 
-An in-memory store is useful for learning. Production selection should consider scale, latency, durability, filtering, backup, data location, encryption and operational skill.
+**2. The chunking cuts information apart.** A policy rule and its exception may land in separate chunks. The retriever can then return the rule without the exception, producing an incomplete answer.
 
-## Similarity score is not truth
+**3. The retrieval search misses the right piece.** Even with clean documents, search can return text that sounds similar but does not actually answer the question.
 
-A search score describes closeness according to a model and search configuration. It does not prove the passage is correct, current, authorised or sufficient.
+**4. The AI model still adds its own guesses on top.** Even when handed the correct information, models can blend it with things they "remember" from training, add unsupported details, or misread information buried in the middle of a long passage — this is sometimes called the "lost in the middle" effect.
 
-The nearest chunks may fail because:
+There is another subtle danger: a citation can make an answer look trustworthy even when the cited passage does not support the claim. A citation shows the source used; reviewers must still check whether the answer is faithful to it.
 
-- the source wording is highly domain-specific;
-- exact identifiers matter more than semantic similarity;
-- several chunks repeat the same general statement;
-- an old policy is semantically closer than the current one; or
-- the query combines multiple intents.
 
-## Add the missing precision controls
+<RAGStoryVisual variant="failure" />
 
-### Metadata filtering
+<RAGFailureLab />
 
-Filter candidate evidence before it reaches the model:
+## Try It Yourself (Reflection Exercise)
 
-```python
-retriever = store.as_retriever(
-    search_kwargs={
-        "k": 6,
-        "filter": {"department": "people", "version": "2026.1"},
-    }
-)
-```
+Think of a time an AI chatbot (any chatbot you've used — banking, shopping, support) gave you a confident but wrong answer. Which of the four failure points from S4 do you think was the most likely cause: outdated documents, bad chunking, poor retrieval, or the model adding its own guess? Write down your reasoning.
 
-In real systems, the server derives access filters from authenticated identity. Never trust a user prompt such as “show finance-only documents” as permission.
 
-### Hybrid search
+## Real Company Angle
 
-Hybrid search combines semantic vector retrieval with lexical or keyword retrieval. It is especially useful when a query contains product codes, error messages, names or exact policy identifiers that embeddings may blur.
+In regulated or safety-sensitive work, incomplete retrieval can cause financial, legal or human harm. Treat upstream document and retrieval failures as seriously as model hallucinations.
 
-| Query | Semantic search helps | Keyword search helps |
+
+## Common Mistakes
+
+1. **Blaming the AI model for every wrong answer** — as we've seen, most failures start upstream, in the documents or retrieval, not the model's "reasoning."
+2. **Never refreshing the source documents** — a RAG system is only as current as its underlying library; stale documents lead to confidently wrong answers.
+3. **Trusting a citation as proof of accuracy** — a cited answer can still be wrong, and people may over-trust it because it *looks* well-sourced.
+4. **Not testing with real, tricky customer questions** — teams often test RAG with simple, clean questions and miss the messy, multi-part questions real customers actually ask.
+
+
+## Persona Wrap-Up
+
+Karthik, now less worried, more informed: "So it's not that RAG is broken — it's that people don't check these four spots." Meena adds: "This changes how I think about our documentation process — keeping it clean and current is now clearly part of 'AI quality,' not just a housekeeping task." Divya: "Exactly — and that naturally leads us to Byte 4: how do you actually measure and catch these problems before your customers do?"
+
+
+## Compare & Contrast
+
+| Failure Point | What Goes Wrong | Who Usually Notices First |
 |---|---|---|
-| “moving leave to next year” | Understands paraphrase | Less important |
-| “POL-HR-042” | May miss exact identifier | Exact match |
-| “Timeout E1042 after upgrade” | Finds related explanations | Preserves error code |
+| Stale documents | System confidently quotes outdated info | Customers, after acting on wrong info |
+| Bad chunking | Critical info split across pieces | Rarely caught until a serious incident |
+| Poor retrieval | Right document exists but isn't found | QA testing, if done thoroughly |
+| Model over-adds | Fabricated detail blended with real info | Careful human review of citations |
 
-### Reranking
 
-Initial retrieval is designed to find candidates quickly. A reranker applies a stronger relevance model to the smaller candidate set and places the most useful evidence first.
+## Mini Practice Task
 
-```text
-large index → retrieve 20 candidates → rerank → send best 5 to LLM
-```
+Imagine you manage PaisaWise's FAQ documents. List two concrete habits your team could adopt to reduce the risk of "stale document" failures (Failure Point 1 above) — think about review schedules, version control, or ownership.
 
-### Diversity
 
-If five results repeat the same paragraph, the model sees less evidence. Diversity-aware retrieval can trade a little similarity for broader coverage.
+## Key Takeaways
 
-## Real-time analogy: finding a song
+- RAG failures usually start upstream — in messy documents, bad chunking, or poor retrieval — not with the AI model "hallucinating" out of nowhere.
+- Production RAG requires testing across documents, retrieval and answer generation.
+- Retrieval quality must be measured separately from final-answer quality.
+- A citation is useful evidence, but reviewers must confirm that it supports the answer.
+- RAG failures can create real operational, compliance and safety consequences.
 
-<Scenario title="Meaning, exact clues and a final shortlist">
 
-You remember a song as “a calm Tamil melody about rain” but not its title. Semantic search finds songs with that mood and theme. If you remember an exact lyric or catalogue code, keyword search becomes valuable. A curator then reranks the shortlist using your language, year and artist preferences. Good RAG retrieval uses the same combination of meaning, exact clues and constraints.
+## FAQ / Knowledge Check
 
-</Scenario>
+**Q1: Is the AI model usually to blame when a RAG answer is wrong?**
+Not usually — most failures trace back to outdated documents, bad chunking, or poor retrieval, which happen before the model ever writes its answer.
 
-## Design retrieval as a testable function
+**Q2: Does a citation guarantee an answer is correct?**
+No — studies show a majority of cited answers can still contain factual errors, even though people tend to trust citations more than they should.
 
-Keep retrieval independent from answer generation:
+**Q3: What's the biggest single failure stage in RAG systems?**
+Retrieval is a common failure point because the model cannot use evidence it never receives.
 
-```python
-def retrieve_evidence(question: str, access_scope: dict):
-    candidates = hybrid_search(question, filters=access_scope, limit=20)
-    ranked = rerank(question, candidates)
-    return ranked[:5]
-```
+**Knowledge Check:**
+1. Name the four places a RAG system can fail, in order from source to final answer.
+2. True/False: A well-cited RAG answer is guaranteed to be accurate.
+3. Why did the healthcare RAG incident happen even though the system found the "right" document?
 
-Now you can inspect the evidence without involving an LLM. For each test question, label which chunks are relevant and measure whether retrieval returns them.
+*(Answers: 1. Messy/outdated source documents, bad chunking, poor retrieval, the model adding its own guesses; 2. False — citations show where the model looked, not that it read correctly; 3. Because the critical dosage warning was split across two chunks by bad chunking, so the model never saw the complete information)*
 
-Useful retrieval checks include:
 
-- **Recall@k:** did the top *k* results contain needed evidence?
-- **Precision@k:** how much of the returned set was relevant?
-- **MRR:** how early did the first relevant result appear?
-- **Filter correctness:** were unauthorised or outdated chunks excluded?
+*Next byte: **Evaluating and Improving RAG Quality** — how teams actually measure whether their RAG system is trustworthy.*
 
-## Common mistakes
 
-<Mistakes>
+## References and further reading
 
-- Changing embedding models without rebuilding compatible vectors.
-- Sending similarity scores to users as confidence percentages.
-- Using semantic search alone for IDs, names and error codes.
-- Retrieving first and checking permissions later.
-- Tuning `k` without measuring recall, duplication and context cost.
-
-</Mistakes>
-
-## Interview bit
-
-<ThemeCard title="Semantic search versus hybrid search" badge="CAREER">
-
-Semantic search retrieves passages with similar meaning even when wording differs. Keyword search preserves exact terms such as product IDs and error codes. Hybrid search combines both candidate sets, then filters and often reranks them. I choose the mix using a labelled query set and measure retrieval quality before evaluating the final answer.
-
-</ThemeCard>
-
-## Key takeaways
-
-<Takeaways>
-
-- Embeddings represent meaning for comparison; they are not facts or summaries.
-- A vector store must retain original text, metadata and stable IDs beside vectors.
-- Similarity produces candidates, not guaranteed evidence.
-- Filters enforce scope; hybrid retrieval preserves meaning and exact matches.
-- Evaluate retrieval independently before asking the LLM to generate.
-
-</Takeaways>
-
-## Primary sources
-
-- [LangChain embedding model integrations](https://docs.langchain.com/oss/python/integrations/embeddings)
-- [LangChain vector store integrations](https://docs.langchain.com/oss/python/integrations/vectorstores)
-- [Microsoft Learn: RAG retrieval design](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide)
-
+- [Microsoft Foundry: RAG evaluators](https://learn.microsoft.com/en-us/azure/foundry/concepts/evaluation-evaluators/rag-evaluators)
+- [Microsoft Fabric: Evaluate RAG performance](https://learn.microsoft.com/en-us/fabric/data-science/tutorial-evaluate-rag-performance)
