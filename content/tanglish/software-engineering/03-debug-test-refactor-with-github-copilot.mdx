@@ -1,92 +1,25 @@
-<ThemeCard title="Neenga learn panna poradhu" badge="COPILOT HANDBOOK 03">
+<ThemeCard title="Neenga learn panna poradhu" badge="COPILOT 03">Goal, context, constraints, acceptance checks use panni repeatable prompt eludha learn pannuveenga.</ThemeCard>
 
-Evidence-லிருந்து bug diagnose செய்து failure detect செய்யும் tests உருவாக்கி, behaviour preserve ஆகும் வகையில் code refactor பண்ண Copilot-ஐ use செய்வீங்க.
+## Quick Start
+Prompt engineering-na fancy words illa. Copilot guess panna vendiya gap-ai kuraiyara alavukku task-ai clear-a define pannradhu.
 
-</ThemeCard>
+## Start from Basics
+- **Goal:** enna change venum?
+- **Context:** endha file or error relevant?
+- **Constraint:** enna change panna koodadhu?
+- **Acceptance check:** complete-nu epdi prove pannuvom?
 
-<HandbookLearningVisual variant="copilotDebug" />
+## Core Concept
+“Fix duplicate refund” vida “public API change pannaama idempotency preserve panni repeated transaction ID test add pannu” testable instruction.
 
-## First theory-லிருந்து அல்ல; evidence-லிருந்து debug பண்ணுங்க
+<CopilotHandbookVisual variant="quality" />
+<CopilotPromptLab />
 
-Error message, failing input, stack trace, logs, recent diff மற்றும் expected behaviour collect பண்ணுங்க. “Fix this” என்று மட்டும் கேட்காமல் failure reproduce செய்யும் smallest case கொடுத்து possible causes rank பண்ண சொல்லுங்க.
+## Common Mistakes
+Oru prompt-la unrelated tasks mix pannradhu; success check kudukkaama done expect pannradhu; output-ai tests illama accept pannradhu.
 
-Copilot explanation hypothesis; proof இல்லை. One cause at a time test பண்ணி evidence மூலம் narrow பண்ண வேண்டும்.
+## Key Takeaways
+Clear boundaries quality-ai improve pannum. Output-ai tests and diff review moolama verify pannanum.
 
-## Strong debugging conversation
-
-1. Expected மற்றும் actual behaviour சொல்லுங்க.
-2. Exact error மற்றும் reproduction steps கொடுங்க.
-3. Relevant code மட்டும் share பண்ணுங்க.
-4. Three likely causes மற்றும் evidence கேளுங்க.
-5. Smallest safe fix propose செய்ய சொல்லுங்க.
-6. Fix fail ஆனால் detect செய்ய test add பண்ணுங்க.
-
-## Failure detect செய்யும் tests
-
-Generated test code execute ஆகிறது என்பதால் useful என்று அர்த்தமில்லை. Test bug உள்ள version-ல் fail ஆகி fix பிறகு pass ஆக வேண்டும். Normal input, boundary, empty input, invalid data மற்றும் permission case cover பண்ணுங்க.
-
-## Behaviour preserve செய்து refactor பண்ணுவது
-
-Refactor முன் current behaviour-ஐ characterisation tests மூலம் capture பண்ணுங்க. One concern at a time change பண்ணி public API, error behaviour மற்றும் data contract unexpected-ஆ change ஆகவில்லை என்று verify பண்ணுங்க.
-
-## Easy analogy: mechanic evidence check
-
-<Scenario title="Part replace செய்வதற்கு முன் diagnosis">
-
-Car sound கேட்டவுடன் mechanic random part replace பண்ண மாட்டார். Sound reproduce செய்து dashboard signal, recent repair மற்றும் component test பார்க்கிறார். One likely cause fix செய்து road test பண்ணுகிறார். Debugging-லும் evidence → hypothesis → small fix → test flow follow பண்ண வேண்டும்.
-
-</Scenario>
-
-## Real-time scenario: production incident
-
-Checkout API சில requests-க்கு `500` return செய்கிறது. Copilot-க்கு redacted log, failing payload shape, validation code மற்றும் recent diff கொடுங்க. Secret அல்லது customer data share பண்ணாதீங்க. Root cause confirm ஆகும் முன் large rewrite avoid பண்ணி, regression test மற்றும் smallest patch prepare பண்ணுங்க.
-
-## Debugging prompt
-
-<PromptBox label="Evidence-based debugging prompt">
-
-Expected behaviour: [expected]
-Actual behaviour: [actual]
-Reproduction: [steps/input]
-Evidence: [error, stack trace, relevant code]
-
-Rank likely causes and cite evidence for each. Propose the smallest test that can distinguish them. Do not rewrite unrelated code.
-
-</PromptBox>
-
-## Common mistakes
-
-<Mistakes>
-
-- First generated explanation-ஐ root cause என்று accept பண்ணுவது.
-- Reproduction இல்லாமல் multiple files rewrite பண்ணுவது.
-- Implementation details மட்டும் assert செய்யும் brittle tests எழுதுவது.
-- Refactor மற்றும் behaviour change-ஐ same diff-ல் mix பண்ணுவது.
-- Production logs-லிருந்து secrets அல்லது personal data paste பண்ணுவது.
-
-</Mistakes>
-
-## Interview-ல் எப்படி explain பண்ணுவது?
-
-<ThemeCard title="AI-assisted debugging approach என்ன?" badge="CAREER">
-
-Failure reproduce செய்து logs, stack trace மற்றும் recent changes collect பண்ணுவேன். Copilot-ஐ hypotheses generate மற்றும் tests propose செய்ய use பண்ணுவேன்; evidence மூலம் cause verify செய்து smallest fix implement பண்ணி regression test மற்றும் final diff review செய்வேன்.
-
-</ThemeCard>
-
-## நினைவில் வைக்க வேண்டிய key points
-
-<Takeaways>
-
-- Error evidence debugging-ன் starting point.
-- Hypothesis மற்றும் confirmed cause different.
-- Good regression test bug-ஐ detect பண்ண வேண்டும்.
-- Refactor behaviour preserve செய்ய வேண்டும்.
-- Small verified patch review மற்றும் rollback easy ஆக்கும்.
-
-</Takeaways>
-
-## Official references
-
-- [GitHub Copilot documentation](https://docs.github.com/en/copilot)
-- [GitHub Copilot responsible use](https://docs.github.com/en/copilot/responsible-use)
+## References
+- [Prompting concepts](https://docs.github.com/en/copilot/concepts/prompting)
