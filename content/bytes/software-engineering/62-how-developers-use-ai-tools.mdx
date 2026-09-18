@@ -1,126 +1,138 @@
 ---
-title: "GitHub Copilot Explained: More Than Code Completion"
+title: "What Is GitHub Copilot? Beyond Code Completion"
 slug: "01-github-copilot-for-developers"
-summary: "Understand what GitHub Copilot can do across code completion, chat, planning, agent workflows and code review—and where human judgement remains essential."
+summary: "Understand inline suggestions, context, review responsibility and where GitHub Copilot fits in a developer workflow."
 category: "software-engineering"
-tags: ["GitHub Copilot", "AI coding assistant", "Copilot Chat", "agent mode", "developer productivity"]
+tags: ["GitHub Copilot", "AI coding assistant", "inline suggestions", "developer workflow"]
 level: "beginner"
 duration: "18 min"
-updatedAt: "2026-09-13"
+updatedAt: "2026-09-18"
 order: 62
 isPopular: true
 ---
 
-<ThemeCard title="What you will learn" badge="HANDBOOK 01">
+## Quick Start
 
-You will be able to explain what GitHub Copilot is, distinguish suggestions, chat, plan and agent workflows, choose the right interaction for a task and describe why generated code still requires engineering review.
+GitHub Copilot works inside a developer's workflow to suggest, explain, review and change code. This Byte starts from the beginning: what Copilot can do, what context it uses and why the developer must still verify every important change. No previous handbook is required.
 
-</ThemeCard>
+**Time investment:** 15-20 mins.
+
+---
+
+## Meet the Scenario
+
+Karthik has Copilot installed in his editor but mostly ignores its suggestions: "It just guesses the next line, right? I already know what I'm writing." Rahul, newer to the team, says: "I've been leaning on it heavily for boilerplate — it's saved me real time on the PaisaWise account service classes." Divya steps in: "You're both partly right — let's look at what Copilot actually does, and where it genuinely helps versus where it doesn't."
+
+---
+
+## Core Concept
+
+Think of Copilot like a highly experienced pair-programming partner who has read an enormous amount of code, sitting right next to you. It doesn't know your specific business rules or your company's private logic — but it's extremely good at recognizing *patterns*: "this looks like a REST controller, so the next few lines are probably a `@GetMapping` and a return statement." It predicts based on the context of what you're already writing, not by understanding your intent the way a human colleague would.
+
+This is different from Copilot Chat (which we'll cover in Byte 2) — the core, original Copilot experience is **inline suggestions**: gray "ghost text" that appears as you type, which you accept with Tab or ignore by continuing to type.
+
+---
+
+## How It Works Under the Hood
+
+Copilot's suggestions come from analyzing the context around your cursor — the current file, related open files, and sometimes the broader repository structure — then predicting the most statistically likely continuation. This is why writing a clear function name and a short comment dramatically improves what it suggests:
+
+```java
+// Calculate late fee: 2% of overdue amount per day, capped at 15%
+public double calculateLateFee(double overdueAmount, int daysLate) {
+    // Copilot will likely suggest a reasonable implementation here,
+    // guided directly by the comment and function signature above
+}
+```
+
+A newer capability, **Next Edit Suggestions**, goes further: instead of only predicting what comes next at your cursor, it predicts logically related edits *elsewhere* in the same file based on the change you just made — for example, if you rename a variable in one place, it suggests updating the other places that reference it, and you accept each with Tab.
+
+---
 
 <CopilotHandbookVisual variant="lifecycle" />
 
-## The 60-second explanation
+<CopilotSuggestionLab />
 
-GitHub Copilot is an AI coding assistant that works across several parts of software development. It can suggest code while you type, answer questions about a codebase, help create implementation plans, propose edits, run supported tools in agent workflows and contribute review suggestions. The exact capabilities depend on the editor, account, plan, organizational policy and feature availability.
+## Try It Yourself (Small Snippet)
 
-The important mental model is this: **Copilot is not an automatic software engineer.** It is a context-aware collaborator that can accelerate individual activities. The developer still owns the requirement, architecture, security decisions, tests, review and release.
+**A comment-first approach for better suggestions:**
 
-## One product, several interaction patterns
+```python
+# Convert a list of transaction amounts (in paise) to rupees, rounded to 2 decimals
+def paise_to_rupees(amounts):
+    # try writing this yourself first, then see what Copilot suggests
+    ...
+```
 
-<HandbookLearningVisual variant="copilotModes" />
+Try writing the comment before the code, every time, for one full day of work. Notice whether the suggestion quality changes compared to writing code first and comments (if at all) afterward.
 
-### Inline suggestions
+---
 
-Inline suggestions appear near the code you are writing. They work well for predictable local tasks: completing a condition, generating repetitive mappings, writing a small function or following an established pattern. Their advantage is speed. Their limitation is that the visible suggestion may not reflect requirements that are absent from the current context.
+## Real Company Angle
 
-### Ask mode and chat
+Copilot adoption should be evaluated through verified engineering outcomes: reduced repetitive work, faster code understanding, review quality and defect rates. Usage counts change quickly, so this handbook focuses on durable workflow practices rather than marketing statistics.
 
-Ask mode is useful when you want to understand before changing anything. You can ask how a module works, where validation happens, what a stack trace suggests or how a proposed design compares with the current architecture. A strong question names the goal and the relevant code instead of asking, “Explain everything.”
+---
 
-### Plan mode
+## Common Mistakes
 
-Plan mode is for analysing a task and producing an implementation approach before editing code. It is useful when a change crosses components, contains ambiguity or needs agreement. A plan is still a proposal: check assumptions, affected files, migration needs, test coverage and rollback considerations before implementation.
+1. **Accepting suggestions without reading them** — Copilot predicts plausible-looking code, not necessarily *correct* code for your specific business logic; blind acceptance is how subtle bugs sneak in.
+2. **Expecting it to know your business rules without being told** — Copilot doesn't know PaisaWise's specific refund policy unless that context is visible in your open files or comments.
+3. **Writing vague variable/function names and expecting great suggestions** — since Copilot predicts from context, `calculateFee` gives it far less to work with than `calculateLateFeeForOverdueLoan`.
+4. **Dismissing it entirely after one bad suggestion** — like any pattern-matching tool, its usefulness varies by task; it excels at boilerplate and repetitive patterns, less so at genuinely novel logic.
 
-### Agent workflows
+---
 
-In an agent workflow, Copilot can break down a task, inspect files, edit code and use available tools. This is appropriate for a well-bounded change with testable acceptance criteria. It is not permission to accept every command or diff without inspection.
+## Persona Wrap-Up
 
-### Code review
+Karthik reconsiders: "So it's not reading my mind — it's reading my code and comments. That explains why my one-word variable names weren't getting good suggestions." Rahul adds: "And I should probably slow down and actually read what it suggests, instead of just hitting Tab reflexively." Divya: "Exactly the right instinct for both of you — and in the next byte, we'll look at Copilot Chat, which is a genuinely different way of interacting with it."
 
-Copilot can provide review suggestions on supported surfaces. Treat these as an additional reviewer, not the approval authority. It may notice a missing check while missing a business rule that was never expressed.
+---
 
-<OfficialScreenshot src="/images/github-copilot/official-copilot-button.webp" alt="GitHub repository file view with the Copilot button highlighted" sourceUrl="https://docs.github.com/en/copilot/get-started/quickstart" note="GitHub’s quickstart shows where Copilot can be opened from a repository file view." />
+## Compare & Contrast
 
-## Real-time scenario and analogy: a capable pair programmer
-
-<Scenario title="The navigator beside the driver">
-
-Imagine a navigator who can read the route, suggest shortcuts, explain warning lights and prepare the next turn. The navigator can reduce mental effort, but the driver still controls the vehicle and remains accountable for safety.
-
-Copilot is similar: it can propose a direction quickly because it sees selected project context. The analogy stops there. A human pair programmer shares durable understanding, organizational history and responsibility. Copilot only works with the context and capabilities made available to it.
-
-</Scenario>
-
-## Which capability should you choose?
-
-| Situation | Best starting point | Why |
+| Feature | What It Does | Best For |
 |---|---|---|
-| Complete a small local pattern | Inline suggestion | Lowest interaction cost |
-| Understand unfamiliar code | Ask | Explore without changing files |
-| Design a multi-file change | Plan | Make assumptions and steps visible |
-| Implement a bounded feature | Agent | Coordinate edits and checks |
-| Inspect a proposed change | Code review plus human review | Add another quality signal |
+| Inline suggestions (ghost text) | Predicts the next few lines as you type | Boilerplate, repetitive patterns, familiar structures |
+| Next Edit Suggestions | Predicts related edits elsewhere in the file | Renames, consistent multi-spot changes |
+| Copilot Chat (Byte 2) | Conversational Q&A and code generation | Explanations, debugging, more complex requests |
+| Agent mode (Byte 4) | Autonomous multi-file task execution | Larger, multi-step changes across a codebase |
 
-## Copy-and-paste exploration prompt
+---
 
-<PromptBox label="Understand a codebase before editing">
+## Mini Practice Task
 
-Goal: Help me understand this feature before suggesting changes.
+Pick a small, repetitive coding task you did recently by hand (a getter/setter, a simple validation check, a similar REST endpoint to one you already wrote). Try it again with Copilot's inline suggestions on, writing a clear comment first. Note how much of the code it got right versus how much you had to correct.
 
-Using only the referenced files:
-1. Explain the request flow from entry point to data storage.
-2. Identify validation, authorization and error-handling boundaries.
-3. List assumptions you cannot verify from the available context.
-4. Name the three files I should read next and explain why.
+---
 
-Do not edit code yet.
+## Key Takeaways
 
-</PromptBox>
+- GitHub Copilot's core feature is **inline suggestions** — context-based predictions of your next few lines of code, shown as ghost text.
+- It predicts patterns from visible context (your file, comments, open files) — it does not understand your business intent the way a human colleague would.
+- **Next Edit Suggestions** extend this to related changes elsewhere in the same file, based on an edit you just made.
+- Clear function names and comments meaningfully improve suggestion quality, since Copilot's predictions are grounded in exactly that context.
+- Copilot can reduce repetitive work, but every accepted suggestion still needs requirement-aware review and appropriate tests.
 
-## Common mistakes
+---
 
-<Mistakes>
+## FAQ / Knowledge Check
 
-- Using Agent mode for a vague request and expecting Copilot to infer business requirements.
-- Accepting a fluent explanation without checking the referenced files.
-- Asking for implementation before understanding existing tests and conventions.
-- Treating generated code as trusted because it compiles.
-- Confusing Microsoft Copilot with GitHub Copilot; they serve different workflows.
+**Q1: Does Copilot understand my company's specific business rules automatically?**
+No — it predicts from visible context (your code, comments, open files); it has no built-in knowledge of your company's private logic unless that context is present.
 
-</Mistakes>
+**Q2: What's the difference between inline suggestions and Next Edit Suggestions?**
+Inline suggestions predict what comes next at your cursor; Next Edit Suggestions predict related edits elsewhere in the same file based on a change you just made.
 
-## Interview bit
+**Q3: Why does writing a clear comment before code often improve Copilot's suggestions?**
+Because Copilot's predictions are based on the context around your cursor — a clear comment gives it more specific, relevant information to predict from.
 
-<ThemeCard title="What is GitHub Copilot, and where does it fit?" badge="CAREER">
+**Knowledge Check:**
+1. What is GitHub Copilot's core, original feature called?
+2. True/False: You should always accept Copilot's suggestions without reading them, since they're generated by AI.
+3. What evidence should a team track to judge whether Copilot is helping?
 
-**Strong answer:** GitHub Copilot is an AI coding assistant integrated into development and GitHub workflows. Depending on the environment, it can provide inline completions, codebase-aware chat, planning, agent-driven changes and review suggestions. I use the least autonomous mode that fits the task, provide relevant context and validate the result through tests, security checks and human review.
+*(Answers: 1. Inline suggestions (ghost text); 2. False — suggestions should always be read and verified, since they may not fit your specific business logic; 3. Review time, escaped defects, test quality and delivery outcomes)*
 
-</ThemeCard>
-
-## Key takeaways
-
-<Takeaways>
-
-- GitHub Copilot is a set of assistance patterns, not only autocomplete.
-- Ask, Plan and Agent serve different levels of task autonomy.
-- Better context improves relevance but does not guarantee correctness.
-- Generated code remains a proposal until it is reviewed and tested.
-- The developer owns the final technical and business outcome.
-
-</Takeaways>
-
-## Official references
-
-- [GitHub Docs: What is GitHub Copilot?](https://docs.github.com/en/copilot/get-started/what-is-github-copilot)
-- [GitHub Docs: GitHub Copilot features](https://docs.github.com/en/copilot/get-started/features)
-- [GitHub Docs: Asking GitHub Copilot questions in your IDE](https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide)
+---
+*Next byte: **Copilot Chat** — moving from silent inline suggestions to an actual conversation with your coding assistant.*
