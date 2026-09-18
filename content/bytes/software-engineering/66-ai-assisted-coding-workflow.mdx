@@ -1,123 +1,144 @@
 ---
-title: "Build a Feature with GitHub Copilot"
+title: "GitHub Copilot Agent Mode and Multi-File Work"
 slug: "04-build-feature-with-github-copilot"
-summary: "Follow a disciplined GitHub Copilot workflow from requirement and plan to small code changes, automated checks and an engineer-approved pull request."
+summary: "Supervise an agentic coding workflow across planning, file edits, tool execution, validation and human review."
 category: "software-engineering"
-tags: ["GitHub Copilot workflow", "agent mode", "plan mode", "feature development"]
+tags: ["GitHub Copilot", "agent mode", "coding agent", "multi-file changes"]
 level: "intermediate"
 duration: "22 min"
-updatedAt: "2026-09-13"
+updatedAt: "2026-09-18"
 order: 66
 isPopular: true
 ---
 
-<ThemeCard title="What you will learn" badge="HANDBOOK 03">
+## Quick Start
 
-You will learn a repeatable feature-delivery workflow that separates understanding, planning, implementation and review. The objective is not maximum code generation; it is faster progress with visible engineering control.
+**Copilot agent mode** can plan and work across multiple files, use supported tools and respond to validation results. This Byte explains the full loop from first principles; prior AI-agent knowledge is optional.
 
-</ThemeCard>
+**Time investment:** 20-25 mins.
+
+---
+
+## Meet the Scenario
+
+Meena has a genuinely tedious task: "We need to add a new `currency` field to transactions — that touches the entity class, the DTO, the validator, the database migration, and three existing tests." Karthik sighs: "That's at least five files, all needing consistent changes." Rahul says: "This sounds exactly like a job for agent mode instead of Chat — it's not one question, it's one coordinated task across files."
+
+---
+
+## Core Concept
+
+Chat usually answers a focused question using the context you provide. **Agent mode is different — it's given a single, larger instruction and then plans, executes, and iterates across multiple files on its own**, checking its own output for errors along the way.
+
+Think of the difference like asking a contractor "what's wrong with this one tile?" (Chat) versus saying "renovate this bathroom" (agent mode) — the second requires planning across plumbing, tiling, and fixtures, checking your own work as you go, not just answering a single, narrow question.
+
+---
+
+## How It Works Under the Hood
+
+**A single prompt kicks off a multi-file task:**
+
+```
+Add a `currency` field (String, ISO 4217 code, default "INR") to the
+Transaction entity. Update the TransactionDTO, the request validator to
+reject unsupported currency codes, the database migration script, and
+update the three existing tests in TransactionServiceTest to account
+for the new field.
+```
+
+Behind this one prompt, agent mode:
+
+1. **Plans** which files need to change and in what order (entity first, then DTO, then validator, then tests).
+2. **Executes** changes across each file, maintaining consistency (the same field name and type everywhere).
+3. **Recognizes and fixes errors** automatically — if a test fails to compile because of the new field, it revises the test rather than stopping.
+4. **Suggests terminal commands** where relevant — for example, offering to run the test suite to confirm the change didn't break anything else.
+
+This "self-healing" loop — noticing an error and correcting it without being asked again — is the key difference from both inline suggestions and Chat, neither of which iterates on its own.
+
+---
 
 <CopilotHandbookVisual variant="feature" />
 
-## Start with a thin vertical slice
+<CopilotAgentLab />
 
-<HandbookLearningVisual variant="copilotFeature" />
+## Try It Yourself (Small Snippet)
 
-A good first Copilot task is small enough to inspect yet complete enough to create user value. Instead of “build an e-commerce platform,” choose “allow an authenticated customer to save one product to a wishlist.” A thin slice crosses the necessary layers without hiding dozens of decisions inside one prompt.
+**A well-scoped agent mode prompt** includes both the change and the boundary of what shouldn't change:
 
-## Step 1: establish the current system
+```
+Rename the method `calcFee` to `calculateLateFee` across the codebase,
+updating all callers and test references. Do not change the method's
+logic or signature — this is a rename-only refactor.
+```
 
-Use Ask mode to trace the existing request flow. Confirm entry points, data ownership, authentication, error conventions and test strategy. Ask for evidence from specific files. If the explanation conflicts with the code, trust the code and investigate.
+Notice the explicit boundary ("rename-only, don't change logic") — this is just as important as describing what *should* happen, since agent mode will otherwise use its own judgment about scope.
 
-## Step 2: create and challenge the plan
+---
 
-Ask Plan mode for affected files, schema changes, API contract, UI states, tests and rollout concerns. Then challenge the plan: What could break? Which assumption is unverified? Can the change be smaller? A plan is valuable because it makes disagreement inexpensive—before code is changed.
+## Real Company Angle
 
-## Step 3: implement in reviewable increments
+GitHub's own framing of agent mode is telling: developers can "generate, refactor and deploy code across the files of any organization's codebase with a single prompt command." Beyond the IDE, GitHub also offers a dedicated **Copilot coding agent** that can be assigned directly to a GitHub issue — it works in the background, opens a pull request with its changes, and a human reviews and merges it, similar to assigning a task to a junior teammate rather than typing every line yourself. The important shift is from answering a question to completing a bounded task that still ends at a human review gate.
 
-Give Agent mode a bounded portion of the approved plan. Let it inspect files and propose edits, but review tool calls and diffs. Run checks after each meaningful increment rather than waiting until the end of a large change.
+---
 
-## Step 4: test behaviour, not only syntax
+## Common Mistakes
 
-Compilation confirms structure; it does not confirm the user outcome. Test the success path, unauthorized access, invalid input, duplicate actions and failure recovery. Verify that tests can fail for the right reason before trusting a green result.
+1. **Giving agent mode a vague, unbounded instruction** — "improve the codebase" has no clear success criteria; a good agent-mode prompt names specific files, fields, or behaviors to change.
+2. **Skipping review of the final diff** — agent mode's self-healing loop reduces errors but doesn't eliminate the need for human review.
+3. **Using agent mode for a single, simple one-line fix** — this is overkill; inline suggestions or a quick Chat request are faster and simpler for small, contained changes.
+4. **Not specifying boundaries** — as in S5, without an explicit "don't change X," agent mode may make broader changes than intended while pursuing what it judges to be a complete, working solution.
 
-## Step 5: inspect the final diff
+---
 
-Remove unrelated changes. Check data migrations, logging, secrets, dependencies and generated boilerplate. Ensure the pull-request description explains the problem, approach, evidence and risk—not merely the files changed.
+## Persona Wrap-Up
 
-<OfficialScreenshot src="/images/github-copilot/official-copilot-chat.webp" alt="GitHub Copilot Chat icon in the Visual Studio Code interface" sourceUrl="https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide" note="GitHub’s IDE guide shows the Copilot Chat entry point; available modes and placement can vary by editor and version." />
+Karthik, after trying agent mode on the currency field task: "It actually got the migration script and all three tests updated consistently — that would've taken me a good hour of careful, repetitive editing." Meena adds: "I still reviewed every file it touched before merging, though — same discipline as reviewing a junior developer's PR." Divya: "Exactly the right balance — agent mode handles the coordinated grunt work, but a human still owns the final judgment call."
 
-## Simple analogy: build one usable room first
+---
 
-When constructing a house, completing one safe, usable room teaches more than half-building every room. A thin vertical slice does the same for software: one small user journey passes through the interface, logic, data and tests before the team expands it.
+## Compare & Contrast
 
-## Real-time scenario: a wishlist feature
+| Feature | Scope | Human Involvement |
+|---|---|---|
+| Inline suggestions | One line/block at a time | Accept/reject each suggestion |
+| Copilot Chat | One focused question/task | Ask, read, possibly iterate |
+| Agent mode (IDE) | Multi-file task, single prompt | Review the full diff before accepting |
+| Copilot coding agent (GitHub issue) | Full task, assigned like a ticket | Review and merge the resulting pull request |
 
-<Scenario title="One feature through five engineering gates">
+---
 
-The team wants signed-in users to save products. First, Copilot traces how authentication and product IDs currently work. Next, it plans one database table, two API operations, optimistic UI feedback and tests. The developer rejects an unnecessary new service and keeps the change inside the existing module.
+## Mini Practice Task
 
-Agent mode implements the API contract first. Tests reveal that repeated requests create duplicates, so the schema and handler gain an idempotency constraint. Only after backend behaviour is stable does the UI change proceed. The final diff is understandable because each step remained bounded.
+Write an agent-mode-style prompt (you don't need to run it) for adding a new `status` enum field to an existing entity in one of your own projects. Include: the exact change, every file type that likely needs updating, and one explicit boundary of what should NOT change.
 
-</Scenario>
+---
 
-## Copy-and-paste implementation prompt
+## Key Takeaways
 
-<PromptBox label="Implement one approved plan step">
+- **Agent mode** extends Copilot from single suggestions/answers to autonomous, multi-file task execution from one instruction — planning, executing, and self-correcting.
+- The "self-healing" loop (recognizing and fixing its own errors) is what distinguishes agent mode from both inline suggestions and Chat.
+- A well-scoped agent-mode prompt names specific files/behaviors to change and states explicit boundaries of what shouldn't change.
+- The **Copilot coding agent** extends this further — it can be assigned directly to a GitHub issue, working in the background and opening a pull request for human review.
+- Agent mode reduces repetitive coordination work across files, but human review of the final diff remains essential — autonomy doesn't remove the need for oversight.
 
-Implement only Step [number] from the approved plan.
+---
 
-Boundaries:
-- Modify only the files required for this step.
-- Follow the existing pattern in [reference file].
-- Do not add dependencies or change public contracts without asking.
-- Include tests for success, invalid input and unauthorized access.
+## FAQ / Knowledge Check
 
-After editing:
-1. Run the relevant checks.
-2. Summarize changed behaviour.
-3. List unresolved risks and assumptions.
-4. Stop before the next plan step.
+**Q1: What's the key difference between Copilot Chat and agent mode?**
+Chat answers one focused question about code you point it at; agent mode plans and executes a larger task across multiple files on its own, iterating and self-correcting along the way.
 
-</PromptBox>
+**Q2: Does agent mode's self-healing loop remove the need for human review?**
+No — it reduces certain errors automatically, but a human should still review the final diff before merging, just as with any AI-generated code.
 
-## When Agent mode is the wrong starting point
+**Q3: What is the Copilot coding agent, and how does it differ from agent mode in the IDE?**
+It's a version of agent mode that can be assigned directly to a GitHub issue, working in the background and opening a pull request, rather than running interactively inside your editor.
 
-Do not start with broad autonomous edits when the requirement is disputed, the repository cannot run locally, production data is involved, the change affects security boundaries or the team lacks a way to validate the result. Use Ask or Plan first and reduce the scope.
+**Knowledge Check:**
+1. Name the four things agent mode does behind a single prompt, as described in S4.
+2. True/False: A vague instruction like "improve the codebase" is a well-scoped agent-mode prompt.
+3. What should you do before merging changes agent mode has made?
 
-## Common mistakes
+*(Answers: 1. Plans which files to change, executes changes across files, recognizes and fixes errors, suggests relevant terminal commands; 2. False — a well-scoped prompt names specific files, fields, or behaviors to change, and its boundaries; 3. Review the full diff, exactly as you would review a junior teammate's pull request)*
 
-<Mistakes>
-
-- Asking Copilot to build the entire feature before agreeing on acceptance checks.
-- Mixing unrelated changes into one large, difficult-to-review diff.
-- Accepting generated tests that only confirm the implementation’s assumptions.
-- Skipping the final diff review because the application appears to run.
-- Using Agent mode before understanding repository rules and system boundaries.
-
-</Mistakes>
-
-## Interview bit
-
-<ThemeCard title="How would you use Copilot to build a feature safely?" badge="CAREER">
-
-I begin by understanding the existing flow and converting the request into acceptance criteria. I use Plan mode to expose affected components and assumptions, then implement a thin slice in small increments. I run behaviour-focused tests, inspect every diff and keep human approval at architecture, security and release gates.
-
-</ThemeCard>
-
-## Key takeaways
-
-<Takeaways>
-
-- Small vertical slices are easier to generate, test and review.
-- Plan before editing when a feature crosses boundaries.
-- Give Agent mode a bounded task and explicit stopping point.
-- Run checks throughout the workflow, not only at the end.
-- A clean pull request is part of the engineering result.
-
-</Takeaways>
-
-## Official references
-
-- [GitHub Docs: Asking Copilot questions in your IDE](https://docs.github.com/en/copilot/how-tos/chat-with-copilot/chat-in-ide)
-- [GitHub Docs: GitHub Copilot features](https://docs.github.com/en/copilot/get-started/features)
+---
+*Next byte: **Best Practices, Limitations, and Governance** — using Copilot responsibly, understanding its limits, and enterprise-grade controls.*
