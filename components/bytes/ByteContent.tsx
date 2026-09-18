@@ -47,12 +47,12 @@ const sectionIcon = (text:string) => {
   return HelpCircle;
 };
 
-const createComponents = (idPrefix = '', includeContextSwitch = false) => ({
+const createComponents = (idPrefix = '') => ({
   h2: ({children,...props}:any)=>{
     const text=children.toString();
     const Icon=sectionIcon(text);
     const heading=<h2 id={`${idPrefix}${slugify(text)}`} className="byte-section-title" {...props}><span className="byte-section-icon" aria-hidden="true"><Icon/></span><span>{children}</span></h2>;
-    return includeContextSwitch && /analogy/i.test(text) ? <><ReadingModeToggle compact />{heading}</> : heading;
+    return heading;
   },
   h3: ({children,...props}:any)=><h3 id={`${idPrefix}${slugify(children.toString())}`} className="byte-subtitle" {...props}>{children}</h3>,
   p: ({children,...props}:any)=><p className="byte-paragraph" {...props}>{children}</p>,
@@ -72,7 +72,7 @@ const createComponents = (idPrefix = '', includeContextSwitch = false) => ({
 
 export function ByteContent({content,tanglishContent}:{content:string;tanglishContent?:string|null}) {
   return <>
-    <article className="byte-article byte-article-english"><MDXRemote source={content} components={createComponents('',Boolean(tanglishContent))} options={{mdxOptions:{remarkPlugins:[remarkGfm]}}}/></article>
+    <article className="byte-article byte-article-english" lang="en-IN"><MDXRemote source={content} components={createComponents('')} options={{mdxOptions:{remarkPlugins:[remarkGfm]}}}/></article>
     {tanglishContent && <article className="byte-article byte-article-tanglish" lang="ta"><MDXRemote source={tanglishContent} components={createComponents('ta-')} options={{mdxOptions:{remarkPlugins:[remarkGfm]}}}/></article>}
   </>;
 }
