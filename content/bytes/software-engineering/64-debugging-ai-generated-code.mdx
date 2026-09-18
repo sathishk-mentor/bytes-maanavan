@@ -1,115 +1,146 @@
 ---
-title: "Debug, Test and Refactor with GitHub Copilot"
+title: "Prompt Engineering for GitHub Copilot"
 slug: "03-debug-test-refactor-with-github-copilot"
-summary: "Use GitHub Copilot to investigate failures, create meaningful tests and refactor safely without confusing plausible suggestions with verified fixes."
+summary: "Write Copilot prompts with a goal, context, constraints and acceptance checks, then refine the result with evidence."
 category: "software-engineering"
-tags: ["GitHub Copilot debugging", "Copilot testing", "AI code review", "refactoring"]
-level: "intermediate"
+tags: ["GitHub Copilot", "prompt engineering", "repository instructions", "acceptance criteria"]
+level: "beginner"
 duration: "21 min"
-updatedAt: "2026-09-13"
+updatedAt: "2026-09-18"
 order: 64
 isPopular: true
 ---
 
-<ThemeCard title="What you will learn" badge="HANDBOOK 04">
+## Quick Start
 
-You will learn an evidence-first debugging loop, how to ask Copilot for test cases rather than decorative tests, how to constrain refactoring and why a passing test suite cannot replace requirement review.
+Copilot produces stronger results when the request clearly states the goal, relevant context, constraints and evidence of completion. This standalone Byte turns those four elements into a repeatable prompting method.
 
-</ThemeCard>
+**Time investment:** 20-25 mins.
+
+---
+
+## Meet the Scenario
+
+Meena notices something across the team: "Rahul gets great suggestions constantly. Karthik says Copilot 'doesn't understand PaisaWise at all.' Same tool — why such different results?" Divya says: "It usually comes down to how much clear context each person is giving it — let's make that a repeatable habit instead of luck."
+
+---
+
+## Core Concept
+
+Think of Copilot like a new team member who just joined PaisaWise today — extremely fast and skilled, but with zero institutional knowledge on day one. A vague instruction like "write the validation" gives them nothing to go on. A clear one — "validate that the transaction amount is positive and doesn't exceed the daily limit of ₹2,00,000, following the pattern in `TransactionValidator.java`" — gives them everything they need to produce something genuinely useful on the first try.
+
+This is the core of prompt engineering for Copilot: it's not about "tricking" the AI with clever phrasing, it's about consistently supplying the same context a competent new teammate would need.
+
+---
+
+## How It Works Under the Hood
+
+**1. Specific, example-anchored comments** work far better than generic ones:
+
+```java
+// Bad: does the validation
+// Good: validates that amount > 0 and amount <= dailyLimit (₹2,00,000),
+// throwing InvalidTransactionException otherwise, matching the pattern
+// used in AccountValidator.validateBalance()
+```
+
+**2. Open relevant files before asking** — Copilot's context includes other files you have open, not just the current one. If you're implementing a new service that should follow an existing pattern, open that existing file alongside your new one.
+
+**3. Repository-wide custom instructions** — many teams now maintain a `.github/copilot-instructions.md` file describing project conventions (naming patterns, preferred libraries, architectural rules), so every suggestion across the team's IDEs is grounded in the same shared context, rather than each developer re-explaining conventions individually every time.
+
+**4. Iterative refinement in Chat** — if the first response isn't quite right, don't start over; refine directly: "Good, but use `Optional<T>` instead of returning null" gets you a corrected version building on the first attempt, rather than a fresh, disconnected one.
+
+---
 
 <CopilotHandbookVisual variant="quality" />
 
-## Debug from evidence, not from the first theory
+<CopilotPromptLab />
 
-Copilot can rapidly suggest possible causes, but a plausible cause is not a diagnosed cause. Begin with an observable failure: input, expected result, actual result, error message, environment and minimal reproduction. Ask Copilot to separate evidence from hypotheses.
+## Try It Yourself (Small Snippet)
 
-The safe loop is **reproduce → explain → change one cause → test → review**. If several unrelated edits are made before rerunning the failure, you lose the ability to explain which change mattered.
+**A before/after comment rewrite exercise:**
 
-## A strong debugging conversation
+```java
+// Before (vague):
+// process the payment
 
-<HandbookLearningVisual variant="copilotDebug" />
+// After (specific, example-anchored):
+// Process a UPI payment: validate the VPA format, check daily transaction
+// limit (₹1,00,000), deduct from sender's balance, and log to AuditService,
+// following the pattern in processCardPayment() above
+```
 
-First ask for a trace of the failing path. Then ask for ranked hypotheses, with evidence needed to confirm or reject each one. Provide logs carefully—remove credentials, personal information and irrelevant production data. Finally, request the smallest diagnostic change or test before requesting a fix.
+Take one vague comment from your own recent code and rewrite it this way. Notice how much more specific the resulting suggestion becomes.
 
-## Generate tests that can detect failure
+---
 
-AI-generated tests sometimes repeat the implementation, mock away the important behaviour or assert only that a function returned something. A meaningful test connects an input and precondition to an observable outcome.
+## Real Company Angle
 
-Ask for a test matrix before code: normal path, boundaries, malformed input, authorization, dependency failure and regression case. Review whether each test would fail if the bug returned.
+Shared instructions and approved project context can make responses more consistent across a team. Treat those instructions as maintained engineering assets: review them, version them and remove rules that no longer match the codebase.
 
-## Refactor while preserving behaviour
+---
 
-Define what must not change: public API, database behaviour, error messages, performance threshold or serialization format. Establish tests before the refactor. Ask Copilot to change one structural concern at a time, then compare the diff and rerun checks.
+## Common Mistakes
 
-<OfficialScreenshot src="/images/github-copilot/official-code-completion.webp" alt="Visual Studio Code menu for GitHub Copilot code completion" sourceUrl="https://docs.github.com/en/copilot/how-tos/get-code-suggestions/get-ide-code-suggestions" note="GitHub Docs shows code-completion controls in Visual Studio Code; generated suggestions must still be inspected in their project context." />
+1. **Writing comments after the code instead of before** — a comment written first shapes the suggestion; a comment added afterward is just documentation, with no influence on what was generated.
+2. **Assuming Copilot remembers your project's conventions across sessions** — without a shared instructions file or visible context, each new session starts fresh; conventions need to be consistently visible, not just previously mentioned.
+3. **Starting over instead of iterating in Chat** — refining a close-but-not-quite response is usually faster and more accurate than restarting with a brand-new prompt.
+4. **Treating one great prompt as a one-time trick rather than a template** — the specific, example-anchored comment style in S4 works repeatably; it's worth turning into a personal habit, not a one-off.
 
-## Simple analogy: a mechanic checks evidence first
+---
 
-A good mechanic does not replace the engine because the car made one noise. They reproduce the problem, inspect signals and test the smallest likely cause. Debugging AI-generated code works the same way: begin with the failing behaviour and evidence, not Copilot’s first explanation.
+## Persona Wrap-Up
 
-## Real-time scenario: a production incident
+Karthik reflects: "So my vague one-line comments were basically giving Copilot nothing to work with — no wonder it 'didn't understand PaisaWise.'" Rahul adds: "And I didn't even realize I was doing the 'open the related file first' trick — I just always keep the pattern I'm copying open in a tab." Meena: "Let's actually write a `copilot-instructions.md` for our team so this isn't just tribal knowledge." Divya: "Exactly the right move — that's institutionalizing what good prompting looks like, instead of hoping everyone discovers it independently."
 
-<Scenario title="Checkout total becomes negative">
+---
 
-A checkout test reports a negative total when a percentage discount and refund adjustment are both present. Instead of asking “fix checkout,” the developer gives Copilot the failing test, calculation function and domain rules. Copilot identifies three hypotheses.
+## Compare & Contrast
 
-The team adds a focused regression test that reproduces the incorrect order of operations. Only then is the calculation changed. Additional boundary tests cover zero, maximum discount and repeated adjustment. The fix is credible because the evidence and expected business rule are visible.
+| Prompting Habit | Effect on Suggestion Quality |
+|---|---|
+| Vague comment ("do the validation") | Generic, often unusable suggestion |
+| Specific, example-anchored comment | Suggestion closely matches your actual need |
+| No related files open | Copilot has less pattern context to match |
+| Related pattern file open alongside | Suggestions follow your codebase's existing style |
+| No shared team instructions | Inconsistent quality across developers |
+| Shared `.github/copilot-instructions.md` | Consistent context across the whole team |
 
-</Scenario>
+---
 
-## Copy-and-paste debugging prompt
+## Mini Practice Task
 
-<PromptBox label="Evidence-first debugging">
+Draft the first three lines of a `.github/copilot-instructions.md` file for a project you work on — cover one naming convention, one preferred library or pattern, and one thing Copilot should generally avoid suggesting (e.g., a deprecated approach your team has moved away from).
 
-Observed failure:
-- Input or action: [value]
-- Expected result: [value]
-- Actual result: [value]
-- Error/log excerpt: [sanitized evidence]
-- Reproduction: [test or steps]
+---
 
-Using the referenced code:
-1. Trace the execution path.
-2. Separate confirmed facts from hypotheses.
-3. Rank up to three likely causes.
-4. For each cause, propose one check that would confirm or reject it.
-5. Do not modify code until we select a confirmed cause.
+## Key Takeaways
 
-</PromptBox>
+- Prompt engineering for Copilot means consistently supplying the context a competent new teammate would need — not "tricking" the AI with clever phrasing.
+- Specific, example-anchored comments (what to validate, what pattern to follow, what exception to throw) produce far better suggestions than vague ones.
+- Opening relevant related files gives Copilot more accurate pattern context to draw from.
+- Repository-wide instructions files (like `.github/copilot-instructions.md`) institutionalize good context so suggestion quality doesn't depend on individual developer habits.
+- In Chat, refining a close response is usually faster and more accurate than starting over with a new prompt.
 
-## Common mistakes
+---
 
-<Mistakes>
+## FAQ / Knowledge Check
 
-- Pasting a stack trace without the action that produced it.
-- Applying several suggested fixes before reproducing the failure.
-- Accepting tests that only mirror implementation details.
-- Refactoring and changing behaviour in the same uncontrolled diff.
-- Sending secrets or personal data inside logs.
+**Q1: Does writing a comment after the code still help Copilot's suggestion for that code?**
+No — a comment shapes the suggestion only if it's written before the code is generated; afterward it's just documentation.
 
-</Mistakes>
+**Q2: What's the purpose of a `.github/copilot-instructions.md` file?**
+It shares project conventions (naming, libraries, architecture rules) across the whole team's IDEs, so suggestion quality doesn't depend on each developer's individual habits.
 
-## Interview bit
+**Q3: If Copilot Chat's first response is close but not quite right, what's the better next step?**
+Refine it directly in the same conversation ("use `Optional<T>` instead of null") rather than starting over with a brand-new, disconnected prompt.
 
-<ThemeCard title="How do you use AI during debugging?" badge="CAREER">
+**Knowledge Check:**
+1. Name two things that give Copilot more accurate context: one at the comment level, one at the file level.
+2. True/False: A comment added after the code was already written still improves that specific suggestion.
+3. What does a shared `.github/copilot-instructions.md` file solve for a team?
 
-I use AI to accelerate investigation, not to skip diagnosis. I provide a minimal reproduction and sanitized evidence, ask it to separate facts from hypotheses, validate one hypothesis at a time and make the smallest change. I add a regression test that fails before the fix and passes afterward, then review wider side effects.
+*(Answers: 1. A specific, example-anchored comment; having the related pattern file open alongside your new code; 2. False — the comment must come before the suggestion is generated to shape it; 3. Inconsistent suggestion quality across different developers by institutionalizing shared project context)*
 
-</ThemeCard>
-
-## Key takeaways
-
-<Takeaways>
-
-- A likely explanation is not verified diagnosis.
-- Reproduce before modifying code.
-- Tests should detect business failure, not merely execute lines.
-- Refactoring needs explicit behavioural boundaries.
-- Sanitise logs and keep sensitive information out of prompts.
-
-</Takeaways>
-
-## Official references
-
-- [GitHub Docs: Get IDE code suggestions](https://docs.github.com/en/copilot/how-tos/get-code-suggestions/get-ide-code-suggestions)
-- [GitHub Docs: GitHub Copilot code review](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/request-a-code-review/use-code-review)
+---
+*Next byte: **Copilot Agent Mode and Workspace** — moving from single suggestions and chat answers to autonomous, multi-file task execution.*
