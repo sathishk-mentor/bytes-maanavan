@@ -19,7 +19,9 @@ Connect VectorStore retrieval, Advisors and ChatClient to answer from approved e
 
 ## Quick Start
 
-Our RAG Handbook series explained retrieval-augmented generation conceptually — an AI model answering from your own documents, like an open-book exam. Now let's see how Spring AI brings that same capability into Java, so PaisaWise's Spring Boot backend can answer questions from real policy documents.
+Retrieval-augmented generation, or **RAG**, lets an AI answer using approved documents—similar to an open-book exam. This Byte explains the essential flow before implementing it with Spring AI, so prior RAG or LangChain knowledge is not required.
+
+> **Optional foundation:** If you want a slower conceptual introduction first, read [What Is RAG?](/rag-application-engineering/01-what-is-rag-give-ai-access-to-your-knowledge/).
 
 **Time investment:** 20-25 mins.
 
@@ -31,7 +33,7 @@ Rahul, now comfortable with `ChatClient` from Byte 2, asks Divya: "Our summarize
 
 ## Core Concept
 
-Recall the RAG Handbook's four stages: chunking documents, creating "meaning fingerprints" (embeddings), storing them in a searchable index, and retrieving the right pieces before answering. In our Python LangChain series, we wired this manually using Chroma. In Java, Spring AI provides a **`VectorStore`** abstraction — the same core idea, just as an interchangeable Spring Bean, and a **`QuestionAnswerAdvisor`** that automatically handles the "search, then answer" flow for you.
+RAG has four stages: split documents into useful chunks, convert them into "meaning fingerprints" called embeddings, store them in a searchable index, and retrieve relevant evidence before answering. Spring AI provides a **`VectorStore`** abstraction for the searchable index and a **`QuestionAnswerAdvisor`** for the "search, then answer" flow.
 
 Think of the `VectorStore` as a plug socket — PostgreSQL/pgvector, MongoDB Atlas, Pinecone, Qdrant, and others all fit the same socket. You write your RAG logic once, and swap the underlying storage the same way you'd swap a database driver.
 
@@ -56,7 +58,7 @@ public class PolicyIngestionService {
 }
 ```
 
-`Document` here is Spring AI's representation of one chunk — conceptually identical to the "index cards" from our RAG Handbook's Byte 1.
+`Document` is Spring AI's representation of one chunk. Think of each chunk as a labelled index card that can be retrieved when it matches a question.
 
 **Step 2: Answer questions using retrieved context, via the Advisors API:**
 
@@ -81,7 +83,7 @@ public class PolicyQAService {
 }
 ```
 
-Notice the method body looks almost identical to Byte 2's `ComplaintSummaryService`. The difference is entirely in the setup: attaching `QuestionAnswerAdvisor` means every call now automatically searches `vectorStore` for relevant chunks and includes them before the model answers — the retrieval step from our RAG Handbook happens transparently, behind this one line of configuration.
+Attaching `QuestionAnswerAdvisor` means every call searches `vectorStore` for relevant chunks and places that evidence into the model context before it answers. The retrieval step happens behind this configuration while the service method stays compact.
 
 
 <JavaStoryVisual variant="rag" />
@@ -90,14 +92,14 @@ Notice the method body looks almost identical to Byte 2's `ComplaintSummaryServi
 
 ## Try It Yourself (Small Snippet)
 
-**Configuring pgvector as the storage backend** (an `application.properties` change, connecting back to our SQL Handbook's pgvector byte):
+**Configuring pgvector as the storage backend** in `application.properties`:
 
 ```properties
 spring.ai.vectorstore.pgvector.index-type=HNSW
 spring.ai.vectorstore.pgvector.dimensions=1536
 ```
 
-Notice this is the exact same `HNSW` indexing concept from our SQL Handbook's vector search byte — Spring AI isn't reinventing vector search, it's wiring Java into the same underlying pgvector technology.
+`HNSW` is an approximate nearest-neighbour index that helps pgvector find similar embeddings efficiently. Spring AI connects the Java application to this underlying pgvector capability.
 
 
 ## Real Company Angle
@@ -108,14 +110,14 @@ Spring AI's Advisors API and auto-configuration for vector stores like PostgreSQ
 ## Common Mistakes
 
 1. **Re-ingesting the same documents on every application restart** — ingestion should typically be a separate, controlled step, not something that runs automatically every time the app boots.
-2. **Forgetting that chunking quality still matters in Java, exactly as covered in our RAG Handbook** — Spring AI handles the plumbing, but poor chunking still leads to poor answers, regardless of language.
-3. **Assuming `QuestionAnswerAdvisor` guarantees correct answers** — as our RAG Handbook's Byte 3 covered, retrieval can still miss the right chunk, or the model can still add unsupported detail; evaluation is still necessary.
+2. **Ignoring chunking quality** — Spring AI handles the plumbing, but incomplete or oversized chunks still produce weak retrieval and weak answers.
+3. **Assuming `QuestionAnswerAdvisor` guarantees correct answers** — retrieval can miss the right chunk and the model can add unsupported detail, so evaluation is still necessary.
 4. **Hardcoding vector dimensions incorrectly** — the `dimensions` property must match your embedding model's actual output size, or storage/retrieval will silently misbehave.
 
 
 ## Persona Wrap-Up
 
-Rahul is impressed: "So the entire RAG concept from the earlier handbook — chunk, embed, store, retrieve, generate — maps almost one-to-one onto Spring AI's `VectorStore` and `QuestionAnswerAdvisor`." Meena tests it: "Now it actually answers using our real refund policy, not a generic guess." Divya: "Exactly — and everything we learned about evaluating RAG quality and catching failures still applies here, just running on Java instead of Python."
+Rahul summarizes the flow: "Chunk, embed, store, retrieve, then generate—and Spring AI maps those steps onto `VectorStore` and `QuestionAnswerAdvisor`." Meena tests it: "Now it answers using our approved refund policy instead of a generic guess." Divya adds: "We still need to inspect the evidence and evaluate answer quality before trusting it."
 
 
 ## Compare & Contrast
@@ -135,10 +137,10 @@ Sketch (on paper) how you'd extend `PolicyQAService` to only search a specific c
 
 ## Key Takeaways
 
-- Spring AI's `VectorStore` interface plays the same role as Chroma/pgvector in our Python RAG series — an interchangeable storage backend for document chunks.
+- Spring AI's `VectorStore` is an interchangeable storage abstraction for embedded document chunks.
 - `QuestionAnswerAdvisor` automates the "retrieve relevant chunks, then answer" flow, attached to `ChatClient` with one line of configuration.
-- The underlying concepts — chunking, embeddings, retrieval quality, evaluation — are unchanged from our RAG Handbook; only the implementation language differs.
-- Spring AI supports the same production-grade vector databases (pgvector, MongoDB Atlas, Pinecone, Qdrant) our SQL Handbook covered, so enterprise infrastructure choices carry over.
+- Chunking, embeddings, retrieval quality and evaluation remain essential regardless of implementation language.
+- Spring AI supports production vector stores including pgvector, MongoDB Atlas, Pinecone and Qdrant.
 - RAG's known failure modes (stale documents, bad chunking, poor retrieval) apply just as much in Java — the language changes, the underlying discipline doesn't.
 
 
@@ -151,12 +153,12 @@ Sketch (on paper) how you'd extend `PolicyQAService` to only search a specific c
 No — Spring AI supports the same production vector databases (pgvector, MongoDB Atlas, Pinecone, Qdrant, and others).
 
 **Q3: Does using `QuestionAnswerAdvisor` eliminate the need for RAG evaluation?**
-No — retrieval can still miss the right chunk and the model can still add unsupported detail; the evaluation practices from our RAG Handbook still apply.
+No. Retrieval can still miss the right chunk and the model can still add unsupported detail; test whether the answer is supported by the retrieved evidence.
 
 **Knowledge Check:**
 1. What Spring AI interface plays the role of a vector database abstraction?
 2. True/False: Chunking quality no longer matters once you're using Spring AI's `QuestionAnswerAdvisor`.
-3. Name one vector database supported by both our SQL Handbook (pgvector) and Spring AI.
+3. Name one vector database supported by Spring AI.
 
 *(Answers: 1. `VectorStore`; 2. False — chunking quality still directly affects answer quality, regardless of language; 3. pgvector (PostgreSQL))*
 
