@@ -1,89 +1,27 @@
-<ThemeCard title="Neenga learn panna poradhu" badge="COPILOT HANDBOOK 05">
+<ThemeCard title="Neenga learn panna poradhu" badge="COPILOT 05">Change risk-ku match-a review, security checks, policy controls, audit evidence apply panna learn pannuveenga.</ThemeCard>
 
-Generated code production-க்கு செல்லும் முன் correctness, security, licensing, privacy மற்றும் operational readiness review பண்ணும் five-gate model-ஐ apply பண்ணுவீங்க.
+## Quick Start
+AI code readable-a irukkalaam; aana wrong business rule, insecure dependency, privacy leak irukkalaam. Review depth change impact-ku match aaganum.
 
-</ThemeCard>
+## Risk Model
+- README wording: light review.
+- Customer API: tests, auth, error handling review.
+- Payment authorization: domain owner, security review, audit evidence, staged release.
 
-<HandbookLearningVisual variant="copilotSecure" />
+## Core Concept
+Responsible use-na tool-ai avoid pannradhu illa. **Right access + right review + visible evidence** maintain pannradhu.
 
-## Responsibility tool-க்கு transfer ஆகாது
+<CopilotHandbookVisual variant="responsible" />
+<CopilotGovernanceLab />
 
-Copilot code suggest அல்லது change prepare செய்தாலும் repository owner மற்றும் reviewing developer தான் result-க்கு accountable. “AI generated” என்பது weak design, vulnerability அல்லது broken requirement-க்கு excuse இல்லை.
+## Governance Controls
+Organisation policies feature, agent, model access-ai control pannalaam. Repository protection, approval rules, secret scanning, dependency review, audit logs important safety layers.
 
-## Five-gate review model
+## Production Checklist
+Requirement verified → diff reviewed → tests passed → security checks passed → approvals recorded → monitored release.
 
-1. **Intent:** Change correct requirement-ஐ solve செய்கிறதா?
-2. **Correctness:** Normal மற்றும் edge cases-ல் behaviour correct-ஆ?
-3. **Security and privacy:** Input validation, permission, secrets மற்றும் data handling safe-ஆ?
-4. **Maintainability:** Existing architecture, naming, dependencies மற்றும் tests-க்கு fit ஆகிறதா?
-5. **Operations:** Logs, performance, rollout மற்றும் rollback ready-ஆ?
+## Key Takeaways
+Least privilege apply aaganum. Risk increase aana review depth-um increase aaganum. Human approval final accountability gate.
 
-ஒரு gate fail ஆனால் change release ஆகக்கூடாது.
-
-## Easy analogy: pilot final checklist
-
-<Scenario title="Autopilot இருந்தாலும் pilot accountable">
-
-Aircraft automation navigation assist பண்ணலாம். ஆனால் weather, fuel, route, warnings மற்றும் landing clearance-ஐ pilot verify பண்ண வேண்டும். Coding assistant implementation speed up பண்ணலாம்; production release checklist human owner complete பண்ண வேண்டும்.
-
-</Scenario>
-
-## Real-time scenario: risk-based code review
-
-Text label change மற்றும் authentication rule change ஒரே review depth வேண்டியதில்லை. Data access, payment, identity, permission, deployment அல்லது destructive operation touch செய்யும் generated code-க்கு stronger tests, security review மற்றும் explicit approval தேவை.
-
-## Review prompt
-
-<PromptBox label="Generated change risk review">
-
-Review this diff as untrusted proposed code. Check requirement fit, correctness, edge cases, authentication, authorisation, injection, secrets, privacy, dependencies, performance, logging, tests and rollback. Cite exact evidence. Separate confirmed issues from questions. Do not approve the change.
-
-</PromptBox>
-
-## Release checklist
-
-- Requirement மற்றும் acceptance criteria trace செய்யப்பட்டதா?
-- Generated code line-by-line review ஆனதா?
-- Unit, integration மற்றும் security tests pass ஆனதா?
-- New dependency provenance மற்றும் license check ஆனதா?
-- Secrets அல்லது private data output/log-ல் இல்லையா?
-- Permission changes least privilege follow செய்கிறதா?
-- Monitoring மற்றும் rollback plan ready-ஆ?
-- Accountable human approver named-ஆ?
-
-## Common mistakes
-
-<Mistakes>
-
-- Build pass ஆனதால் business behaviour correct என்று assume பண்ணுவது.
-- Generated tests generated implementation-ஐ repeat பண்ணுவதை evidence என்று accept பண்ணுவது.
-- Suggested package-ஐ provenance check இல்லாமல் install பண்ணுவது.
-- Private code அல்லது production data-ஐ unapproved context-ல் share பண்ணுவது.
-- High-risk change-ஐ same-day pressure காரணமாக review இல்லாமல் release பண்ணுவது.
-
-</Mistakes>
-
-## Interview-ல் எப்படி explain பண்ணுவது?
-
-<ThemeCard title="AI-generated code-க்கு யார் responsible?" badge="CAREER">
-
-Code suggest செய்த tool அல்ல; change review மற்றும் release செய்யும் team responsible. Requirement traceability, independent tests, security/privacy review, dependency checks, observable rollout மற்றும் rollback மூலம் generated code-ஐ verify பண்ண வேண்டும்.
-
-</ThemeCard>
-
-## நினைவில் வைக்க வேண்டிய key points
-
-<Takeaways>
-
-- Copilot assistance accountability-ஐ மாற்றாது.
-- Risk அதிகமான change-க்கு deeper evidence தேவை.
-- Generated tests மட்டும் independent verification இல்லை.
-- Security, privacy மற்றும் licensing review delivery flow-ல் இருக்க வேண்டும்.
-- Named human approval தான் release boundary.
-
-</Takeaways>
-
-## Official references
-
-- [GitHub Copilot responsible use](https://docs.github.com/en/copilot/responsible-use)
-- [GitHub security guidance](https://docs.github.com/en/code-security)
+## References
+- [GitHub Copilot enterprise policies](https://docs.github.com/en/copilot/concepts/enterprise/policies)
