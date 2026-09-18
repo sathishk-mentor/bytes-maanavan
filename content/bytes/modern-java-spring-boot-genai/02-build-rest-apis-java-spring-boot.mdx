@@ -19,19 +19,19 @@ Use ChatClient, prompt roles, model configuration and typed output to create a p
 
 ## Quick Start
 
-In Byte 1, we saw why Java/Spring Boot still anchors enterprise systems. Now let's connect that world to GenAI: **Spring AI**, the official Spring project for calling LLMs from Java, in the same clean, annotation-driven style we already know.
+This Byte shows how a Spring Boot application connects to an LLM using **Spring AI**. We begin with the essential pieces—`ChatClient`, prompts, configuration and dependency injection—so the lesson works even if this is your first Byte in the handbook.
 
 **Time investment:** 20-25 mins.
 
 
 ## Meet the Scenario
 
-Meena wants PaisaWise's Java-based backend to power a simple internal tool: a customer-support assistant that summarizes long complaint threads. Karthik asks: "In our Python LangChain series, we used `ChatOpenAI` for this. What's the Java equivalent?" Divya replies: "Spring AI's `ChatClient` — it plays a very similar role, just wired the Spring way."
+Meena wants PaisaWise's Java-based backend to power a simple internal tool: a customer-support assistant that summarizes long complaint threads. Karthik asks: "What connects our Java service to the language model?" Divya replies: "Spring AI's `ChatClient`—a Spring-native interface for preparing a prompt, calling the model and reading its response."
 
 
 ## Core Concept
 
-Recall from our LangChain series: calling an LLM meant creating a model object, then invoking it with a prompt. Spring AI mirrors this exact idea, but as a Spring Bean — an object Spring creates and manages for you, just like `AccountService` from Byte 1. Once that "bean" exists, you simply ask Spring to hand it to you (via dependency injection), and call a fluent, readable method chain to get your answer.
+An LLM call needs three basic steps: prepare a prompt, send it to a model and read the response. Spring AI provides this workflow through a Spring Bean—an object Spring creates and manages for the application. Once the bean exists, dependency injection supplies it to your service and a fluent method chain performs the call.
 
 Think of it like ordering at a coffee shop with a "build your own" ordering ritual: `.prompt()` starts your order, `.user(...)` is what you actually want to say, and `.call()` is handing the order to the counter and waiting for the result — Spring AI's `ChatClient` uses exactly this same fluent, step-by-step ordering style.
 
@@ -108,7 +108,7 @@ Spring AI is useful when a team wants model access, structured responses, adviso
 ## Common Mistakes
 
 1. **Hardcoding API keys directly in code** — always externalize them via `application.properties` or environment variables, exactly as you would for a database password.
-2. **Creating a new `ChatClient` for every request** — like the LangChain pattern in our earlier series, build it once (usually via the injected builder) and reuse the bean.
+2. **Creating a new `ChatClient` for every request** — build it once, usually through the injected builder, and reuse the managed bean.
 3. **Forgetting that switching providers is meant to be a config change** — if changing providers requires touching business logic code, the abstraction isn't being used correctly.
 4. **Not handling the case where the LLM call fails or times out** — a production support tool needs a fallback message, not an unhandled exception reaching the customer.
 
@@ -151,7 +151,7 @@ Spring AI's `ChatClient`, typically created via an auto-configured `ChatClient.B
 No — it should only require changing the Spring Boot starter dependency and configuration properties, not the business logic.
 
 **Q3: Why shouldn't you create a new `ChatClient` for every single request?**
-It's inefficient — like the LangChain pattern from our earlier series, build it once (typically at startup, via injection) and reuse it across requests.
+It is unnecessary and harder to manage. Build it once, typically at startup through dependency injection, and reuse it across requests.
 
 **Knowledge Check:**
 1. What are the three steps in the fluent `ChatClient` call chain shown in this byte?
@@ -161,7 +161,7 @@ It's inefficient — like the LangChain pattern from our earlier series, build i
 *(Answers: 1. `.prompt()`, `.user(...)`, `.call()` (followed by `.content()` to get the text); 2. False — it's meant to be a configuration change, not a code change; 3. Spring-native configuration and application integration)*
 
 
-*Next byte: **RAG in Spring Boot** — bringing retrieval-augmented generation, from our RAG Handbook series, into Java with Spring AI's vector store support.*
+*Next Byte: **RAG in Spring Boot**—use Spring AI vector-store support to answer from approved documents. New to RAG? Start with [What Is RAG?](/rag-application-engineering/01-what-is-rag-give-ai-access-to-your-knowledge/), then return here for the Java implementation.*
 
 
 ## References and Further Reading
