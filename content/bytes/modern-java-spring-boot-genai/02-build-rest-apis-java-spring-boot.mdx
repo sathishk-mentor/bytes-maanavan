@@ -1,123 +1,171 @@
 ---
-title: "Build REST APIs with Java and Spring Boot"
+title: "Connect Spring Boot to LLMs with Spring AI"
 slug: "02-build-rest-apis-java-spring-boot"
-summary: "Build a maintainable policy API with controllers, services, dependency injection, validation and meaningful error responses."
+summary: "Use ChatClient, prompt roles, model configuration and typed output to create a predictable AI endpoint."
 category: "modern-java-spring-boot-genai"
-tags: ["Spring Boot REST API", "Java REST API tutorial", "Spring validation", "dependency injection", "Spring Boot beginners"]
+tags: ["Modern Java", "Spring Boot", "Spring AI", "Java GenAI", "enterprise AI"]
 level: "beginner"
-duration: "24 min"
-updatedAt: "2026-09-14"
+duration: "23 min"
+updatedAt: "2026-09-18"
 order: 2
+isPopular: false
 ---
 
-<ThemeCard title="Practical outcome" badge="JAVA HANDBOOK 02">
+<ThemeCard title="Your outcome" badge="JAVA & SPRING AI 02">
 
-You will expose the policy domain through a REST contract while keeping HTTP concerns separate from business behaviour.
+Use ChatClient, prompt roles, model configuration and typed output to create a predictable AI endpoint.
 
 </ThemeCard>
 
-<HandbookLearningVisual variant="javaApi" />
+## Quick Start
 
-## The boundary your clients depend on
+In Byte 1, we saw why Java/Spring Boot still anchors enterprise systems. Now let's connect that world to GenAI: **Spring AI**, the official Spring project for calling LLMs from Java, in the same clean, annotation-driven style we already know.
 
-A REST API is not simply a controller method. It is a contract covering the HTTP method, path, request shape, validation, response shape, status codes and failures.
+**Time investment:** 20-25 mins.
 
-```text
-Client → Controller → Service → Repository
-       ← HTTP response ← result
-```
 
-## Create a clear request model
+## Meet the Scenario
+
+Meena wants PaisaWise's Java-based backend to power a simple internal tool: a customer-support assistant that summarizes long complaint threads. Karthik asks: "In our Python LangChain series, we used `ChatOpenAI` for this. What's the Java equivalent?" Divya replies: "Spring AI's `ChatClient` — it plays a very similar role, just wired the Spring way."
+
+
+## Core Concept
+
+Recall from our LangChain series: calling an LLM meant creating a model object, then invoking it with a prompt. Spring AI mirrors this exact idea, but as a Spring Bean — an object Spring creates and manages for you, just like `AccountService` from Byte 1. Once that "bean" exists, you simply ask Spring to hand it to you (via dependency injection), and call a fluent, readable method chain to get your answer.
+
+Think of it like ordering at a coffee shop with a "build your own" ordering ritual: `.prompt()` starts your order, `.user(...)` is what you actually want to say, and `.call()` is handing the order to the counter and waiting for the result — Spring AI's `ChatClient` uses exactly this same fluent, step-by-step ordering style.
+
+
+## How It Works Under the Hood
+
+**Step 1: Spring Boot auto-configures a `ChatClient.Builder` bean** once you add the Spring AI starter dependency for your chosen provider (OpenAI, Azure, Amazon Bedrock, Google, and others are all supported the same way).
+
+**Step 2: Inject it into your own service, just like any other Spring bean:**
 
 ```java
-public record CreatePolicyRequest(
-    @jakarta.validation.constraints.NotBlank String title,
-    @jakarta.validation.constraints.NotBlank String department,
-    @jakarta.validation.constraints.NotNull LocalDate effectiveFrom
-) {}
+@Service
+public class ComplaintSummaryService {
+
+    private final ChatClient chatClient;
+
+    public ComplaintSummaryService(ChatClient.Builder builder) {
+        this.chatClient = builder.build();
+    }
+
+    public String summarize(String complaintThread) {
+        return chatClient.prompt()
+                .user("Summarize this customer complaint in 2 sentences: " + complaintThread)
+                .call()
+                .content();
+    }
+}
 ```
 
-The API request is different from the database entity. This prevents external callers from controlling internal fields such as IDs, audit data or approval status.
-
-## Keep the controller thin
+**Step 3: Expose it through a familiar REST controller** (exactly like Byte 1's `AccountController`):
 
 ```java
 @RestController
-@RequestMapping("/api/policies")
-class PolicyController {
-    private final PolicyService service;
+@RequestMapping("/api/support")
+public class SupportController {
 
-    PolicyController(PolicyService service) {
-        this.service = service;
+    private final ComplaintSummaryService summaryService;
+
+    public SupportController(ComplaintSummaryService summaryService) {
+        this.summaryService = summaryService;
     }
 
-    @PostMapping
-    ResponseEntity<PolicyResponse> create(
-        @Valid @RequestBody CreatePolicyRequest request) {
-        var created = service.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
-}
-```
-
-Constructor injection makes the dependency visible and easy to replace in a test. The controller translates HTTP; `PolicyService` owns the use case.
-
-## Return errors clients can act on
-
-```java
-@RestControllerAdvice
-class ApiExceptionHandler {
-    @ExceptionHandler(PolicyNotFoundException.class)
-    ResponseEntity<ProblemDetail> notFound(PolicyNotFoundException ex) {
-        var problem = ProblemDetail.forStatusAndDetail(
-            HttpStatus.NOT_FOUND, ex.getMessage());
-        problem.setTitle("Policy not found");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+    @PostMapping("/summarize")
+    public String summarize(@RequestBody String complaintThread) {
+        return summaryService.summarize(complaintThread);
     }
 }
 ```
 
-Use predictable error bodies. Do not leak stack traces, SQL details or secrets.
+Notice the pattern is identical to Byte 1 — a `@Service` doing the work, a `@RestController` exposing it, dependency injection wiring both together. Spring AI didn't require learning a new architectural style; it fit into the one Java developers already know.
 
-<Scenario title="Real-time analogy: a bank service counter">
 
-The counter checks the form, routes valid work to the right team and returns a receipt. It does not contain the vault or rewrite the bank’s rules. A controller should behave the same way: validate and translate at the boundary, then delegate.
+<JavaStoryVisual variant="client" />
 
-</Scenario>
+<SpringAIClientLab />
 
-## Common mistakes
+## Try It Yourself (Small Snippet)
 
-<Mistakes>
+**Switching model providers is a configuration change, not a code rewrite.** In `application.properties`:
 
-- Returning persistence entities directly from public endpoints.
-- Writing database and AI-provider logic inside controllers.
-- Using `200 OK` for creation, validation failure and missing resources alike.
-- Catching every exception and hiding the real failure.
-- Treating generated OpenAPI documentation as a substitute for tests.
+```properties
+spring.ai.openai.api-key=${OPENAI_API_KEY}
+spring.ai.openai.chat.options.model=gpt-4o-mini
+```
 
-</Mistakes>
+Try mentally rewriting this for a different provider (say, Amazon Bedrock) — notice that `ComplaintSummaryService`'s Java code above wouldn't need to change at all; only this configuration would.
 
-## Interview bit
 
-<ThemeCard title="Why separate controller and service layers?" badge="CAREER">
+## Real Company Angle
 
-The controller owns transport concerns such as HTTP input, status and serialisation. The service owns the application use case and business rules. This separation improves testing, reuse and changeability, and prevents web-framework details from spreading across the domain.
+Spring AI is useful when a team wants model access, structured responses, advisors and tool calling through conventions that fit existing Spring applications. Evaluate it through maintainability, provider portability, tests and operational fit.
 
-</ThemeCard>
 
-## Key takeaways
+## Common Mistakes
 
-<Takeaways>
+1. **Hardcoding API keys directly in code** — always externalize them via `application.properties` or environment variables, exactly as you would for a database password.
+2. **Creating a new `ChatClient` for every request** — like the LangChain pattern in our earlier series, build it once (usually via the injected builder) and reuse the bean.
+3. **Forgetting that switching providers is meant to be a config change** — if changing providers requires touching business logic code, the abstraction isn't being used correctly.
+4. **Not handling the case where the LLM call fails or times out** — a production support tool needs a fallback message, not an unhandled exception reaching the customer.
 
-- Design the HTTP contract before filling in implementation details.
-- Validate untrusted data at the application boundary.
-- Use constructor injection and focused services.
-- Make failure responses predictable and safe.
 
-</Takeaways>
+## Persona Wrap-Up
 
-## Primary sources
+Karthik is pleasantly surprised: "This feels almost identical to our `AccountService` pattern from Byte 1 — just with a `ChatClient` instead of a database call." Meena tests the summarizer: "This actually saves our support team real time on long complaint threads." Divya adds: "That's the whole point of Spring AI — it didn't ask Java developers to learn a new paradigm, it extended the one they already trust."
 
-- [Spring guide: Building a RESTful Web Service](https://spring.io/guides/gs/rest-service)
-- [Spring Framework validation](https://docs.spring.io/spring-framework/reference/core/validation/beanvalidation.html)
-- [Spring MVC annotated controllers](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller.html)
+
+## Compare & Contrast
+
+| Concept | LangChain (Python) | Spring AI (Java) |
+|---|---|---|
+| Model object | `ChatOpenAI(...)` | `ChatClient` (via `ChatClient.Builder`) |
+| Sending a prompt | `.invoke(prompt)` | `.prompt().user(...).call()` |
+| Getting the answer | Response object | `.content()` |
+| Switching providers | Change the model class/config | Change Spring Boot starter + properties |
+
+
+## Mini Practice Task
+
+Design (on paper) a new `ComplianceQAService` with one method, `answerQuestion(String question)`, that uses `ChatClient` to answer general compliance questions. Write the method signature and the one-line `chatClient.prompt()...call().content()` chain you'd use — no need to run it.
+
+
+## Key Takeaways
+
+- **Spring AI** brings LLM calling into Java using the same Spring Bean and dependency injection patterns Java developers already know from Spring Boot.
+- The core object is `ChatClient`, used with a fluent chain: `.prompt().user(...).call().content()`.
+- Switching model providers (OpenAI, Azure, Bedrock, Google, and others) is meant to be a configuration change, not a code rewrite.
+- Spring AI provides a Spring-native abstraction for model calls and related AI application patterns.
+- Keeping AI calls inside the familiar Spring ecosystem reduces both security risk and developer ramp-up time for enterprises.
+
+
+## FAQ / Knowledge Check
+
+**Q1: What is the Java/Spring AI equivalent of LangChain's `ChatOpenAI`?**
+Spring AI's `ChatClient`, typically created via an auto-configured `ChatClient.Builder` bean.
+
+**Q2: Does switching from OpenAI to another model provider require rewriting your service code?**
+No — it should only require changing the Spring Boot starter dependency and configuration properties, not the business logic.
+
+**Q3: Why shouldn't you create a new `ChatClient` for every single request?**
+It's inefficient — like the LangChain pattern from our earlier series, build it once (typically at startup, via injection) and reuse it across requests.
+
+**Knowledge Check:**
+1. What are the three steps in the fluent `ChatClient` call chain shown in this byte?
+2. True/False: Switching LLM providers in Spring AI usually requires rewriting your `@Service` class.
+3. What percentage of Java developers building AI apps report using Spring AI?
+
+*(Answers: 1. `.prompt()`, `.user(...)`, `.call()` (followed by `.content()` to get the text); 2. False — it's meant to be a configuration change, not a code change; 3. Spring-native configuration and application integration)*
+
+
+*Next byte: **RAG in Spring Boot** — bringing retrieval-augmented generation, from our RAG Handbook series, into Java with Spring AI's vector store support.*
+
+
+## References and Further Reading
+
+- [Spring AI Reference](https://docs.spring.io/spring-ai/reference/)
+- [Spring AI ChatClient](https://docs.spring.io/spring-ai/reference/api/chatclient.html)
+- [Spring Boot Reference](https://docs.spring.io/spring-boot/reference/)
