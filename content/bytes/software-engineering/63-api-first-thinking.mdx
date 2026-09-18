@@ -1,132 +1,150 @@
 ---
-title: "Give GitHub Copilot Better Context"
+title: "Use GitHub Copilot Chat with the Right Context"
 slug: "02-give-github-copilot-better-context"
-summary: "Learn how goals, relevant files, repository instructions, examples and acceptance criteria help GitHub Copilot produce more useful results."
+summary: "Use focused questions, selected code, repository context and follow-ups to get useful Copilot Chat responses."
 category: "software-engineering"
-tags: ["GitHub Copilot context", "copilot instructions", "prompt engineering", "repository instructions"]
+tags: ["GitHub Copilot Chat", "code explanation", "debugging", "context"]
 level: "beginner"
-duration: "19 min"
-updatedAt: "2026-09-13"
+duration: "20 min"
+updatedAt: "2026-09-18"
 order: 63
-isPopular: true
+isPopular: false
 ---
 
-<ThemeCard title="What you will learn" badge="HANDBOOK 02">
+## Quick Start
 
-You will learn a five-part context pattern for Copilot, understand repository instructions and references, recognise context overload and create prompts that expose missing information instead of encouraging silent assumptions.
+**Copilot Chat** answers questions, explains selected code and proposes focused changes. This Byte begins with the essential context model, so learners can start here without reading the inline-suggestions lesson first.
 
-</ThemeCard>
+**Time investment:** 20-25 mins.
+
+---
+
+## Meet the Scenario
+
+Karthik inherits a legacy Java class in PaisaWise's codebase with zero comments and cryptic variable names. He says: "I have no idea what half of this `TxnRcnclr` class does." Rahul suggests: "Select the whole class and ask Copilot Chat to explain it — I do this constantly with unfamiliar code."
+
+---
+
+## Core Concept
+
+If inline suggestions are like a pair-programmer silently typing alongside you, **Copilot Chat is that same partner now answering direct questions out loud**. You can select code and ask "explain this," "find the bug in this," "write unit tests for this," or simply describe something you want built from scratch, in plain English (or Tanglish, in a comment, since it reads natural language too).
+
+The key mental shift: inline suggestions react to what you're typing; Chat responds to what you *ask*. This makes Chat better suited for understanding, debugging, and generating larger blocks of logic, while inline suggestions remain better for fast, in-flow completions.
+
+---
+
+## How It Works Under the Hood
+
+**Explaining unfamiliar code** — select the confusing method, then ask in Chat:
+
+```
+Explain what this method does, step by step, in plain English.
+```
+
+Copilot Chat reads the selected code plus surrounding context and responds with a plain-language walkthrough — genuinely useful for the "legacy `TxnRcnclr` class" scenario above.
+
+**Generating tests directly from existing code** — select a method, then ask:
+
+```
+Write JUnit tests for this method, covering the edge case where overdueAmount is zero.
+```
+
+**Fixing a specific bug** — paste an error message alongside the relevant code:
+
+```
+This method throws a NullPointerException when accountId is null.
+Fix it defensively without changing the method signature.
+```
+
+In each case, notice the pattern: Chat works best when you give it a clear **task** (explain, test, fix) plus the **relevant code as context** — vague requests like "make this better" get much less useful responses than specific ones.
+
+---
 
 <CopilotHandbookVisual variant="context" />
 
-## Context is the difference between guessing and assisting
+<CopilotChatLab />
 
-Copilot cannot use a requirement, convention or constraint that it cannot access. A prompt such as “add login” leaves unanswered questions about identity provider, session strategy, roles, error responses, audit needs and tests. The result may look polished while solving a different problem.
+## Try It Yourself (Small Snippet)
 
-A useful context package contains five things: **goal, relevant files, project rules, examples and acceptance checks**. More context is not automatically better. Include information that changes the answer and remove material that competes for attention.
+**A "rubber duck debugging" style Chat prompt**, useful when a piece of logic isn't behaving as expected:
 
-## The five-part context pattern
+```
+Here's my function and the output I'm getting. I expected the late fee
+to cap at 15%, but it's exceeding that. Walk through the logic and
+tell me where it breaks.
 
-<HandbookLearningVisual variant="copilotContext" />
+[paste your calculateLateFee method here]
+```
 
-### 1. Goal
+Try this the next time something behaves unexpectedly — describing the *expected* versus *actual* behavior, rather than just pasting code and saying "fix it," usually gets a more precise answer.
 
-Describe the observable result. “Add CSV export to the filtered orders table” is more useful than “improve orders.” Mention the user and the reason when that affects design.
+---
 
-### 2. Relevant files
+## Real Company Angle
 
-Reference the smallest set that establishes the current pattern: route, service, data type, UI component and related test. Ask Copilot to identify missing dependencies before editing.
+Copilot Chat is available across supported development environments, but exact capabilities depend on the client, plan and organisation policy. Teams should document which surfaces and features are approved instead of assuming every developer has identical access.
 
-### 3. Project rules
+---
 
-State architectural boundaries, supported versions, security expectations and style conventions. Repository custom instructions can make stable guidance available repeatedly, but instructions should remain concise, accurate and maintained.
+## Common Mistakes
 
-### 4. Examples
+1. **Asking vague questions like "fix this" without describing what's wrong** — Chat performs much better with a specific task and a description of the expected vs. actual behavior.
+2. **Not providing enough surrounding context** — if the bug depends on code in a different file that isn't open or referenced, Chat may not have visibility into it.
+3. **Trusting a generated explanation of legacy code as fully accurate without verifying against actual behavior** — Chat's explanation is a strong starting hypothesis, not a guaranteed-correct specification, especially for genuinely obscure or poorly-named legacy code.
+4. **Using Chat for large, multi-file refactors** — this is a job better suited to agent mode (Byte 4); Chat is optimized for focused, single-context conversations.
 
-Point to one good existing implementation. Examples communicate conventions more precisely than broad adjectives such as “clean” or “professional.” Do not provide a flawed pattern merely because it is nearby.
+---
 
-### 5. Acceptance checks
+## Persona Wrap-Up
 
-Define how completion will be evaluated: expected behaviour, edge cases, tests, accessibility, performance or error handling. Acceptance criteria turn a subjective request into a checkable task.
+Karthik, after using Chat to explain `TxnRcnclr`: "This just saved me probably two hours of tracing through cryptic code by hand." Meena, curious, asks: "Can it write our test cases too?" Rahul: "Yes — and it does surprisingly well when you point it at one method with a clear ask, like 'test the edge cases.'" Divya: "That's the pattern to remember — Chat rewards specificity, just like a good question to a very well-read colleague."
 
-<OfficialScreenshot src="/images/github-copilot/official-custom-instructions.webp" alt="GitHub Copilot references showing a repository copilot instructions file" sourceUrl="https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions" note="GitHub Docs demonstrates that repository instructions can appear in the references used for a Copilot response." />
+---
 
-## Simple analogy: briefing a new teammate
+## Compare & Contrast
 
-Imagine asking a new teammate to “fix the report” without showing the report, the expected result or the company rules. They will guess. Copilot behaves similarly. The goal, relevant files, project rules, examples and acceptance checks are the briefing pack that turns guessing into useful assistance.
+| Task Type | Better Suited To |
+|---|---|
+| "What does this confusing code do?" | Copilot Chat (explain) |
+| "Complete this line I'm typing" | Inline suggestions |
+| "Write tests for this specific method" | Copilot Chat (generate) |
+| "Refactor this pattern across 12 files" | Agent mode (Byte 4) |
 
-## Real-time scenario: adding an API safely
+---
 
-<Scenario title="Add an order cancellation endpoint">
+## Mini Practice Task
 
-A developer asks Copilot to add `POST /orders/:id/cancel`. Without context, it may directly update the status. The real system requires ownership validation, a cancellable-state check, inventory restoration, an audit event and idempotency.
+Find a piece of code in your own project that you didn't write, or wrote long ago and half-forgot. Select it and ask Copilot Chat to explain it step by step. Then ask it to write one unit test for the trickiest edge case you can think of. Compare its test against what you would have written yourself.
 
-The useful prompt references the existing refund endpoint, order state machine, authorization middleware and integration tests. It asks for a plan first and requires Copilot to list assumptions. Context changes the task from “write an endpoint” to “extend this system safely.”
+---
 
-</Scenario>
+## Key Takeaways
 
-## Copy-and-paste context prompt
+- **Copilot Chat** shifts from silent, reactive suggestions to direct, conversational Q&A — explaining, debugging, testing, and generating code on request.
+- Chat performs best with a specific task (explain/test/fix) plus relevant code as context — vague requests get vague, less useful answers.
+- Describing *expected vs. actual* behavior when debugging tends to produce more precise, useful responses than simply pasting code and saying "fix it."
+- Chat is available consistently across VS Code, JetBrains, and Visual Studio, letting mixed-toolchain teams share the same conversational experience.
+- Chat suits focused, single-context conversations; larger multi-file changes are better handled by agent mode, covered in Byte 4.
 
-<PromptBox label="Five-part Copilot task brief">
+---
 
-Goal: Add [observable capability] for [user or system].
+## FAQ / Knowledge Check
 
-Relevant context:
-- Read [file/module] for the current flow.
-- Follow the pattern in [good example].
-- Respect [architecture/security/version constraints].
+**Q1: What's the main difference between inline suggestions and Copilot Chat?**
+Inline suggestions react automatically to what you're typing; Chat responds directly to a question or task you explicitly ask it.
 
-Acceptance criteria:
-1. [Expected behaviour]
-2. [Important edge case]
-3. [Required automated check]
+**Q2: Why does describing "expected vs. actual behavior" help when debugging with Chat?**
+It gives Chat a clear target to reason toward, rather than making it guess what "fix it" means for your specific situation.
 
-Before editing, list missing information and assumptions. Then propose a file-by-file plan.
+**Q3: Should Copilot Chat be used for a large refactor spanning many files?**
+Not ideally — Chat is optimized for focused, single-context conversations; a large multi-file change is better suited to agent mode.
 
-</PromptBox>
+**Knowledge Check:**
+1. Name three types of tasks Copilot Chat is well-suited for.
+2. True/False: Vague prompts like "fix this" generally get better results than specific, detailed ones.
+3. On which editors is Copilot Chat available?
 
-## Context quality checklist
+*(Answers: 1. Explaining code, debugging, writing tests (generating code from a description also acceptable); 2. False — specific tasks with clear context get more useful responses; 3. Visual Studio Code, JetBrains IDEs, and Visual Studio)*
 
-- Does every referenced file affect the decision?
-- Are version and framework constraints explicit?
-- Is there a trusted example of the desired pattern?
-- Are authorization and data boundaries visible?
-- Can another developer verify the acceptance criteria?
-- Did Copilot state what it could not determine?
-
-## Common mistakes
-
-<Mistakes>
-
-- Attaching the whole repository when five files explain the task.
-- Storing temporary task details in permanent repository instructions.
-- Writing conflicting instructions at different scopes.
-- Using “best practice” without naming operational constraints.
-- Forgetting that referenced documentation can become outdated.
-
-</Mistakes>
-
-## Interview bit
-
-<ThemeCard title="How do you improve GitHub Copilot output?" badge="CAREER">
-
-I improve the input context before changing the wording repeatedly. I provide a measurable goal, relevant files, stable repository conventions, one trusted example and acceptance criteria. I ask Copilot to identify missing information and assumptions, then review the plan before allowing broad edits.
-
-</ThemeCard>
-
-## Key takeaways
-
-<Takeaways>
-
-- Context engineering is more important than decorative prompt language.
-- The smallest relevant context is usually better than the largest available context.
-- Repository instructions are for stable, shared conventions.
-- Acceptance criteria make generated work testable.
-- Explicit uncertainty is safer than silent assumption.
-
-</Takeaways>
-
-## Official references
-
-- [GitHub Docs: Concepts for prompting GitHub Copilot](https://docs.github.com/en/copilot/concepts/prompting)
-- [GitHub Docs: Add repository custom instructions](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions)
+---
+*Next byte: **Prompt Engineering for Copilot** — writing comments, instructions, and context that consistently get better suggestions and answers.*
