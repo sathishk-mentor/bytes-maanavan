@@ -4,6 +4,8 @@ import legacyRoutes from '@/data/legacy-routes.json';
 import { ByteHeader } from '@/components/bytes/ByteHeader';
 import { ByteContent } from '@/components/bytes/ByteContent';
 import { PrevNextNav } from '@/components/bytes/PrevNextNav';
+import { ConnectedLearning } from '@/components/bytes/ConnectedLearning';
+import { getLearningConnections } from '@/lib/byte-connections';
 import { AccordionTableOfContents } from '@/components/bytes/AccordionTableOfContents';
 import {
   getAllBytes,
@@ -188,6 +190,11 @@ export default async function BytePage({ params }: BytePageProps) {
   const { prev, next } = await getAdjacentBytes(byteSlug);
   const handbookBytes = await getBytesByCategory(categorySlug);
   const chapterNumber = handbookBytes.findIndex((item) => item.slug === byteSlug) + 1;
+  const connectionDefinitions = getLearningConnections(categorySlug, byte.order);
+  const connectedLearning = (await Promise.all(connectionDefinitions.map(async (connection) => {
+    const linkedByte = await getByteBySlug(connection.slug);
+    return linkedByte ? { ...connection, byte: linkedByte } : null;
+  }))).filter((item): item is NonNullable<typeof item> => item !== null);
 
   const uploadedEnglishContent = await getEnglishContent(categorySlug, byteSlug);
   const primaryContent = uploadedEnglishContent || byte.content;
@@ -212,7 +219,7 @@ export default async function BytePage({ params }: BytePageProps) {
           <div className="byte-main-column">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} mobile />
             {tanglishContent && <ReadingModeToggle />}
-            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={primaryContent} tanglishContent={tanglishContent} /><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
+            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={primaryContent} tanglishContent={tanglishContent} /><AuthorCard/><ConnectedLearning items={connectedLearning}/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
           <aside className="byte-trust-rail" aria-label="Handbook quick navigation">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} />
