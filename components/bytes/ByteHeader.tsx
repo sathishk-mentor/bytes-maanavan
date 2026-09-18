@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import {
   Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, CheckCircle2, ChevronRight, Clock3, Code2,
-  Container, Database, FileCode2, FileText, Gauge, GitPullRequestArrow, HardDrive, KeyRound, MessageSquareText, Network, Rocket, ScanSearch, Search, Server, ShieldCheck, Sparkles, TestTube2, Users, Wrench,
+  Container, Database, FileCode2, FileSearch, FileText, Gauge, GitPullRequestArrow, HardDrive, KeyRound, MessageSquareText, Network, Rocket, ScanSearch, Search, Server, ShieldCheck, Sparkles, TestTube2, Users, Wrench,
 } from 'lucide-react';
 import { ByteMetadata } from '@/lib/types';
 import { getCategoryBySlug } from '@/lib/categories';
@@ -37,6 +37,11 @@ const handbookHeroes = {
   '03-build-rag-applications-with-your-documents': { label: 'RAG PIPELINE', icon: FileText, steps: [[FileText, 'Documents'], [Blocks, 'Chunks'], [Database, 'Vectors'], [Search, 'Evidence']] },
   '04-build-ai-agents-with-tools-and-memory': { label: 'AGENT LOOP', icon: Wrench, steps: [[Users, 'Goal'], [Bot, 'Decide'], [Wrench, 'Use tool'], [Network, 'Update state']] },
   '05-production-ready-langchain-application': { label: 'PRODUCTION GATES', icon: ShieldCheck, steps: [[Braces, 'Contract'], [ShieldCheck, 'Controls'], [Gauge, 'Observe'], [Rocket, 'Release']] },
+  '01-what-is-rag-give-ai-access-to-your-knowledge': { label: 'GROUND THE ANSWER', icon: FileSearch, steps: [[MessageSquareText, 'Question'], [Search, 'Retrieve'], [FileText, 'Evidence'], [Sparkles, 'Answer']] },
+  '02-prepare-documents-loading-cleaning-chunking': { label: 'END-TO-END RAG', icon: Network, steps: [[FileText, 'Documents'], [Blocks, 'Chunks'], [Search, 'Retrieve'], [MessageSquareText, 'Respond']] },
+  '03-embeddings-vector-databases-semantic-search': { label: 'FAILURE DIAGNOSIS', icon: Bug, steps: [[FileText, 'Source'], [Blocks, 'Chunk'], [Search, 'Ranking'], [ScanSearch, 'Verify']] },
+  '04-build-complete-rag-application-python-langchain': { label: 'QUALITY EVALUATION', icon: Gauge, steps: [[TestTube2, 'Test set'], [Search, 'Retrieve'], [Gauge, 'Score'], [CheckCircle2, 'Improve']] },
+  '05-production-rag-evaluation-security-deployment': { label: 'PRODUCTION CONTROL', icon: ShieldCheck, steps: [[KeyRound, 'Identity'], [FileSearch, 'Filter'], [Gauge, 'Observe'], [FileText, 'Audit']] },
   'what-is-mongodb-documents-collections-databases': { label: 'MONGODB MENTAL MODEL', icon: Database, steps: [[Database, 'Database'], [Blocks, 'Collection'], [FileText, 'Document'], [KeyRound, 'Field']] },
   'mongodb-data-modeling-embedding-vs-referencing': { label: 'QUERY-FIRST MODEL', icon: Blocks, steps: [[Users, 'Requirement'], [Search, 'Query pattern'], [Blocks, 'Embed'], [Network, 'Reference']] },
   'mongodb-queries-updates-aggregation-pipeline': { label: 'AGGREGATION PIPELINE', icon: Gauge, steps: [[Search, 'Match'], [Blocks, 'Group'], [Braces, 'Project'], [Gauge, 'Sort']] },
