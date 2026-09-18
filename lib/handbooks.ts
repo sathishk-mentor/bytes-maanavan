@@ -79,10 +79,10 @@ export const handbooks: Handbook[] = [
     promise: 'Build and improve a secure, cited document assistant.',
     chapters: [
       { title: 'What is RAG?', outcome: 'Understand retrieval, context and grounded generation.', href: '/rag-application-engineering/01-what-is-rag-give-ai-access-to-your-knowledge/' },
-      { title: 'Prepare documents for RAG', outcome: 'Load, clean, chunk and label useful evidence.', href: '/rag-application-engineering/02-prepare-documents-loading-cleaning-chunking/' },
-      { title: 'Embeddings and semantic search', outcome: 'Retrieve by meaning, filters and hybrid search.', href: '/rag-application-engineering/03-embeddings-vector-databases-semantic-search/' },
-      { title: 'Build a complete RAG application', outcome: 'Connect ingestion, retrieval, prompting and citations.', href: '/rag-application-engineering/04-build-complete-rag-application-python-langchain/' },
-      { title: 'Production RAG', outcome: 'Evaluate, secure, observe and deploy the system.', href: '/rag-application-engineering/05-production-rag-evaluation-security-deployment/' },
+      { title: 'How RAG works end to end', outcome: 'Follow documents, retrieval, context and generation as one pipeline.', href: '/rag-application-engineering/02-prepare-documents-loading-cleaning-chunking/' },
+      { title: 'Why RAG answers go wrong', outcome: 'Diagnose source, chunking, retrieval and generation failures.', href: '/rag-application-engineering/03-embeddings-vector-databases-semantic-search/' },
+      { title: 'Evaluate and improve RAG quality', outcome: 'Measure retrieval, groundedness and relevance with repeatable tests.', href: '/rag-application-engineering/04-build-complete-rag-application-python-langchain/' },
+      { title: 'RAG in production', outcome: 'Control scale, cost, access, freshness and auditability.', href: '/rag-application-engineering/05-production-rag-evaluation-security-deployment/' },
     ],
   },
   {
