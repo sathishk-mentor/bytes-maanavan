@@ -31,7 +31,7 @@ PaisaWise's RAG chatbot has done well in its pilot with 50 internal staff. Now l
 
 ## Core Concept
 
-Think of moving from pilot to production like the difference between **cooking dinner for your family versus running a restaurant kitchen**. The recipe (the RAG design) may not change much, but suddenly you need: a system to track which ingredients are fresh (document governance), a way to manage cost when you're buying in bulk instead of one meal at a time (cost/scale), and a log of who cooked what, when, and with which ingredients — in case a customer ever has a complaint (audit trail). This is exactly the same "least-privilege" and "audit trail" thinking from our AI Agents Handbook, now applied to documents and retrieval instead of actions.
+Think of moving from pilot to production like the difference between **cooking dinner for your family versus running a restaurant kitchen**. The recipe (the RAG design) may not change much, but suddenly you need: a system to track which ingredients are fresh (document governance), a way to manage cost at scale, and a log of who cooked what and with which ingredients (audit trail). Apply **least privilege** so each user can retrieve only the documents they are authorised to access.
 
 
 ## How It Works Under the Hood
@@ -90,7 +90,7 @@ Design a simple document access policy for a RAG chatbot at a company with three
 ## Key Takeaways
 
 - Moving RAG from pilot to production introduces new concerns beyond the core pipeline: access control, content ownership, cost management, and audit trails.
-- Document access should follow "least-privilege" thinking — the same principle from our AI Agents Handbook, now applied to what information a system can retrieve.
+- Document access should follow least privilege: a user or assistant may retrieve only the information required for its authorised task.
 - Someone must clearly own keeping each document category current, or staleness (the top RAG failure cause) creeps back in as the system scales.
 - Cost that felt negligible in a small pilot needs active planning at real customer volume.
 - A full audit trail — recording exactly what was retrieved for each answer — is essential for handling disputes, regulatory questions, and continuous improvement.
@@ -110,7 +110,7 @@ It lets teams investigate disputed answers, respond to regulators, and understan
 **Knowledge Check:**
 1. Name the four new concerns that appear when RAG moves from pilot to production.
 2. True/False: Cost considerations that were negligible in a small pilot usually stay negligible at full production scale.
-3. What principle from the AI Agents Handbook also applies to document access in RAG systems?
+3. What access-control principle should govern document retrieval in a RAG system?
 
 *(Answers: 1. Access control, content ownership/freshness, cost/scale management, audit trails; 2. False — costs that were trivial at small scale can grow significantly and need active management; 3. "Least-privilege" — only give access to what's actually needed)*
 
