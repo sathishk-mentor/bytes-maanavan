@@ -19,7 +19,7 @@ Understand how retrieval gives an AI application access to current company knowl
 
 ## Quick Start
 
-In our AI Agents Handbook, we learned that agents can "look things up" before answering. That lookup ability has a name: **RAG (Retrieval-Augmented Generation)**. In this byte, we'll understand what RAG is, in fully plain language — no code, just the idea.
+An AI model does not automatically know your private or newly updated information. **RAG (Retrieval-Augmented Generation)** gives an application a way to look up relevant, approved knowledge before answering. This Byte explains the idea in plain language—no previous handbook and no code required.
 
 **Time investment:** 15-20 mins.
 
@@ -37,7 +37,7 @@ Think of a regular AI model like a brilliant student who took a general knowledg
 
 **RAG turns that same student into someone taking an open-book exam.** Before answering, the "student" (the AI model) is handed the *exact right pages* from your company's documents — policies, manuals, FAQs — and told: "Read this, then answer using only what's here." The model still writes the answer in its own words, but it's now grounded in your real, current information instead of guessing from old training.
 
-This is exactly what powered the RAG chatbot we discussed conceptually in our AI Agents series — the "lookup" step before the agent responds.
+This lookup step can power a document assistant, support chatbot or an agent that needs verified knowledge before it responds.
 
 
 ## How It Works Under the Hood
@@ -100,7 +100,7 @@ Think about a question a customer might ask your business that a generic AI chat
 - The process has four plain-language stages: organizing documents into pieces, indexing them by meaning, finding the relevant pieces for a question, and writing an answer grounded in them.
 - RAG is different from fine-tuning — it doesn't retrain the model, it just feeds it the right reference material at the moment of answering.
 - RAG substantially reduces made-up answers, but doesn't eliminate the risk entirely.
-- This is the same "lookup" capability that powers AI agents, as covered in our AI Agents Handbook.
+- The same lookup capability can provide trusted knowledge to an AI agent.
 
 
 ## FAQ / Knowledge Check
