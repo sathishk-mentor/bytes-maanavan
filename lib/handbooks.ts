@@ -104,11 +104,11 @@ export const handbooks: Handbook[] = [
     description: 'Build enterprise applications with modern Java, Spring Boot, databases, grounded Generative AI and production deployment.',
     promise: 'Build a secure enterprise AI assistant with Java.',
     chapters: [
-      { title: 'Modern Java foundations for the AI era', outcome: 'Model application behaviour with readable Java and AI-assisted review.', href: '/modern-java-spring-boot-genai/01-modern-java-foundations-ai-era/' },
-      { title: 'Build REST APIs with Spring Boot', outcome: 'Create clear controller, service, validation and error boundaries.', href: '/modern-java-spring-boot-genai/02-build-rest-apis-java-spring-boot/' },
-      { title: 'Connect Spring Boot with a database', outcome: 'Persist policies safely with JPA, SQL and configuration.', href: '/modern-java-spring-boot-genai/03-connect-spring-boot-database/' },
-      { title: 'Add Generative AI and RAG', outcome: 'Retrieve policy evidence and generate grounded answers.', href: '/modern-java-spring-boot-genai/04-add-generative-ai-rag-java/' },
-      { title: 'Build and deploy the enterprise application', outcome: 'Secure, test, observe, containerise and deploy the service.', href: '/modern-java-spring-boot-genai/05-build-deploy-enterprise-ai-application/' },
+      { title: 'Spring Boot basics for AI apps', outcome: 'Trace controllers, services, dependency injection and request flow.', href: '/modern-java-spring-boot-genai/01-modern-java-foundations-ai-era/' },
+      { title: 'Connect LLMs with Spring AI', outcome: 'Build a predictable ChatClient call with typed output.', href: '/modern-java-spring-boot-genai/02-build-rest-apis-java-spring-boot/' },
+      { title: 'Build RAG in Spring Boot', outcome: 'Connect VectorStore retrieval, advisors and grounded answers.', href: '/modern-java-spring-boot-genai/03-connect-spring-boot-database/' },
+      { title: 'Agents and tool calling', outcome: 'Execute bounded Java tools with approval and audit controls.', href: '/modern-java-spring-boot-genai/04-add-generative-ai-rag-java/' },
+      { title: 'Production Java GenAI apps', outcome: 'Add security, resilience, observability and cost controls.', href: '/modern-java-spring-boot-genai/05-build-deploy-enterprise-ai-application/' },
     ],
   },
   {
