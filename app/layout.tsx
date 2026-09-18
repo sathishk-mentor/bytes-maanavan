@@ -52,7 +52,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-IN">
+    <html lang="en-IN" data-reading-mode="english" suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{__html:`try{var m=localStorage.getItem('maanavan-reading-mode');if(m==='tanglish'){document.documentElement.dataset.readingMode='tanglish';document.documentElement.lang='ta-IN'}}catch(e){}`}} /></head>
       <body className={`${inter.className} ${notoTamil.variable}`}>
         <NavigationStability />
         <a className="skip-link" href="#main-content">Skip to content</a>
