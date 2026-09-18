@@ -15,7 +15,7 @@ const handbookHeroes = {
   '62-how-developers-use-ai-tools': { label: 'COPILOT WORKFLOW', icon: Bot, steps: [[FileCode2, 'Your context'], [Sparkles, 'Copilot suggests'], [ScanSearch, 'You inspect'], [CheckCircle2, 'You decide']] },
   '63-api-first-thinking': { label: 'CONTEXT ENGINE', icon: Braces, steps: [[FileCode2, 'Instructions'], [Code2, 'Open files'], [Braces, 'Codebase context'], [Sparkles, 'Grounded answer']] },
   '66-ai-assisted-coding-workflow': { label: 'FEATURE DELIVERY', icon: GitPullRequestArrow, steps: [[FileCode2, 'Define task'], [Sparkles, 'Generate change'], [TestTube2, 'Run checks'], [GitPullRequestArrow, 'Review diff']] },
-  '64-debugging-ai-generated-code': { label: 'DEBUGGING LOOP', icon: Bug, steps: [[Bug, 'Reproduce'], [ScanSearch, 'Collect evidence'], [Sparkles, 'Test hypothesis'], [CheckCircle2, 'Verify fix']] },
+  '64-debugging-ai-generated-code': { label: 'PROMPT BUILDER', icon: Braces, steps: [[Braces, 'Define goal'], [FileCode2, 'Add context'], [ShieldCheck, 'Set constraints'], [CheckCircle2, 'Define evidence']] },
   '75-secure-ai-coding': { label: 'TRUST GATE', icon: ShieldCheck, steps: [[Sparkles, 'AI output'], [ScanSearch, 'Security review'], [TestTube2, 'Automated tests'], [ShieldCheck, 'Human approval']] },
   '01-github-copilot-for-developers': { label: 'COPILOT WORKFLOW', icon: Bot, steps: [[FileCode2, 'Your context'], [Sparkles, 'Copilot suggests'], [ScanSearch, 'You inspect'], [CheckCircle2, 'You decide']] },
   '02-give-github-copilot-better-context': { label: 'CONTEXT ENGINE', icon: Braces, steps: [[FileCode2, 'Instructions'], [Code2, 'Open files'], [Braces, 'Codebase context'], [Sparkles, 'Grounded answer']] },
