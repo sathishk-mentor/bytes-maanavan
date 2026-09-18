@@ -1,92 +1,25 @@
-<ThemeCard title="Neenga build panna poradhu" badge="COPILOT HANDBOOK 04">
+<ThemeCard title="Neenga learn panna poradhu" badge="COPILOT 04">Agent mode plan, multi-file edit, tool result, validation, approval flow-ai supervise panna learn pannuveenga.</ThemeCard>
 
-Copilot use செய்து one thin vertical feature slice-ஐ understand, plan, implement, test மற்றும் final diff review பண்ணுவீங்க.
+## Quick Start
+Agent mode oru bounded goal-ai eduthu plan create panni, multiple files edit panni, supported tools run panni result base panni next step edukka mudiyum.
 
-</ThemeCard>
+## Meet the Scenario
+Meena refund status field add panna task kudukkaraanga. Agent model, service, API, test files change panna plan propose pannudhu. Karthik scope review pannitu thaan continue panna allow pannrar.
 
-<HandbookLearningVisual variant="copilotFeature" />
+## Core Concept
+Agentic loop: **goal → plan → action → tool result → correction → review gate**. Autonomy adhigama irundhaalum accountability developer-kitta thaan.
 
-## Thin vertical slice-லிருந்து start பண்ணுங்க
+<CopilotHandbookVisual variant="feature" />
+<CopilotAgentLab />
 
-Complete feature-ஐ ஒரே prompt-ல் generate பண்ணுவது review risk அதிகரிக்கும். User-க்கு visible ஆன smallest end-to-end outcome choose பண்ணுங்க: UI action, API validation, business logic, storage மற்றும் test வழியாக ஒரு narrow path.
+## Safe Boundary
+Specific files, allowed changes, prohibited changes, required tests, final summary ellam task-la mention pannunga.
 
-## Step 1: current system-ஐ establish பண்ணுங்க
+## Common Mistakes
+Unlimited scope; terminal commands inspect pannaama allow pannradhu; final diff review pannaama merge pannradhu.
 
-Entry point, data flow, existing pattern, dependencies மற்றும் tests-ஐ Copilot explain செய்ய சொல்லுங்க. Confirmed evidence மற்றும் assumptions separate-ஆக இருக்க வேண்டும். Code change முன் human understanding தேவை.
+## Optional Foundation
+Agent concept pudhusa irundha [How an AI Agent Works](/ai-agents/02-how-an-ai-agent-works-goal-reasoning-tools-actions/) optional-a padikkalaam.
 
-## Step 2: plan-ஐ create செய்து challenge பண்ணுங்க
-
-Files to change, contract impact, migration, security, edge cases மற்றும் tests கொண்ட plan கேளுங்க. “இந்த plan எங்கே fail ஆகலாம்?” என்று challenge பண்ணுங்க. Unnecessary scope remove பண்ணுங்க.
-
-## Step 3: reviewable increments-ல் implement பண்ணுங்க
-
-One logical change at a time: model/contract, service rule, API/UI integration, tests. ஒவ்வொரு increment பிறகும் diff inspect செய்து test run பண்ணுங்க. Generated command அல்லது dependency-ஐ blindly accept பண்ணாதீங்க.
-
-## Step 4: syntax மட்டும் அல்ல; behaviour test பண்ணுங்க
-
-Happy path, empty state, invalid input, permission failure, duplicate action மற்றும் dependency failure cover பண்ணுங்க. UI render ஆனது complete feature proof இல்லை.
-
-## Step 5: final diff inspect பண்ணுங்க
-
-Requirement unrelated changes, duplicated logic, missing validation, secret exposure, weak error handling, accessibility மற்றும் rollback impact check பண்ணுங்க.
-
-## Easy analogy: one usable room first
-
-<Scenario title="Complete building முன் one room">
-
-Construction team முதலில் plan approve செய்து one usable room complete செய்து electrical, plumbing மற்றும் safety check பண்ணும். அதன் பிறகே pattern expand பண்ணும். Feature delivery-லும் small end-to-end slice uncertainty-ஐ early reveal பண்ணும்.
-
-</Scenario>
-
-## Real-time scenario: wishlist feature
-
-User product-ஐ wishlist-ல் add பண்ண வேண்டும். First slice authenticated user, one add action, duplicate prevention, persistence, visible confirmation மற்றும் tests மட்டும் cover பண்ணும். Notifications, sharing மற்றும் recommendations later increments.
-
-## Implementation prompt
-
-<PromptBox label="Thin-slice implementation prompt">
-
-Using the reviewed plan, implement only the smallest end-to-end slice. Follow existing repository patterns. Add validation and tests. Stop after this increment and summarise changed files, assumptions, commands run and remaining risks.
-
-</PromptBox>
-
-## Agent mode எப்போது wrong starting point?
-
-Requirement unclear, repository unfamiliar, migration destructive, credentials unavailable அல்லது acceptance criteria missing என்றால் autonomous multi-file change start பண்ணாதீங்க. முதலில் exploration அல்லது planning mode use பண்ணுங்க.
-
-## Common mistakes
-
-<Mistakes>
-
-- Complete feature-ஐ one large prompt-ல் generate பண்ணுவது.
-- Plan review இல்லாமல் agent commands allow பண்ணுவது.
-- Tests later add பண்ணலாம் என்று postpone பண்ணுவது.
-- Unrelated formatting மற்றும் refactor-ஐ feature diff-ல் mix பண்ணுவது.
-- Final output summary மட்டும் பார்த்து actual diff inspect பண்ணாமல் merge செய்வது.
-
-</Mistakes>
-
-## Interview-ல் எப்படி explain பண்ணுவது?
-
-<ThemeCard title="Copilot-உடன் feature எப்படி build பண்ணுவீங்க?" badge="CAREER">
-
-Current system understand செய்து thin vertical slice define பண்ணுவேன். Plan மற்றும் assumptions review செய்து small increments-ல் implement பண்ணுவேன். ஒவ்வொரு change-க்கும் behaviour tests run செய்து final diff-ஐ security, maintainability மற்றும் requirement fit அடிப்படையில் inspect பண்ணுவேன்.
-
-</ThemeCard>
-
-## நினைவில் வைக்க வேண்டிய key points
-
-<Takeaways>
-
-- Thin slice early end-to-end evidence கொடுக்கும்.
-- Plan-ஐ challenge செய்த பிறகே implementation start பண்ணுங்க.
-- Small increments review மற்றும் recovery easy ஆக்கும்.
-- Behaviour tests syntax success-ஐ விட meaningful.
-- Final diff developer approval இல்லாமல் complete இல்லை.
-
-</Takeaways>
-
-## Official references
-
-- [GitHub Copilot coding agent](https://docs.github.com/en/copilot/using-github-copilot/coding-agent)
-- [GitHub Copilot responsible use](https://docs.github.com/en/copilot/responsible-use)
+## References
+- [GitHub Copilot cloud agent](https://docs.github.com/en/copilot/tutorials/cloud-agent)
