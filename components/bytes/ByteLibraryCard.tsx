@@ -36,10 +36,11 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
       <span className="journey-grid"/>
       <span className="journey-scene-label">{profile.stages[safeIndex]}</span>
       <div className="journey-scene">
-        <span className="scene-node scene-node-a"><Icon/></span>
-        <span className="scene-line scene-line-a"/><span className="scene-line scene-line-b"/>
-        <span className="scene-node scene-node-b"><i/></span><span className="scene-node scene-node-c"><i/></span>
-        <span className="scene-signal"><i/><i/><i/></span>
+        {safeIndex === 0 && <div className="scene-ui scene-ui-concept"><span className="scene-icon"><Icon/></span><div><small>CORE CONCEPT</small><strong>{profile.stages[safeIndex]}</strong><i>Build the mental model</i></div><b>01</b></div>}
+        {safeIndex === 1 && <div className="scene-ui scene-ui-flow"><header><span><Icon/>WORKFLOW</span><i>ACTIVE</i></header><div><b>Input</b><em>→</em><b>Decide</b><em>→</em><b>Act</b></div><footer><span/><span/><span/></footer></div>}
+        {safeIndex === 2 && <div className="scene-ui scene-ui-evidence"><header><span><Icon/>REAL-WORLD VIEW</span><i>LIVE</i></header><div className="scene-bars"><span/><span/><span/><span/></div><footer><b>Evidence</b><b>Pattern</b><b>Decision</b></footer></div>}
+        {safeIndex === 3 && <div className="scene-ui scene-ui-guard"><span className="scene-shield"><Icon/></span><div><small>CONTROL GATE</small><strong>Review required</strong><i><b/>Permission checked</i><i><b/>Human approval</i></div></div>}
+        {safeIndex >= 4 && <div className="scene-ui scene-ui-launch"><div className="scene-launch-ring"><Icon/><span>READY</span></div><div><small>PRACTICAL OUTCOME</small><strong>{profile.stages[safeIndex]}</strong><i>Measured · reviewed · ready</i></div></div>}
       </div>
       <b>{String(chapterNumber).padStart(2, '0')}</b>
     </div>
