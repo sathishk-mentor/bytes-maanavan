@@ -28,6 +28,7 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
   const profile = journeyProfiles[chapter.category as keyof typeof journeyProfiles] ?? defaultProfile;
   const safeIndex = Math.max(0, Math.min(chapterNumber - 1, profile.stages.length - 1));
   const Icon = profile.icons[safeIndex];
+  const outcomes = ['Build a clear foundation', 'Follow the working process', 'Connect the concept to practice', 'Recognise risks and controls', 'Apply it with confidence'];
   const cardStyle = { '--path-accent': profile.accent, '--path-glow': profile.glow, '--path-index': chapterNumber - 1 } as CSSProperties;
 
   return <Link className={`library-byte-card journey-byte-card journey-scene-${safeIndex + 1}`} href={`/${chapter.category}/${chapter.slug}/`} style={cardStyle} aria-label={`Byte ${chapterNumber}: ${chapter.title}`}>
@@ -48,11 +49,12 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
       <header className="journey-card-header">
         <span><small>BYTE</small><b>{String(chapterNumber).padStart(2, '0')}</b></span>
         <div><small>{profile.category}</small><strong>{profile.stages[safeIndex]}</strong></div>
-        <i>{chapterNumber} / {totalChapters}</i>
+        <i>STEP {String(chapterNumber).padStart(2, '0')} OF {String(totalChapters).padStart(2, '0')}</i>
       </header>
       <div className="journey-card-copy">
         <div className="journey-card-meta"><span>{chapter.level}</span><span><Clock3/>{chapter.duration}</span></div>
         <h3>{chapter.title}</h3><p>{chapter.summary}</p>
+        <div className="journey-card-outcome"><span>LEARNING OUTCOME</span><strong>{outcomes[safeIndex]}</strong></div>
       </div>
       <footer><span><Sparkles/>{profile.handbook}</span><b>Open Byte <ArrowUpRight/></b></footer>
     </div>
