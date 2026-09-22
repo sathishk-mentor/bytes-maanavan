@@ -56,15 +56,22 @@ Provider timeout incident-ku expected HTTP response, log fields, metric and aler
 
 ## Knowledge Check
 
-1. AI call controller-la direct-a irukkanuma? **Usually illai; service/client boundary maintain pannunga.**
-2. Model output trusted Java object-aa? **Validation mudinja apram mattum.**
-3. External AI fail aana enna venum? **Timeout, controlled error/fallback, trace and metric.**
+<KnowledgeCheck question="Production AI release success-ai strongest-a prove pannuradhu edhu?" options={["Application start aagudhu", "Quality, safety, latency, errors and cost evidence", "One demo prompt work aagudhu"]} answer={1} explanation="Infrastructure health mattum podhaadhu; complete user outcome and operating evidence track pannanum." />
 
 ## Key Takeaways
 
-- Spring conventions AI code-ai existing enterprise application-kulla fit panna help pannum.
-- Typed boundaries, permissions and observability production quality-ku mukkiyam.
-- AI-generated code-ai compile, test, security review panna vendum.
+<Takeaways>
+
+- Production readiness prototype success vida broader.
+- Secrets external runtime control-la irukkanum.
+- Input and output validation required.
+- Timeout, circuit breaker and bounded retry failures-ai contain pannum.
+- Logs-la sensitive prompt/data redact pannanum.
+- Quality, safety, latency, errors and cost together observe pannanum.
+- Versioned prompt/model/retrieval changes evaluate aaganum.
+- Gradual rollout and tested rollback path compulsory.
+
+</Takeaways>
 
 ## Final Thought and Next Path
 

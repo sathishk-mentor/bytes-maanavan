@@ -56,15 +56,22 @@ Read-only balance tool and account-close tool-ku separate permission rules list 
 
 ## Knowledge Check
 
-1. AI call controller-la direct-a irukkanuma? **Usually illai; service/client boundary maintain pannunga.**
-2. Model output trusted Java object-aa? **Validation mudinja apram mattum.**
-3. External AI fail aana enna venum? **Timeout, controlled error/fallback, trace and metric.**
+<KnowledgeCheck question="LLM tool call propose pannina payment action-ku next step enna?" options={["Immediate-a execute", "Arguments validate panni explicit approval obtain pannradhu", "Tool logs-ai disable pannradhu"]} answer={1} explanation="Model proposal permission illa; consequential action-ku validation, authorisation and human approval required." />
 
 ## Key Takeaways
 
-- Spring conventions AI code-ai existing enterprise application-kulla fit panna help pannum.
-- Typed boundaries, permissions and observability production quality-ku mukkiyam.
-- AI-generated code-ai compile, test, security review panna vendum.
+<Takeaways>
+
+- Tool calling model-ai bounded business capability-oda connect pannum.
+- Tool description narrow and unambiguous-a irukkanum.
+- Arguments typed validation pass aaganum.
+- Authentication and authorisation tool layer-la enforce aaganum.
+- Read and write actions-ku different permission boundaries venum.
+- Payment, delete, send madhiri actions approval require pannum.
+- Tool result and decision audit log-la record aaganum.
+- Retry idempotent and bounded-a irukkanum.
+
+</Takeaways>
 
 ## Final Thought and Next Path
 
