@@ -1,137 +1,51 @@
+<ThemeCard title="இந்த Byte-ல் நீங்கள் கற்பது" badge="MONGODB · BYTE 03">Useful context மட்டும் நினைவில் வைத்து, unnecessary data retention தவிர்க்கும் agent memory design.</ThemeCard>
+
 ## Quick Start
-
-Namba LangChain Handbook-oda Memory byte, `RunnableWithMessageHistory`, oru conversation-ai track pannuрадhу kaамикkiтхтхu. Namba AI Agents Handbook, agents-kku "learn, improve, illa trust panna" memory venum்-nu emphasize pannitxu. Indha byte-la, MongoDB-ai andha memory-oda actual storage layer-a paapoм் — simple chat history-kku-um, richer, longer-term agent memory-kku-um.
-
-**Time investment:** 20-25 mins.
-
-
-## Real-World Scenario
-
-Meena oru gap-ai notice pannuravangal்: "Customer app close pannitxu, next day tirumба varа moment, namba chatbot ella-um marandhu poгутхு. Nettru refund-patthi kеlрீнgал்-nu adhу ninaikка venamа?" Karthik solрааான்: "Idhу oru memory storage problem, model problem illai — namакku idha durable-a vaikка oru edam venum்." Divya: "Correct-a — idhу MongoDB-oda document model-ku oru natural fit."
-
-
-## Core Explanation
-
-Namba LangChain Handbook-la irundhu ninaikonga: oru single session-la conversation memory, oru simple in-memory object-la иருkka mудியуum். Aаnа "in-memory" meaning, application restart aанा illa customer next day varinaа adhу marainju poгум். Durable memory-ku oru database venum் — and MongOOB-oda flexible documents idhуkку romba suit pannுтхு, yaenna oru conversation-oda history, oru agent-oda learned preferences, and adhу-oda tool-use history ella-um adhे shape-la illai.
-
-Short-term memory-ai (ondru conversation-oda uллே) unga desk-la oru sticky note madhiri nenachуconga — ippo useful, naalaikku poгуkondіருккும். Long-term memory (sessions-la irundhu, time-oda-koodа learn pannuрадhу) oru filed customer record madhiri-yе иருккும் — entry entry-a build aагுтхு, andha customer tirumба varа ovvoru thadavai-yум் refer pannаpаттхтху.
-
-
-## Architecture and Flow Diagram
-
-<MongoDBVisual variant="modeling" />
-
-**Short-term: oru session-oda message history-ai store pannuradhu:**
-
-```javascript
-{
-  "_id": "sess_2291",
-  "user_id": "cust_5521",
-  "messages": [
-    { "role": "user", "content": "What's my UPI limit?", "ts": "2026-09-18T10:15:00Z" },
-    { "role": "assistant", "content": "Your daily UPI limit is ₹1,00,000.", "ts": "2026-09-18T10:15:02Z" }
-  ]
-}
-```
-
-**Long-term: durable, cross-session agent memory-ку oru separate collection** — MongoDB-oda LangGraph.js integration natively kодுккура kind:
-
-```javascript
-{
-  "_id": "mem_cust_5521_001",
-  "user_id": "cust_5521",
-  "memory_type": "preference",
-  "content": "Customer prefers email notifications over SMS.",
-  "learned_on": "2026-08-10",
-  "last_reinforced": "2026-09-15"
-}
-```
-
-Rendu collections-um vेறு vेறு purposes-ku serve pannுтхு-nu kaамикка: `sess_2291`, oru conversation-oda raw back-and-forth-ai vачchіруккும், long-term memory collection, andha customer-patthi *distilled learned facts*-ai vачchіруккும், adhу persist aагі, romba future sessions-la reference aагுтхு — oru call transcript-oda-um oru customer profile note-oda-um difference madhiri-yе.
-
-**Respond panна munnaadi relevant long-term memories-ai retrieve pannuradhu:**
-
-```python
-memories = db.agent_memory.find({"user_id": "cust_5521"}).sort("last_reinforced", -1).limit(5)
-# these get added to the prompt context, alongside the current conversation
-```
-
-
-## Hands-On Concept Lab
+Conversation history என்பது நடந்தவை. Memory என்பது future step-ஐ influence செய்ய அனுமதிக்கப்பட்ட selected information.
 
 <MongoDBConceptLab variant="memory" />
 
-**Reinforce aагுмпொти oru memory-ai update panра oru simple pattern:**
+## Core Explanation
+`user_id` ownership-க்கு, `session_id` ஒரு conversation-க்கு, timestamp order-க்கு. Recent messages மற்றும் durable user preference-ஐ separate-ஆ model செய்யுங்கள்.
 
-```javascript
-db.agent_memory.update_one(
-  { "user_id": "cust_5521", "memory_type": "preference", "content": "Customer prefers email notifications over SMS." },
-  { "$set": { "last_reinforced": "2026-09-18" } },
-  { "upsert": true }
-)
-```
+## Architecture and Flow Diagram
+<MongoDBVisual variant="modeling" />
 
-`upsert: true` option meaning: idhу иருндhalе update pannu, illa idhу first thadavai observe aayiтхаа fresh-a create pannu — gradually accumulate aагுра agent memory-ku oru common pattern.
+## History vs Memory
+| History | Memory |
+|---|---|
+| Recorded events | Selected future context |
+| On-demand load | Relevant ஆனபோது மட்டும் |
+| Retention policy | Purpose + user control |
 
-
-## Real-World Industry Context
-
-MongoDB-oda sொந்த product direction, idhу evлo central aayiтхी-nu underscore pannுтхு: avanga recently announce pannіна **LangGraph.js Long-Term Memory Store**, MongoDB Atlas directly backed-a, persistent, cross-conversation agent memory kодuккутху, "additional database venaam்"-nu — JavaScript/TypeScript developers-ai, Python developers already иருндha oru capability-oda parity-ку konduварудхு. MongoDB-oda Chief Product Officer Pablo Stern direct-a solрааaран்: "correct context and memory-oda agent-ai correctly act panна help pannுрадhு, data platform-thán்"-nu — and CEO CJ Desai сேрthаанgal் "memory illatha agents learn panna, improve panna, illa trust panна mудியाadhu"-nu, durable memory storage-ai oru core production requirement-a frame pannі, optional nice-to-have illai.
-
+## Imagine a Relationship Manager
+<Scenario title="Preference நினைவில் இருக்கலாம்; எல்லா sentences-மும் வேண்டாம்">User Tamil prefer செய்கிறார் என்பதை remember செய்வது useful. ஆனால் பழைய private details அனைத்தையும் ஒவ்வொரு prompt-லும் load செய்வது unsafe.</Scenario>
 
 ## Common Mistakes
+<Mistakes>
 
-1. **Distilled facts-ку pathila, ella long-term memory-йум் raw conversation text-a store pannuradhu** — "customer email-ai virumbураваार்"-nu иருందhaа, whole unprocessed transcript-vidа, apuram retrieve panna, reference panна romba useful-a иருккும்.
-2. **Old short-term session data-ai never expire pannатीka illa review pannатीka poradhu** — session history collections indefinitely-a grow aагалаam்; default-a ella-um forever vачchіруккрадhуkку pathila, oru retention policy yosikkonga (MongoDB automatic expiration-ku TTL indexes support pannுтхு).
-3. **Ondru thadavai romба jasti memories retrieve pannі prompt-ai overwhelm pannuradhu** — namba RAG Handbook-la paathom் madhiri, jasti retrieved context automatic-a better illai; whole history illama, romба relevant, recent memories mattum் retrieve pannungal்.
-4. **Agent memory-ai automatic-a correct-nu treat pannuradhu** — oru "learned" preference stale-a иருkkалаam், illa oru one-off comment-ai vachu иருkkалाam்; RAG retrieval madhiri-yе, agent memory-йум் occasionally review pannанум், forever blindly trust pannатீkanum்.
+- Full history-ஐ ஒவ்வொரு prompt-லும் load செய்வது.
+- User ownership filter மறப்பது.
+- Sensitive detail-க்கு expiry இல்லாமல் வைத்திருப்பது.
 
-
-## Persona Recap
-
-Meena, improved chatbot-ai test pannуravangal்: "Idhу actual-a namba customer nettru refund-patthi kеlрீна-nu ninaичukku иருккு — idhу ippo real continuity madhiri feel aагுтхு." Karthik reflect pannуравааான்: "Short-term session history-ai, long-term learned facts-la irundhu split pannuрадhу romba sense pannuтхू — avanga genuinely vेறу lifespans-oda vेறு kind of data." Divya: "Idhу-thán் MongoDB-oda sொந்த product direction lean pannுра distinction — memory ondru thing illai, kuraindhaadhu rendு, and ovvondru-கும் correct storage shape venum்."
-
-
-## Comparison
-
-| Memory Type | What It Holds | Typical Lifespan |
-|---|---|---|
-| Short-term (session) | Raw back-and-forth messages | One conversation session |
-| Long-term (agent memory) | Distilled facts, preferences, learned patterns | Across many sessions, potentially indefinite |
-| RAG retrieval (Byte 2) | Company documents/policies | Static until the source document changes |
-
-
-## Practice Task
-
-PaisaWise-oda oru customer, avaаанga loan EMI-ai konjum naaл munnaadi-yе pay pannуравாार்-nu rendு thadavai mention pannitха, adhуkку oru long-term memory document-ai (paper-la) design pannungal். Include pannungal்: `user_id`, `memory_type`, `content`, and indha pattern evлo thadavai reinforce aayiтхі-nu track panна oru vali.
-
+</Mistakes>
 
 ## Key Takeaways
+<Takeaways>
 
-- Conversation memory, (at least) rendு vेறу shapes-la varும்: short-term session history and long-term, cross-session agent memory — ovvondru-கும் adhu-oda sொந்த collection design venum்.
-- MongoDB-oda flexible document model, rendு-йும் naturally suit pannுтхு, yaenna session messages and distilled memory facts adhе structure share panатхே.
-- Long-term memory, useful-a-um retrievable-a-um иருkka, raw transcripts-ку pathila distilled facts-ai ("prefers email") store panанும்.
-- MongoDB-oda LangGraph.js Long-Term Memory Store, durable agent memory production AI systems-ку evлo central aayiтхі-nu reflect pannுтхு — "memory illatha agents learn panna, improve panna, illa trust panna mudiyaadhu."
-- RAG retrieval madhiri-yе, agent memory-ку-um occasional review venum், permanently accurate-nu blindly trust pannатीkanum்.
+- History மற்றும் memory வேறு.
+- User மற்றும் session scope அவசியம்.
+- Current task-க்கு தேவையான context மட்டும் load செய்யுங்கள்.
+- Preferences-ஐ messages-இலிருந்து separate செய்யுங்கள்.
+- User correct/delete செய்ய முடியும்.
+- Retention deliberate-ஆ இருக்க வேண்டும்.
+- Sensitive records protect செய்ய வேண்டும்.
+- Summary-க்கு source link வைத்திருங்கள்.
 
+</Takeaways>
 
-## FAQ and Knowledge Check
+## Final Thought and Next Path
+Best memory system எல்லாவற்றையும் நினைவில் வைக்காது; சரியான விஷயத்தை reliable-ஆ வைத்திருக்கும்.
 
-**Q1: Short-term and long-term agent memory-ku enna difference?**
-Short-term memory, ondru conversation-oda raw message history-ai vачchіруккும்; long-term memory, oru user-patthi learned distilled facts illa preferences-ai vачchіруккும், romba future sessions-la reference aагுтхு.
-
-**Q2: Long-term agent memory, usually full conversation transcripts-ai store panанумaa?**
-Illai — distilled facts-ai (oru preference illa pattern madhiri) store pannuрадhу romба useful, raw, unprocessed text-vida retrieve panna, reference panna easy-a иருккும்.
-
-**Q3: MongoDB-oda document model, rendு types of memory-йும் store panна yaen suit aагுтхு?**
-Yaenna session messages and distilled memory facts-ku genuinely vेறу shapes иருккு, and MongoDB adhуvaigal-ai ondru rigid, shared structure-ku force panатхே.
-
-**Knowledge Check:**
-1. Indha byte-la иருккura rendு memory types-ai, ovvondru enna store pannுтхு-nu oru example-oda solрुnga.
-2. True/False: Agent memory, ondru thadavai learn aana apuram, review illama permanently accurate-nu always trust panанum்.
-3. Old short-term session data-oda growth-ai automatic-a manage panна help panра MongoDB feature enna?
-
-*(Answers: 1. Short-term (session messages, e.g. oru conversation-oda raw back-and-forth) and long-term (distilled facts, e.g. oru customer-oda notification preference); 2. False — RAG retrieval madhiri-ye, agent memory occasionally review pannanum, yaenna adhu stale aagalam illa oru one-off comment-ai vachu irukkalam; 3. TTL (time-to-live) indexes, old documents-ai automatic-a expire panna)*
-
-*Next byte: **Aggregation Pipeline for AI Features** — AI applications-ку features and analytics build panna, MongoDB-oda aggregation framework use pannuradhu.*
+<KnowledgeCheck question="Language preference-க்கு safest design எது?" options={["Full history re-read", "User-owned editable preference", "Global shared document"]} answer={1} explanation="Dedicated preference inspect, correct, delete செய்ய எளிது." />
 
