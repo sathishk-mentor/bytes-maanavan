@@ -69,6 +69,8 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
   const safeIndex = Math.max(0, Math.min(chapterNumber - 1, profile.stages.length - 1));
   const Icon = profile.icons[safeIndex];
   const visualSteps = learningVisuals[chapter.category]?.[safeIndex] ?? [profile.stages[safeIndex], 'Practise', 'Apply'];
+  const coverStart = visualSteps[0].split('|')[0];
+  const coverEnd = visualSteps[visualSteps.length - 1].split('|')[0];
   const outcomes = ['Build a clear foundation', 'Follow the working process', 'Connect the concept to practice', 'Recognise risks and controls', 'Apply it with confidence'];
   const cardStyle = { '--path-accent': profile.accent, '--path-glow': profile.glow, '--path-index': chapterNumber - 1 } as CSSProperties;
 
@@ -76,13 +78,13 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
     <span className="journey-connector" aria-hidden="true"><i/></span>
     <div className="journey-card-visual" aria-hidden="true">
       <span className="journey-grid"/>
-      <span className="journey-scene-label">{profile.stages[safeIndex]}</span>
+      <span className="journey-scene-label">BYTE {String(chapterNumber).padStart(2, '0')}</span>
       <div className="journey-scene">
-        {safeIndex === 0 && <div className="scene-ui scene-ui-compare"><header><Icon/><span>WHAT CHANGES?</span></header><div>{visualSteps.map((step, index) => { const [name, action] = step.split('|'); return <span key={step} className={index === visualSteps.length - 1 ? 'is-focus' : ''}><b>{name}</b><i>{action ?? 'Understand'}</i></span>; })}</div><footer>From response to real work</footer></div>}
-        {safeIndex === 1 && <div className="scene-ui scene-ui-process"><header><Icon/><span>INSIDE THE WORKFLOW</span><i>RUNNING</i></header><div>{visualSteps.map((step, index) => <span key={step}><b>{index + 1}</b><strong>{step}</strong></span>)}</div><footer><i/></footer></div>}
-        {safeIndex === 2 && <div className="scene-ui scene-ui-decisions"><header><Icon/><span>CHOOSE THE RIGHT USE CASE</span></header><div>{visualSteps.map((step, index) => { const [name, note] = step.split('|'); return <span key={step} className={index === 0 ? 'is-selected' : ''}><b>{name}</b><i>{note ?? 'Apply'}</i><em>{index === 0 ? '✓' : '→'}</em></span>; })}</div></div>}
-        {safeIndex === 3 && <div className="scene-ui scene-ui-gates"><header><Icon/><span>CONTROLLED ACTION</span></header><div>{visualSteps.map((step, index) => <span key={step} className={index === 2 ? 'is-human' : ''}><b>{index < visualSteps.length - 1 ? '✓' : '→'}</b><strong>{step}</strong></span>)}</div><footer>Unsafe action stops here</footer></div>}
-        {safeIndex >= 4 && <div className="scene-ui scene-ui-roadmap"><header><Icon/><span>YOUR FIRST PILOT</span><i>LOW RISK</i></header><div>{visualSteps.map((step, index) => <span key={step}><b>{String(index + 1).padStart(2, '0')}</b><strong>{step}</strong></span>)}</div><footer>Small start → measurable result</footer></div>}
+        <div className="scene-ui scene-ui-cover">
+          <span className="scene-cover-icon"><Icon/></span>
+          <div><small>{profile.category}</small><strong>{profile.stages[safeIndex]}</strong><p><span>{coverStart}</span><i>→</i><span>{coverEnd}</span></p></div>
+          <footer><span>LEARNING STEP</span><b>{String(chapterNumber).padStart(2, '0')} / {String(totalChapters).padStart(2, '0')}</b></footer>
+        </div>
       </div>
       <b>{String(chapterNumber).padStart(2, '0')}</b>
     </div>
