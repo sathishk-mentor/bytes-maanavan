@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import Link from 'next/link';
 import {
-  ArrowUpRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, Clock3, Code2, Compass,
+  ArrowUpRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, CheckCircle2, Clock3, Code2, Compass,
   Container, Database, FileText, Gauge, GitPullRequestArrow, HardDrive, Layers3,
   MessageSquareText, Network, Rocket, Search, ShieldCheck, Sparkles, TerminalSquare,
   Workflow, Wrench,
@@ -37,7 +37,7 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
       <span className="journey-grid"/>
       <span className="journey-scene-label">{profile.stages[safeIndex]}</span>
       <div className="journey-scene">
-        {safeIndex === 0 && <div className="scene-ui scene-ui-concept"><span className="scene-icon"><Icon/></span><div><small>CORE CONCEPT</small><strong>{profile.stages[safeIndex]}</strong><i>Build the mental model</i></div><b>01</b></div>}
+        {safeIndex === 0 && <div className="scene-ui scene-ui-concept"><span className="scene-icon"><Icon/></span><div><small>CORE CONCEPT</small><strong>Mental model</strong><i>See the idea clearly</i></div><b>01</b></div>}
         {safeIndex === 1 && <div className="scene-ui scene-ui-flow"><header><span><Icon/>WORKFLOW</span><i>ACTIVE</i></header><div><b>Input</b><em>→</em><b>Decide</b><em>→</em><b>Act</b></div><footer><span/><span/><span/></footer></div>}
         {safeIndex === 2 && <div className="scene-ui scene-ui-evidence"><header><span><Icon/>REAL-WORLD VIEW</span><i>LIVE</i></header><div className="scene-bars"><span/><span/><span/><span/></div><footer><b>Evidence</b><b>Pattern</b><b>Decision</b></footer></div>}
         {safeIndex === 3 && <div className="scene-ui scene-ui-guard"><span className="scene-shield"><Icon/></span><div><small>CONTROL GATE</small><strong>Review required</strong><i><b/>Permission checked</i><i><b/>Human approval</i></div></div>}
@@ -48,15 +48,15 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
     <div className="journey-card-content">
       <header className="journey-card-header">
         <span><small>BYTE</small><b>{String(chapterNumber).padStart(2, '0')}</b></span>
-        <div><small>{profile.category}</small><strong>{profile.stages[safeIndex]}</strong></div>
-        <i>STEP {String(chapterNumber).padStart(2, '0')} OF {String(totalChapters).padStart(2, '0')}</i>
+        <div><small>{profile.category}</small><strong>{profile.handbook}</strong></div>
+        <i>{String(chapterNumber).padStart(2, '0')} / {String(totalChapters).padStart(2, '0')}</i>
       </header>
       <div className="journey-card-copy">
-        <div className="journey-card-meta"><span>{chapter.level}</span><span><Clock3/>{chapter.duration}</span></div>
+        <div className="journey-card-meta"><span className="journey-stage-pill">{profile.stages[safeIndex]}</span><span>{chapter.level}</span><span><Clock3/>{chapter.duration}</span></div>
         <h3>{chapter.title}</h3><p>{chapter.summary}</p>
-        <div className="journey-card-outcome"><span>LEARNING OUTCOME</span><strong>{outcomes[safeIndex]}</strong></div>
+        <div className="journey-card-outcome"><CheckCircle2/><div><span>AFTER THIS BYTE</span><strong>{outcomes[safeIndex]}</strong></div></div>
       </div>
-      <footer><span><Sparkles/>{profile.handbook}</span><b>Open Byte <ArrowUpRight/></b></footer>
+      <footer><span><Sparkles/>Part of a {totalChapters}-Byte guided path</span><b>Open Byte <ArrowUpRight/></b></footer>
     </div>
   </Link>;
 }
