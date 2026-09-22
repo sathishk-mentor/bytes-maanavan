@@ -14,7 +14,7 @@ const journeyProfiles = {
   'cloud-devops': { category: 'Cloud & DevOps', handbook: 'Docker Handbook', accent: '#1678c8', glow: '#87d7ff', stages: ['Understand Docker', 'Build an image', 'Configure runtime', 'Compose services', 'Deploy an AI app'], icons: [Container, Box, HardDrive, Network, Rocket] },
   langchain: { category: 'Generative AI & Agents', handbook: 'LangChain Handbook', accent: '#0c8b74', glow: '#7ae8cd', stages: ['Understand LangChain', 'Build chains', 'Build RAG', 'Add memory', 'Build safe agents'], icons: [Network, Workflow, FileText, MessageSquareText, ShieldCheck] },
   'ai-agents': { category: 'Generative AI & Agents', handbook: 'AI Agents Handbook', accent: '#6b57d9', glow: '#b9afff', stages: ['Understand', 'Reason & act', 'See adoption', 'Add guardrails', 'Start building'], icons: [Bot, Workflow, BriefcaseBusiness, ShieldCheck, Rocket] },
-  mongodb: { category: 'Database & AI Engineering', handbook: 'MongoDB for AI Applications', accent: '#07805c', glow: '#83e5be', stages: ['Understand MongoDB', 'Model documents', 'Query data', 'Connect applications', 'Run production'], icons: [Database, Blocks, Search, Network, ShieldCheck] },
+  mongodb: { category: 'Database & AI Engineering', handbook: 'MongoDB for AI Applications', accent: '#07805c', glow: '#83e5be', stages: ['Model documents', 'Search by meaning', 'Design memory', 'Build AI features', 'Run production'], icons: [Database, Search, MessageSquareText, Layers3, ShieldCheck] },
   'python-genai-agentic-ai': { category: 'Python & AI Engineering', handbook: 'Python for GenAI & Agents', accent: '#2672c9', glow: '#8fc9ff', stages: ['Build foundations', 'Connect APIs', 'Create GenAI', 'Build agents', 'Ship safely'], icons: [Code2, Braces, MessageSquareText, Wrench, ShieldCheck] },
   'sql-data-ai-applications': { category: 'Data & AI Engineering', handbook: 'SQL for Data & AI Applications', accent: '#176dc1', glow: '#84c7ff', stages: ['Query data', 'Analyse data', 'Search vectors', 'Engineer features', 'Use AI agents'], icons: [Database, Gauge, Search, Blocks, Bot] },
   'rag-application-engineering': { category: 'Generative AI & Knowledge', handbook: 'RAG Application Engineering', accent: '#7657d6', glow: '#ccbaff', stages: ['Understand RAG', 'Follow the pipeline', 'Diagnose failures', 'Improve quality', 'Run production'], icons: [Compass, Workflow, Search, Gauge, ShieldCheck] },
@@ -45,7 +45,7 @@ const learningVisuals: Record<string, readonly (readonly string[])[]> = {
     ['LLM call', 'LangChain components', 'AI application'], ['Prompt', 'Chain', 'Structured result'], ['Question', 'Your documents', 'Grounded answer'], ['Message history', 'Conversation memory', 'Context-aware reply'], ['Goal', 'Tools + guardrails', 'Safe agent action'],
   ],
   mongodb: [
-    ['Document', 'Collection', 'Database'], ['Access pattern', 'Embed', 'Reference'], ['Filter', 'Index', 'Result'], ['Application', 'MongoDB', 'AI service'], ['Secure', 'Monitor', 'Scale'],
+    ['AI interaction', 'Flexible document', 'Useful record'], ['Question', 'Vector search', 'Grounded evidence'], ['Conversation', 'Scoped memory', 'Context-aware reply'], ['Raw events', 'Aggregation pipeline', 'AI feature'], ['Query plan', 'Security + recovery', 'Production system'],
   ],
   'python-genai-agentic-ai': [
     ['Value', 'Function', 'Program'], ['Request', 'API', 'JSON'], ['Prompt', 'Model', 'Response'], ['Goal', 'Tool', 'Result'], ['Test', 'Protect', 'Deploy'],

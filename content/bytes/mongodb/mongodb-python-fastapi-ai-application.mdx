@@ -1,209 +1,167 @@
 ---
-title: "Connect MongoDB with Python, FastAPI and AI Applications"
+title: "Aggregation Pipeline for AI Features"
 slug: "mongodb-python-fastapi-ai-application"
-summary: "Connect FastAPI to MongoDB Atlas, reuse an async client, validate data and retrieve approved learning evidence with Atlas Vector Search."
+summary: "Transform MongoDB events into summaries, rankings and reusable signals for AI features through staged aggregation."
 category: "mongodb"
-tags: ["MongoDB Python FastAPI", "PyMongo async tutorial", "MongoDB Atlas Vector Search", "MongoDB RAG application", "AI application database"]
+tags: ["MongoDB", "AI applications", "MongoDB Atlas"]
 level: "intermediate"
-duration: "31 min"
-updatedAt: "2026-09-15"
+duration: "25 min"
+updatedAt: "2026-09-22"
 order: 4
-isPopular: true
 ---
 
-<ThemeCard title="Practical project" badge="MONGODB HANDBOOK 04">
+## Quick Start
 
-Build a course-support API that remembers authorised learner history, retrieves approved course content and returns a grounded answer.
+Our SQL Handbook covered aggregations and window functions for feature engineering — building the numeric signals a machine learning model actually consumes. In this byte, we see MongoDB's equivalent: the **aggregation pipeline**, and how it builds AI-ready features directly from your document data.
 
-</ThemeCard>
+**Time investment:** 20-25 mins.
 
-<MongoDBVisual variant="aiArchitecture" />
 
-## Read the architecture in two paths
+## Real-World Scenario
 
-**Operational path:** FastAPI reads and writes learner profiles, enrolments, progress and conversation history in MongoDB.
+Rahul, who previously built fraud-detection features using SQL window functions, now needs the same kind of feature — "average transaction amount per customer over the last 30 days" — but PaisaWise's transaction log for the mobile app lives in MongoDB. He asks Divya: "Does MongoDB even have something like SQL's `GROUP BY` and window functions?" Divya says: "It does — it's called the aggregation pipeline, and it's arguably even more expressive."
 
-**Grounding path:** FastAPI sends the query to Atlas Vector Search, retrieves authorised learning passages, and gives only that bounded evidence to the LLM.
 
-The LLM should not receive unrestricted database access. The API owns identity, authorisation, filtering and persistence.
+## Core Explanation
 
-## Configure the connection safely
+In relational analytics, aggregation means grouping rows and computing a summary value (like `AVG()` or `SUM()`) per group. MongoDB's **aggregation pipeline** does the same job, but structured as a sequence of clearly-named *stages* that data flows through — like an assembly line, where each station (`$match`, `$group`, `$sort`, and so on) transforms the data a bit further before passing it to the next station.
 
-```bash
-pip install fastapi uvicorn pymongo pydantic-settings
-```
+This "pipeline of stages" structure is often easier to read than a deeply nested SQL query, since each stage is a small, understandable step you can reason about (and even test) independently.
 
-```python
-from pydantic_settings import BaseSettings, SettingsConfigDict
 
-class Settings(BaseSettings):
-    mongodb_uri: str
-    mongodb_database: str = "learning_support"
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+## Architecture and Flow Diagram
 
-settings = Settings()
-```
+<MongoDBVisual variant="aggregation" />
 
-Keep the Atlas connection string in environment configuration or a secret manager. Never commit it to Git or return it in an error message.
-
-## Reuse one async MongoDB client
-
-```python
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from pymongo import AsyncMongoClient
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    client = AsyncMongoClient(settings.mongodb_uri)
-    await client.admin.command("ping")
-    app.state.mongodb_client = client
-    app.state.db = client[settings.mongodb_database]
-    yield
-    await client.close()
-
-app = FastAPI(lifespan=lifespan)
-```
-
-Create the client once for the application lifecycle. Creating a client for every request defeats connection pooling and adds unnecessary latency.
-
-## Validate the API contract with Pydantic
-
-```python
-from pydantic import BaseModel, Field
-
-class SupportQuestion(BaseModel):
-    learner_id: str = Field(min_length=3, max_length=50)
-    course_id: str = Field(min_length=2, max_length=40)
-    question: str = Field(min_length=5, max_length=1000)
-
-class SupportAnswer(BaseModel):
-    answer: str
-    sources: list[str]
-```
-
-Pydantic protects the API boundary. MongoDB schema validation protects stored data. Use both where the risk and longevity of the data justify them.
-
-## Store conversation history with clear ownership
-
-```python
-from datetime import datetime, timezone
-
-conversation = {
-    "learner_id": payload.learner_id,
-    "course_id": payload.course_id,
-    "question": payload.question,
-    "status": "received",
-    "created_at": datetime.now(timezone.utc),
-}
-
-result = await request.app.state.db.conversations.insert_one(conversation)
-```
-
-Do not store full prompts, model output or personal information by default. Define retention, redaction and deletion rules from the product’s actual support need.
-
-## Retrieve approved evidence with Vector Search
-
-The content collection might store chunks with an embedding and metadata:
+**Computing "average transaction amount per customer, last 30 days" — an AI feature:**
 
 ```javascript
-{
-  chunk_id: "mongo-04-architecture",
-  course_id: "DB-AI-101",
-  access_level: "enrolled",
-  text: "FastAPI owns authorisation before vector retrieval...",
-  embedding: [/* vector values */]
-}
+db.transactions.aggregate([
+  {
+    $match: {
+      timestamp: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
+    }
+  },
+  {
+    $group: {
+      _id: "$customer_id",
+      avg_transaction_amount: { $avg: "$amount" },
+      transaction_count: { $sum: 1 }
+    }
+  },
+  {
+    $sort: { avg_transaction_amount: -1 }
+  }
+])
 ```
 
-```python
-pipeline = [
-    {
-        "$vectorSearch": {
-            "index": "course_content_vector",
-            "path": "embedding",
-            "queryVector": query_embedding,
-            "numCandidates": 100,
-            "limit": 5,
-            "filter": {"course_id": payload.course_id},
-        }
-    },
-    {
-        "$project": {
-            "_id": 0,
-            "chunk_id": 1,
-            "text": 1,
-            "score": {"$meta": "vectorSearchScore"},
-        }
-    },
-]
+Compare each stage to its SQL Handbook equivalent: `$match` is your `WHERE` clause, `$group` with `$avg` and `$sum` is your `GROUP BY` with aggregate functions, and `$sort` is your `ORDER BY` — same underlying logic, expressed as a readable sequence of steps.
 
-evidence = await request.app.state.db.course_content.aggregate(pipeline).to_list()
+**A window-function-style feature (rolling behavior per customer) using `$setWindowFields`:**
+
+```javascript
+db.transactions.aggregate([
+  {
+    $setWindowFields: {
+      partitionBy: "$customer_id",
+      sortBy: { timestamp: 1 },
+      output: {
+        running_total: { $sum: "$amount", window: { documents: ["unbounded", "current"] } }
+      }
+    }
+  }
+])
 ```
 
-The `course_id` filter narrows retrieval, but access must be verified **before** running the search. Metadata filters are part of defence in depth—not a replacement for identity and authorisation.
+This closely mirrors the relational `SUM() OVER (PARTITION BY ... ORDER BY ...)` pattern — MongoDB's `$setWindowFields` stage is its window function equivalent.
 
-## Complete FastAPI workflow
 
-```python
-@app.post("/support/ask", response_model=SupportAnswer)
-async def ask_course_support(payload: SupportQuestion, request: Request):
-    await require_course_access(payload.learner_id, payload.course_id)
-    evidence = await retrieve_approved_content(payload)
-    answer = await generate_grounded_answer(payload.question, evidence)
-    await save_bounded_history(payload, answer, evidence)
-    return SupportAnswer(
-        answer=answer,
-        sources=[item["chunk_id"] for item in evidence],
-    )
+## Hands-On Concept Lab
+
+<MongoDBConceptLab variant="aggregation" />
+
+**Feeding aggregation output directly into a feature document for a fraud model:**
+
+```javascript
+db.transactions.aggregate([
+  { $match: { customer_id: "cust_5521" } },
+  {
+    $group: {
+      _id: "$customer_id",
+      avg_amount_30d: { $avg: "$amount" },
+      txn_count_30d: { $sum: 1 },
+      max_amount_30d: { $max: "$amount" }
+    }
+  },
+  {
+    $merge: { into: "customer_features", whenMatched: "replace" }
+  }
+])
 ```
 
-Keep model calls behind a function that enforces timeout, input limits, source formatting and failure handling.
+The final `$merge` stage writes the computed features directly into a `customer_features` collection — ready for a fraud-detection model to read, without a separate export/import step.
 
-## Tamil learner scenario: library assistant
 
-<Scenario title="The librarian checks your membership first">
+## Real-World Industry Context
 
-A learner asks for help with a paid course. The librarian first checks the learner’s course access. Then the librarian searches only the approved course shelf, selects relevant pages and gives them to the subject expert. The expert answers from those pages and returns the references.
+MongoDB's own recent engineering work reflects how central this kind of in-database computation has become: MongoDB 8.3 specifically moved "common transformations into the database to eliminate external pipelines," alongside performance gains of **30% more complex operations** compared to the previous release. This matters directly for AI feature engineering — computing features inside the database, close to the data, avoids the latency and complexity of exporting raw data to a separate processing system just to compute a handful of aggregate statistics.
 
-FastAPI is the librarian and control desk; MongoDB stores membership and history; Vector Search finds the right pages; the LLM explains the evidence.
 
-</Scenario>
+## Common Mistakes
 
-## Common mistakes
+1. **Running aggregations without an index on the fields used in `$match` or `$sort`** — just like an unindexed SQL `WHERE` clause, this can force MongoDB to scan far more documents than necessary.
+2. **Building an enormous single pipeline instead of testing stages incrementally** — since each stage's output feeds the next, it's much easier to debug a pipeline by checking the result after each stage individually first.
+3. **Forgetting `$merge` writes data, not just returns it** — unlike most aggregation stages, `$merge` has a real side effect (writing to a collection); using it experimentally on a production collection without care can overwrite live data.
+4. **Recomputing the same aggregation on every single request** — for expensive features (like 30-day rolling averages), consider precomputing and storing them (as in S5), rather than running the full aggregation on every API call.
 
-<Mistakes>
 
-- Creating a new database client inside every request.
-- Letting the LLM choose unrestricted MongoDB filters or collections.
-- Treating vector similarity as proof that a document is authorised.
-- Storing complete private conversations without retention rules.
-- Returning internal connection or model errors to the learner.
+## Persona Recap
 
-</Mistakes>
+Rahul feels at home quickly: "Once I saw `$match`/`$group`/`$sort` line up with `WHERE`/`GROUP BY`/`ORDER BY`, this stopped feeling foreign." Meena asks: "So we could compute all our fraud features this way, right inside MongoDB?" Divya: "Exactly — and with `$merge`, those features land directly in a collection ready for the model to consume, no separate export pipeline needed."
 
-## Interview bit
 
-<ThemeCard title="How would you use MongoDB in a RAG application?" badge="CAREER">
+## Comparison
 
-I separate operational and retrieval concerns. The API authenticates the user, checks course access, queries Vector Search with approved metadata filters, sends a bounded set of passages to the model, returns citations and stores only necessary, governed history. The model never receives direct database credentials.
+| Concept | SQL Handbook | MongoDB Aggregation Pipeline |
+|---|---|---|
+| Filtering rows | `WHERE` | `$match` |
+| Grouping + aggregate functions | `GROUP BY` + `AVG()`/`SUM()` | `$group` with `$avg`/`$sum` |
+| Ordering results | `ORDER BY` | `$sort` |
+| Window functions | `SUM() OVER (PARTITION BY ...)` | `$setWindowFields` |
+| Writing results to a new table/collection | `INSERT INTO ... SELECT` | `$merge` |
 
-</ThemeCard>
 
-## Key takeaways
+## Practice Task
 
-<Takeaways>
+Design (on paper) an aggregation pipeline that computes, per customer, the number of failed transactions in the last 7 days — a feature that might feed into a fraud-risk score. Name the stages you'd use, in order, and what each one does.
 
-- Reuse the MongoDB client and connection pool for the application lifecycle.
-- Validate at both API and database boundaries.
-- Keep operational history separate from LLM grounding context.
-- Authorise first, filter retrieval second, and cite the selected evidence.
 
-</Takeaways>
+## Key Takeaways
 
-## Primary sources
+- MongoDB's **aggregation pipeline** does the same job as SQL's `GROUP BY`/aggregate functions, structured as a readable sequence of named stages data flows through.
+- `$match`, `$group`, and `$sort` map almost directly onto SQL's `WHERE`, `GROUP BY`, and `ORDER BY`.
+- `$setWindowFields` provides window-function-style calculations (running totals, rolling averages) equivalent to SQL's `OVER (PARTITION BY ...)`.
+- `$merge` writes computed features directly into a collection, letting AI models consume precomputed features without a separate export step.
+- MongoDB is actively optimizing for in-database computation, aiming to eliminate the need for external pipelines just to compute common features.
 
-- [PyMongo connection guide](https://www.mongodb.com/docs/languages/python/pymongo-driver/current/connect/)
-- [PyMongo asynchronous API](https://www.mongodb.com/docs/languages/python/pymongo-driver/current/reference/api/pymongo/asynchronous/)
-- [Atlas Vector Search overview](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/)
-- [Filter Atlas Vector Search results](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/)
+
+## FAQ and Knowledge Check
+
+**Q1: What MongoDB aggregation stage is equivalent to SQL's `WHERE` clause?**
+`$match` — it filters documents before they proceed to later stages.
+
+**Q2: What MongoDB stage provides window-function-style calculations like running totals?**
+`$setWindowFields`, equivalent to SQL's `SUM() OVER (PARTITION BY ... ORDER BY ...)` pattern.
+
+**Q3: Why might you precompute and store features with `$merge` instead of running the aggregation on every request?**
+Expensive aggregations (like 30-day rolling averages) are wasteful to recompute repeatedly; precomputing once and storing the result is far more efficient for frequent reads.
+
+**Knowledge Check:**
+1. Name the three MongoDB aggregation stages equivalent to SQL's `WHERE`, `GROUP BY`, and `ORDER BY`.
+2. True/False: `$merge` only returns computed results without writing anything to the database.
+3. Why is it useful to test aggregation pipeline stages incrementally rather than all at once?
+
+*(Answers: 1. `$match`, `$group`, `$sort`; 2. False — `$merge` writes its output directly into a specified collection, a real side effect; 3. Because each stage's output feeds the next, so checking the result after each stage individually makes debugging much easier)*
+
+*Next byte: **Production Concerns for MongoDB AI Apps** — indexing, scaling, and security as these systems go live.*
+

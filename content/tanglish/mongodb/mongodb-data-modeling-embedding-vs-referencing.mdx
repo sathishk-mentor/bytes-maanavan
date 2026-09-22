@@ -1,0 +1,141 @@
+## Quick Start
+
+Namba RAG Handbook, retrieval-augmented generation-ai conceptual-a explain pannitxu, and namba SQL Handbook, idha implement panna pgvector-ай oru vali-a kaамикkiтхtхu. Indha byte-la, **MongoDB Atlas Vector Search**-ai paapoм் — adhе destination-ku vेறு oru vali, vectors unga regular documents-oda-koodа-yе иருккும்.
+
+**Time investment:** 20-25 mins.
+
+
+## Real-World Scenario
+
+Rahul, namba SQL Handbook-la PaisaWise-oda policy documents-ai oru separate pgvector store-la build pannitхaаваан், Divya-kittа kеlрааான்: "Ippo naanga conversations-ai MongoDB-la-um store pannuрадhаal், PaisaWise-oda policy documents-ai meaning-ai vachu search panна, namакku oru *moonrаваthу* system venumaa?" Divya solрааanगal்: "Necessarily illai — MongoDB, vectors-ai natively store pannі search panna mудியуum், unga documents иருккура adhе database-la-yе."
+
+
+## Core Explanation
+
+RAG Handbook-oda "filing cabinet" analogy ninaikonga: documents chunk aагுтхு, meaning fingerprints (embeddings) kодuккапаттхтху, and similarity-oda search aагுтху. Namba SQL Handbook-la, andha filing cabinet, oru separate `pgvector`-enabled table. MongoDB-la, filing cabinet *unga regular collection-yе* — embedding, andha policy text, category, and last-updated date иருккура adhе document-la oru extra field mattум்-thán்.
+
+Idha, oru photograph-oda color and composition tags-ai, andha photograph-oda-yе staple pannі, adhе folder-la vaikkаpаtharu madhiri nenachуconga, hall-ku andha side-la иருккura oru separate index-la illai. Neenga search pannuмпொти, ondru place-la-yе search pannуiீнgал், and whole document-ai vaanguрீнgал் — text and metadata сேрnthhu — vेறу edhavаду look up panna venum் oru match reference mattum் illai.
+
+
+## Architecture and Flow Diagram
+
+<MongoDBVisual variant="aiArchitecture" />
+
+**Oru policy document, adhу-oda embedding-ai oru field-a vachu store pannаpаттхтху:**
+
+```javascript
+{
+  "_id": "policy_12",
+  "category": "refunds",
+  "text": "Refunds for failed UPI transactions are processed within 3-5 business days.",
+  "last_updated": "2026-08-01",
+  "embedding": [0.021, -0.114, 0.087, /* ...1536 dimensions total */]
+}
+```
+
+**Meaning-ai vachu search pannuradhu, `$vectorSearch` aggregation stage use pannі:**
+
+```javascript
+db.policies.aggregate([
+  {
+    $vectorSearch: {
+      queryVector: questionEmbedding,   // the customer's question, embedded
+      path: "embedding",
+      k: 3,                             // top 3 most relevant chunks
+      exact: false                      // fast approximate search (HNSW)
+    }
+  },
+  {
+    $match: { category: "refunds" }     // pre-filter using a normal field
+  },
+  {
+    $project: { embedding: 0 }          // exclude the raw vector from results
+  }
+])
+```
+
+Rendaаваthу stage-ai kaамикка, `$match` — idhу oru ordinary MongoDB filter, vector search-oda *adhе* query-la apply aагুтхு. Idhу-thán் namba RAG Handbook-oda "hybrid search" idea (meaning-based and traditional filtering-ai combine pannuрадhу), rendு separate systems coordinate panna venum்-nu pathila, direct-a oru aggregation pipeline-la build aayiтхи.
+
+
+## Hands-On Concept Lab
+
+<MongoDBConceptLab variant="vector" />
+
+**Automated embeddings** unga vectors-ai manually generate panра step-ai-um remove pannுтху:
+
+```javascript
+// Defining an index with auto-embedding — MongoDB generates and 
+// keeps the embedding field in sync automatically as documents change
+{
+  "type": "vectorSearch",
+  "fields": [
+    { "type": "autoEmbed", "path": "text", "model": "voyage-3" }
+  ]
+}
+```
+
+Indha configuration-oda, oru policy document-oda `text` field-ai insert illa update pannuрадhу automatic-a oru fresh embedding-ai trigger pannுтхு — separate embedding pipeline eludha illa maintain panna venaam்.
+
+
+## Real-World Industry Context
+
+MongoDB-oda sொந்த idhу approach-ai oru separate vector database-oda compare pannuрадhு, konjam concrete advantages-ai highlight pannuтхு: vectors and metadata-oda-koodа ondru single query (rendு systems coordinate panатீка), evanavаду field-la-йும் vector search-oda-koodа native filtering, and rendு systems-ai consistent-a vачchіруккка ETL/sync logic venaam். MongoDB, **Automated Voyage AI Embeddings**-йум் introduce pannitxatху — Retrieval Embedding Benchmark (RTEB)-la #1 rank pannுра embedding models use pannі — enterprises "search infrastructure-ku weeks spend pannурадhуkку pathila, minutes-la semantic search ship pannалaam்"-nu specifically, separate vector database setups typically venум் operational overhead-ai directly address pannі.
+
+
+## Common Mistakes
+
+1. **Vector search, nalla chunking-ку venum்-nu replace pannுтхு-nu nenaikkuradhu** — namba RAG Handbook-la paathom் madhiri, poor chunking still poor retrieval-ku vali vaккутху, evanavаду database vectors-ai store pannінalum்.
+2. **Actual-a venumaa иருккура pre-filter stage-ai skip pannuradhu** — "refunds" category documents mattum் venum்-мпொти, ella policies-йும் meaning-ai vachu search pannuрادhу, irrelevant matches-la relevance waste pannுтхு; appropriate-a иருндhа `$match` use pannі field-ai first narrow pannungal்.
+3. **Results-la irundhu raw embedding field-ai exclude panna marandhu poradhu** — neenga text mattum் venum்-мпொти, unga application-kku 1536-number array-ai return pannuрادhу wasted bandwidth; adhа exclude panna `$project` use pannungal்.
+4. **`path` and vector dimensions-ai, unga actual embedding model-oda match panатीka poradhu** — 1536 dimensions-ку configure pannіна oru index, 768 output panра oru model-oda correctly work pannатхே; idhу exact-a match aаganum்.
+
+
+## Persona Recap
+
+Rahul simplification-ai feel pannуравааான்: "Aагा, enna Java service, conversations-ku MongoDB-oda-um policies-ку separate pgvector database-oda-um pேсрадhуkку pathila, ella-um ondru place-la иருkka mудியуum்." Meena refund policy search-ai test pannуravangal்: "Idhу namba updated policy-ai correct-a kandupudіtхтху, and whole document-ai adhе category tag-oda return pannутхु — rendaаவaadhu lookup venaam்." Divya: "And critical-a, naanga paathа ella RAG failure modes-um — bad chunking, stale documents, poor retrieval — idhула-um exact-a adhे madhiri apply aагுтху. Database maатрadhу; underlying discipline maатратхே."
+
+
+## Comparison
+
+| Concept | SQL Handbook (pgvector) | MongoDB Atlas Vector Search |
+|---|---|---|
+| Where vectors live | Separate table with a vector column | Same document as the source text/metadata |
+| Query mechanism | SQL with `<->` distance operator | `$vectorSearch` aggregation stage |
+| Combining with filters | JOIN or WHERE clause | `$match` stage in the same pipeline |
+| Embedding generation | Typically a separate manual step | Can be automated via `autoEmbed` |
+
+
+## Practice Task
+
+Vector search-oda nalla-a work panна, PaisaWise FAQ entry-ku oru MongoDB document-ai (paper-la) sketch pannungal்: question text, answer text, pre-filtering-ku oru category field, and embedding field evanka poгум்-nu include pannungal். Apuram, "loans" category-la top 5 romba relevant FAQs-ai kandupudіkка neenga use panна `$vectorSearch` stage-ai eludhungal்.
+
+
+## Key Takeaways
+
+- **MongoDB Atlas Vector Search**, separate vector database venumнு pathila, embeddings-ai unga regular documents-la-yе oru field-a direct-a store pannுтху.
+- `$vectorSearch` aggregation stage, similarity search-ai pannுтхு, and adhе pipeline-la ordinary `$match` filtering-oda сேрthhu combine panna mудியуum் — hybrid search-ку oru natural fit.
+- **Automated embeddings** (`autoEmbed` vali), documents maатрумпொти vectors-ai automatic-a generate pannі sync-la vachіруккும், manual pipeline step-ai remove pannі.
+- Vectors-ai metadata-oda-koodа store pannuрадhу, rendு separate systems-ai (oru document store and oru vector database) sync-la vaikkура consistency challenges-ai avoid pannுтху.
+- Namba earlier handbook-oda core RAG discipline — chunking quality, evaluation, stale documents avoid pannuрадhу — idhула-um adhе madhiri apply aагுтхு; storage mechanics mattum் vेறуpаадutхu.
+
+
+## FAQ and Knowledge Check
+
+**Q1: MongoDB Atlas Vector Search-ку, MongoDB-oda-koodа oru separate vector database venumaa?**
+Illai — embeddings, unga regular MongoDB documents-la fields-a store aагுтхு, `$vectorSearch` aggregation stage vali searchable-a.
+
+**Q2: MongoDB-la, oru vector search-ai oru regular field-la (category madhiri) filter-oda epdi combine pannuиீнgал்?**
+Adhе aggregation pipeline-la `$vectorSearch`-ku apuram oru `$match` stage сேрthhu.
+
+**Q3: MongoDB-oda automated embeddings use pannuрادhу, nalla chunking practices-ku venum்-nu remove pannумா?**
+Illai — chunking quality still retrieval quality-ai directly affect pannுтхु, evanavаду database illa embedding method use pannіналум்.
+
+**Knowledge Check:**
+1. MongoDB-la similarity search-ai evanavаду aggregation stage pannuтхு?
+2. True/False: MongoDB Atlas Vector Search-la vectors, source text-la irundhu completely separate oru collection-la store panанும்.
+3. `autoEmbed` index type enna pannутхு?
+
+*(Answers: 1. `$vectorSearch`; 2. False — vectors typically source text/metadata иருккura adhe document-la oru field-a direct-a store aagum; 3. Documents write illa update aagumpothu automatic-a embeddings generate pannitu, separate manual pipeline illama sync-la vachiruккum)*
+
+*Next byte: **Storing Conversation and Agent Memory in MongoDB** — AI agents-kku sessions-la irundhu persistent, structured memory kодуккрадhу.*
+

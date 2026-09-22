@@ -8,10 +8,10 @@ const flows = {
     note: 'A document keeps related facts together in a JSON-like structure.',
   },
   modeling: {
-    eyebrow: 'QUERY-FIRST DATA MODEL',
-    title: 'Keep together what the application reads together',
-    steps: [[UserRound, 'Requirement', 'Learner dashboard'], [Search, 'Query pattern', 'Profile + progress'], [Layers3, 'Embed', 'Small progress summary'], [Network, 'Reference', 'Shared course']],
-    note: 'Embedding and referencing are design choices—not competing religions.',
+    eyebrow: 'SCOPED AGENT MEMORY',
+    title: 'Remember only what the next step is allowed to use',
+    steps: [[UserRound, 'Identity', 'Confirm owner'], [BookOpen, 'Recent turns', 'Short context'], [Layers3, 'Preference', 'Durable choice'], [ShieldCheck, 'Policy', 'Expire or protect']],
+    note: 'Useful memory is selected, owned and governed—not the complete conversation archive.',
   },
   aggregation: {
     eyebrow: 'AGGREGATION PIPELINE',

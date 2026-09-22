@@ -1,0 +1,155 @@
+## Quick Start
+
+Namba SQL Handbook, feature engineering-ku aggregations and window functions-ai paathom் — machine learning model actual-a consume panра numeric signals-ai build pannuрадhу. Indha byte-la, MongoDB-oda equivalent-ai paapoм்: **aggregation pipeline**, and idhу unga document data-la irundhu directly AI-ready features-ai epdi build pannuтху-nu.
+
+**Time investment:** 20-25 mins.
+
+
+## Real-World Scenario
+
+Rahul, namba SQL Handbook-la window functions use pannі fraud-detection features build pannitхaаваान், ippo adhе kind of feature venum் — "customer-ku last 30 days-la average transaction amount" — aаnа PaisaWise-oda mobile app-oda transaction log MongoDB-la иருккு. Avaаान் Divya-kittа kеlрааान்: "MongoDB-kku SQL-oda `GROUP BY` and window functions madhiri edhavaadhу иருккkка?" Divya solрааanगal்: "Iருккு — adhуkку aggregation pipeline-nu peru, and idhу arguably innum jasti expressive-um."
+
+
+## Core Explanation
+
+Namba SQL Handbook-oda aggregation concept ninaikonga: rows-ai group pannі, ovvoru group-ku-um oru summary value (madhiri `AVG()` illa `SUM()`) compute pannuрадhу. MongoDB-oda **aggregation pipeline**, adhе job pannuтхू, aаnа clearly-named *stages*-oda oru sequence-a structured aагі иருккும், data adhula irundhu poгум் — oru assembly line madhiri, ovvoru station-um (`$match`, `$group`, `$sort`, and matта-um) next station-ku kодуккка munnaadi data-ai konjum konjum transform pannுтхு.
+
+Indha "pipeline of stages" structure, oru deeply nested SQL query-vidа usually padikка easy-a иருккும், yaenna ovvoru stage-um oru chinna, understandable step, adhа neenga independently reason pannna (test pannna-um) mудியуum்.
+
+
+## Architecture and Flow Diagram
+
+<MongoDBVisual variant="aggregation" />
+
+**"Customer-ku average transaction amount, last 30 days" compute pannuradhu — oru AI feature:**
+
+```javascript
+db.transactions.aggregate([
+  {
+    $match: {
+      timestamp: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
+    }
+  },
+  {
+    $group: {
+      _id: "$customer_id",
+      avg_transaction_amount: { $avg: "$amount" },
+      transaction_count: { $sum: 1 }
+    }
+  },
+  {
+    $sort: { avg_transaction_amount: -1 }
+  }
+])
+```
+
+Ovvoru stage-ai, adhу-oda SQL Handbook equivalent-oda compare pannungal்: `$match` unga `WHERE` clause, `$avg` and `$sum`-oda `$group` unga aggregate functions-oda `GROUP BY`, and `$sort` unga `ORDER BY` — adhе underlying logic, oru readable sequence of steps-a express aayiтхи.
+
+**`$setWindowFields` use pannі oru window-function-style feature (customer-ku rolling behavior):**
+
+```javascript
+db.transactions.aggregate([
+  {
+    $setWindowFields: {
+      partitionBy: "$customer_id",
+      sortBy: { timestamp: 1 },
+      output: {
+        running_total: { $sum: "$amount", window: { documents: ["unbounded", "current"] } }
+      }
+    }
+  }
+])
+```
+
+Idhu namba SQL Handbook-oda `SUM() OVER (PARTITION BY ... ORDER BY ...)` pattern-ai almost directly mirror pannுтхु — MongoDB-oda `$setWindowFields` stage-thán் adhу-oda window function equivalent.
+
+
+## Hands-On Concept Lab
+
+<MongoDBConceptLab variant="aggregation" />
+
+**Oru fraud model-ku, aggregation output-ai directly oru feature document-la kодuккрадhу:**
+
+```javascript
+db.transactions.aggregate([
+  { $match: { customer_id: "cust_5521" } },
+  {
+    $group: {
+      _id: "$customer_id",
+      avg_amount_30d: { $avg: "$amount" },
+      txn_count_30d: { $sum: 1 },
+      max_amount_30d: { $max: "$amount" }
+    }
+  },
+  {
+    $merge: { into: "customer_features", whenMatched: "replace" }
+  }
+])
+```
+
+Final `$merge` stage, compute pannitxa features-ai directly oru `customer_features` collection-la eludhutхு — oru fraud-detection model padikка ready-a, separate export/import step edhуvум் illama.
+
+
+## Real-World Industry Context
+
+MongoDB-oda sொந்த recent engineering work, indha kind of in-database computation evлo central aayiтхі-nu reflect pannுтхு: MongoDB 8.3, specifically "common transformations-ai database-kku uллே kondu vandhu, external pipelines-ai eliminate pannitxu"-nu, previous release-oda compare pannінा, **30% more complex operations** performance gains-oda-koodа. Idhу AI feature engineering-ku directly important: features-ai database-oda uллே, data-oda pakkam-la-yе compute pannuрادhу, konjum aggregate statistics compute panна mattум், raw data-ai oru separate processing system-ku export pannuрادhуoda latency and complexity-ai avoid pannுтху.
+
+
+## Common Mistakes
+
+1. **`$match` illa `$sort`-la use aагுра fields-la index illama aggregations run pannuradhu** — oru unindexed SQL `WHERE` clause madhiri-yе, idhу MongoDB-ai venumaadhathukku vidа romba jasti documents scan panna vali vaккலाam்.
+2. **Incrementally stages test pannатіка, oru periya single pipeline build pannuradhu** — ovvoru stage-oda output next stage-ku poгுrадhal், ovvoru stage-ku apuram individually result-ai check pannі pipeline-ai debug pannuрадhу romба easy-a иருккும்.
+3. **`$merge` data eludhutху-nu marandhu poradhu, mattum் return pannатхே** — most aggregation stages-vidа vेறу-a, `$merge`-ku oru real side effect иருккு (oru collection-la eludhuradhу); idhа production collection-la experimentally use pannінा, live data-ai overwrite panna vali vaккиридhu.
+4. **Ovvoru single request-kkum adhе aggregation-ai recompute pannuradhu** — expensive features-ku (30-day rolling averages madhiri), S5-la иருккура madhiri precompute pannі store pannungal், ovvoru API call-kkum full aggregation run pannатीka.
+
+
+## Persona Recap
+
+Rahul fast-a comfortable-a feel pannуravааான்: "`$match`/`$group`/`$sort`, `WHERE`/`GROUP BY`/`ORDER BY`-oda line up aagурадhu paatha apuram, idhу foreign-a feel aагатхே." Meena kеlрааанgal்: "Aагा namба ella fraud features-йும் idhе madhiri, MongoDB-oda uллே-yе compute pannalaamaа?" Divya: "Correct-a — and `$merge`-oda, andha features direct-a oru collection-la varும், model consume panна ready-a, separate export pipeline venaam்."
+
+
+## Comparison
+
+| Concept | SQL Handbook | MongoDB Aggregation Pipeline |
+|---|---|---|
+| Filtering rows | `WHERE` | `$match` |
+| Grouping + aggregate functions | `GROUP BY` + `AVG()`/`SUM()` | `$group` with `$avg`/`$sum` |
+| Ordering results | `ORDER BY` | `$sort` |
+| Window functions | `SUM() OVER (PARTITION BY ...)` | `$setWindowFields` |
+| Writing results to a new table/collection | `INSERT INTO ... SELECT` | `$merge` |
+
+
+## Practice Task
+
+Ovvoru customer-ку, last 7 days-la failed transactions evлo-nu compute panра oru aggregation pipeline-ai (paper-la) design pannungal் — idhу oru fraud-risk score-ku feed aагுма feature-a иருkkалाam். Neenga use panна stages-ai, order-la, and ovvondru enna pannுтхு-nu solрुnga.
+
+
+## Key Takeaways
+
+- MongoDB-oda **aggregation pipeline**, SQL-oda `GROUP BY`/aggregate functions madhiri adhе job pannутху, data poгура readable sequence of named stages-a structured aагі.
+- `$match`, `$group`, and `$sort`, SQL-oda `WHERE`, `GROUP BY`, and `ORDER BY`-la almost directly map aагுтхு.
+- `$setWindowFields`, window-function-style calculations (running totals, rolling averages) kодуккутху, SQL-oda `OVER (PARTITION BY ...)` equivalent.
+- `$merge`, compute pannitха features-ai directly oru collection-la eludhutхू, AI models-ai precomputed features-ai separate export step illama consume panna vidutхू.
+- MongoDB, in-database computation-ku actively optimize aагиkondu иருккு, common features compute panна external pipelines venum்-nu eliminate panna aim pannі.
+
+
+## FAQ and Knowledge Check
+
+**Q1: SQL-oda `WHERE` clause-ku equivalent, evanavаду MongoDB aggregation stage?**
+`$match` — idhу documents-ai, apuram varа stages-ку poгаamale filter pannுтхు.
+
+**Q2: Running totals madhiri window-function-style calculations, evanavаду MongoDB stage kodukkuthu?**
+`$setWindowFields`, SQL-oda `SUM() OVER (PARTITION BY ... ORDER BY ...)` pattern-ku equivalent.
+
+**Q3: Ovvoru request-kkum aggregation run pannuрадhуkку pathila, `$merge`-oda features-ai precompute pannі store panна yaen venum்?**
+Expensive aggregations (30-day rolling averages madhiri), repeatedly recompute pannuрадhу wasteful; ondru mattum் precompute pannі result-ai store pannuрадhу, frequent reads-ku romba efficient.
+
+**Knowledge Check:**
+1. SQL-oda `WHERE`, `GROUP BY`, and `ORDER BY`-ku equivalent moonu MongoDB aggregation stages-ai solрुnga.
+2. True/False: `$merge`, database-la edhуvум் eludhатीка, compute pannіна results-ai mattум் return pannутхு.
+3. Aggregation pipeline stages-ai ella-um ondru-a иருккура pathila incrementally test pannuрадhу yaen useful?
+
+*(Answers: 1. `$match`, `$group`, `$sort`; 2. False — `$merge`, adhu-oda output-ai specify pannina collection-la direct-a eludhuthu, oru real side effect; 3. Yaenna ovvoru stage-oda output next stage-ku poguthu, adhunal ovvoru stage-ku apuram individually result-ai check pannuradhu debugging-ai romba easy-a pannum)*
+
+*Next byte: **Production Concerns for MongoDB AI Apps** — indha systems live poгумпொти иருккура indexing, scaling, and security.*
+
