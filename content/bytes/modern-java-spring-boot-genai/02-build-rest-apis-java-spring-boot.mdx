@@ -164,6 +164,10 @@ It is unnecessary and harder to manage. Build it once, typically at startup thro
 *Next Byte: **RAG in Spring Boot**—use Spring AI vector-store support to answer from approved documents. New to RAG? Start with [What Is RAG?](/rag-application-engineering/01-what-is-rag-give-ai-access-to-your-knowledge/), then return here for the Java implementation.*
 
 
+## Interactive Knowledge Check
+
+<KnowledgeCheck question={"Where should a Spring AI provider key be supplied?"} options={["In Java source code","Through controlled runtime configuration or a secret manager","In the response body"]} answer={1} explanation={"Secrets must remain outside source code and be injected only into the workload that needs them."} />
+
 ## References and Further Reading
 
 - [Spring AI Reference](https://docs.spring.io/spring-ai/reference/)

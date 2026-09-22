@@ -179,6 +179,10 @@ I keep route handlers focused on HTTP and inject application services. Services 
 
 </Takeaways>
 
+## Interactive Knowledge Check
+
+<KnowledgeCheck question={"Where should database and model-provider calls normally live?"} options={["Directly inside every route","Behind explicit service or dependency boundaries","Inside response headers"]} answer={1} explanation={"Service boundaries keep routes thin and make timeouts, tests and failures easier to control."} />
+
 ## Primary sources
 
 - [FastAPI: Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/)
