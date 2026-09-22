@@ -1,0 +1,95 @@
+<ThemeCard title="Moonu runtime jobs" badge="DOCKER · BYTE 03">Port traffic-ai kondu varum; volume data-ai preserve pannum; environment variable start-time configuration-ai supply pannum.</ThemeCard>
+
+## Quick Start
+Container start pannumbodhu moonu questions kekkanum: users app-ai epdi reach pannuvanga, edhu container replacement-kku apramum survive aaganum, environment-ku environment enna settings change aagum?
+
+## Start from Basics
+- **Port:** Network traffic enter aagura door.
+- **Container port:** App container-kulla listen pannura port.
+- **Host port:** Laptop/server-la user reach pannura port.
+- **Volume:** Container lifecycle-ku veliya persistent storage.
+- **Environment variable:** Runtime configuration value.
+- **Secret manager:** Sensitive values-ai controlled-a supply panna platform facility.
+
+## Runtime Boundaries Lab
+<DockerConceptLab concept="runtime" />
+<DockerFlowVisual variant="runtime" />
+<HandbookLearningVisual variant="dockerRuntime" />
+
+## Ports: App Door-ai Connect Pannuvom
+```bash
+docker run --name api -p 8080:8000 python-health:1.0
+```
+Format `HOST_PORT:CONTAINER_PORT`. Browser `localhost:8080` request, container-oda port `8000`-ku forward aagum. App `0.0.0.0:8000`-la listen pannanum.
+
+## Volumes: Important Data-ai Preserve Pannuvom
+```bash
+docker volume create app-data
+docker run --name api -v app-data:/app/uploads python-health:1.0
+```
+Container delete/recreate aanaalum named volume-la selected files remain aagum. Aana volume backup automatic illa.
+
+## Environment Variables: Same Image, Different Settings
+```bash
+docker run --name api \
+  -e APP_ENV=staging \
+  -e MODEL_NAME=approved-model \
+  python-health:1.0
+```
+Same image-ai development, staging, production-la different runtime configuration-oda use pannalaam. API keys-ai Dockerfile-la bake panna koodadhu.
+
+## Correct Tool-ai Choose Pannunga
+| Need | Correct choice | Wrong assumption |
+|---|---|---|
+| Browser access | Port mapping | `EXPOSE` mattum podhum |
+| Persistent uploads | Volume/external storage | Container writable layer podhum |
+| Environment setting | Runtime configuration | New image for every value |
+| Sensitive key | Platform secret manager | Plain `.env` commit pannalaam |
+
+## Request Path
+<DockerRealWorldVisual variant="runtime" />
+<DockerUseCaseVisual variant="runtime" />
+
+## Inspect Before Changing
+```bash
+docker ps
+docker port api
+docker logs api
+docker inspect api
+docker volume inspect app-data
+```
+
+## Common Mistakes
+<Mistakes>
+
+- `HOST_PORT:CONTAINER_PORT` order reverse pannradhu.
+- Database port-ai unnecessary-a public host-ku expose pannradhu.
+- Durable data-ai container writable layer-la mattum store pannradhu.
+- `.env` file-ai Git-la commit pannradhu.
+- Environment variable itself secure vault-nu assume pannradhu.
+
+</Mistakes>
+
+## FAQ and Knowledge Check
+<KnowledgeCheck question="Container replace aanaalum upload files survive aaganumna enna use pannanum?" options={["Port", "Named volume or external storage", "Image tag"]} answer={1} explanation="Persistent data container lifecycle-ku veliya irukkanum." />
+
+## Key Takeaways
+<Takeaways>
+
+- Port network traffic-ai route pannum.
+- Host and container ports different-a irukkalaam.
+- App correct interface-la listen pannanum.
+- Volume selected data-ai persist pannum.
+- Volume-ku backup strategy still venum.
+- Environment variables runtime configuration-ku useful.
+- Secrets-ai image or Git-la store panna koodadhu.
+- Logs and inspect output first evidence.
+
+</Takeaways>
+
+## Final Thought and Next Path
+Port, volume, configuration—moonum different responsibilities. Next Byte-la multiple containers-ai one application definition-la connect pannuvom.
+
+## References
+- [Publishing ports](https://docs.docker.com/get-started/docker-concepts/running-containers/publishing-ports/)
+- [Persisting data](https://docs.docker.com/get-started/docker-concepts/running-containers/persisting-container-data/)

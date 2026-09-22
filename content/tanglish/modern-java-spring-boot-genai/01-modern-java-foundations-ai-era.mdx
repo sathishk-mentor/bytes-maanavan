@@ -56,15 +56,22 @@ Controller-la model call direct-a pannaama, service boundary create panni reques
 
 ## Knowledge Check
 
-1. AI call controller-la direct-a irukkanuma? **Usually illai; service/client boundary maintain pannunga.**
-2. Model output trusted Java object-aa? **Validation mudinja apram mattum.**
-3. External AI fail aana enna venum? **Timeout, controlled error/fallback, trace and metric.**
+<KnowledgeCheck question="Spring Boot AI app-la controller-oda safest responsibility enna?" options={["Model-ai direct-a manage pannradhu", "Request validate panni service boundary-ai call pannradhu", "Secrets-ai response-la return pannradhu"]} answer={1} explanation="Thin controller request contract-ai handle pannum; business and AI orchestration service layer-la irukkanum." />
 
 ## Key Takeaways
 
-- Spring conventions AI code-ai existing enterprise application-kulla fit panna help pannum.
-- Typed boundaries, permissions and observability production quality-ku mukkiyam.
-- AI-generated code-ai compile, test, security review panna vendum.
+<Takeaways>
+
+- Java enterprise systems-la stable foundation-a continue aagudhu.
+- Spring Boot repetitive setup-ai reduce pannum.
+- Dependency injection explicit testable boundaries kudukkum.
+- Controller HTTP contract-ai handle pannanum.
+- Service business and AI orchestration-ai own pannanum.
+- Model output validate panna vendum.
+- Timeout, error mapping and metrics external AI calls-ku required.
+- AI-generated code-um compile, test and security review pass aaganum.
+
+</Takeaways>
 
 ## Final Thought and Next Path
 

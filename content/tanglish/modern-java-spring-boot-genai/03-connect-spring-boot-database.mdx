@@ -56,15 +56,22 @@ Refund question-ku three sample chunks write panni, edhu retrieve aaganum-nu exp
 
 ## Knowledge Check
 
-1. AI call controller-la direct-a irukkanuma? **Usually illai; service/client boundary maintain pannunga.**
-2. Model output trusted Java object-aa? **Validation mudinja apram mattum.**
-3. External AI fail aana enna venum? **Timeout, controlled error/fallback, trace and metric.**
+<KnowledgeCheck question="RAG answer-ku retrieved document access check eppo apply aaganum?" options={["Answer generate aana apram", "Retrieval-kku munnadi and result boundary-la", "UI render aana apram mattum"]} answer={1} explanation="Unauthorised chunks model context-kulla pogakoodadhu; access filtering retrieval boundary-la enforce aaganum." />
 
 ## Key Takeaways
 
-- Spring conventions AI code-ai existing enterprise application-kulla fit panna help pannum.
-- Typed boundaries, permissions and observability production quality-ku mukkiyam.
-- AI-generated code-ai compile, test, security review panna vendum.
+<Takeaways>
+
+- RAG private/current knowledge-ai model answer-kku supply pannum.
+- Documents clean panni meaningful chunks-a split pannanum.
+- Embeddings semantic retrieval-ku help pannum.
+- Metadata access and freshness boundary-ai support pannum.
+- Retrieved text evidence; automatic truth illa.
+- Prompt answer-ai supplied context-kulla ground pannanum.
+- Citation answer claim-ai support pannudha verify pannanum.
+- Retrieval and generation quality separate-a evaluate pannanum.
+
+</Takeaways>
 
 ## Final Thought and Next Path
 

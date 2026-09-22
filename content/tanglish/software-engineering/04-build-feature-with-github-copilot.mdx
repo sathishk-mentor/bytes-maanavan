@@ -12,14 +12,50 @@ Agentic loop: **goal → plan → action → tool result → correction → revi
 <CopilotHandbookVisual variant="feature" />
 <CopilotAgentLab />
 
+## Supervised Feature Journey
+1. Requirement and prohibited changes-ai define pannunga.
+2. Agent plan-ai files and steps level-la review pannunga.
+3. Small batch edit-ku mattum permission kudunga.
+4. Tool/terminal output-ai inspect pannunga.
+5. Tests fail aana root cause evidence base panni correct pannunga.
+6. Final diff, test summary, unresolved risks-ai human review pannunga.
+
+## Safe vs Unsafe Autonomy
+| Safer boundary | Risky boundary |
+|---|---|
+| Named files and commands | Entire repository unrestricted |
+| Read and test automatically | Deploy/delete automatically |
+| Payment change-ku approval | Model confident-na proceed |
+| Final diff summary | Hidden multi-file edits |
+
 ## Safe Boundary
 Specific files, allowed changes, prohibited changes, required tests, final summary ellam task-la mention pannunga.
 
 ## Common Mistakes
 Unlimited scope; terminal commands inspect pannaama allow pannradhu; final diff review pannaama merge pannradhu.
 
-## Optional Foundation
-Agent concept pudhusa irundha [How an AI Agent Works](/ai-agents/02-how-an-ai-agent-works-goal-reasoning-tools-actions/) optional-a padikkalaam.
+## Mini Practice
+“Refund status field add pannu” task-ku allowed files, disallowed changes, required tests, stop conditions, approval gate define pannunga. Lab-la broad task and bounded task result compare pannunga.
+
+## Knowledge Check
+<KnowledgeCheck question="Agent multi-file plan propose pannumbodhu first action enna?" options={["Without reading approve pannradhu", "Scope, files, commands and tests review pannradhu", "Production deploy pannradhu"]} answer={1} explanation="Plan review early-a scope drift and risky actions-ai stop pannum." />
+
+## Key Takeaways
+<Takeaways>
+
+- Agent mode bounded goal-ku useful.
+- Plan execution-kku munnadi review aaganum.
+- File and command scope explicit-a irukkanum.
+- Tool result next action-ku evidence.
+- Write/deploy/delete stronger approval require pannum.
+- Tests failure-ai visible-a maathum.
+- Final diff human review compulsory.
+- Autonomy increase aana controls-um increase aaganum.
+
+</Takeaways>
+
+## Optional Reference
+Agent loop-ai separate-a explore panna virumbinaal [How an AI Agent Works](/ai-agents/02-how-an-ai-agent-works-goal-reasoning-tools-actions/) reference use pannalaam; indha Byte-ku adhu prerequisite illa.
 
 ## References
 - [GitHub Copilot cloud agent](https://docs.github.com/en/copilot/tutorials/cloud-agent)

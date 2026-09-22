@@ -1,0 +1,109 @@
+<ThemeCard title="Capstone outcome" badge="DOCKER · BYTE 05">GenAI API-ai secret embed pannama containerize panni, health, cost, security, observability, rollback-oda deployment plan create pannuveenga.</ThemeCard>
+
+## Quick Start
+Local demo-la one developer API key use pannradhu easy. Production-la many users, long prompts, provider delays, rate limits, cost spikes varalaam. Image repeatable artifact kudukkum; hosting platform safe runtime boundary kudukkanum.
+
+## Start from Basics
+- **Immutable image:** Release apram change pannaadha versioned artifact.
+- **Runtime secret:** Container start time-la controlled-a supplied key.
+- **Liveness:** Process alive-a irukka check.
+- **Readiness:** Instance traffic receive panna ready-a irukka check.
+- **Observability:** Logs, metrics, traces moolama behaviour understand pannradhu.
+- **Rollback:** Problem vandha previous safe version-ku return pannradhu.
+
+## Production Journey Lab
+<DockerConceptLab concept="deploy" />
+<DockerFlowVisual variant="aiDeploy" />
+<HandbookLearningVisual variant="dockerAi" />
+
+## Production-Minded Image
+```dockerfile
+FROM python:3.12-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR /app
+RUN addgroup --system app && adduser --system --ingroup app app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY --chown=app:app app.py .
+USER app
+EXPOSE 8000
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+Image non-root user-la run aagudhu. Dependencies source-kku munnadi install aaguradhu build cache-ku help pannum.
+
+## Secret Boundary
+```dockerfile
+# Wrong: real secret-ai image-la bake panna koodadhu
+ENV LLM_API_KEY=real-secret-value
+COPY .env .
+```
+Image layers registry-ku push aagalaam, inspect panna mudiyum. Provider key and database password hosting platform secret system moolama runtime-la supply pannanum.
+
+## Local vs Production
+| Question | Local container | Production service |
+|---|---|---|
+| Access | Developer localhost | Authenticated ingress |
+| Key | Local runtime variable | Platform secret manager |
+| Success evidence | One request works | Health + quality + latency + safety + cost |
+| Failure handling | Manual restart | Alert, controlled rollout, rollback |
+
+## AI-Specific Checks
+| Check | Question | Avoid |
+|---|---|---|
+| Liveness | Process alive-a? | Every probe-la paid model call |
+| Readiness | Traffic receive pannalama? | Setup mudiyama ready return pannradhu |
+| Evaluation | Answer useful and grounded-a? | One happy-path prompt mattum |
+| Cost | Request/learner-ku cost enna? | Token count mattum paarkaradhu |
+| Safety | Risky input correct-a handle aagudha? | Sensitive prompt-ai full-a log pannradhu |
+
+## Real-World Deployment
+<DockerRealWorldVisual variant="deploy" />
+<DockerUseCaseVisual variant="deploy" />
+
+College assistant hundreds of learners-ku serve pannumbodhu team input limit, provider timeout, error category, token cost, answer-quality evaluation ellam track pannanum. “Container start aagudhu” mattum production success illa.
+
+## Deployment Checklist Lab
+1. Image-ai commit/version tag-oda build pannunga.
+2. Dependencies and image vulnerabilities scan pannunga.
+3. Process non-root-a run aagudha verify pannunga.
+4. Secrets platform moolama inject pannunga.
+5. CPU, memory, concurrency, timeout limits define pannunga.
+6. Liveness and readiness endpoints configure pannunga.
+7. Quality, latency, errors, usage, cost observe pannunga.
+8. Limited traffic-la release panni rollback path ready-a vaikkunga.
+
+## Common Mistakes
+<Mistakes>
+
+- API key-ai image or Git-la store pannradhu.
+- Mutable `latest` tag-ai mattum release identity-a use pannradhu.
+- Root user-la unnecessary privileges-oda run pannradhu.
+- Health probe-la costly LLM call pannradhu.
+- Infrastructure uptime-ai answer quality-nu confuse pannradhu.
+- Full rollout-ku munnadi evaluation/rollback illama deploy pannradhu.
+
+</Mistakes>
+
+## FAQ and Knowledge Check
+<KnowledgeCheck question="Healthy container useful AI answer guarantee pannuma?" options={["Aam", "Illai; quality evaluation separate", "Only production-la"]} answer={1} explanation="Infrastructure health and AI answer quality rendu separate signals." />
+
+## Key Takeaways
+<Takeaways>
+
+- Code and dependencies image-kulla belong aagum.
+- Secrets runtime platform-la supply aaganum.
+- App least required privilege-la run aaganum.
+- Immutable version rollback-ai clear-a pannum.
+- Liveness and readiness different questions.
+- Healthy container answer quality-ai prove pannaadhu.
+- Latency, errors, safety, quality, cost together observe pannanum.
+- Gradual release and tested rollback required.
+
+</Takeaways>
+
+## Final Thought and Next Path
+Container AI app-ai repeatable-a pannum; production platform adhai operable-a pannum. Indha Byte-oda Docker path first image-lendhu controlled AI deployment varaikkum complete aagudhu.
+
+## References
+- [Docker build best practices](https://docs.docker.com/build/building/best-practices/)
+- [Docker secrets guidance](https://docs.docker.com/compose/how-tos/use-secrets/)

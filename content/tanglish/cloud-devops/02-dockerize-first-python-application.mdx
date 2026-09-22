@@ -1,0 +1,117 @@
+<ThemeCard title="Build pannaporadhu" badge="DOCKER · BYTE 02">Oru small Python health API-ai Docker image-a build panni, container-la run panni, result-ai verify pannuveenga.</ThemeCard>
+
+## Quick Start
+Docker commands copy panna munnadi app enna seyyudhu-nu purinjukkanum. Namma sample Flask app `/health` endpoint-la service healthy-nu JSON return pannum.
+
+## Start from Basics
+```python
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.get("/health")
+def health():
+    return jsonify(status="healthy", service="maanavan-demo")
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
+
+`requirements.txt`:
+```text
+Flask==3.1.2
+```
+
+## Build-to-Run Journey
+<DockerConceptLab concept="buildRun" />
+<DockerFlowVisual variant="buildRun" />
+<HandbookLearningVisual variant="dockerBuild" />
+
+## Dockerfile-ai Decision-by-Decision Read Pannunga
+```dockerfile
+FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+EXPOSE 8000
+CMD ["python", "app.py"]
+```
+
+| Instruction | Meaning |
+|---|---|
+| `FROM` | Base runtime choose pannum |
+| `WORKDIR` | App working folder set pannum |
+| `COPY` | Required files image-kulla copy pannum |
+| `RUN` | Build time command execute pannum |
+| `EXPOSE` | App expected port-ai document pannum |
+| `CMD` | Container start aagumbodhu run aagura process |
+
+## Build Context-ai Clean-a Vaikkalam
+`.dockerignore` file-la `.git`, `.venv`, `.env`, `__pycache__` madhiri local or sensitive files-ai exclude pannunga. Idhu build context-ai small-a maintain pannum.
+
+## Build, Run, Verify
+```bash
+docker build -t python-health:1.0 .
+docker run --rm --name python-health -p 8000:8000 python-health:1.0
+curl http://localhost:8000/health
+```
+
+Expected result:
+```json
+{"service":"maanavan-demo","status":"healthy"}
+```
+
+`docker build` image create pannum. `docker run` andha image-la irundhu container start pannum. Code change pannina image-ai rebuild pannanum.
+
+## Manual Setup vs Docker
+| Question | Manual setup | Docker image |
+|---|---|---|
+| Runtime yaar install pannuvanga? | Ovvoru learner-um | Image build |
+| Dependencies enga record aagum? | Setup notes | Dockerfile |
+| Same version epdi repeat aagum? | Steps repeat pannanum | Tagged image run pannalaam |
+
+## Real-World View
+<DockerRealWorldVisual variant="build" />
+<DockerUseCaseVisual variant="build" />
+
+## Troubleshooting Lab
+| Symptom | First evidence | Likely reason |
+|---|---|---|
+| Container immediate-a exit | `docker logs` | Main process crash/complete |
+| Browser connect aagala | Port mapping + bind address | `-p` missing or `127.0.0.1` bind |
+| Code change reflect aagala | Image time/tag | Image rebuild pannala |
+
+## Common Mistakes
+<Mistakes>
+
+- Dependency file-kku munnadi full source-ai copy panni cache-ai waste pannradhu.
+- `EXPOSE` host port-ai publish pannum-nu assume pannradhu.
+- `.env` or credentials-ai image-kulla copy pannradhu.
+- Logs padikkama random-a rebuild pannradhu.
+
+</Mistakes>
+
+## FAQ and Knowledge Check
+<KnowledgeCheck question="Code change pannina next correct action enna?" options={["Old container mattum restart", "Image rebuild panni new container start", "Docker uninstall"]} answer={1} explanation="Image source changes-ai automatically pick pannaadhu; rebuild required." />
+
+## Key Takeaways
+<Takeaways>
+
+- App first local-a work aagudha verify pannunga.
+- Dockerfile repeatable build decisions-ai record pannum.
+- `docker build` image create pannum.
+- `docker run` container start pannum.
+- `.dockerignore` unwanted files-ai exclude pannum.
+- `EXPOSE` document pannum; `-p` publish pannum.
+- Code change-ku image rebuild required.
+- Logs failure evidence kudukkum.
+
+</Takeaways>
+
+## Final Thought and Next Path
+Ippo oru app-ai package panni run panniteenga. Next Byte-la traffic, persistent data, environment-specific settings epdi container-kku reach aagum-nu paapom.
+
+## References
+- [Dockerfile overview](https://docs.docker.com/build/concepts/dockerfile/)
+- [Docker build context](https://docs.docker.com/build/concepts/context/)

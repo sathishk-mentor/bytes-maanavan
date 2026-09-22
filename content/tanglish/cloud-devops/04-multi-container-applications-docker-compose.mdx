@@ -1,0 +1,117 @@
+<ThemeCard title="One app, multiple services" badge="DOCKER · BYTE 04">Frontend, backend, database, AI service-ai oru readable Compose definition moolama connect pannuveenga.</ThemeCard>
+
+## Quick Start
+Real application usually one container mattum illa. Ovvoru service-kum long `docker run` command maintain pannradhu difficult. Docker Compose services, network, volumes, health checks, configuration-ai `compose.yaml`-la declare pannum.
+
+## Start from Basics
+- **Service:** Compose manage pannura application component.
+- **Compose file:** Multi-container application definition.
+- **Service discovery:** Service name use panni another container-ai reach pannradhu.
+- **Health check:** Service ready-a irukka evidence.
+- **Named volume:** Stateful data storage.
+- **Project network:** Compose services communicate panna shared network.
+
+## Multi-Service Flow Lab
+<DockerConceptLab concept="compose" />
+<DockerFlowVisual variant="compose" />
+<HandbookLearningVisual variant="dockerCompose" />
+
+## Architecture-ai Read Pannunga
+```text
+Browser → Frontend → Backend → AI service
+                         ↓
+                    PostgreSQL → Named volume
+```
+Internal container-lendhu another service-ai call pannumbodhu `localhost` use panna koodadhu. `localhost` current container-ai dhaan indicate pannum. Backend database-ai `postgres:5432` nu service name-la reach pannanum.
+
+## Practical Compose Definition
+```yaml
+services:
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://app:app@postgres:5432/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app"]
+      interval: 10s
+      retries: 5
+
+volumes:
+  postgres-data:
+```
+Example password learning purpose mattum; production-la secret manager use pannanum.
+
+## Startup vs Readiness
+Container process start aagiduchu-nu sonna service requests accept panna ready-nu artham illa. Health check stronger signal kudukkum. Application side-la bounded retry, timeout, clear error handling-um venum.
+
+## Operate the Stack
+```bash
+docker compose up --build
+docker compose ps
+docker compose logs -f backend
+docker compose exec backend sh
+docker compose down
+```
+`docker compose down -v` volumes-ai delete panna mudiyum; data remove panna intention irundha mattum use pannunga.
+
+## Run Commands vs Compose
+| Decision | Separate commands | Compose |
+|---|---|---|
+| Definition | Multiple terminal commands | One reviewed YAML file |
+| Networking | Manual setup | Service names available |
+| Repeatability | Options miss aagalaam | Shared definition |
+| Best fit | Quick single container | Connected local stack |
+
+## Real-World View
+<DockerRealWorldVisual variant="compose" />
+<DockerUseCaseVisual variant="compose" />
+
+## Debugging Lab
+1. `docker compose config`-la resolved config check pannunga.
+2. `docker compose ps`-la state and health paarkkunga.
+3. Failed request receive panna service logs read pannunga.
+4. Internal URL-la `localhost` badhila service name irukka verify pannunga.
+5. Credentials and migrations check pannunga.
+
+## Common Mistakes
+<Mistakes>
+
+- Another container-ai `localhost` use panni call pannradhu.
+- Every internal service port-ai public-a publish pannradhu.
+- Startup order readiness guarantee-nu assume pannradhu.
+- Password-ai `compose.yaml`-la hardcode pannradhu.
+- Stateful database-ai volume/backup illama run pannradhu.
+
+</Mistakes>
+
+## FAQ and Knowledge Check
+<KnowledgeCheck question="Backend container PostgreSQL-ai endha address-la call pannanum?" options={["localhost:5432", "postgres:5432", "browser:5432"]} answer={1} explanation="Compose network-la service name DNS address-a work pannum." />
+
+## Key Takeaways
+<Takeaways>
+
+- Compose multi-container app-ai one file-la define pannum.
+- Each service-ku clear responsibility venum.
+- Service names internal addresses-a work pannum.
+- `localhost` current container-ai indicate pannum.
+- Required services mattum host-ku publish pannanum.
+- Started service ready-a irukkanum-nu guarantee illa.
+- Stateful data-ku volume and backup venum.
+- Focused logs first failure-ai identify pannum.
+
+</Takeaways>
+
+## Final Thought and Next Path
+Compose oru small application-oda operating plan. Final Byte-la indha packaged application-ai controlled production deployment-ku prepare pannuvom.
+
+## References
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Compose networking](https://docs.docker.com/compose/how-tos/networking/)

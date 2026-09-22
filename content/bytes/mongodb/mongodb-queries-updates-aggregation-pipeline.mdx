@@ -12,7 +12,7 @@ order: 3
 
 ## Quick Start
 
-Our LangChain Handbook's Memory byte showed `RunnableWithMessageHistory` keeping track of a conversation. Our AI Agents Handbook stressed that agents need memory to "learn, improve, or be trusted." In this byte, we look at MongoDB as the actual storage layer behind that memory — for both simple chat history and richer, longer-term agent memory.
+Chat history stored only in application memory disappears after a restart. In this Byte, we use MongoDB as a durable storage layer for conversation history, user-owned preferences and carefully bounded agent memory. No earlier handbook is required.
 
 **Time investment:** 20-25 mins.
 
@@ -146,4 +146,3 @@ Because session messages and distilled memory facts have genuinely different sha
 *(Answers: 1. Short-term (session messages, e.g. the raw back-and-forth of one conversation) and long-term (distilled facts, e.g. a customer's notification preference); 2. False — like RAG retrieval, agent memory should occasionally be reviewed, since it can become stale or be based on a one-off comment; 3. TTL (time-to-live) indexes, for automatic expiration of old documents)*
 
 *Next byte: **Aggregation Pipeline for AI Features** — using MongoDB's aggregation framework to build features and analytics for AI applications.*
-

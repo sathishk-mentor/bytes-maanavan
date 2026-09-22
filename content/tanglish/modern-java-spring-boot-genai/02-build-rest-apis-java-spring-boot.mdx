@@ -56,15 +56,22 @@ Complaint summary-ku category, summary, priority fields ulla Java record design 
 
 ## Knowledge Check
 
-1. AI call controller-la direct-a irukkanuma? **Usually illai; service/client boundary maintain pannunga.**
-2. Model output trusted Java object-aa? **Validation mudinja apram mattum.**
-3. External AI fail aana enna venum? **Timeout, controlled error/fallback, trace and metric.**
+<KnowledgeCheck question="Spring AI model call-ku API key enga irukkanum?" options={["Java source file-la", "Runtime secret or environment configuration-la", "Git commit message-la"]} answer={1} explanation="Secret source code or repository-kulla pogakoodadhu; runtime-la controlled-a inject aaganum." />
 
 ## Key Takeaways
 
-- Spring conventions AI code-ai existing enterprise application-kulla fit panna help pannum.
-- Typed boundaries, permissions and observability production quality-ku mukkiyam.
-- AI-generated code-ai compile, test, security review panna vendum.
+<Takeaways>
+
+- Spring AI Java app-kku consistent model-client abstraction kudukkum.
+- ChatClient prompt request-ai model provider-kku send pannum.
+- Configuration code-lendhu separate-a irukkanum.
+- API keys runtime secret-a supply aaganum.
+- System instruction and user input separate roles.
+- Model response untrusted external output-a treat pannanum.
+- Timeout and failure mapping API contract-la visible-a irukkanum.
+- Provider swap panninaalum evaluation and regression tests required.
+
+</Takeaways>
 
 ## Final Thought and Next Path
 
