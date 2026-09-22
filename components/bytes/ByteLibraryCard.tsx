@@ -24,10 +24,51 @@ const journeyProfiles = {
 
 const defaultProfile = { category: 'Technology Learning', handbook: 'MaanavaN Handbook', accent: '#087f87', glow: '#7ce5e9', stages: ['Understand', 'Explore', 'Apply', 'Practise', 'Master'], icons: [Compass, Blocks, Workflow, Wrench, Rocket] } as const;
 
+const learningVisuals: Record<string, readonly (readonly string[])[]> = {
+  'ai-agents': [
+    ['Chatbot|Answers', 'Copilot|Suggests', 'Agent|Plans & acts'],
+    ['Goal', 'Plan', 'Use tools', 'Act', 'Check'],
+    ['Support|Lower risk', 'Finance|Review first', 'Hiring|Human decides'],
+    ['Request', 'Permission', 'Human approval', 'Action + log'],
+    ['Identify', 'Try', 'Pilot', 'Review', 'Scale'],
+  ],
+  'software-engineering': [
+    ['Developer intent', 'Copilot suggestion', 'Human decision'], ['Prompt', 'Context', 'Suggestion', 'Test'], ['Requirement', 'Generated code', 'Validation'], ['Task', 'Agent workspace', 'Pull request'], ['Policy', 'Review', 'Merge'],
+  ],
+  'forward-deployed-engineer': [
+    ['Customer problem', 'Technical insight', 'Working outcome'], ['Observe', 'Ask', 'Find constraint'], ['Problem', 'Prototype', 'Feedback'], ['Build', 'Adopt', 'Measure'], ['Pattern', 'Playbook', 'Scale'],
+  ],
+  'cloud-devops': [
+    ['Application', 'Container image', 'Same runtime'], ['Code', 'Dockerfile', 'Image', 'Container'], ['Config', 'Volume', 'Network'], ['App', 'API', 'Database'], ['Build', 'Registry', 'Deploy'],
+  ],
+  langchain: [
+    ['User message', 'Chat model', 'Response'], ['Prompt', 'Model', 'Parser'], ['Question', 'Retriever', 'Context'], ['State', 'Tools', 'Decision'], ['Trace', 'Evaluate', 'Improve'],
+  ],
+  mongodb: [
+    ['Document', 'Collection', 'Database'], ['Access pattern', 'Embed', 'Reference'], ['Filter', 'Index', 'Result'], ['Application', 'MongoDB', 'AI service'], ['Secure', 'Monitor', 'Scale'],
+  ],
+  'python-genai-agentic-ai': [
+    ['Value', 'Function', 'Program'], ['Request', 'API', 'JSON'], ['Prompt', 'Model', 'Response'], ['Goal', 'Tool', 'Result'], ['Test', 'Protect', 'Deploy'],
+  ],
+  'sql-data-ai-applications': [
+    ['Table', 'Query', 'Rows'], ['Group', 'Window', 'Insight'], ['Text', 'Embedding', 'Nearest match'], ['Raw data', 'Feature', 'Model'], ['Question', 'SQL agent', 'Verified answer'],
+  ],
+  'rag-application-engineering': [
+    ['Question', 'Knowledge', 'Grounded answer'], ['Load', 'Chunk', 'Embed'], ['Query', 'Retrieve', 'Rank'], ['Context', 'Prompt', 'Answer'], ['Test set', 'Measure', 'Improve'],
+  ],
+  'fastapi-ai-applications': [
+    ['Request', 'Route', 'Response'], ['Input', 'Pydantic', 'Validated data'], ['Request', 'Async task', 'Stream'], ['Question', 'RAG service', 'Answer'], ['Secure', 'Observe', 'Scale'],
+  ],
+  'modern-java-spring-boot-genai': [
+    ['Controller', 'Service', 'Repository'], ['Request', 'Spring API', 'Response'], ['Prompt', 'Spring AI', 'Model'], ['Goal', 'Tool call', 'Result'], ['Secure', 'Observe', 'Operate'],
+  ],
+};
+
 export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: { chapter: ByteMetadata; chapterNumber: number; totalChapters?: number }) {
   const profile = journeyProfiles[chapter.category as keyof typeof journeyProfiles] ?? defaultProfile;
   const safeIndex = Math.max(0, Math.min(chapterNumber - 1, profile.stages.length - 1));
   const Icon = profile.icons[safeIndex];
+  const visualSteps = learningVisuals[chapter.category]?.[safeIndex] ?? [profile.stages[safeIndex], 'Practise', 'Apply'];
   const outcomes = ['Build a clear foundation', 'Follow the working process', 'Connect the concept to practice', 'Recognise risks and controls', 'Apply it with confidence'];
   const cardStyle = { '--path-accent': profile.accent, '--path-glow': profile.glow, '--path-index': chapterNumber - 1 } as CSSProperties;
 
@@ -37,11 +78,11 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
       <span className="journey-grid"/>
       <span className="journey-scene-label">{profile.stages[safeIndex]}</span>
       <div className="journey-scene">
-        {safeIndex === 0 && <div className="scene-ui scene-ui-concept"><span className="scene-icon"><Icon/></span><div><small>CORE CONCEPT</small><strong>Mental model</strong><i>See the idea clearly</i></div><b>01</b></div>}
-        {safeIndex === 1 && <div className="scene-ui scene-ui-flow"><header><span><Icon/>WORKFLOW</span><i>ACTIVE</i></header><div><b>Input</b><em>→</em><b>Decide</b><em>→</em><b>Act</b></div><footer><span/><span/><span/></footer></div>}
-        {safeIndex === 2 && <div className="scene-ui scene-ui-evidence"><header><span><Icon/>REAL-WORLD VIEW</span><i>LIVE</i></header><div className="scene-bars"><span/><span/><span/><span/></div><footer><b>Evidence</b><b>Pattern</b><b>Decision</b></footer></div>}
-        {safeIndex === 3 && <div className="scene-ui scene-ui-guard"><span className="scene-shield"><Icon/></span><div><small>CONTROL GATE</small><strong>Review required</strong><i><b/>Permission checked</i><i><b/>Human approval</i></div></div>}
-        {safeIndex >= 4 && <div className="scene-ui scene-ui-launch"><div className="scene-launch-ring"><Icon/><span>READY</span></div><div><small>PRACTICAL OUTCOME</small><strong>{profile.stages[safeIndex]}</strong><i>Measured · reviewed · ready</i></div></div>}
+        {safeIndex === 0 && <div className="scene-ui scene-ui-compare"><header><Icon/><span>WHAT CHANGES?</span></header><div>{visualSteps.map((step, index) => { const [name, action] = step.split('|'); return <span key={step} className={index === visualSteps.length - 1 ? 'is-focus' : ''}><b>{name}</b><i>{action ?? 'Understand'}</i></span>; })}</div><footer>From response to real work</footer></div>}
+        {safeIndex === 1 && <div className="scene-ui scene-ui-process"><header><Icon/><span>INSIDE THE WORKFLOW</span><i>RUNNING</i></header><div>{visualSteps.map((step, index) => <span key={step}><b>{index + 1}</b><strong>{step}</strong></span>)}</div><footer><i/></footer></div>}
+        {safeIndex === 2 && <div className="scene-ui scene-ui-decisions"><header><Icon/><span>CHOOSE THE RIGHT USE CASE</span></header><div>{visualSteps.map((step, index) => { const [name, note] = step.split('|'); return <span key={step} className={index === 0 ? 'is-selected' : ''}><b>{name}</b><i>{note ?? 'Apply'}</i><em>{index === 0 ? '✓' : '→'}</em></span>; })}</div></div>}
+        {safeIndex === 3 && <div className="scene-ui scene-ui-gates"><header><Icon/><span>CONTROLLED ACTION</span></header><div>{visualSteps.map((step, index) => <span key={step} className={index === 2 ? 'is-human' : ''}><b>{index < visualSteps.length - 1 ? '✓' : '→'}</b><strong>{step}</strong></span>)}</div><footer>Unsafe action stops here</footer></div>}
+        {safeIndex >= 4 && <div className="scene-ui scene-ui-roadmap"><header><Icon/><span>YOUR FIRST PILOT</span><i>LOW RISK</i></header><div>{visualSteps.map((step, index) => <span key={step}><b>{String(index + 1).padStart(2, '0')}</b><strong>{step}</strong></span>)}</div><footer>Small start → measurable result</footer></div>}
       </div>
       <b>{String(chapterNumber).padStart(2, '0')}</b>
     </div>
