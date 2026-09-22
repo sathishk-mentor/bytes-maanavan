@@ -9,17 +9,17 @@ import {
 import type { ByteMetadata } from '@/lib/types';
 
 const journeyProfiles = {
-  'software-engineering': { category: 'Software Engineering', handbook: 'GitHub Copilot Handbook', accent: '#2f6fed', glow: '#8bb8ff', stages: ['Orient', 'Give context', 'Validate', 'Build', 'Ship responsibly'], icons: [Bot, Braces, ShieldCheck, GitPullRequestArrow, Rocket] },
-  'forward-deployed-engineer': { category: 'Technology Careers', handbook: 'Forward Deployed Engineer', accent: '#7657d6', glow: '#c9b9ff', stages: ['Understand', 'Discover', 'Shape', 'Deliver', 'Scale learning'], icons: [BriefcaseBusiness, Search, Layers3, Gauge, Blocks] },
-  'cloud-devops': { category: 'Cloud & DevOps', handbook: 'Docker Handbook', accent: '#1678c8', glow: '#87d7ff', stages: ['Understand', 'Package', 'Configure', 'Compose', 'Deploy'], icons: [Container, Box, HardDrive, Network, Rocket] },
-  langchain: { category: 'Generative AI & Agents', handbook: 'LangChain Handbook', accent: '#0c8b74', glow: '#7ae8cd', stages: ['Understand', 'Connect', 'Ground', 'Orchestrate', 'Operate'], icons: [Network, MessageSquareText, FileText, Wrench, ShieldCheck] },
+  'software-engineering': { category: 'Software Engineering', handbook: 'GitHub Copilot Handbook', accent: '#2f6fed', glow: '#8bb8ff', stages: ['Understand Copilot', 'Work with context', 'Prompt well', 'Use agent mode', 'Review & govern'], icons: [Bot, MessageSquareText, Braces, GitPullRequestArrow, ShieldCheck] },
+  'forward-deployed-engineer': { category: 'Technology Careers', handbook: 'Forward Deployed Engineer', accent: '#7657d6', glow: '#c9b9ff', stages: ['Understand the role', 'Build the skillset', 'Run the engagement', 'Earn customer trust', 'Grow the career'], icons: [BriefcaseBusiness, Blocks, Layers3, ShieldCheck, Rocket] },
+  'cloud-devops': { category: 'Cloud & DevOps', handbook: 'Docker Handbook', accent: '#1678c8', glow: '#87d7ff', stages: ['Understand Docker', 'Build an image', 'Configure runtime', 'Compose services', 'Deploy an AI app'], icons: [Container, Box, HardDrive, Network, Rocket] },
+  langchain: { category: 'Generative AI & Agents', handbook: 'LangChain Handbook', accent: '#0c8b74', glow: '#7ae8cd', stages: ['Understand LangChain', 'Build chains', 'Build RAG', 'Add memory', 'Build safe agents'], icons: [Network, Workflow, FileText, MessageSquareText, ShieldCheck] },
   'ai-agents': { category: 'Generative AI & Agents', handbook: 'AI Agents Handbook', accent: '#6b57d9', glow: '#b9afff', stages: ['Understand', 'Reason & act', 'See adoption', 'Add guardrails', 'Start building'], icons: [Bot, Workflow, BriefcaseBusiness, ShieldCheck, Rocket] },
-  mongodb: { category: 'Database & AI Engineering', handbook: 'MongoDB for AI Applications', accent: '#07805c', glow: '#83e5be', stages: ['Understand', 'Model', 'Query', 'Integrate', 'Operate'], icons: [Database, Blocks, Gauge, Network, ShieldCheck] },
+  mongodb: { category: 'Database & AI Engineering', handbook: 'MongoDB for AI Applications', accent: '#07805c', glow: '#83e5be', stages: ['Understand MongoDB', 'Model documents', 'Query data', 'Connect applications', 'Run production'], icons: [Database, Blocks, Search, Network, ShieldCheck] },
   'python-genai-agentic-ai': { category: 'Python & AI Engineering', handbook: 'Python for GenAI & Agents', accent: '#2672c9', glow: '#8fc9ff', stages: ['Build foundations', 'Connect APIs', 'Create GenAI', 'Build agents', 'Ship safely'], icons: [Code2, Braces, MessageSquareText, Wrench, ShieldCheck] },
-  'sql-data-ai-applications': { category: 'Data & AI Engineering', handbook: 'SQL for Data & AI Applications', accent: '#176dc1', glow: '#84c7ff', stages: ['Query', 'Analyse', 'Search meaning', 'Engineer features', 'Add agents'], icons: [Database, Gauge, Search, Blocks, Bot] },
-  'rag-application-engineering': { category: 'Generative AI & Knowledge', handbook: 'RAG Application Engineering', accent: '#7657d6', glow: '#ccbaff', stages: ['Understand', 'Prepare knowledge', 'Retrieve', 'Generate', 'Evaluate'], icons: [Compass, FileText, Search, MessageSquareText, Gauge] },
-  'fastapi-ai-applications': { category: 'Backend & AI Engineering', handbook: 'FastAPI for AI Applications', accent: '#078a78', glow: '#7ce7d2', stages: ['Route', 'Validate', 'Stream', 'Build RAG', 'Operate'], icons: [TerminalSquare, Braces, Workflow, Network, ShieldCheck] },
-  'modern-java-spring-boot-genai': { category: 'Java & Enterprise AI', handbook: 'Modern Java, Spring Boot & GenAI', accent: '#b16428', glow: '#ffc285', stages: ['Modernise', 'Build APIs', 'Connect AI', 'Orchestrate', 'Operate'], icons: [Code2, Braces, MessageSquareText, Workflow, ShieldCheck] },
+  'sql-data-ai-applications': { category: 'Data & AI Engineering', handbook: 'SQL for Data & AI Applications', accent: '#176dc1', glow: '#84c7ff', stages: ['Query data', 'Analyse data', 'Search vectors', 'Engineer features', 'Use AI agents'], icons: [Database, Gauge, Search, Blocks, Bot] },
+  'rag-application-engineering': { category: 'Generative AI & Knowledge', handbook: 'RAG Application Engineering', accent: '#7657d6', glow: '#ccbaff', stages: ['Understand RAG', 'Follow the pipeline', 'Diagnose failures', 'Improve quality', 'Run production'], icons: [Compass, Workflow, Search, Gauge, ShieldCheck] },
+  'fastapi-ai-applications': { category: 'Backend & AI Engineering', handbook: 'FastAPI for AI Applications', accent: '#078a78', glow: '#7ce7d2', stages: ['Understand FastAPI', 'Validate APIs', 'Connect services', 'Stream GenAI', 'Run production'], icons: [TerminalSquare, Braces, Network, Workflow, ShieldCheck] },
+  'modern-java-spring-boot-genai': { category: 'Java & Enterprise AI', handbook: 'Modern Java, Spring Boot & GenAI', accent: '#b16428', glow: '#ffc285', stages: ['Java + Spring Boot', 'Connect LLMs', 'Build RAG', 'Add AI agents', 'Run production'], icons: [Code2, MessageSquareText, Search, Workflow, ShieldCheck] },
 } as const;
 
 const defaultProfile = { category: 'Technology Learning', handbook: 'MaanavaN Handbook', accent: '#087f87', glow: '#7ce5e9', stages: ['Understand', 'Explore', 'Apply', 'Practise', 'Master'], icons: [Compass, Blocks, Workflow, Wrench, Rocket] } as const;
@@ -33,16 +33,16 @@ const learningVisuals: Record<string, readonly (readonly string[])[]> = {
     ['Identify', 'Try', 'Pilot', 'Review', 'Scale'],
   ],
   'software-engineering': [
-    ['Developer intent', 'Copilot suggestion', 'Human decision'], ['Prompt', 'Context', 'Suggestion', 'Test'], ['Requirement', 'Generated code', 'Validation'], ['Task', 'Agent workspace', 'Pull request'], ['Policy', 'Review', 'Merge'],
+    ['Developer', 'Copilot', 'Better code'], ['Question', 'Repository context', 'Useful answer'], ['Intent', 'Clear instruction', 'Better output'], ['Task', 'Multi-file work', 'Pull request'], ['Suggestion', 'Human review', 'Approved code'],
   ],
   'forward-deployed-engineer': [
-    ['Customer problem', 'Technical insight', 'Working outcome'], ['Observe', 'Ask', 'Find constraint'], ['Problem', 'Prototype', 'Feedback'], ['Build', 'Adopt', 'Measure'], ['Pattern', 'Playbook', 'Scale'],
+    ['Customer problem', 'Technical solution', 'Business outcome'], ['Technical depth', 'Customer thinking', 'Commercial impact'], ['Discovery', 'Prototype', 'Production'], ['First conversation', 'Reliable delivery', 'Trusted partner'], ['Skillset', 'Experience', 'Career growth'],
   ],
   'cloud-devops': [
-    ['Application', 'Container image', 'Same runtime'], ['Code', 'Dockerfile', 'Image', 'Container'], ['Config', 'Volume', 'Network'], ['App', 'API', 'Database'], ['Build', 'Registry', 'Deploy'],
+    ['Application', 'Container image', 'Same runtime'], ['Python code', 'Docker image', 'Running container'], ['Ports', 'Volumes', 'Runtime config'], ['App service', 'Database service', 'One Compose stack'], ['GenAI app', 'Container platform', 'Live deployment'],
   ],
   langchain: [
-    ['User message', 'Chat model', 'Response'], ['Prompt', 'Model', 'Parser'], ['Question', 'Retriever', 'Context'], ['State', 'Tools', 'Decision'], ['Trace', 'Evaluate', 'Improve'],
+    ['LLM call', 'LangChain components', 'AI application'], ['Prompt', 'Chain', 'Structured result'], ['Question', 'Your documents', 'Grounded answer'], ['Message history', 'Conversation memory', 'Context-aware reply'], ['Goal', 'Tools + guardrails', 'Safe agent action'],
   ],
   mongodb: [
     ['Document', 'Collection', 'Database'], ['Access pattern', 'Embed', 'Reference'], ['Filter', 'Index', 'Result'], ['Application', 'MongoDB', 'AI service'], ['Secure', 'Monitor', 'Scale'],
@@ -54,13 +54,13 @@ const learningVisuals: Record<string, readonly (readonly string[])[]> = {
     ['Table', 'Query', 'Rows'], ['Group', 'Window', 'Insight'], ['Text', 'Embedding', 'Nearest match'], ['Raw data', 'Feature', 'Model'], ['Question', 'SQL agent', 'Verified answer'],
   ],
   'rag-application-engineering': [
-    ['Question', 'Knowledge', 'Grounded answer'], ['Load', 'Chunk', 'Embed'], ['Query', 'Retrieve', 'Rank'], ['Context', 'Prompt', 'Answer'], ['Test set', 'Measure', 'Improve'],
+    ['Question', 'Trusted knowledge', 'Grounded answer'], ['User question', 'RAG pipeline', 'Cited answer'], ['Retrieval miss', 'Weak context', 'Wrong answer'], ['Test question', 'Quality score', 'Improved RAG'], ['Prototype', 'Scale + governance', 'Production RAG'],
   ],
   'fastapi-ai-applications': [
-    ['Request', 'Route', 'Response'], ['Input', 'Pydantic', 'Validated data'], ['Request', 'Async task', 'Stream'], ['Question', 'RAG service', 'Answer'], ['Secure', 'Observe', 'Scale'],
+    ['Python function', 'FastAPI route', 'Web API'], ['Client input', 'Pydantic validation', 'Safe response'], ['API request', 'Database + service', 'Connected result'], ['AI prompt', 'Async generation', 'Streamed tokens'], ['Local API', 'Security + tests', 'Production API'],
   ],
   'modern-java-spring-boot-genai': [
-    ['Controller', 'Service', 'Repository'], ['Request', 'Spring API', 'Response'], ['Prompt', 'Spring AI', 'Model'], ['Goal', 'Tool call', 'Result'], ['Secure', 'Observe', 'Operate'],
+    ['Java code', 'Spring Boot', 'AI-ready service'], ['Spring application', 'Spring AI', 'LLM response'], ['Question', 'Enterprise knowledge', 'Grounded answer'], ['User goal', 'Java tool call', 'Checked action'], ['Prototype', 'Secure operations', 'Production service'],
   ],
 };
 
