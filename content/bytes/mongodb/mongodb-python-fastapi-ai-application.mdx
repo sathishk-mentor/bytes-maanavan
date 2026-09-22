@@ -12,7 +12,7 @@ order: 4
 
 ## Quick Start
 
-Our SQL Handbook covered aggregations and window functions for feature engineering — building the numeric signals a machine learning model actually consumes. In this byte, we see MongoDB's equivalent: the **aggregation pipeline**, and how it builds AI-ready features directly from your document data.
+AI features often need summaries such as counts, averages, recent activity and ranked signals. In this Byte, we build those features directly from MongoDB documents using the **aggregation pipeline**. No SQL background or earlier handbook is required.
 
 **Time investment:** 20-25 mins.
 
@@ -164,4 +164,3 @@ Expensive aggregations (like 30-day rolling averages) are wasteful to recompute 
 *(Answers: 1. `$match`, `$group`, `$sort`; 2. False — `$merge` writes its output directly into a specified collection, a real side effect; 3. Because each stage's output feeds the next, so checking the result after each stage individually makes debugging much easier)*
 
 *Next byte: **Production Concerns for MongoDB AI Apps** — indexing, scaling, and security as these systems go live.*
-

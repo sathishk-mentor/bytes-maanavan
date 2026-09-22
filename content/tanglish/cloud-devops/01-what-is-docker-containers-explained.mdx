@@ -1,0 +1,86 @@
+<ThemeCard title="Indha Byte-la enna learn pannuveenga?" badge="DOCKER · BYTE 01">Dockerfile, image, container, registry difference-ai oru real deployment problem moolama clear-a purinjukolveenga.</ThemeCard>
+
+## Quick Start
+Karthik-oda Python app avar laptop-la correct-a work aagudhu. QA laptop-la `package not found` error varudhu. Reason code illa; rendu system setup different. Docker, app code-oda runtime and dependencies-ai oru repeatable package-a kondu pogum.
+
+## Friday Deployment QA-la Yaen Fail Aachu?
+Friday evening Karthik order-status app handover pannaar. QA machine-la required Python library illa. Ovvoru tool-ai manual-a install panna sollama, Karthik application setup-ai Docker image-a prepare pannaar. QA andha image-la irundhu container start pannumbodhu same tested setup kidaichadhu.
+
+## Start from Basics
+
+- **Dockerfile:** Image build panna instructions.
+- **Image:** App, runtime, dependencies serndha ready package.
+- **Container:** Image-la irundhu run aagura app instance.
+- **Registry:** Images store and share panna service.
+- **Tag:** Image version label, example `1.0`.
+- **Docker Engine:** Image build panni container run panna software.
+
+## Core Explanation
+<DockerConceptLab concept="imageContainer" />
+
+Simple flow: **Dockerfile → Image → Container**. Oru image-la irundhu pala separate containers start pannalaam. Container stop aana image delete aagadhu; adhe image-ai marubadiyum use pannalaam.
+
+## Architecture and Flow
+<DockerObjectArchitecture />
+
+Registry-ai image shelf madhiri imagine pannunga. Developer image push pannuvaar; QA or deployment platform exact version-ai pull panni container start pannum.
+
+## Image vs Container
+| Question | Image | Container |
+|---|---|---|
+| App run aagudha? | Illai | Aam |
+| Share pannalama? | Aam | Usually image-ai share pannuvom |
+| One package-la multiple copies? | Aam | Ovvoru copy-um separate container |
+| Stop aana enna aagum? | Image safe-a irukkum | Andha running instance stop aagum |
+
+## Container vs Virtual Machine
+| Decision | Container | Virtual machine |
+|---|---|---|
+| Operating system | Host kernel share pannum | Full guest OS run pannum |
+| Startup | Usually fast | Usually slow |
+| Package size | App + dependencies | App + dependencies + guest OS |
+
+## Real-World Understanding
+<DockerRealWorldVisual />
+
+Shipping container analogy useful: goods-ai ship-lendhu train-ku move pannumbodhu repack panna thevai illa. Docker image-um app setup-ai standard package-a maintain pannum. Aana Docker wrong code-ai correct pannaadhu; testing still required.
+
+## Role-Based Use Cases
+<DockerUseCaseVisual />
+
+## Hands-On Concept Lab
+Oru app choose pannunga. Adhuku runtime, dependency, start command enna-nu note pannunga. Ivaigal Dockerfile instructions-a epdi maarum-nu lab-la arrange pannunga.
+
+## Common Mistakes
+<Mistakes>
+
+- Image and container same-nu ninaikkaradhu.
+- Running container-kulla manual fix panni adhai permanent solution-nu assume pannradhu.
+- `latest` tag mattum use panni deployed version-ai identify panna mudiyama pogaradhu.
+- Docker tests and security-ai replace pannum-nu ninaikkaradhu.
+
+</Mistakes>
+
+## FAQ and Knowledge Check
+<KnowledgeCheck question="Dockerfile-oda main job enna?" options={["Running request-ai handle pannradhu", "Image build instructions-ai record pannradhu", "Database backup pannradhu"]} answer={1} explanation="Dockerfile repeatable image build decisions-ai record pannum." />
+
+## Key Takeaways
+<Takeaways>
+
+- Docker environment differences-ai reduce pannum.
+- Dockerfile build instructions-ai store pannum.
+- Image reusable package; adhu running app illa.
+- Container image-oda running instance.
+- Registry image versions-ai store and distribute pannum.
+- One image multiple containers create pannalaam.
+- Container and VM isolation model different.
+- Docker testing, monitoring, security-ai replace pannaadhu.
+
+</Takeaways>
+
+## Final Thought and Next Path
+Oru flow mattum remember pannunga: **instructions → package → running app**. Next Byte-la indha model-ai use panni first Python application-ai Dockerize pannuvom.
+
+## References
+- [Docker: What is a container?](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/)
+- [Docker: Images](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/)
