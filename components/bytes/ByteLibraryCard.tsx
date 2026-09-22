@@ -31,7 +31,7 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
   const outcomes = ['Build a clear foundation', 'Follow the working process', 'Connect the concept to practice', 'Recognise risks and controls', 'Apply it with confidence'];
   const cardStyle = { '--path-accent': profile.accent, '--path-glow': profile.glow, '--path-index': chapterNumber - 1 } as CSSProperties;
 
-  return <Link className={`library-byte-card journey-byte-card journey-scene-${safeIndex + 1}`} href={`/${chapter.category}/${chapter.slug}/`} style={cardStyle} aria-label={`Byte ${chapterNumber}: ${chapter.title}`}>
+  return <Link className={`library-byte-card journey-byte-card journey-scene-${safeIndex + 1}`} href={`/${chapter.category}/${chapter.slug}/`} target="_blank" rel="noopener noreferrer" style={cardStyle} aria-label={`Byte ${chapterNumber}: ${chapter.title}`}>
     <span className="journey-connector" aria-hidden="true"><i/></span>
     <div className="journey-card-visual" aria-hidden="true">
       <span className="journey-grid"/>
