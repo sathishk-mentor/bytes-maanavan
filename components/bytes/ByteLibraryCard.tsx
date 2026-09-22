@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import Link from 'next/link';
 import {
-  ArrowUpRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, CheckCircle2, Clock3, Code2, Compass,
+  ArrowUpRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, CheckCircle2, Code2, Compass,
   Container, Database, FileText, Gauge, GitPullRequestArrow, HardDrive, Layers3,
   MessageSquareText, Network, Rocket, Search, ShieldCheck, Sparkles, TerminalSquare,
   Workflow, Wrench,
@@ -47,16 +47,14 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
     </div>
     <div className="journey-card-content">
       <header className="journey-card-header">
-        <span><small>BYTE</small><b>{String(chapterNumber).padStart(2, '0')}</b></span>
-        <div><small>{profile.category}</small><strong>{profile.handbook}</strong></div>
-        <i>{String(chapterNumber).padStart(2, '0')} / {String(totalChapters).padStart(2, '0')}</i>
+        <div><small>BYTE {String(chapterNumber).padStart(2, '0')} OF {String(totalChapters).padStart(2, '0')} · {profile.category}</small><strong>{profile.stages[safeIndex]}</strong></div>
+        <i>{chapter.level} · {chapter.duration}</i>
       </header>
       <div className="journey-card-copy">
-        <div className="journey-card-meta"><span className="journey-stage-pill">{profile.stages[safeIndex]}</span><span>{chapter.level}</span><span><Clock3/>{chapter.duration}</span></div>
         <h3>{chapter.title}</h3><p>{chapter.summary}</p>
         <div className="journey-card-outcome"><CheckCircle2/><div><span>AFTER THIS BYTE</span><strong>{outcomes[safeIndex]}</strong></div></div>
       </div>
-      <footer><span><Sparkles/>Part of a {totalChapters}-Byte guided path</span><b>Open Byte <ArrowUpRight/></b></footer>
+      <footer><span><Sparkles/>{profile.handbook}</span><b>Start this Byte <ArrowUpRight/></b></footer>
     </div>
   </Link>;
 }
