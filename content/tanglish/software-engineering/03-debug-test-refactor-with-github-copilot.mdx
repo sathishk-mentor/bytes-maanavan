@@ -15,11 +15,46 @@ Prompt engineering-na fancy words illa. Copilot guess panna vendiya gap-ai kurai
 <CopilotHandbookVisual variant="quality" />
 <CopilotPromptLab />
 
+## Prompt Contract
+```text
+Goal: duplicate refund-ai prevent pannanum.
+Context: RefundService.java and failing test.
+Constraints: public API and database schema change panna koodadhu.
+Acceptance: same transaction ID twice vandhaal one refund mattum create aaganum.
+```
+
+## Prompt Quality Comparison
+| Prompt | Problem | Improvement |
+|---|---|---|
+| “Improve this” | Success meaning unclear | Measurable outcome add pannunga |
+| “Refactor everything” | Scope unlimited | File/function boundary specify pannunga |
+| “Make it secure” | Risk undefined | Threat and required control mention pannunga |
+
+## Iteration Workflow
+First prompt perfect-a irukkanum-nu pressure vendaam. Draft → output inspect → missing constraint add → test result share → smaller correction nu iterate pannunga. Ovvoru iteration-um one learning question answer pannanum.
+
 ## Common Mistakes
 Oru prompt-la unrelated tasks mix pannradhu; success check kudukkaama done expect pannradhu; output-ai tests illama accept pannradhu.
 
+## Mini Practice
+Oru feature request-ai goal, context, constraints, acceptance checks nu four blocks-la write pannunga. Copilot output-la each acceptance check-ku evidence irukka mark pannunga.
+
+## Knowledge Check
+<KnowledgeCheck question="Prompt-la acceptance check-oda main purpose enna?" options={["Prompt-ai long-a panna", "Task complete-nu evidence-oda decide panna", "Testing-ai avoid panna"]} answer={1} explanation="Acceptance checks output-ai measurable and verifiable-a maathum." />
+
 ## Key Takeaways
-Clear boundaries quality-ai improve pannum. Output-ai tests and diff review moolama verify pannanum.
+<Takeaways>
+
+- Prompt engineering clarity work.
+- Goal desired change-ai describe pannum.
+- Context relevant evidence-ai supply pannum.
+- Constraints unwanted changes-ai prevent pannum.
+- Acceptance checks completion-ai define pannum.
+- Large task-ai smaller steps-a split pannanum.
+- Output base panni prompt iterate pannalaam.
+- Tests and diff review final proof.
+
+</Takeaways>
 
 ## References
 - [Prompting concepts](https://docs.github.com/en/copilot/concepts/prompting)

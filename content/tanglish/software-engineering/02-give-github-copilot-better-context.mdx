@@ -12,6 +12,23 @@ Strong request = **goal + relevant code + evidence + expected result**. Mudhal a
 <CopilotHandbookVisual variant="context" />
 <CopilotChatLab />
 
+## Context Ladder
+| Weak request | Better context | Why better? |
+|---|---|---|
+| “Bug fix pannu” | Failing test + file + expected rule | Guessing kuraiyum |
+| “Code explain pannu” | Function + caller + specific doubt | Relevant explanation kidaikkum |
+| “Test write pannu” | Behaviour + edge cases + framework | Test purpose clear aagum |
+
+## Chat Workflow
+1. Problem-ai one sentence-la state pannunga.
+2. Relevant file/function mattum attach pannunga.
+3. Error message or failing test-ai evidence-a kudunga.
+4. First root cause explanation kekkunga.
+5. Small fix and verification steps separate-a request pannunga.
+
+## Data Boundary
+Customer data, production token, private key, internal credential-ai prompt-la paste panna koodadhu. Issue explain panna sanitised sample and minimum relevant context use pannunga.
+
 ## Better Prompt
 ```text
 RefundService.java-la duplicate refund test fail aagudhu.
@@ -19,8 +36,25 @@ Stack trace-ai explain panni root cause sollunga.
 Public API change pannaama smallest fix propose pannunga.
 ```
 
+## Mini Practice
+Oru vague request choose pannunga. Adhai `goal + relevant file + failure evidence + constraint + expected result` format-la rewrite pannunga. Lab-la rendu prompt output-ai compare pannunga.
+
+## Knowledge Check
+<KnowledgeCheck question="Copilot Chat-ku strongest debugging context edhu?" options={["Entire repository without a question", "Relevant code, failing evidence and expected behaviour", "Production credentials"]} answer={1} explanation="Focused evidence model guessing-ai reduce panni answer-ai testable-a pannum." />
+
 ## Key Takeaways
-Relevant context mattum select pannunga. Explanation first; change next; verification last.
+<Takeaways>
+
+- Chat answer quality context quality-oda related.
+- Goal and expected behaviour clear-a state pannanum.
+- Relevant files mattum share pannanum.
+- Error message useful evidence.
+- Explanation-ai change-kku munnadi kekkalaam.
+- Constraints scope-ai protect pannum.
+- Sensitive data-ai sanitise pannanum.
+- Final fix tests-oda verify aaganum.
+
+</Takeaways>
 
 ## References
 - [GitHub Copilot quickstart](https://docs.github.com/en/copilot/get-started/quickstart)
