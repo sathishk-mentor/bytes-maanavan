@@ -1,145 +1,93 @@
 ---
-title: "Query, Update and Analyse MongoDB Data"
+title: "Conversation and Agent Memory in MongoDB"
 slug: "mongodb-queries-updates-aggregation-pipeline"
-summary: "Use MongoDB filters, projections, updates, pagination and aggregation pipelines to build a practical course-performance report."
+summary: "Separate short-term context from durable memory, scope it by user and session, and apply retention and deletion rules."
 category: "mongodb"
-tags: ["MongoDB queries tutorial", "MongoDB aggregation pipeline", "MongoDB update arrays", "MongoDB pagination", "MongoDB Compass"]
-level: "beginner"
-duration: "27 min"
-updatedAt: "2026-09-15"
+tags: ["AI agent memory", "conversation history", "MongoDB TTL"]
+level: "intermediate"
+duration: "23 min"
+updatedAt: "2026-09-22"
 order: 3
-isPopular: true
 ---
 
-<ThemeCard title="Practical outcome" badge="MONGODB HANDBOOK 03">
+<ThemeCard title="Outcome" badge="MONGODB · BYTE 03">Design memory that makes an agent useful without retaining every message forever.</ThemeCard>
 
-You will query enrolments and build a course-performance report showing enrolment count, revenue and completion rate.
+## Quick Start
+Conversation history is what happened. Agent memory is the selected information allowed to influence a future step. Separate temporary context, durable preferences and protected records.
 
-</ThemeCard>
+<MongoDBConceptLab variant="memory" />
 
-<MongoDBVisual variant="aggregation" />
+## Start from Basics
+Use `user_id` for ownership, `session_id` for one conversation and timestamps for ordering. Confirm every requested session belongs to the authenticated user.
 
-## Read only what the application needs
-
+## Core Explanation
 ```javascript
-db.learners.find(
-  { status: "active", "preferences.language": "Tamil" },
-  { name: 1, interests: 1, _id: 0 }
-).sort({ name: 1 }).limit(20)
+{ user_id: "cust_5521", session_id: "sess_2291", role: "user",
+  content: "Explain in Tamil next time",
+  created_at: ISODate("2026-09-18T10:15:00Z"),
+  expires_at: ISODate("2026-10-18T10:15:00Z") }
 ```
+Retrieve only the recent window needed. Store durable preferences separately so users can inspect, correct or delete them.
 
-The first object is the **filter**. The second is the **projection**. Sorting and limiting make the result predictable and bounded.
+## Architecture and Flow Diagram
+<MongoDBVisual variant="modeling" />
 
-## Comparison and logical operators
+## Types and Components
+- Working context: recent turns for this request.
+- Conversation summary: compressed history with source pointers.
+- Durable preference: explicit, user-editable choice.
+- Audit record: protected evidence retained by policy.
 
-```javascript
-db.enrolments.find({
-  $and: [
-    { enrolled_at: { $gte: ISODate("2026-07-01T00:00:00Z") } },
-    { status: { $in: ["active", "completed"] } },
-    { amount_paid: { $gt: 0 } }
-  ]
-})
-```
+## History vs Memory
+| Item | History | Memory |
+|---|---|---|
+| Meaning | Recorded events | Selected future context |
+| Loading | On demand | Only when relevant |
+| Control | Export/delete | Inspect/correct/delete |
 
-Use `$gt`, `$gte`, `$lt`, `$lte`, `$in`, `$and`, `$or` and `$not` to express conditions. Clear filters also make index design easier in Byte 05.
+## Real-World Examples
+PaisaWise loads the last six messages and a separate `preferred_language` value. It does not load unrelated financial details simply because they appeared earlier.
 
-## Update fields and arrays deliberately
+## Imagine a Relationship Manager
+<Scenario title="Remember the preference, not every sentence">A helpful manager remembers that you prefer Tamil, but does not repeat every private detail from every meeting. Useful memory is selective and accountable.</Scenario>
 
-```javascript
-db.enrolments.updateOne(
-  { learner_id: "LRN-1042", course_id: "AI-101" },
-  {
-    $set: { status: "completed", updated_at: new Date() },
-    $addToSet: { badges: "course-finisher" }
-  }
-)
-```
+## Use Cases
+- Multi-turn support conversations
+- User-selected response preferences
+- Agent workflow checkpoints
+- Expiring session state
 
-`$set` changes selected fields. `$addToSet` avoids adding the same array value twice. Use `$push` when duplicates and order are meaningful.
-
-## Delete safely
-
-Before deleting, run the same filter with `find()` and verify the count. Prefer status-based retention or archival when business, audit or recovery needs require it. Never demonstrate `deleteMany({})` against a shared environment.
-
-## Pagination: skip is not always the finish line
-
-`skip()` and `limit()` are easy for small result sets. For large, frequently changing collections, range pagination using a stable indexed value such as `_id` or `created_at` is often more consistent and efficient.
-
-```javascript
-db.enrolments.find({ _id: { $gt: last_seen_id } })
-  .sort({ _id: 1 })
-  .limit(20)
-```
-
-## Build the course-performance aggregation
-
-```javascript
-db.enrolments.aggregate([
-  { $match: { amount_paid: { $gt: 0 } } },
-  { $group: {
-      _id: "$course_id",
-      enrolments: { $sum: 1 },
-      revenue: { $sum: "$amount_paid" },
-      completed: {
-        $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] }
-      }
-  }},
-  { $project: {
-      _id: 0,
-      course_id: "$_id",
-      enrolments: 1,
-      revenue: 1,
-      completion_rate: {
-        $multiply: [{ $divide: ["$completed", "$enrolments"] }, 100]
-      }
-  }},
-  { $sort: { revenue: -1 } }
-])
-```
-
-An aggregation pipeline passes documents through ordered stages. `$match` filters, `$group` calculates, `$project` reshapes and `$sort` orders. `$lookup` can combine referenced collections, but it should not compensate for an unsuitable data model.
-
-## Real scenario: monthly course review
-
-<Scenario title="Which course needs attention?">
-
-The training team sees high enrolment but low completion for one course. The report identifies the pattern; it does not explain the cause. The team then checks lesson-level progress, learner feedback and support requests before changing the course.
-
-Database analysis provides evidence. Human investigation supplies context.
-
-</Scenario>
-
-## Use MongoDB Compass as a learning aid
-
-Compass can inspect documents, build filters and explore aggregation stages. Copy the generated query into version-controlled application code, add tests and review its execution plan before treating a visual result as production-ready.
-
-## Common mistakes
-
+## Common Mistakes
 <Mistakes>
 
-- Returning complete documents when the screen needs three fields.
-- Updating an array with `$push` when duplicates are not allowed.
-- Sorting without a deterministic tie-breaker for pagination.
-- Placing `$match` late and processing unnecessary documents.
-- Interpreting correlation in a report as the cause of learner behaviour.
+- Loading complete history into every prompt.
+- Mixing users because ownership filters are missing.
+- Treating generated summaries as unquestionable facts.
+- Retaining sensitive details without purpose or expiry.
 
 </Mistakes>
 
-## Key takeaways
-
+## Key Takeaways
 <Takeaways>
 
-- Filters choose records; projections choose fields.
-- Prefer explicit, bounded queries and deterministic pagination.
-- Aggregation stages form a readable transformation pipeline.
-- Validate a destructive filter before executing the delete.
+- History and memory are different.
+- Scope every read by user and session.
+- Load only necessary context.
+- Separate durable preferences from messages.
+- Make saved memories correctable.
+- Apply retention deliberately.
+- Protect sensitive records.
+- Preserve sources for summaries.
 
 </Takeaways>
 
-## Primary sources
+## Final Thought and Next Path
+The best memory system remembers less, but remembers the right things reliably. Next, transform events into useful AI features with aggregation.
 
-- [MongoDB query documents](https://www.mongodb.com/docs/manual/tutorial/query-documents/)
-- [Update documents](https://www.mongodb.com/docs/manual/tutorial/update-documents/)
-- [Aggregation pipeline](https://www.mongodb.com/docs/manual/core/aggregation-pipeline/)
-- [MongoDB Compass](https://www.mongodb.com/docs/compass/)
+## FAQ, Knowledge Check and Interview Answer
+**Should an agent remember everything?** No. Retention follows purpose, consent, risk and lifecycle rules.
+
+**Interview answer:** I model agent memory as scoped data products: recent session context, user-controlled preferences and separately governed audit records.
+
+<KnowledgeCheck question="Which design is safest for a language preference?" options={["Re-read every historical message", "Store one user-owned preference that can be changed or deleted", "Put it in a global document"]} answer={1} explanation="A user-owned preference is efficient, inspectable and correctable." />
+

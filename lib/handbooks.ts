@@ -127,14 +127,14 @@ export const handbooks: Handbook[] = [
   {
     slug: 'mongodb', title: 'MongoDB for AI Application Engineering Handbook', shortTitle: 'MongoDB for AI',
     audience: 'Beginners · Backend and AI Builders', tone: 'emerald', status: 'available', category: 'ai-application-engineering', label: 'DOCUMENT DATA TO GROUNDED AI',
-    description: 'Learn MongoDB documents, data modelling, queries, FastAPI integration, Vector Search and production operations through one connected AI application project.',
-    promise: 'Build the data foundation for an AI-powered learning support platform.',
+    description: 'Learn document modelling, Atlas Vector Search, agent memory, aggregation pipelines and production operations through one connected AI application.',
+    promise: 'Build a governed MongoDB data layer for modern AI applications.',
     chapters: [
-      { title: 'What is MongoDB?', outcome: 'Understand databases, collections, documents, fields, BSON and CRUD.', href: '/mongodb/what-is-mongodb-documents-collections-databases/' },
-      { title: 'Design MongoDB documents and data models', outcome: 'Choose embedding, referencing and validation from application query patterns.', href: '/mongodb/mongodb-data-modeling-embedding-vs-referencing/' },
-      { title: 'Query, update and analyse MongoDB data', outcome: 'Use filters, updates, pagination and aggregation to answer business questions.', href: '/mongodb/mongodb-queries-updates-aggregation-pipeline/' },
-      { title: 'Connect MongoDB with Python, FastAPI and AI', outcome: 'Build APIs, persist history and retrieve approved evidence with Vector Search.', href: '/mongodb/mongodb-python-fastapi-ai-application/' },
-      { title: 'Production MongoDB', outcome: 'Apply indexing, security, backups, monitoring and capacity controls.', href: '/mongodb/production-mongodb-indexing-security-deployment/' },
+      { title: 'Document model basics for AI apps', outcome: 'Model varied AI interactions with structured BSON documents.', href: '/mongodb/what-is-mongodb-documents-collections-databases/' },
+      { title: 'Atlas Vector Search and RAG', outcome: 'Retrieve permission-filtered semantic evidence for grounded answers.', href: '/mongodb/mongodb-data-modeling-embedding-vs-referencing/' },
+      { title: 'Conversation and agent memory', outcome: 'Separate recent context, durable preferences and protected records.', href: '/mongodb/mongodb-queries-updates-aggregation-pipeline/' },
+      { title: 'Aggregation pipelines for AI features', outcome: 'Transform raw events into stable, model-ready signals.', href: '/mongodb/mongodb-python-fastapi-ai-application/' },
+      { title: 'Production concerns for MongoDB AI apps', outcome: 'Apply indexing, security, lifecycle, monitoring and recovery controls.', href: '/mongodb/production-mongodb-indexing-security-deployment/' },
     ],
   },
   {

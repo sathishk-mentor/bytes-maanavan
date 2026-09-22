@@ -1,152 +1,94 @@
 ---
-title: "Design MongoDB Documents and Data Models"
+title: "Atlas Vector Search and RAG with MongoDB"
 slug: "mongodb-data-modeling-embedding-vs-referencing"
-summary: "Turn application requirements into maintainable MongoDB documents using query patterns, embedding, references and schema validation."
+summary: "Store embeddings beside approved content, retrieve semantically similar passages and build a filtered evidence path for RAG."
 category: "mongodb"
-tags: ["MongoDB data modeling", "embedding vs referencing MongoDB", "MongoDB schema validation", "MongoDB relationships", "document database design"]
-level: "beginner"
+tags: ["Atlas Vector Search", "MongoDB RAG", "embeddings"]
+level: "intermediate"
 duration: "24 min"
-updatedAt: "2026-09-15"
+updatedAt: "2026-09-22"
 order: 2
-isPopular: true
 ---
 
-<ThemeCard title="Practical outcome" badge="MONGODB HANDBOOK 02">
+<ThemeCard title="Outcome" badge="MONGODB · BYTE 02">Trace a question from embedding to ranked, permission-filtered evidence for a grounded answer.</ThemeCard>
 
-You will design `learners`, `courses` and `enrolments` for the learning platform and explain why each relationship is embedded or referenced.
+## Quick Start
+Atlas Vector Search compares a question embedding with stored embeddings. It ranks documents by semantic similarity, while metadata filters keep retrieval inside the correct product, language and access boundary.
 
-</ThemeCard>
+<MongoDBConceptLab variant="vector" />
 
-<MongoDBVisual variant="modeling" />
+## Start from Basics
+An embedding is a numeric representation of meaning. “How much can I send by UPI?” can retrieve “Daily transfer limits” even without exact keyword overlap.
 
-## Begin with reads and changes—not diagrams
-
-Ask how the application uses the data:
-
-1. What must appear together on one screen or API response?
-2. What changes frequently and independently?
-3. Can the child list grow without a practical bound?
-4. Is the information shared by many records?
-5. Which queries must be fast and frequent?
-
-The best document shape follows real query and update patterns.
-
-## Embedding versus referencing
-
-**Embed** a small progress summary inside a learner when it is normally read with that learner and has a known bound.
+## Core Explanation
+Store original text, embedding, source identity and governance metadata together. A vector is not evidence by itself; the application supplies the retrieved text and source to the model.
 
 ```javascript
-{
-  learner_id: "LRN-1042",
-  name: "Meena",
-  preferences: { language: "Tamil" },
-  current_progress: [
-    { course_id: "AI-101", completed: 8, total: 12 }
-  ]
-}
+{ chunk_id: "policy_12_03", text: "The daily UPI transfer limit is ₹1,00,000...",
+  embedding: [0.021, -0.184, 0.336], product: "upi", language: "en",
+  access: ["customer"] }
 ```
 
-**Reference** a course when the same course is shared by thousands of learners and changes independently.
+## Architecture and Flow Diagram
+<MongoDBVisual variant="aiArchitecture" />
 
-```javascript
-// enrolments
-{
-  learner_id: "LRN-1042",
-  course_id: "AI-101",
-  status: "active",
-  enrolled_at: ISODate("2026-09-10T00:00:00Z")
-}
-```
+## Types and Components
+1. Chunk approved source content.
+2. Create compatible embeddings.
+3. Store text, vectors and metadata.
+4. Create a Vector Search index.
+5. Embed the question, filter and rank evidence.
 
-| Embed when | Reference when |
-|---|---|
-| Data is read together | Data is shared broadly |
-| Child data is small and bounded | Relationship can grow substantially |
-| Atomic update of the whole document helps | Parts change independently |
-| Duplication is controlled and useful | Duplication would become inconsistent |
-
-## Tamil analogy: kitchen shelf and storeroom
-
-<Scenario title="Keep daily ingredients near the stove">
-
-Salt, oil and frequently used masala stay together in the kitchen because every meal needs them. A 25 kg rice bag stays in the storeroom, and the household knows where to find it. Embedding is the kitchen shelf; referencing is the known storeroom location.
-
-Keeping every item near the stove creates clutter. Sending someone to the storeroom for every pinch of salt wastes time. Data modelling makes the same trade-off.
-
-</Scenario>
-
-## A practical three-collection model
-
-| Collection | Owns | Why |
+## Vector Search vs Keyword Search
+| Capability | Keyword | Vector |
 |---|---|---|
-| `learners` | Profile and bounded preferences | Read together for personalisation |
-| `courses` | Shared course catalogue | One course serves many learners |
-| `enrolments` | Learner-course relationship and progress | Grows independently and needs reporting |
+| Exact terms | Strong | Indirect |
+| Paraphrases | Limited | Strong |
+| Best pattern | Lexical signals | Semantic signals plus filters |
 
-Use stable identifiers and include operational fields such as `created_at`, `updated_at`, `status` and, where needed, `created_by`.
+## Real-World Examples
+A support assistant searches only active UPI policies available to customers in the selected language. The model receives top passages with document IDs and produces a cited answer.
 
-## Add schema validation
+## Imagine a Librarian
+<Scenario title="Meaning first, permission always">A librarian understands your meaning, finds relevant pages, then checks whether you may read them. Relevance never cancels access control.</Scenario>
 
-```javascript
-db.createCollection("enrolments", {
-  validator: {
-    $jsonSchema: {
-      bsonType: "object",
-      required: ["learner_id", "course_id", "status", "enrolled_at"],
-      properties: {
-        learner_id: { bsonType: "string" },
-        course_id: { bsonType: "string" },
-        status: { enum: ["active", "completed", "cancelled"] },
-        enrolled_at: { bsonType: "date" }
-      }
-    }
-  }
-})
-```
+## Use Cases
+- Policy and product-support assistants
+- Semantic search over manuals and tickets
+- Similar-case discovery
+- Hybrid keyword and vector retrieval
 
-Validation protects collection boundaries. Pydantic validation in an API is still useful because it provides earlier, client-friendly feedback.
-
-## Avoid unbounded documents
-
-Do not continually append every chat message, event or enrolment to one learner document. The record becomes costly to move, update and return. Store growing histories in their own collection and query them with suitable indexes and limits.
-
-## Practical task
-
-Create sample documents for learners, courses and enrolments. For every nested object or reference, write one sentence answering: **Which application query made me choose this design?**
-
-## Common mistakes
-
+## Common Mistakes
 <Mistakes>
 
-- Recreating a relational schema field-for-field without considering document access.
-- Embedding an array that can grow forever.
-- Duplicating shared course information without an update strategy.
-- Storing status and dates with inconsistent names or types.
-- Designing the model before identifying important queries.
+- Mixing incompatible embedding models or dimensions.
+- Returning relevant but unauthorised documents.
+- Sending vectors instead of text to the model.
+- Treating top-one retrieval as automatically correct.
 
 </Mistakes>
 
-## Interview bit
-
-<ThemeCard title="How do you choose embedding or referencing?" badge="CAREER">
-
-I start from read and update patterns. I embed data that belongs together, is bounded and benefits from atomic access. I reference shared, independently changing or unbounded entities. I verify the choice against document growth, consistency needs and the indexes required by real queries.
-
-</ThemeCard>
-
-## Key takeaways
-
+## Key Takeaways
 <Takeaways>
 
-- Model for application access patterns.
-- Embedding reduces extra reads; references control duplication and growth.
-- Schema validation converts design intent into an enforced boundary.
-- Treat large arrays and endlessly growing histories as warning signs.
+- Embeddings represent meaning numerically.
+- Stored and query vectors need the same space.
+- Vector indexes differ from field indexes.
+- Source text and metadata remain essential.
+- Filters enforce business boundaries.
+- Ranking does not guarantee correctness.
+- Hybrid retrieval combines useful signals.
+- Evaluate retrieval before generation.
 
 </Takeaways>
 
-## Primary sources
+## Final Thought and Next Path
+Good RAG starts with controlled evidence retrieval, not a larger prompt. Next, decide what an agent should remember. Optional reference: [RAG fundamentals](/rag-application-engineering/01-what-is-rag-give-ai-access-to-your-knowledge/).
 
-- [MongoDB data modeling](https://www.mongodb.com/docs/manual/data-modeling/)
-- [Embedded data versus references](https://www.mongodb.com/docs/manual/data-modeling/concepts/embedding-vs-references/)
-- [Schema validation](https://www.mongodb.com/docs/manual/core/schema-validation/)
+## FAQ, Knowledge Check and Interview Answer
+**Can Vector Search replace all indexes?** No. It uses a specialised index; application filters and sorting may need standard indexes.
+
+**Interview answer:** Atlas Vector Search lets an application store content, embeddings and metadata together and retrieve semantically similar evidence with governance filters.
+
+<KnowledgeCheck question="Why filter vector retrieval by metadata?" options={["To make vectors longer", "To keep relevant results inside business and access boundaries", "To remove source text"]} answer={1} explanation="Similarity finds close meaning; metadata enforces allowed context." />
+

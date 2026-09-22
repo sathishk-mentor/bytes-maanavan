@@ -1,0 +1,57 @@
+<ThemeCard title="இந்த Byte-ல் நீங்கள் கற்பது" badge="MONGODB · BYTE 01">AI conversation data-ஐ flexible-ஆவும் structured-ஆவும் document வடிவில் model செய்வது.</ThemeCard>
+
+## Quick Start
+MongoDB, JSON மாதிரியான **documents**-ஐ **collections**-ல் store செய்கிறது. Simple reply, tool call, retrieved evidence—ஒவ்வொரு interaction-க்கும் தேவையான fields மட்டும் இருக்கலாம்.
+
+<MongoDBConceptLab variant="document" />
+
+## Start from Basics
+`database → collection → document → field` என்பது core hierarchy. Flexible shape இருந்தாலும் `session_id`, timestamps, field names போன்ற core contract consistent-ஆ இருக்க வேண்டும்.
+
+## Core Explanation
+```javascript
+{ session_id: "sess_2291", user_message: "Balance check pannunga",
+  tool_calls: [{ tool: "getBalance", result: 45230.50 }] }
+```
+Nested objects மற்றும் arrays ஒரே business record-க்குள் related data-ஐ வைத்திருக்க உதவும்.
+
+## Architecture and Flow Diagram
+<MongoDBVisual variant="foundation" />
+
+## Document Model vs Table
+| MongoDB | Relational |
+|---|---|
+| Optional fields naturally vary | Nullable columns அல்லது related tables |
+| Nested data ஒன்றாக இருக்கலாம் | Data பல rows-ல் இருக்கலாம் |
+
+## Imagine a Support Desk
+<Scenario title="ஒவ்வொரு case-க்கும் தேவையான evidence">Simple case-ல் note மட்டும்; balance request-ல் system receipt; policy answer-ல் source pages. Core identity same, evidence மட்டும் situation-க்கு ஏற்றபடி மாறும்.</Scenario>
+
+## Common Mistakes
+<Mistakes>
+
+- Flexible schema என்ற பெயரில் inconsistent field names பயன்படுத்துவது.
+- Independently change ஆகும் data-ஐ பல documents-ல் duplicate செய்வது.
+- Dates-ஐ plain display string-ஆக store செய்வது.
+
+</Mistakes>
+
+## Key Takeaways
+<Takeaways>
+
+- MongoDB BSON documents பயன்படுத்துகிறது.
+- Documents nested objects மற்றும் arrays support செய்கின்றன.
+- Optional fields real variation-க்கு உதவும்.
+- Core structure intentional-ஆ இருக்க வேண்டும்.
+- Together read செய்யும் small data-ஐ embed செய்யலாம்.
+- Separate lifecycle உள்ள data-ஐ reference செய்யலாம்.
+- Critical fields validate செய்ய வேண்டும்.
+- Access pattern பார்த்து model செய்ய வேண்டும்.
+
+</Takeaways>
+
+## Final Thought and Next Path
+Flexibility useful ஆக வேண்டுமென்றால் boundaries clear-ஆ இருக்க வேண்டும். அடுத்த Byte-ல் semantic retrieval பார்க்கலாம்.
+
+<KnowledgeCheck question="Flexible schema-வின் safe meaning என்ன?" options={["எந்த structure-மும் வேண்டாம்", "Core structure clear; genuine optional fields மட்டும் vary ஆகலாம்", "Validation முடியாது"]} answer={1} explanation="Flexibility design-ஐ replace செய்யாது; real variation-ஐ handle செய்கிறது." />
+

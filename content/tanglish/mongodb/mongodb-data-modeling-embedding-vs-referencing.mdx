@@ -1,0 +1,50 @@
+<ThemeCard title="இந்த Byte-ல் நீங்கள் கற்பது" badge="MONGODB · BYTE 02">Question-இல் இருந்து permission-filtered evidence வரை Atlas Vector Search flow-ஐ புரிந்துகொள்வது.</ThemeCard>
+
+## Quick Start
+Embedding என்பது meaning-ஐ numbers-ஆக represent செய்கிறது. Atlas Vector Search, question embedding-க்கு அருகில் இருக்கும் document embeddings-ஐ rank செய்கிறது.
+
+<MongoDBConceptLab variant="vector" />
+
+## Core Explanation
+Original text, embedding, source ID, product, language, access metadata எல்லாவற்றையும் சேர்த்து store செய்யுங்கள். Relevant result கிடைத்தாலும் access filter இல்லாமல் model-க்கு அனுப்பக்கூடாது.
+
+## Architecture and Flow Diagram
+<MongoDBVisual variant="aiArchitecture" />
+
+## Vector vs Keyword Search
+| Keyword | Vector |
+|---|---|
+| Exact words-ல் strong | Similar meaning-ல் strong |
+| Term match easy to explain | Source text காட்ட வேண்டும் |
+
+## Imagine a Librarian
+<Scenario title="Meaning first, permission always">Librarian உங்கள் question-ன் meaning புரிந்து pages கண்டுபிடிப்பார்; பிறகு அந்த pages பார்க்க permission இருக்கிறதா check செய்வார்.</Scenario>
+
+## Common Mistakes
+<Mistakes>
+
+- Different embedding models அல்லது dimensions mix செய்வது.
+- Relevant ஆனால் unauthorised content return செய்வது.
+- Top result எப்போதும் correct என்று நம்புவது.
+
+</Mistakes>
+
+## Key Takeaways
+<Takeaways>
+
+- Embeddings meaning-ஐ numeric-ஆ represent செய்கின்றன.
+- Query மற்றும் stored vectors compatible ஆக வேண்டும்.
+- Vector index தனி index type.
+- Source text அவசியம்.
+- Metadata governance boundary கொடுக்கிறது.
+- Ranking correctness guarantee அல்ல.
+- Hybrid search useful signals combine செய்கிறது.
+- Retrieval quality-ஐ தனியாக evaluate செய்ய வேண்டும்.
+
+</Takeaways>
+
+## Final Thought and Next Path
+Good RAG, larger prompt-ல் அல்ல; controlled evidence retrieval-ல் தொடங்குகிறது. அடுத்து agent memory.
+
+<KnowledgeCheck question="Vector retrieval-க்கு metadata filter ஏன்?" options={["Vector size அதிகரிக்க", "Relevant results allowed boundary-க்குள் இருக்க", "Source text remove செய்ய"]} answer={1} explanation="Similarity meaning-ஐ கண்டுபிடிக்கும்; metadata access boundary enforce செய்யும்." />
+

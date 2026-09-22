@@ -1,0 +1,57 @@
+<ThemeCard title="இந்த Byte-ல் நீங்கள் கற்பது" badge="MONGODB · BYTE 04">Raw events-ஐ model-ready AI feature-ஆக aggregation pipeline மூலம் மாற்றுவது.</ThemeCard>
+
+## Quick Start
+Aggregation pipeline-ல் ஒவ்வொரு stage-மும் ஒரு clear transformation செய்கிறது: filter, group, reshape, sort.
+
+<MongoDBConceptLab variant="aggregation" />
+
+## Core Explanation
+```javascript
+db.events.aggregate([
+  { $match: { event: "lesson_completed" } },
+  { $group: { _id: "$learner_id", completed: { $sum: 1 } } },
+  { $project: { _id: 0, learner_id: "$_id", completed: 1 } }
+])
+```
+`$match` early-ஆ இருந்தால் later stages குறைந்த documents மட்டும் process செய்யும்.
+
+## Architecture and Flow Diagram
+<MongoDBVisual variant="aggregation" />
+
+## Pipeline vs Application Loop
+| Pipeline | Application loop |
+|---|---|
+| Data-க்கு அருகில் process | அதிக data transfer ஆகலாம் |
+| Repeatable stages | Logic duplicate ஆகலாம் |
+
+## Imagine an Assembly Line
+<Scenario title="ஒவ்வொரு station-க்கும் ஒரு வேலை">முதல் station completions மட்டும் வைத்துக்கொள்கிறது; அடுத்தது learner மூலம் group செய்கிறது; கடைசி output fields-ஐ clean செய்கிறது.</Scenario>
+
+## Common Mistakes
+<Mistakes>
+
+- Filter செய்யும் முன் group செய்வது.
+- Consumer-க்கு தேவையில்லாத fields return செய்வது.
+- ML feature-ல் future information leak செய்வது.
+
+</Mistakes>
+
+## Key Takeaways
+<Takeaways>
+
+- Pipeline stage-by-stage transform செய்கிறது.
+- Stage order முக்கியம்.
+- Early filter efficient.
+- Correct business grain-ல் group செய்யுங்கள்.
+- Stable output project செய்யுங்கள்.
+- Intermediate results inspect செய்யுங்கள்.
+- Time cut-off protect செய்யுங்கள்.
+- Realistic volume-ல் test செய்யுங்கள்.
+
+</Takeaways>
+
+## Final Thought and Next Path
+Useful AI feature, reproducible data definition-ல் தொடங்குகிறது. அடுத்து production controls.
+
+<KnowledgeCheck question="$match early-ஆ வைத்தால் என்ன benefit?" options={["Field rename", "Later stages process செய்யும் documents குறையும்", "Vector index உருவாகும்"]} answer={1} explanation="Early filtering downstream work-ஐ குறைக்கும்." />
+

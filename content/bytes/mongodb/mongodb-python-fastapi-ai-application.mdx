@@ -1,209 +1,95 @@
 ---
-title: "Connect MongoDB with Python, FastAPI and AI Applications"
+title: "Aggregation Pipelines for AI Features"
 slug: "mongodb-python-fastapi-ai-application"
-summary: "Connect FastAPI to MongoDB Atlas, reuse an async client, validate data and retrieve approved learning evidence with Atlas Vector Search."
+summary: "Turn event documents into ranked summaries, behavioural signals and stable inputs for AI features using staged transformations."
 category: "mongodb"
-tags: ["MongoDB Python FastAPI", "PyMongo async tutorial", "MongoDB Atlas Vector Search", "MongoDB RAG application", "AI application database"]
+tags: ["MongoDB aggregation", "AI features", "$match", "$group"]
 level: "intermediate"
-duration: "31 min"
-updatedAt: "2026-09-15"
+duration: "25 min"
+updatedAt: "2026-09-22"
 order: 4
-isPopular: true
 ---
 
-<ThemeCard title="Practical project" badge="MONGODB HANDBOOK 04">
+<ThemeCard title="Outcome" badge="MONGODB · BYTE 04">Build a readable pipeline that converts raw events into one model-ready learner summary.</ThemeCard>
 
-Build a course-support API that remembers authorised learner history, retrieves approved course content and returns a grounded answer.
+## Quick Start
+An aggregation pipeline passes documents through ordered stages. Each stage performs one transformation—filtering, grouping, reshaping or sorting.
 
-</ThemeCard>
+<MongoDBConceptLab variant="aggregation" />
 
-<MongoDBVisual variant="aiArchitecture" />
+## Start from Basics
+`$match` filters, `$group` summarises, `$project` reshapes and `$sort` orders. Stage order matters: filtering early reduces later work.
 
-## Read the architecture in two paths
-
-**Operational path:** FastAPI reads and writes learner profiles, enrolments, progress and conversation history in MongoDB.
-
-**Grounding path:** FastAPI sends the query to Atlas Vector Search, retrieves authorised learning passages, and gives only that bounded evidence to the LLM.
-
-The LLM should not receive unrestricted database access. The API owns identity, authorisation, filtering and persistence.
-
-## Configure the connection safely
-
-```bash
-pip install fastapi uvicorn pymongo pydantic-settings
-```
-
-```python
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
-class Settings(BaseSettings):
-    mongodb_uri: str
-    mongodb_database: str = "learning_support"
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
-
-settings = Settings()
-```
-
-Keep the Atlas connection string in environment configuration or a secret manager. Never commit it to Git or return it in an error message.
-
-## Reuse one async MongoDB client
-
-```python
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from pymongo import AsyncMongoClient
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    client = AsyncMongoClient(settings.mongodb_uri)
-    await client.admin.command("ping")
-    app.state.mongodb_client = client
-    app.state.db = client[settings.mongodb_database]
-    yield
-    await client.close()
-
-app = FastAPI(lifespan=lifespan)
-```
-
-Create the client once for the application lifecycle. Creating a client for every request defeats connection pooling and adds unnecessary latency.
-
-## Validate the API contract with Pydantic
-
-```python
-from pydantic import BaseModel, Field
-
-class SupportQuestion(BaseModel):
-    learner_id: str = Field(min_length=3, max_length=50)
-    course_id: str = Field(min_length=2, max_length=40)
-    question: str = Field(min_length=5, max_length=1000)
-
-class SupportAnswer(BaseModel):
-    answer: str
-    sources: list[str]
-```
-
-Pydantic protects the API boundary. MongoDB schema validation protects stored data. Use both where the risk and longevity of the data justify them.
-
-## Store conversation history with clear ownership
-
-```python
-from datetime import datetime, timezone
-
-conversation = {
-    "learner_id": payload.learner_id,
-    "course_id": payload.course_id,
-    "question": payload.question,
-    "status": "received",
-    "created_at": datetime.now(timezone.utc),
-}
-
-result = await request.app.state.db.conversations.insert_one(conversation)
-```
-
-Do not store full prompts, model output or personal information by default. Define retention, redaction and deletion rules from the product’s actual support need.
-
-## Retrieve approved evidence with Vector Search
-
-The content collection might store chunks with an embedding and metadata:
-
+## Core Explanation
 ```javascript
-{
-  chunk_id: "mongo-04-architecture",
-  course_id: "DB-AI-101",
-  access_level: "enrolled",
-  text: "FastAPI owns authorisation before vector retrieval...",
-  embedding: [/* vector values */]
-}
+db.learning_events.aggregate([
+  { $match: { event: "lesson_completed" } },
+  { $group: { _id: "$learner_id", completed: { $sum: 1 }, last_at: { $max: "$created_at" } } },
+  { $project: { _id: 0, learner_id: "$_id", completed: 1, last_at: 1 } },
+  { $sort: { completed: -1 } }
+])
 ```
 
-```python
-pipeline = [
-    {
-        "$vectorSearch": {
-            "index": "course_content_vector",
-            "path": "embedding",
-            "queryVector": query_embedding,
-            "numCandidates": 100,
-            "limit": 5,
-            "filter": {"course_id": payload.course_id},
-        }
-    },
-    {
-        "$project": {
-            "_id": 0,
-            "chunk_id": 1,
-            "text": 1,
-            "score": {"$meta": "vectorSearchScore"},
-        }
-    },
-]
+## Architecture and Flow Diagram
+<MongoDBVisual variant="aggregation" />
 
-evidence = await request.app.state.db.course_content.aggregate(pipeline).to_list()
-```
+## Types and Components
+- `$match` narrows documents.
+- `$unwind` expands array items.
+- `$group` calculates totals and latest values.
+- `$project` creates the final contract.
+- `$setWindowFields` adds rankings or rolling values.
 
-The `course_id` filter narrows retrieval, but access must be verified **before** running the search. Metadata filters are part of defence in depth—not a replacement for identity and authorisation.
+## Pipeline vs Application Loop
+| Approach | Strength | Risk |
+|---|---|---|
+| Aggregation | Near-data, repeatable stages | Hard to read if monolithic |
+| Application loop | Familiar code | More transfer and duplicated logic |
+| Materialised summary | Fast repeated reads | Needs freshness strategy |
 
-## Complete FastAPI workflow
+## Real-World Examples
+A learning assistant uses completion count, last activity and seven-day momentum to choose an approved nudge. The pipeline supplies evidence; product rules decide the action.
 
-```python
-@app.post("/support/ask", response_model=SupportAnswer)
-async def ask_course_support(payload: SupportQuestion, request: Request):
-    await require_course_access(payload.learner_id, payload.course_id)
-    evidence = await retrieve_approved_content(payload)
-    answer = await generate_grounded_answer(payload.question, evidence)
-    await save_bounded_history(payload, answer, evidence)
-    return SupportAnswer(
-        answer=answer,
-        sources=[item["chunk_id"] for item in evidence],
-    )
-```
+## Imagine an Assembly Line
+<Scenario title="One job per station">One station keeps completions, another groups by learner and another labels output. Inspect each station when the result looks wrong.</Scenario>
 
-Keep model calls behind a function that enforces timeout, input limits, source formatting and failure handling.
+## Use Cases
+- Learner engagement features
+- Support-volume summaries
+- Fraud or anomaly signals
+- Ranked dashboards
 
-## Tamil learner scenario: library assistant
-
-<Scenario title="The librarian checks your membership first">
-
-A learner asks for help with a paid course. The librarian first checks the learner’s course access. Then the librarian searches only the approved course shelf, selects relevant pages and gives them to the subject expert. The expert answers from those pages and returns the references.
-
-FastAPI is the librarian and control desk; MongoDB stores membership and history; Vector Search finds the right pages; the LLM explains the evidence.
-
-</Scenario>
-
-## Common mistakes
-
+## Common Mistakes
 <Mistakes>
 
-- Creating a new database client inside every request.
-- Letting the LLM choose unrestricted MongoDB filters or collections.
-- Treating vector similarity as proof that a document is authorised.
-- Storing complete private conversations without retention rules.
-- Returning internal connection or model errors to the learner.
+- Grouping before filtering.
+- Returning unnecessary internal fields.
+- Building training features with future data.
+- Hiding decisions inside an unreadable pipeline.
 
 </Mistakes>
 
-## Interview bit
-
-<ThemeCard title="How would you use MongoDB in a RAG application?" badge="CAREER">
-
-I separate operational and retrieval concerns. The API authenticates the user, checks course access, queries Vector Search with approved metadata filters, sends a bounded set of passages to the model, returns citations and stores only necessary, governed history. The model never receives direct database credentials.
-
-</ThemeCard>
-
-## Key takeaways
-
+## Key Takeaways
 <Takeaways>
 
-- Reuse the MongoDB client and connection pool for the application lifecycle.
-- Validate at both API and database boundaries.
-- Keep operational history separate from LLM grounding context.
-- Authorise first, filter retrieval second, and cite the selected evidence.
+- Pipelines transform data stage by stage.
+- Stage order changes cost and meaning.
+- Filter early when possible.
+- Group at the business grain.
+- Project a stable output.
+- Inspect intermediate results.
+- Protect time cut-offs for ML.
+- Test realistic data volumes.
 
 </Takeaways>
 
-## Primary sources
+## Final Thought and Next Path
+A useful AI feature begins as a reproducible data definition. Next, make the database safe and efficient under production load. Optional reference: [SQL aggregations](/sql-data-ai-applications/02-analyse-business-data-with-sql/).
 
-- [PyMongo connection guide](https://www.mongodb.com/docs/languages/python/pymongo-driver/current/connect/)
-- [PyMongo asynchronous API](https://www.mongodb.com/docs/languages/python/pymongo-driver/current/reference/api/pymongo/asynchronous/)
-- [Atlas Vector Search overview](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/)
-- [Filter Atlas Vector Search results](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/)
+## FAQ, Knowledge Check and Interview Answer
+**Why not calculate everything in application code?** Pipelines often reduce data transfer and centralise repeatable logic.
+
+**Interview answer:** MongoDB aggregation is an ordered transformation pipeline. I filter early, group at the required grain and project a stable output.
+
+<KnowledgeCheck question="Why should $match usually appear early?" options={["It renames fields", "It reduces documents processed later", "It creates a vector index"]} answer={1} explanation="Early filtering reduces downstream work." />
+

@@ -1,0 +1,51 @@
+<ThemeCard title="இந்த Byte-ல் நீங்கள் கற்பது" badge="MONGODB · BYTE 03">Useful context மட்டும் நினைவில் வைத்து, unnecessary data retention தவிர்க்கும் agent memory design.</ThemeCard>
+
+## Quick Start
+Conversation history என்பது நடந்தவை. Memory என்பது future step-ஐ influence செய்ய அனுமதிக்கப்பட்ட selected information.
+
+<MongoDBConceptLab variant="memory" />
+
+## Core Explanation
+`user_id` ownership-க்கு, `session_id` ஒரு conversation-க்கு, timestamp order-க்கு. Recent messages மற்றும் durable user preference-ஐ separate-ஆ model செய்யுங்கள்.
+
+## Architecture and Flow Diagram
+<MongoDBVisual variant="modeling" />
+
+## History vs Memory
+| History | Memory |
+|---|---|
+| Recorded events | Selected future context |
+| On-demand load | Relevant ஆனபோது மட்டும் |
+| Retention policy | Purpose + user control |
+
+## Imagine a Relationship Manager
+<Scenario title="Preference நினைவில் இருக்கலாம்; எல்லா sentences-மும் வேண்டாம்">User Tamil prefer செய்கிறார் என்பதை remember செய்வது useful. ஆனால் பழைய private details அனைத்தையும் ஒவ்வொரு prompt-லும் load செய்வது unsafe.</Scenario>
+
+## Common Mistakes
+<Mistakes>
+
+- Full history-ஐ ஒவ்வொரு prompt-லும் load செய்வது.
+- User ownership filter மறப்பது.
+- Sensitive detail-க்கு expiry இல்லாமல் வைத்திருப்பது.
+
+</Mistakes>
+
+## Key Takeaways
+<Takeaways>
+
+- History மற்றும் memory வேறு.
+- User மற்றும் session scope அவசியம்.
+- Current task-க்கு தேவையான context மட்டும் load செய்யுங்கள்.
+- Preferences-ஐ messages-இலிருந்து separate செய்யுங்கள்.
+- User correct/delete செய்ய முடியும்.
+- Retention deliberate-ஆ இருக்க வேண்டும்.
+- Sensitive records protect செய்ய வேண்டும்.
+- Summary-க்கு source link வைத்திருங்கள்.
+
+</Takeaways>
+
+## Final Thought and Next Path
+Best memory system எல்லாவற்றையும் நினைவில் வைக்காது; சரியான விஷயத்தை reliable-ஆ வைத்திருக்கும்.
+
+<KnowledgeCheck question="Language preference-க்கு safest design எது?" options={["Full history re-read", "User-owned editable preference", "Global shared document"]} answer={1} explanation="Dedicated preference inspect, correct, delete செய்ய எளிது." />
+

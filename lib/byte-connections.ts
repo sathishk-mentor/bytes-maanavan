@@ -53,10 +53,10 @@ const connections: ConnectionMap = {
     5: [c('05-dockerize-deploy-generative-ai-application', 'Package the Java AI service for deployment.', 'Production next'), c('75-secure-ai-coding', 'Extend the review to AI-assisted code security.', 'Go deeper')],
   },
   mongodb: {
-    1: [c('01-sql-foundations-ask-questions-using-data', 'Compare document storage with relational tables.', 'Go deeper'), c('python-foundations-for-ai-applications', 'Prepare the Python basics used in database examples.', 'Foundation')],
-    2: [c('03-connect-data-across-tables-joins', 'Compare references with relational joins.', 'Go deeper'), c('03-embeddings-vector-databases-semantic-search', 'See how data modelling affects retrieval.', 'Go deeper')],
-    3: [c('02-analyse-business-data-with-sql', 'Compare aggregation pipelines with SQL aggregation.', 'Go deeper'), c('04-sql-data-rag-ai-agent-workflows', 'Use aggregated data inside an AI workflow.', 'Apply it')],
-    4: [c('01-what-is-fastapi-turn-python-into-web-api', 'Understand the API layer connected to MongoDB.', 'Foundation'), c('03-databases-external-services-configuration', 'Apply configuration and database integration in FastAPI.', 'Apply it')],
+    1: [c('01-sql-foundations-ask-questions-using-data', 'Optionally compare document storage with relational tables.', 'Go deeper'), c('python-foundations-for-ai-applications', 'Optionally review the Python used in database examples.', 'Foundation')],
+    2: [c('01-what-is-rag-give-ai-access-to-your-knowledge', 'Explore the wider RAG mental model.', 'Foundation'), c('03-embeddings-vector-databases-semantic-search', 'Go deeper into embeddings and retrieval quality.', 'Go deeper')],
+    3: [c('04-build-ai-agents-with-tools-and-memory', 'Compare memory inside a tool-using agent.', 'Apply it'), c('03-tools-knowledge-memory-explained-simply', 'Review agent memory in non-technical language.', 'Go deeper')],
+    4: [c('02-analyse-business-data-with-sql', 'Compare aggregation with SQL summaries and windows.', 'Go deeper'), c('04-sql-data-rag-ai-agent-workflows', 'Use governed data inside an AI workflow.', 'Apply it')],
     5: [c('05-write-production-ready-sql', 'Compare production database safety across data models.', 'Production next'), c('05-secure-test-deploy-production-fastapi', 'Secure the API that exposes database operations.', 'Production next')],
   },
   'python-genai-agentic-ai': {

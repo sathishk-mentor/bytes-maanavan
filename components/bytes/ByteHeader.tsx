@@ -48,9 +48,9 @@ const handbookHeroes = {
   '04-add-generative-ai-rag-java': { label: 'CONTROLLED TOOL CALL', icon: Wrench, steps: [[Users, 'Intent'], [ShieldCheck, 'Policy'], [Wrench, '@Tool'], [FileText, 'Audit']] },
   '05-build-deploy-enterprise-ai-application': { label: 'RESILIENT AI SERVICE', icon: Gauge, steps: [[Users, 'Traffic'], [ShieldCheck, 'Guardrail'], [Server, 'Fallback'], [Gauge, 'Observe']] },
   'what-is-mongodb-documents-collections-databases': { label: 'MONGODB MENTAL MODEL', icon: Database, steps: [[Database, 'Database'], [Blocks, 'Collection'], [FileText, 'Document'], [KeyRound, 'Field']] },
-  'mongodb-data-modeling-embedding-vs-referencing': { label: 'QUERY-FIRST MODEL', icon: Blocks, steps: [[Users, 'Requirement'], [Search, 'Query pattern'], [Blocks, 'Embed'], [Network, 'Reference']] },
-  'mongodb-queries-updates-aggregation-pipeline': { label: 'AGGREGATION PIPELINE', icon: Gauge, steps: [[Search, 'Match'], [Blocks, 'Group'], [Braces, 'Project'], [Gauge, 'Sort']] },
-  'mongodb-python-fastapi-ai-application': { label: 'AI DATA WORKFLOW', icon: Server, steps: [[Users, 'Learner'], [Server, 'FastAPI'], [Database, 'MongoDB'], [Sparkles, 'Grounded AI']] },
+  'mongodb-data-modeling-embedding-vs-referencing': { label: 'VECTOR RETRIEVAL', icon: Search, steps: [[FileText, 'Approved text'], [Blocks, 'Embedding'], [Search, 'Rank + filter'], [Sparkles, 'Evidence']] },
+  'mongodb-queries-updates-aggregation-pipeline': { label: 'AGENT MEMORY', icon: MessageSquareText, steps: [[Users, 'User'], [MessageSquareText, 'Recent turns'], [Database, 'Preference'], [ShieldCheck, 'Scoped recall']] },
+  'mongodb-python-fastapi-ai-application': { label: 'AI FEATURE PIPELINE', icon: Gauge, steps: [[FileText, 'Events'], [Search, 'Match'], [Blocks, 'Group'], [Sparkles, 'Feature']] },
   'production-mongodb-indexing-security-deployment': { label: 'PRODUCTION GATES', icon: ShieldCheck, steps: [[Gauge, 'Explain'], [Search, 'Index'], [ShieldCheck, 'Protect'], [Rocket, 'Operate']] },
 } as const;
 
