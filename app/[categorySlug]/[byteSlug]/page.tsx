@@ -164,8 +164,10 @@ export async function generateMetadata({ params }: BytePageProps): Promise<Metad
       type: 'article',
       url: `/${byte.category}/${byte.slug}/`,
       modifiedTime: byte.updatedAt,
+      publishedTime: byte.publishedAt || byte.updatedAt,
+      images: [{url:'/opengraph-image',width:1200,height:630,alt:byte.title}],
     },
-    twitter: {card:'summary_large_image',title:byte.title,description:byte.summary},
+    twitter: {card:'summary_large_image',title:byte.title,description:byte.summary,images:['/twitter-image']},
   };
 }
 
@@ -205,7 +207,7 @@ export default async function BytePage({ params }: BytePageProps) {
   const canonical=`https://bytes.maanavan.com/${categorySlug}/${byteSlug}/`;
   const minutes=Number.parseInt(byte.duration,10) || 10;
   const schema={'@context':'https://schema.org','@graph':[
-    {'@type':['Article','LearningResource'],'@id':`${canonical}#learning-resource`,headline:byte.title,name:byte.title,description:byte.summary,abstract:byte.summary,url:canonical,dateModified:byte.updatedAt,author:{'@type':'Person',name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'},publisher:{'@id':'https://www.maanavan.com/#organization'},isPartOf:{'@id':`https://bytes.maanavan.com/${categorySlug}/#collection`},educationalLevel:byte.level,learningResourceType:'Tutorial',timeRequired:`PT${minutes}M`,inLanguage:['en-IN','ta-IN'],isAccessibleForFree:true,keywords:byte.tags.join(', '),about:byte.tags.map((name)=>({'@type':'Thing',name})),teaches:[byte.title,byte.summary],audience:{'@type':'Audience',audienceType:'Beginners, working professionals and Tamil-speaking technology learners'}},
+    {'@type':['Article','LearningResource'],'@id':`${canonical}#learning-resource`,headline:byte.title,name:byte.title,description:byte.summary,abstract:byte.summary,url:canonical,mainEntityOfPage:{'@type':'WebPage','@id':canonical},image:'https://bytes.maanavan.com/opengraph-image',datePublished:byte.publishedAt || byte.updatedAt,dateModified:byte.updatedAt,author:{'@type':'Person',name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'},publisher:{'@id':'https://www.maanavan.com/#organization'},provider:{'@id':'https://www.maanavan.com/#organization'},isPartOf:{'@id':`https://bytes.maanavan.com/${categorySlug}/#collection`},educationalLevel:byte.level,learningResourceType:'Tutorial',timeRequired:`PT${minutes}M`,inLanguage:['en-IN','ta-Latn-IN'],isAccessibleForFree:true,keywords:byte.tags.join(', '),about:byte.tags.map((name)=>({'@type':'Thing',name})),teaches:[byte.title,byte.summary],audience:{'@type':'Audience',audienceType:'Beginners, working professionals and Tamil-speaking technology learners'}},
     {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'MaanavaN Bytes',item:'https://bytes.maanavan.com/'},{'@type':'ListItem',position:2,name:category?.title,item:`https://bytes.maanavan.com/${categorySlug}/`},{'@type':'ListItem',position:3,name:byte.title,item:canonical}]}
   ]};
   return (

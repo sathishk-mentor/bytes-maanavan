@@ -1,12 +1,12 @@
 ---
 title: "Production Concerns for MongoDB AI Apps"
 slug: "production-mongodb-indexing-security-deployment"
-summary: "Apply indexing, access control, lifecycle management, monitoring and recovery to production MongoDB AI systems."
+summary: "Apply indexing, least-privilege access, data lifecycle management, monitoring, tested backups and recovery to production MongoDB AI systems."
 category: "mongodb"
 tags: ["MongoDB", "AI applications", "MongoDB Atlas"]
 level: "intermediate"
 duration: "25 min"
-updatedAt: "2026-09-22"
+updatedAt: "2026-09-23"
 order: 5
 ---
 
@@ -138,3 +138,10 @@ This concludes the MongoDB learning path: document modelling, vector retrieval, 
 ## Interactive Knowledge Check
 
 <KnowledgeCheck question={"What is the strongest evidence that backups are useful?"} options={["The backup toggle is enabled","A restore has been completed and measured successfully","An index exists"]} answer={1} explanation={"Recovery is proven by a tested restore, not by the existence of a backup setting."} />
+
+## Primary sources
+
+- [MongoDB Docs: Indexing strategies](https://www.mongodb.com/docs/manual/applications/indexes/)
+- [MongoDB Security Checklist](https://www.mongodb.com/docs/manual/administration/security-checklist/)
+- [MongoDB Atlas: Back up and restore](https://www.mongodb.com/docs/atlas/backup-restore-cluster/)
+- [MongoDB Vector Search deployment options](https://www.mongodb.com/docs/vector-search/deployment/deployment-options/)

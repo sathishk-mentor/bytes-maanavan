@@ -6,7 +6,7 @@ category: "fastapi-ai-applications"
 tags: ["FastAPI tutorial for beginners", "Python web API", "FastAPI endpoints", "REST API basics", "AI backend Python"]
 level: "beginner"
 duration: "19 min"
-updatedAt: "2026-09-14"
+updatedAt: "2026-09-23"
 order: 1
 isPopular: true
 ---
@@ -168,6 +168,14 @@ FastAPI lets me express HTTP contracts with standard Python type hints and integ
 - A health endpoint proves reachability, not full application health.
 
 </Takeaways>
+
+## Frequently asked questions
+
+**Do I need asynchronous code for every FastAPI route?** No. Use `async def` when the route awaits compatible non-blocking operations. A normal `def` route is valid for synchronous work.
+
+**Is generated API documentation a replacement for tests?** No. It helps people explore the contract, while tests verify that success, validation and failure behaviour remain correct.
+
+**Should private prompts be placed in query parameters?** Avoid it. URLs may appear in logs and history; use a validated request body and still treat the prompt as sensitive data.
 
 ## Interactive Knowledge Check
 

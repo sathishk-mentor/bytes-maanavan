@@ -1,12 +1,12 @@
 ---
 title: "Build REST APIs with Validation and Error Handling"
 slug: "02-rest-api-validation-error-handling"
-summary: "Create reliable GET and POST contracts with Pydantic validation, response models, HTTP status codes and useful errors."
+summary: "Create reliable GET and POST API contracts with Pydantic validation, response models, meaningful HTTP status codes and useful client errors."
 category: "fastapi-ai-applications"
 tags: ["FastAPI Pydantic validation", "FastAPI POST endpoint", "FastAPI error handling", "REST API status codes", "response model"]
 level: "beginner"
 duration: "23 min"
-updatedAt: "2026-09-14"
+updatedAt: "2026-09-23"
 order: 2
 isPopular: true
 ---
@@ -184,6 +184,14 @@ Pydantic validates and parses the shape of incoming data: types, lengths and fie
 - Authentication claims must come from a verified identity, not the request body.
 
 </Takeaways>
+
+## Frequently asked questions
+
+**Why validate before calling an AI model?** Early validation rejects unusable input before it consumes model capacity, external API calls or database work.
+
+**What is the difference between a request model and a response model?** A request model validates incoming data. A response model controls and documents the shape returned to the client.
+
+**Should every application error return status 500?** No. Use a status that represents validation, authentication, permission, a missing resource or an unexpected server failure.
 
 ## Interactive Knowledge Check
 

@@ -122,7 +122,8 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
     description: detail.intro,
     keywords: [...detail.keywords],
     alternates: { canonical: `/${params.categorySlug}/` },
-    openGraph: { title: category.title, description: detail.intro, type: 'website', url: `/${params.categorySlug}/` },
+    openGraph: { title: category.title, description: detail.intro, type: 'website', url: `/${params.categorySlug}/`, images:[{url:'/opengraph-image',width:1200,height:630,alt:`${category.title} learning path`}] },
+    twitter: {card:'summary_large_image',title:category.title,description:detail.intro,images:['/twitter-image']},
   };
 }
 
@@ -206,8 +207,9 @@ export default async function TrackPage({ params }: { params: { categorySlug: st
   if (!lessons.length) permanentRedirect('/handbooks/');
 
   const canonical = `https://bytes.maanavan.com/${params.categorySlug}/`;
+  const dateModified = lessons.reduce((latest, lesson) => lesson.updatedAt > latest ? lesson.updatedAt : latest, lessons[0].updatedAt);
   const schema = {'@context':'https://schema.org','@graph':[
-    {'@type':'CollectionPage','@id':`${canonical}#collection`,name:category.title,description:detail.intro,url:canonical,isPartOf:{'@id':'https://bytes.maanavan.com/#website'},audience:{'@type':'Audience',audienceType:detail.audience},mainEntity:{'@type':'ItemList',itemListElement:lessons.map((lesson,index)=>({'@type':'ListItem',position:index+1,url:`https://bytes.maanavan.com/${lesson.category}/${lesson.slug}/`,name:lesson.title}))}},
+    {'@type':'CollectionPage','@id':`${canonical}#collection`,name:category.title,description:detail.intro,url:canonical,dateModified,publisher:{'@id':'https://www.maanavan.com/#organization'},isPartOf:{'@id':'https://bytes.maanavan.com/#website'},audience:{'@type':'Audience',audienceType:detail.audience},mainEntity:{'@type':'ItemList',itemListElement:lessons.map((lesson,index)=>({'@type':'ListItem',position:index+1,url:`https://bytes.maanavan.com/${lesson.category}/${lesson.slug}/`,name:lesson.title}))}},
     {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'MaanavaN Bytes',item:'https://bytes.maanavan.com/'},{'@type':'ListItem',position:2,name:category.title,item:canonical}]}
   ]};
 

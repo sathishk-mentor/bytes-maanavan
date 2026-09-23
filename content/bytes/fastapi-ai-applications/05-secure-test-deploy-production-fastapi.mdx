@@ -6,7 +6,7 @@ category: "fastapi-ai-applications"
 tags: ["FastAPI authentication", "FastAPI testing", "FastAPI rate limiting", "FastAPI Docker deployment", "production AI API"]
 level: "beginner"
 duration: "28 min"
-updatedAt: "2026-09-14"
+updatedAt: "2026-09-23"
 order: 5
 isPopular: false
 ---
@@ -215,6 +215,14 @@ I verify identity and authorise resource scope before retrieval, enforce request
 - Production deployment needs observability, gradual promotion and rollback.
 
 </Takeaways>
+
+## Frequently asked questions
+
+**Is authentication enough to secure an AI API?** No. The service also needs authorisation, input limits, cost controls, secret management, safe logging and dependency maintenance.
+
+**What should production tests cover beyond successful responses?** Test invalid input, denied access, timeouts, dependency failures, streaming interruption and boundaries around expensive or consequential operations.
+
+**Should a health endpoint call every external dependency?** Usually separate basic process health from deeper readiness checks so temporary downstream problems do not create misleading restart loops.
 
 ## Interactive Knowledge Check
 
