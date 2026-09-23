@@ -40,13 +40,15 @@ export const metadata: Metadata = {
     description: 'Clear technology lessons with practical examples, architecture walkthroughs and interview insights.',
     url: '/',
     type: 'website',
-    locale: 'en_US',
+    locale: 'en_IN',
     siteName: 'MaanavaN Bytes',
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'MaanavaN Bytes — free visual AI and technology handbooks' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'MaanavaN Bytes | Free AI and Technology Learning',
     description: 'Clear technology lessons with practical examples, architecture walkthroughs and interview insights.',
+    images: [{ url: '/twitter-image', alt: 'MaanavaN Bytes — free visual AI and technology handbooks' }],
   },
 };
 
@@ -57,7 +59,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-IN" data-reading-mode="english" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{__html:`try{var m=localStorage.getItem('maanavan-reading-mode');if(m==='tanglish'){document.documentElement.dataset.readingMode='tanglish';document.documentElement.lang='ta-IN'}}catch(e){}`}} /></head>
+      <head><script dangerouslySetInnerHTML={{__html:`try{var m=localStorage.getItem('maanavan-reading-mode');if(m==='tanglish'){document.documentElement.dataset.readingMode='tanglish';document.documentElement.lang='ta-Latn-IN'}}catch(e){}`}} /></head>
       <body className={`${inter.className} ${notoTamil.variable}`}>
         <NavigationStability />
         <a className="skip-link" href="#main-content">Skip to content</a>
@@ -69,7 +71,7 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({
           '@context':'https://schema.org','@graph':[
             {'@type':'Organization','@id':'https://www.maanavan.com/#organization',name:'MaanavaN',url:'https://www.maanavan.com/',founder:{'@type':'Person',name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'},sameAs:['https://www.linkedin.com/in/sathish-kumar-ceo/']},
-            {'@type':'WebSite','@id':'https://bytes.maanavan.com/#website',name:'MaanavaN Bytes',alternateName:'MaanavaN Technology Handbooks',url:'https://bytes.maanavan.com/',description:'Free visual technology handbooks and practical bite-sized tutorials for Tamil-speaking learners worldwide.',publisher:{'@id':'https://www.maanavan.com/#organization'},inLanguage:['en-IN','ta-IN']}
+            {'@type':'WebSite','@id':'https://bytes.maanavan.com/#website',name:'MaanavaN Bytes',alternateName:'MaanavaN Technology Handbooks',url:'https://bytes.maanavan.com/',description:'Free visual technology handbooks and practical bite-sized tutorials for Tamil-speaking learners worldwide.',publisher:{'@id':'https://www.maanavan.com/#organization'},inLanguage:['en-IN','ta-Latn-IN']}
           ]
         })}} />
       </body>

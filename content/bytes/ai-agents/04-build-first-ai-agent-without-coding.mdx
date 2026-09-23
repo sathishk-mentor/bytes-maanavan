@@ -1,12 +1,12 @@
 ---
 title: "AI Agent Risks and Guardrails"
 slug: "04-build-first-ai-agent-without-coding"
-summary: "Apply permissions, validation, human approval, logs and stopping rules before agent actions create harm."
+summary: "Apply permissions, validation, meaningful human approval, activity logs and stopping rules before an AI agent's actions create harm."
 category: "ai-agents"
 tags: ["AI agent risks", "AI agent guardrails", "human in the loop", "agent security"]
 level: "beginner"
 duration: "20 min"
-updatedAt: "2026-09-16"
+updatedAt: "2026-09-23"
 order: 4
 isPopular: true
 ---
@@ -94,6 +94,14 @@ For each risk area, identify a realistic failure, rate the consequence, define o
 </Takeaways>
 
 <KnowledgeCheck question="An agent may read inventory. What should happen before it pays a supplier?" options={['Reuse the read permission','Ask for explicit approval showing the final order and amount','Proceed when the model sounds confident']} answer={1} explanation="Reading and paying have different consequences, so payment needs a separate informed approval." />
+
+## Frequently asked questions
+
+**What is the safest first no-code agent project?** Choose a repetitive, low-risk task where the agent prepares a draft or recommendation and a person approves the final action.
+
+**How many tools should the first agent use?** Begin with the minimum required tool set. Each connection adds permission, privacy and failure-management work.
+
+**How do I know whether the pilot works?** Compare real examples using agreed measures such as completion quality, time saved, correction rate and unsafe-action rate.
 
 ## Primary sources
 

@@ -1,12 +1,12 @@
 ---
 title: "Aggregation Pipeline for AI Features"
 slug: "mongodb-python-fastapi-ai-application"
-summary: "Transform MongoDB events into summaries, rankings and reusable signals for AI features through staged aggregation."
+summary: "Transform MongoDB events into summaries, rankings and reusable business signals for AI features through readable, testable aggregation pipeline stages."
 category: "mongodb"
 tags: ["MongoDB", "AI applications", "MongoDB Atlas"]
 level: "intermediate"
 duration: "25 min"
-updatedAt: "2026-09-22"
+updatedAt: "2026-09-23"
 order: 4
 ---
 
@@ -168,3 +168,9 @@ Expensive aggregations (like 30-day rolling averages) are wasteful to recompute 
 ## Interactive Knowledge Check
 
 <KnowledgeCheck question={"Why place $match early in an aggregation pipeline?"} options={["To reduce documents processed by later stages","To create an API key","To remove all indexes"]} answer={0} explanation={"Early filtering reduces downstream work and makes the pipeline easier to reason about."} />
+
+## Primary sources
+
+- [MongoDB Docs: Aggregation operations](https://www.mongodb.com/docs/manual/aggregation/)
+- [MongoDB Docs: Aggregation pipeline optimisation](https://www.mongodb.com/docs/manual/core/aggregation-pipeline-optimization/)
+- [MongoDB PyMongo documentation](https://www.mongodb.com/docs/languages/python/pymongo-driver/current/)

@@ -11,13 +11,15 @@ export const metadata: Metadata = {
   title: 'Free Visual AI & Technology Handbooks',
   description: 'Learn AI Agents, Generative AI, RAG, LangChain, Java, SQL, FastAPI, Docker and software engineering through beginner-friendly visual Bytes and practical workflows.',
   alternates: { canonical: '/' },
-  openGraph: { title: 'MaanavaN Bytes | Visual Technology Learning', description: 'Beginner-friendly visual handbooks, real scenarios and practical technology workflows.', url: '/', type: 'website' },
+  openGraph: { title: 'MaanavaN Bytes | Visual Technology Learning', description: 'Beginner-friendly visual handbooks, real scenarios and practical technology workflows.', url: '/', type: 'website', images: [{url:'/opengraph-image',width:1200,height:630,alt:'MaanavaN Bytes visual technology handbooks'}] },
+  twitter: {card:'summary_large_image',title:'MaanavaN Bytes | Visual Technology Learning',description:'Beginner-friendly visual handbooks, real scenarios and practical technology workflows.',images:['/twitter-image']},
 };
 
 export default async function HomePage() {
   const allBytes = await getAllBytes();
+  const dateModified = allBytes.reduce((latest, byte) => byte.updatedAt > latest ? byte.updatedAt : latest, '2026-09-13');
   const schema = {'@context':'https://schema.org','@graph':[
-    {'@type':'CollectionPage','@id':'https://bytes.maanavan.com/#collection',name:'MaanavaN Bytes',url:'https://bytes.maanavan.com/',description:'A visual library of practical technology learning Bytes.',isPartOf:{'@id':'https://bytes.maanavan.com/#website'},mainEntity:{'@type':'ItemList',itemListElement:allBytes.map((byte,index)=>({'@type':'ListItem',position:index+1,url:`https://bytes.maanavan.com/${byte.category}/${byte.slug}/`,name:byte.title}))}},
+    {'@type':'CollectionPage','@id':'https://bytes.maanavan.com/#collection',name:'MaanavaN Bytes',url:'https://bytes.maanavan.com/',description:'A visual library of practical technology learning Bytes.',dateModified,publisher:{'@id':'https://www.maanavan.com/#organization'},isPartOf:{'@id':'https://bytes.maanavan.com/#website'},mainEntity:{'@type':'ItemList',itemListElement:allBytes.map((byte,index)=>({'@type':'ListItem',position:index+1,url:`https://bytes.maanavan.com/${byte.category}/${byte.slug}/`,name:byte.title}))}},
     {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'MaanavaN Bytes',item:'https://bytes.maanavan.com/'}]}
   ]};
   return <><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema)}}/><HomeMotion>
@@ -25,7 +27,7 @@ export default async function HomePage() {
       <div className="hero-aurora hero-aurora-one"/><div className="hero-aurora hero-aurora-two"/>
       <div className="container-custom bytes-hero-layout">
         <div className="bytes-hero-copy">
-          <p className="eyebrow"><Sparkles/> Free visual handbooks · Personally reviewed</p>
+          <p className="eyebrow"><Sparkles/> Free visual handbooks · Practical guided learning</p>
           <h1>Build technology skills.<br/><span>One practical Byte at a time.</span></h1>
           <p>Learn AI, software, data and cloud through simple explanations, visual workflows and real-world scenarios—designed for beginners and busy professionals.</p>
           <div className="bytes-hero-actions"><Link className="primary-cta" href="#tracks">Start a learning path <ArrowRight/></Link><Link className="ghost-cta" href="#bytes-library">Search all Bytes</Link></div>

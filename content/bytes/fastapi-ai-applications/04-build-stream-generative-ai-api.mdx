@@ -6,7 +6,7 @@ category: "fastapi-ai-applications"
 tags: ["FastAPI streaming response", "FastAPI GenAI API", "FastAPI LLM streaming", "RAG API Python", "server sent events FastAPI"]
 level: "beginner"
 duration: "27 min"
-updatedAt: "2026-09-14"
+updatedAt: "2026-09-23"
 order: 4
 isPopular: true
 ---
@@ -196,6 +196,14 @@ I validate and authenticate before starting the stream, then use a versioned eve
 - Handle mid-stream failure and client disconnect as first-class states.
 
 </Takeaways>
+
+## Frequently asked questions
+
+**Does streaming make the model generate faster?** Not necessarily. It improves perceived responsiveness by returning useful events before the full answer is complete.
+
+**How should a streamed API report an error after output begins?** Define explicit event types so the client can distinguish content, citation, completion and error events without parsing free-form text.
+
+**When should citations be sent?** Send only citations backed by retrieved, authorised evidence and keep enough identifiers to trace the source.
 
 ## Interactive Knowledge Check
 

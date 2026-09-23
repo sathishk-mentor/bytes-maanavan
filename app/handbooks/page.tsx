@@ -7,12 +7,15 @@ export const metadata: Metadata = {
   title: 'AI & Technology Handbooks',
   description: 'Explore beginner-friendly visual handbooks for Python, GenAI, AI agents, MongoDB, FastAPI, RAG, LangChain, Docker and software engineering.',
   alternates: { canonical: '/handbooks/' },
-  openGraph: {title:'Visual Technology Handbooks | MaanavaN Bytes',description:'Connected, beginner-friendly handbooks for Python, GenAI, AI agents, MongoDB, FastAPI, RAG, LangChain, Docker and software engineering.',url:'/handbooks/',type:'website'},
+  openGraph: {title:'Visual Technology Handbooks | MaanavaN Bytes',description:'Connected, beginner-friendly handbooks for Python, GenAI, AI agents, MongoDB, FastAPI, RAG, LangChain, Docker and software engineering.',url:'/handbooks/',type:'website',images:[{url:'/opengraph-image',width:1200,height:630,alt:'MaanavaN visual technology handbook library'}]},
+  twitter: {card:'summary_large_image',title:'Visual Technology Handbooks | MaanavaN Bytes',description:'Connected, beginner-friendly handbooks for practical AI and technology learning.',images:['/twitter-image']},
 };
 
-export default function HandbooksPage() {
+export default async function HandbooksPage() {
+  const bytes = await import('@/lib/mdx').then(({getAllBytes})=>getAllBytes());
+  const dateModified = bytes.reduce((latest, byte) => byte.updatedAt > latest ? byte.updatedAt : latest, '2026-09-13');
   const schema={'@context':'https://schema.org','@graph':[
-    {'@type':'CollectionPage','@id':'https://bytes.maanavan.com/handbooks/#collection',name:'MaanavaN Technology Handbooks',url:'https://bytes.maanavan.com/handbooks/',description:'Visual technology handbooks with connected practical Bytes.',mainEntity:{'@type':'ItemList',itemListElement:handbooks.map((handbook,index)=>({'@type':'ListItem',position:index+1,name:handbook.title,url:`https://bytes.maanavan.com/${handbook.slug==='github-copilot'?'software-engineering':handbook.slug==='docker'?'cloud-devops':handbook.slug}/`}))}},
+    {'@type':'CollectionPage','@id':'https://bytes.maanavan.com/handbooks/#collection',name:'MaanavaN Technology Handbooks',url:'https://bytes.maanavan.com/handbooks/',description:'Visual technology handbooks with connected practical Bytes.',dateModified,publisher:{'@id':'https://www.maanavan.com/#organization'},mainEntity:{'@type':'ItemList',itemListElement:handbooks.map((handbook,index)=>({'@type':'ListItem',position:index+1,name:handbook.title,url:`https://bytes.maanavan.com/${handbook.slug==='github-copilot'?'software-engineering':handbook.slug==='docker'?'cloud-devops':handbook.slug}/`}))}},
     {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'MaanavaN Bytes',item:'https://bytes.maanavan.com/'},{'@type':'ListItem',position:2,name:'Handbooks',item:'https://bytes.maanavan.com/handbooks/'}]}
   ]};
   return <><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema)}}/>

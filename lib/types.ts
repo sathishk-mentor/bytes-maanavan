@@ -6,6 +6,7 @@ export interface ByteMetadata {
   tags: string[];
   level: 'beginner' | 'intermediate' | 'advanced';
   duration: string;
+  publishedAt?: string;
   updatedAt: string;
   order: number;
   isPopular: boolean;
