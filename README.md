@@ -79,6 +79,8 @@ This creates a static export in the `out/` directory.
 
 ## 📚 Creating Content
 
+Before creating or revising any handbook, follow the mandatory [Handbook Development Standard](docs/handbook-development-standard.md) and begin with [the Byte template](docs/byte-template.mdx). Uploaded Markdown is source material and must be reworked to that standard before review.
+
 ### Add a New Byte
 
 1. Create a new `.mdx` file in `content/bytes/[category]/`

@@ -132,7 +132,7 @@ Using the same S4 flow style, sketch what you think happens when you send money 
 
 ## S12 — FAQ, Knowledge Check and References
 
-<KnowledgeCheck question="A payment request times out after the bank may have processed it. What should the app do first?" options={["Retry immediately", "Verify the authoritative transaction state", "Always mark it failed"]} answer={1} explanation="The app must verify and reconcile the transaction state before retrying, otherwise it may create a duplicate payment." />
+<HowAppsWorkQuiz variant="payment" />
 
 **Q1: Do your bank and the recipient's bank communicate directly during a UPI payment?**
 In this illustrative model, no — they coordinate through NPCI, which sits in the middle and routes the request between them.
