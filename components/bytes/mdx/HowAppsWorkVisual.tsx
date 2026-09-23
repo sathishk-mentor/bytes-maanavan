@@ -28,11 +28,21 @@ const visuals = {
   },
 } as const;
 
-export function HowAppsWorkVisual({variant}:{variant:keyof typeof visuals}) {
+
+const tanglishVisuals = {
+  messaging:{title:'Oru tap. Naalu events.',note:'Recipient offline-na delivery confirmation later varum.',steps:['Unga phone','Message service','Recipient phone','Delivery status'],details:['Encrypt + send','Route or wait','Receive','Ticks update']},
+  payment:{title:'₹500 payment-la pala participants.',note:'Timeout aana final status check pannunga; udane repeat pay pannaadheenga.',steps:['UPI app','NPCI network','Unga bank','Recipient bank'],details:['Request','Route','Debit','Credit']},
+  tracking:{title:'Fresh update vandha map maarum.',note:'Smooth dot exact live GPS proof illa; timestamp check pannunga.',steps:['Rider GPS','Location service','Update channel','Unga map'],details:['Coordinate','Process','Deliver','Display']},
+  streaming:{title:'Next chunk-ku quality choose pannum.',note:'Picture konjam soft aanaalum playback continue aagalam.',steps:['Video library','CDN','Network','Player'],details:['Quality versions','Chunks','Speed','Next chunk']},
+  routing:{title:'Traffic maarina route-um maaralam.',note:'Past traffic and live signals ETA estimate-ku help pannum.',steps:['Destination','Road graph','Traffic','Navigation'],details:['Goal','Paths','Delays','Route']},
+} as const;
+
+export function HowAppsWorkVisual({variant,language='english'}:{variant:keyof typeof visuals;language?:'english'|'tanglish'}) {
   const visual=visuals[variant];
+  const ta=language==='tanglish'?tanglishVisuals[variant]:null;
   return <figure className={`apps-work-visual apps-work-${variant}`}>
-    <header><span><MessageCircle/></span><div><small>{visual.kicker}</small><h3>{visual.title}</h3></div><i>{visual.status}</i></header>
-    <div className="apps-work-flow">{visual.steps.map(([Icon,label,detail],index)=><div className="apps-work-step-wrap" key={label}><section><span><Icon/></span><div><b>{label}</b><small>{detail}</small></div></section>{index<visual.steps.length-1&&<em>→</em>}</div>)}</div>
-    <figcaption><CheckCircle2/>{visual.note}</figcaption>
+    <header><span><MessageCircle/></span><div><small>{visual.kicker}</small><h3>{ta?.title||visual.title}</h3></div><i>{visual.status}</i></header>
+    <div className="apps-work-flow">{visual.steps.map(([Icon,label,detail],index)=><div className="apps-work-step-wrap" key={label}><section><span><Icon/></span><div><b>{ta?.steps[index]||label}</b><small>{ta?.details[index]||detail}</small></div></section>{index<visual.steps.length-1&&<em>→</em>}</div>)}</div>
+    <figcaption><CheckCircle2/>{ta?.note||visual.note}</figcaption>
   </figure>;
 }
