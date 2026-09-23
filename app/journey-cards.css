@@ -80,7 +80,7 @@
 @media(max-width:700px){.journey-byte-card.library-byte-card,.category-byte-grid .journey-byte-card:nth-child(even){grid-template-columns:1fr;grid-template-rows:12.5rem auto}.category-byte-grid .journey-byte-card:nth-child(even) .journey-card-visual,.journey-card-visual{min-height:12.5rem}.journey-connector,.category-byte-grid .journey-byte-card:nth-child(odd) .journey-connector,.category-byte-grid .journey-byte-card:nth-child(even) .journey-connector{top:6.25rem}.journey-scene{inset:3rem .85rem .8rem}.scene-ui-cover{grid-template-columns:3.65rem minmax(0,1fr);gap:.72rem;padding:.75rem}.scene-cover-icon{width:3.55rem;height:3.55rem;border-radius:1rem}.scene-cover-icon svg{width:1.65rem}.scene-ui-cover>div small{font-size:.4rem}.scene-ui-cover>div>strong{font-size:.9rem}.scene-ui-cover p{font-size:.5rem}.scene-ui-cover footer{padding-top:.55rem;font-size:.38rem}}
 
 /* Homepage library — compact cards for the three-column browsing grid. */
-.library-with-sidebar .journey-byte-card.library-byte-card{display:grid;min-width:0;min-height:31rem;grid-column:auto;grid-template-columns:minmax(0,1fr);grid-template-rows:11.5rem minmax(0,1fr);overflow:hidden;border-radius:1.2rem}
+.library-with-sidebar .journey-byte-card.library-byte-card{display:grid;min-width:0;min-height:27.5rem;grid-column:auto;grid-template-columns:minmax(0,1fr);grid-template-rows:11.5rem minmax(0,1fr);overflow:hidden;border-radius:1.2rem}
 .library-with-sidebar .journey-byte-card .journey-connector{display:none}
 .library-with-sidebar .journey-card-visual{grid-column:1;grid-row:1;min-width:0;min-height:11.5rem;border-radius:1.14rem 1.14rem 0 0}
 .library-with-sidebar .journey-scene-label{top:.8rem;left:.85rem;padding:.36rem .58rem;font-size:.46rem}
@@ -94,20 +94,20 @@
 .library-with-sidebar .scene-ui-cover p{gap:.28rem;margin-top:.1rem;font-size:.43rem}
 .library-with-sidebar .scene-ui-cover footer{padding-top:.42rem;font-size:.34rem}
 .library-with-sidebar .journey-card-content{grid-column:1;grid-row:2;min-width:0;padding:0 1rem 1rem}
-.library-with-sidebar .journey-card-header{min-height:4rem;grid-template-columns:minmax(0,1fr);gap:.32rem;border-bottom:1px solid #e2e9e9;padding:.7rem 0}
+.library-with-sidebar .journey-card-header{min-height:3.25rem;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.6rem;border-bottom:1px solid #e2e9e9;padding:.65rem 0}
 .library-with-sidebar .journey-card-header>div{gap:.22rem}
-.library-with-sidebar .journey-card-header>div small{font-size:.43rem;line-height:1.35;white-space:normal}
+.library-with-sidebar .journey-card-header>div small{color:var(--path-accent);font-size:.48rem;line-height:1.35;letter-spacing:.11em;white-space:normal}
 .library-with-sidebar .journey-card-header>div strong{font-size:.58rem}
-.library-with-sidebar .journey-card-header>i{position:absolute;top:12.15rem;right:1rem;padding:.28rem .42rem;font-size:.43rem}
-.library-with-sidebar .journey-card-copy{justify-content:flex-start;padding:.85rem 0 .75rem}
+.library-with-sidebar .journey-card-header>i{position:static;align-self:center;padding:.3rem .45rem;font-size:.44rem;white-space:nowrap}
+.library-with-sidebar .journey-card-copy{justify-content:flex-start;padding:.9rem 0 .7rem}
 .library-with-sidebar .journey-card-copy h3{display:-webkit-box;max-width:none;overflow:hidden;margin:0;font-size:1.08rem;line-height:1.25;-webkit-box-orient:vertical;-webkit-line-clamp:3}
-.library-with-sidebar .journey-card-copy p{display:-webkit-box;overflow:hidden;margin-top:.55rem;font-size:.69rem;line-height:1.6;-webkit-box-orient:vertical;-webkit-line-clamp:3}
+.library-with-sidebar .journey-card-copy p{display:-webkit-box;overflow:hidden;margin-top:.55rem;font-size:.7rem;line-height:1.6;-webkit-box-orient:vertical;-webkit-line-clamp:2}
 .library-with-sidebar .journey-card-outcome{width:100%;margin-top:auto;grid-template-columns:1.55rem minmax(0,1fr);gap:.45rem;padding:.5rem .58rem}
 .library-with-sidebar .journey-card-outcome>svg{width:.85rem;height:.85rem}
 .library-with-sidebar .journey-card-outcome span{font-size:.34rem}
 .library-with-sidebar .journey-card-outcome strong{font-size:.55rem;line-height:1.35}
-.library-with-sidebar .journey-card-content>footer{min-height:2.9rem;padding-top:.72rem}
-.library-with-sidebar .journey-card-content>footer>span{max-width:9.5rem;font-size:.46rem}
-.library-with-sidebar .journey-card-content>footer>b{padding:.6rem .7rem;font-size:.56rem}
-@media(max-width:1180px){.library-with-sidebar .journey-byte-card.library-byte-card{min-height:29.5rem}.library-with-sidebar .journey-card-copy h3{font-size:1.16rem}.library-with-sidebar .journey-card-copy p{font-size:.73rem}}
-@media(max-width:700px){.library-with-sidebar .journey-byte-card.library-byte-card{min-height:0;grid-template-rows:12.5rem auto}.library-with-sidebar .journey-card-visual{min-height:12.5rem}.library-with-sidebar .journey-scene{inset:3rem .85rem .8rem}.library-with-sidebar .journey-card-header>i{top:13.1rem}.library-with-sidebar .journey-card-copy h3{font-size:1.24rem}.library-with-sidebar .journey-card-copy p{font-size:.78rem}.library-with-sidebar .journey-card-content>footer>span{display:none}}
+.library-with-sidebar .journey-card-content>footer{display:grid;min-height:0;grid-template-columns:1fr;gap:.62rem;padding-top:.68rem}
+.library-with-sidebar .journey-card-content>footer>span{max-width:none;font-size:.49rem}
+.library-with-sidebar .journey-card-content>footer>b{width:100%;min-height:2.75rem;justify-content:center;padding:.65rem .75rem;font-size:.65rem}
+@media(max-width:1180px){.library-with-sidebar .journey-byte-card.library-byte-card{min-height:28rem}.library-with-sidebar .journey-card-copy h3{font-size:1.16rem}.library-with-sidebar .journey-card-copy p{font-size:.73rem}}
+@media(max-width:700px){.library-with-sidebar .journey-byte-card.library-byte-card{min-height:0;grid-template-rows:12.5rem auto}.library-with-sidebar .journey-card-visual{min-height:12.5rem}.library-with-sidebar .journey-scene{inset:3rem .85rem .8rem}.library-with-sidebar .journey-card-copy h3{font-size:1.24rem}.library-with-sidebar .journey-card-copy p{font-size:.78rem}.library-with-sidebar .journey-card-content>footer>span{display:flex}}
