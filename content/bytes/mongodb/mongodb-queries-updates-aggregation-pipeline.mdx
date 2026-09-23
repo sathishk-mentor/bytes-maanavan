@@ -146,3 +146,7 @@ Because session messages and distilled memory facts have genuinely different sha
 *(Answers: 1. Short-term (session messages, e.g. the raw back-and-forth of one conversation) and long-term (distilled facts, e.g. a customer's notification preference); 2. False — like RAG retrieval, agent memory should occasionally be reviewed, since it can become stale or be based on a one-off comment; 3. TTL (time-to-live) indexes, for automatic expiration of old documents)*
 
 *Next byte: **Aggregation Pipeline for AI Features** — using MongoDB's aggregation framework to build features and analytics for AI applications.*
+
+## Interactive Knowledge Check
+
+<KnowledgeCheck question={"Which memory should normally require the clearest user control?"} options={["A temporary calculation","A durable user preference stored across sessions","A local variable"]} answer={1} explanation={"Durable memory needs purpose, ownership, correction, deletion and retention rules."} />

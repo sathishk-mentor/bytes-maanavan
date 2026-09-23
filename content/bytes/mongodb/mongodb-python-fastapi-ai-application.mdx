@@ -164,3 +164,7 @@ Expensive aggregations (like 30-day rolling averages) are wasteful to recompute 
 *(Answers: 1. `$match`, `$group`, `$sort`; 2. False — `$merge` writes its output directly into a specified collection, a real side effect; 3. Because each stage's output feeds the next, so checking the result after each stage individually makes debugging much easier)*
 
 *Next byte: **Production Concerns for MongoDB AI Apps** — indexing, scaling, and security as these systems go live.*
+
+## Interactive Knowledge Check
+
+<KnowledgeCheck question={"Why place $match early in an aggregation pipeline?"} options={["To reduce documents processed by later stages","To create an API key","To remove all indexes"]} answer={0} explanation={"Early filtering reduces downstream work and makes the pipeline easier to reason about."} />
