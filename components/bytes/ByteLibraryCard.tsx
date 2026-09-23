@@ -64,7 +64,7 @@ const learningVisuals: Record<string, readonly (readonly string[])[]> = {
   ],
 };
 
-export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: { chapter: ByteMetadata; chapterNumber: number; totalChapters?: number }) {
+export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5, compact = false }: { chapter: ByteMetadata; chapterNumber: number; totalChapters?: number; compact?: boolean }) {
   const profile = journeyProfiles[chapter.category as keyof typeof journeyProfiles] ?? defaultProfile;
   const safeIndex = Math.max(0, Math.min(chapterNumber - 1, profile.stages.length - 1));
   const Icon = profile.icons[safeIndex];
@@ -74,7 +74,7 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
   const outcomes = ['Build a clear foundation', 'Follow the working process', 'Connect the concept to practice', 'Recognise risks and controls', 'Apply it with confidence'];
   const cardStyle = { '--path-accent': profile.accent, '--path-glow': profile.glow, '--path-index': chapterNumber - 1 } as CSSProperties;
 
-  return <Link className={`library-byte-card journey-byte-card journey-scene-${safeIndex + 1}`} href={`/${chapter.category}/${chapter.slug}/`} target="_blank" rel="noopener noreferrer" style={cardStyle} aria-label={`Byte ${chapterNumber}: ${chapter.title}`}>
+  return <Link className={`library-byte-card journey-byte-card journey-scene-${safeIndex + 1}${compact ? ' is-compact' : ''}`} href={`/${chapter.category}/${chapter.slug}/`} target="_blank" rel="noopener noreferrer" style={cardStyle} aria-label={`Byte ${chapterNumber}: ${chapter.title}`}>
     <span className="journey-connector" aria-hidden="true"><i/></span>
     <div className="journey-card-visual" aria-hidden="true">
       <span className="journey-grid"/>
@@ -90,14 +90,14 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5 }: {
     </div>
     <div className="journey-card-content">
       <header className="journey-card-header">
-        <div><small>BYTE {String(chapterNumber).padStart(2, '0')} OF {String(totalChapters).padStart(2, '0')} · {profile.category}</small><strong>{profile.stages[safeIndex]}</strong></div>
+        <div><small>{compact ? profile.category : `BYTE ${String(chapterNumber).padStart(2, '0')} OF ${String(totalChapters).padStart(2, '0')} · ${profile.category}`}</small>{!compact && <strong>{profile.stages[safeIndex]}</strong>}</div>
         <i>{chapter.level} · {chapter.duration}</i>
       </header>
       <div className="journey-card-copy">
         <h3>{chapter.title}</h3><p>{chapter.summary}</p>
-        <div className="journey-card-outcome"><CheckCircle2/><div><span>AFTER THIS BYTE</span><strong>{outcomes[safeIndex]}</strong></div></div>
+        {!compact && <div className="journey-card-outcome"><CheckCircle2/><div><span>AFTER THIS BYTE</span><strong>{outcomes[safeIndex]}</strong></div></div>}
       </div>
-      <footer><span><Sparkles/>{profile.handbook}</span><b>Start this Byte <ArrowUpRight/></b></footer>
+      <footer><span><Sparkles/>{profile.handbook}</span><b>{compact ? 'Start Learning' : 'Start this Byte'} <ArrowUpRight/></b></footer>
     </div>
   </Link>;
 }

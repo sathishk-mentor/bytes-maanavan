@@ -39,7 +39,7 @@ export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
         <aside className="library-category-sidebar"><p>BYTE CATEGORIES</p><nav aria-label="Filter Bytes by category">{filters.map((item) => <button key={item.value} className={filter === item.value ? 'active' : ''} onClick={() => { setFilter(item.value); setVisibleCount(12); }}><span>{item.label}</span><i>›</i></button>)}</nav><small>Choose a subject area to narrow the library.</small></aside>
         <div><div className="library-result-status" aria-live="polite"><span>Showing <b>{Math.min(visibleCount, results.length)}</b> of <b>{results.length}</b> matching Bytes</span></div><div className="library-grid">{visibleResults.map((chapter) => {
         const chapterNumber = chapters.filter((item)=>item.category===chapter.category).findIndex((item)=>item.slug===chapter.slug)+1;
-        return <ByteLibraryCard chapter={chapter} chapterNumber={chapterNumber} key={chapter.slug}/>;
+        return <ByteLibraryCard chapter={chapter} chapterNumber={chapterNumber} compact key={chapter.slug}/>;
       })}</div>
       {visibleCount < results.length && <button className="library-load-more" onClick={() => setVisibleCount((count) => count + 12)}>Load more Bytes <ChevronDown/></button>}
       {results.length === 0 && <div className="library-empty"><Search/><h3>No matching Byte found</h3><p>Try another keyword or choose “All Bytes”.</p><button onClick={() => { setQuery(''); setFilter('all'); setVisibleCount(12); }}>Reset library</button></div>}</div>
