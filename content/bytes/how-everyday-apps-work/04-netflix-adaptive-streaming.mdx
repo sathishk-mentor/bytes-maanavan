@@ -15,21 +15,21 @@ isPopular: true
 
 ## S1 — Quick Start
 
-The last two bytes were about multiple parties staying in sync. This byte is about a different problem entirely: **how does Netflix keep a video playing smoothly, even when your network connection gets worse mid-episode?** — the flow behind why buffering is a lot rarer today than it used to be.
+This Byte answers a familiar question: **how does Netflix keep a video playing smoothly, even when your network connection gets worse mid-episode?** You will learn the high-level mechanism behind fewer interruptions and automatic quality changes.
 
-As with the earlier bytes, this is an **illustrative model** based on publicly available explanations of adaptive bitrate streaming, not an internal disclosure of Netflix's exact systems.
+This is an **illustrative model** based on public explanations of adaptive bitrate streaming, not an internal disclosure of Netflix's exact systems.
 
 **Time investment:** 20-25 mins.
 
 ---
 
-## S2 — Meet the Scenario
+## S2 — Start from Basics: Familiar Scenario
 
-PaisaWise records short onboarding videos for new customers, and Divya notices something: "On a good connection, the video looks sharp. On the office Wi-Fi near the pantry, it looks a bit blurry — but it never actually stops and spins." Rahul: "So it's trading quality for smoothness on purpose?" Meena: "Exactly the kind of thing worth tracing, the same way we traced WhatsApp and UPI."
+PaisaWise records short onboarding videos for new customers, and Divya notices something: "On a good connection, the video looks sharp. On the office Wi-Fi near the pantry, it looks a bit blurry — but it never actually stops and spins." Rahul asks: "So it is trading some picture quality for smooth playback on purpose?"
 
 ---
 
-## S3 — Core Concept
+## S3 — Core Explanation
 
 Here's the key idea: a video isn't stored as one single file. It's encoded into multiple versions — called **renditions** — at different quality levels (say, blurry-but-light, medium, and sharp-but-heavy), and each version is chopped into short chunks of a few seconds each. As you watch, the app isn't committed to one quality level for the whole video — it's constantly choosing, chunk by chunk, which version to download next, based on how fast your connection currently is and how much video is already buffered ahead.
 
@@ -37,7 +37,7 @@ Think of it like choosing between three routes to work: a smooth wide highway, a
 
 ---
 
-## S4 — How It Works Under the Hood
+## S4 — Architecture and Flow
 
 **A simplified flow for what happens while you're watching:**
 
@@ -67,7 +67,9 @@ When your connection improves again:
 
 ---
 
-## S5 — Try It Yourself (Small Snippet)
+## S5 — Interactive Decision Lab
+
+<HowAppsWorkLab variant="streaming" />
 
 **A design exercise, instead of a code snippet:**
 
@@ -75,13 +77,13 @@ Sketch, in the same style as S4, what you think should happen if a viewer's conn
 
 ---
 
-## S6 — Real Company Angle
+## S6 — Real-World Scale
 
 Publicly available explanations of adaptive bitrate streaming describe a video commonly being encoded into renditions like 360p at roughly 800 kbps, 540p at 1.5 Mbps, 720p at 3 Mbps, and 1080p at 6 Mbps, with each chunked into 2-10 second segments — quality switches can happen at chunk boundaries, so a change doesn't require restarting the whole stream. These accounts also note that having a low-bitrate "floor" rendition matters: without one, viewers on genuinely slow connections would buffer constantly regardless of how smart the switching logic is. More advanced players are also described as predictive rather than purely reactive — adjusting quality proactively to maintain a healthy buffer, rather than only reacting after a slowdown is already underway.
 
 ---
 
-## S7 — Common Mistakes
+## S7 — Failure Cases and Common Mistakes
 
 1. **Assuming a video is a single file streamed at one fixed quality** — as S3 covers, it's typically multiple pre-encoded renditions, with the player switching between them chunk by chunk.
 2. **Assuming a quality drop means something is broken** — as S4 shows, switching to a lower rendition mid-playback is often the system working correctly, trading quality for smoothness rather than failing.
@@ -90,40 +92,45 @@ Publicly available explanations of adaptive bitrate streaming describe a video c
 
 ---
 
-## S8 — Persona Wrap-Up
+## S8 — Role-Based Application
 
-Divya connects it back: "So our onboarding video going blurry on office Wi-Fi isn't a bug — that's the same trade-off in action, and it's actually the better outcome compared to it freezing." Karthik: "And if we ever host our own video content instead of relying on a third-party player, we'd want at least a low-quality floor rendition, the same way S6 describes." Rahul: "This felt like a genuinely different kind of problem from the last two bytes — no multiple parties to sync, just one stream adapting to conditions." Meena: "Last byte brings us back to multi-party thinking — Google Maps, rerouting you around traffic while you're already driving."
-
----
-
-## S9 — Compare & Contrast
-
-| Aspect | Food Delivery Tracking (Byte 3) | Netflix Streaming |
-|---|---|---|
-| Core challenge | Keeping multiple parties' statuses in sync | Keeping one stream smooth under changing conditions |
-| What changes over time | Rider's location | Available network bandwidth |
-| What the system adapts | How often location is pushed | Which quality rendition is requested next |
-| Failure mode if unhandled | Stale or jumpy tracking | Stalled playback (buffering) |
+For media and platform engineers, the practical work is preparing multiple renditions, choosing sensible chunk sizes and monitoring rebuffering—not merely maximising resolution. Product teams must decide which trade-off protects the experience: a temporary drop in clarity is usually better than playback stopping completely.
 
 ---
 
-## S10 — Mini Practice Task
+## S9 — Compare User View and System View
+
+| What the user sees | What the player is deciding |
+|---|---|
+| Video starts quickly | Which initial rendition is safe for the estimated connection |
+| Picture becomes softer | Whether a lighter next chunk will prevent a stall |
+| Quality improves later | Whether bandwidth and buffer are strong enough to step up |
+| Playback pauses | The buffer emptied before the next chunk arrived |
+
+---
+
+## S10 — Hands-On Practice
 
 Sketch (in S4's style) what you think happens when you seek forward to a point in the video you haven't downloaded yet — say, skipping ahead 20 minutes. What has to happen differently compared to normal, sequential chunk-by-chunk playback?
 
 ---
 
-## S11 — Key Takeaways
+## S11 — Final Thought and Next Path
 
 - A video is typically encoded into multiple quality **renditions**, each split into short chunks, rather than stored and streamed as one fixed-quality file.
 - The player continuously chooses which rendition to request next, based on current download speed and how much video is already buffered.
 - Switching to a lower-quality rendition mid-playback is usually the system trading quality for smoothness on purpose, not a malfunction.
 - A low-bitrate "floor" rendition is essential — without one, viewers on slow connections would buffer constantly no matter how smart the switching logic is.
 - This byte is presented as an **illustrative model** based on public explanations of adaptive bitrate streaming, not a confirmed disclosure of Netflix's exact systems.
+- Buffer health matters alongside raw download speed when choosing the next chunk.
+- Switching too often can make quality feel unstable even when playback never stops.
+- The next learning step is to model what happens when the viewer jumps to an unbuffered point.
 
 ---
 
-## S12 — FAQ / Knowledge Check
+## S12 — FAQ, Knowledge Check and References
+
+<KnowledgeCheck question="Network capacity drops while a video is playing. How can the player protect smooth playback?" options={["Switch the next chunk to a lower bitrate", "Restart the full video", "Download only the highest quality"]} answer={0} explanation="Adaptive bitrate streaming selects a lighter rendition for upcoming chunks when available capacity falls." />
 
 **Q1: Is a Netflix video streamed as one single file at a fixed quality?**
 No — in this model, it's pre-encoded into multiple quality renditions, split into short chunks, with the player choosing between them as it plays.
@@ -134,12 +141,10 @@ No — it's typically the player deliberately switching to a lower-quality rendi
 **Q3: Why does adaptive bitrate streaming need a low-quality "floor" rendition?**
 Because without one, viewers on genuinely slow connections would buffer constantly, regardless of how well the switching logic works.
 
-**Knowledge Check:**
-1. What's the term for the different quality versions a video is pre-encoded into?
-2. True/False: The player only reacts to network conditions after playback has already stalled.
-3. Name two factors the player checks before choosing which rendition to request next.
+### References and further reading
 
-*(Answers: 1. Renditions; 2. False — more advanced players adjust proactively/predictively, not only after a stall; 3. Current download speed and how much video is already buffered)*
+- [Mux: Adaptive Bitrate Streaming](https://www.mux.com/articles/what-is-adaptive-bitrate-streaming) — a visual introduction to renditions and segments.
+- [Netflix Open Connect](https://openconnect.netflix.com/) — public overview of Netflix's content-delivery architecture.
 
 ---
 *Next byte: **What Happens When Google Maps Finds and Updates Your Route** — back to multi-source thinking, now with a system that has to adapt while you're already moving.*

@@ -15,21 +15,21 @@ isPopular: true
 
 ## S1 — Quick Start
 
-Byte 1 had two parties (sender, recipient). Byte 2 had four (you, your bank, the recipient's bank, NPCI). This byte adds a new wrinkle: **what happens when you track a Swiggy or Zomato order**, where three parties — you, the restaurant, and the rider — all need their statuses to stay in sync, live, on a moving map.
+This Byte explains **what happens when you track a Swiggy or Zomato order**, where the customer, restaurant and rider all need to see useful, timely status updates on a moving map. No earlier Byte is required.
 
-As with the earlier bytes, this is an **illustrative model** based on publicly available system-design write-ups, not an internal disclosure from Swiggy or Zomato.
+This is an **illustrative model** based on publicly available system-design patterns, not an internal disclosure from Swiggy or Zomato.
 
 **Time investment:** 20-25 mins.
 
 ---
 
-## S2 — Meet the Scenario
+## S2 — Start from Basics: Familiar Scenario
 
 Karthik orders lunch while debugging, and idly watches the rider's icon glide smoothly across the map. Meena asks: "How is that not jerky? My phone isn't constantly refreshing that page." Divya says this is actually a great parallel to a feature PaisaWise has discussed — showing customers a live status as their support ticket or refund request moves between stages. Rahul: "So this isn't just food-delivery trivia — it's the same shape as any live status feature."
 
 ---
 
-## S3 — Core Concept
+## S3 — Core Explanation
 
 A food delivery order involves three parties whose status has to stay consistent: the restaurant (preparing the order), the rider (picking it up and moving toward you), and your app (showing you both). The tricky part isn't showing one status — it's continuously updating one specific piece of it, the rider's live location, without your phone having to constantly ask "are we there yet?"
 
@@ -37,7 +37,7 @@ The common approach is to flip who initiates the update: instead of your app rep
 
 ---
 
-## S4 — How It Works Under the Hood
+## S4 — Architecture and Flow
 
 **A simplified flow for how a rider's location reaches your screen:**
 
@@ -65,7 +65,9 @@ Every rider's location changes every few seconds
 
 ---
 
-## S5 — Try It Yourself (Small Snippet)
+## S5 — Interactive Decision Lab
+
+<HowAppsWorkLab variant="tracking" />
 
 **A design exercise, instead of a code snippet:**
 
@@ -73,13 +75,13 @@ Sketch, in the same style as S4, what you think should happen if the rider's pho
 
 ---
 
-## S6 — Real Company Angle
+## S6 — Real-World Scale
 
-Publicly available engineering write-ups on real-time delivery tracking describe rider location updates as small payloads (well under 100 bytes) sent every 2-3 seconds while moving, flowing into a fast in-memory store rather than the primary database, with old entries expiring automatically since they're only useful briefly. These accounts also describe the customer-facing side as animating the rider's marker between updates through interpolation — smoothing the movement — rather than the rider's icon actually jumping in real time to each new coordinate. As with earlier bytes, treat these as commonly-cited illustrative engineering patterns rather than a confirmed disclosure of any specific company's exact system.
+Publicly available engineering write-ups on real-time delivery tracking describe rider location updates as small payloads sent every few seconds while moving. A fast in-memory store can serve the latest position while old entries expire automatically because they are useful only briefly. The customer-facing map can animate the marker between updates through interpolation, creating smooth movement instead of visible jumps. Treat these as common illustrative engineering patterns rather than a confirmed disclosure of any specific company's exact system.
 
 ---
 
-## S7 — Common Mistakes
+## S7 — Failure Cases and Common Mistakes
 
 1. **Assuming your app is constantly asking the server for updates** — as S3 covers, the more common and efficient pattern is the server pushing updates the moment they happen, not your app repeatedly polling.
 2. **Assuming rider location is stored the same way as order history** — as shown in S4, live, rapidly-changing location data is typically handled by a separate, fast, temporary store, distinct from the durable database holding the order's actual state.
@@ -88,13 +90,13 @@ Publicly available engineering write-ups on real-time delivery tracking describe
 
 ---
 
-## S8 — Persona Wrap-Up
+## S8 — Role-Based Application
 
-Meena feels the parallel clearly now: "So a live status tracker for PaisaWise's refund requests could use the same shape — push updates instead of the app asking repeatedly, and a fast temporary store for anything that changes minute-to-minute." Karthik adds: "And we'd need to decide what to show if a step goes quiet for a while, the same way this byte asked about a rider losing signal." Rahul: "Three parties staying in sync is definitely a step up from Byte 1's two — makes me curious what video streaming adds next." Divya: "Different problem entirely — next byte is about smoothness, not synchronization: how Netflix avoids buffering."
+For frontend and backend engineers, the design decision is to separate durable order state from temporary live location. Product and support teams must also define what the customer sees when updates become stale. The same pattern works for shipments, service appointments, field staff and live support queues.
 
 ---
 
-## S9 — Compare & Contrast
+## S9 — Compare User View and System View
 
 | Aspect | Polling ("Are we there yet?") | Push (Server-Initiated Update) |
 |---|---|---|
@@ -105,23 +107,28 @@ Meena feels the parallel clearly now: "So a live status tracker for PaisaWise's 
 
 ---
 
-## S10 — Mini Practice Task
+## S10 — Hands-On Practice
 
 Sketch (in S4's style) what you think happens when a rider is assigned a second delivery on the way to your address — a batched order. What additional status or piece of information would your app need to show that it didn't need before?
 
 ---
 
-## S11 — Key Takeaways
+## S11 — Final Thought and Next Path
 
-- A food delivery order involves three parties (restaurant, rider, customer app) whose statuses need to stay in sync, unlike the two- or four-party flows in earlier bytes.
+- A food delivery order involves three parties — restaurant, rider and customer app — whose statuses need to stay in sync.
 - **Push** (server-initiated updates) is generally more efficient than **polling** (the app repeatedly asking) for anything that changes frequently and unpredictably.
 - Rapidly-changing data like live location is typically handled by a fast, temporary store, separate from the durable database holding the order's actual state.
 - What looks like smooth, continuous motion on a map is often an animated interpolation between periodic real updates, not a live feed of exact position.
 - This byte is presented as an **illustrative model** based on public write-ups, not a confirmed disclosure of any specific company's system.
+- A stale-location indicator is safer than pretending an old coordinate is current.
+- Reconnection logic should restore the latest useful state without replaying every obsolete coordinate.
+- The next learning step is to design how the map behaves during a short network gap.
 
 ---
 
-## S12 — FAQ / Knowledge Check
+## S12 — FAQ, Knowledge Check and References
+
+<KnowledgeCheck question="Which approach best delivers frequent rider-location changes without refreshing the entire page?" options={["A real-time push channel", "A daily batch file", "A static screenshot"]} answer={0} explanation="A persistent real-time channel can push small coordinate updates as they happen." />
 
 **Q1: Does your app typically ask the server "where's my rider?" every few seconds?**
 Not in this model — the more common pattern is the server pushing location updates to your app the moment they change, rather than the app repeatedly asking.
@@ -132,12 +139,10 @@ No — live location is typically handled by a separate, fast, temporary store, 
 **Q3: Does the rider's icon on the map move exactly in real time with their actual position?**
 Not exactly — it's commonly a smoothed, animated interpolation between the last known update points, rather than a continuous live feed.
 
-**Knowledge Check:**
-1. What's the term for the server-initiated approach to sending updates, contrasted with the app repeatedly asking?
-2. True/False: Live rider location is typically written into the same database that stores order history.
-3. Why does the rider's icon appear to move smoothly on the map rather than jumping between points?
+### References and further reading
 
-*(Answers: 1. Push (as opposed to polling); 2. False — it's typically handled by a separate, fast, temporary store; 3. Because the app animates/interpolates the movement between updates rather than showing a live feed)*
+- [MDN WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) — persistent two-way browser and server communication.
+- Public food-delivery system-design studies — real-time location, temporary state and map interpolation patterns.
 
 ---
 *Next byte: **What Happens When Netflix Plays a Video Without Constant Buffering** — a different kind of problem: smoothness under changing network conditions, not multi-party synchronization.*
