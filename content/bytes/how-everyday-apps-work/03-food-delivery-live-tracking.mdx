@@ -11,25 +11,29 @@ order: 3
 isPopular: true
 ---
 
+<ThemeCard title="What you will learn" badge="EVERYDAY APPS HANDBOOK 03">
+
+Follow a rider's location from their phone to the customer's map and recognise stale updates.
+
+</ThemeCard>
+
 <HowAppsWorkVisual variant="tracking" />
 
-## S1 — Quick Start
+## From order to moving dot
 
 This Byte explains **what happens when you track a Swiggy or Zomato order**, where the customer, restaurant and rider all need to see useful, timely status updates on a moving map. No earlier Byte is required.
 
 This is an **illustrative model** based on publicly available system-design patterns, not an internal disclosure from Swiggy or Zomato.
 
-**Time investment:** 20-25 mins.
-
 ---
 
-## S2 — Start from Basics: Familiar Scenario
+## Following lunch on the map
 
 Karthik orders lunch while debugging, and idly watches the rider's icon glide smoothly across the map. Meena asks: "How is that not jerky? My phone isn't constantly refreshing that page." Divya says this is actually a great parallel to a feature PaisaWise has discussed — showing customers a live status as their support ticket or refund request moves between stages. Rahul: "So this isn't just food-delivery trivia — it's the same shape as any live status feature."
 
 ---
 
-## S3 — Core Explanation
+## Location updates and order states
 
 A food delivery order involves three parties whose status has to stay consistent: the restaurant (preparing the order), the rider (picking it up and moving toward you), and your app (showing you both). The tricky part isn't showing one status — it's continuously updating one specific piece of it, the rider's live location, without your phone having to constantly ask "are we there yet?"
 
@@ -37,66 +41,64 @@ The common approach is to flip who initiates the update: instead of your app rep
 
 ---
 
-## S4 — Architecture and Flow
+## How an update reaches your phone
 
 **A simplified flow for how a rider's location reaches your screen:**
 
-```text
-Rider's phone sends GPS coordinates every 2-3 seconds while moving
-  → Coordinates go to the backend (not the main order database directly,
-    but a fast, temporary store built for exactly this kind of data)
-  → Your app holds an open connection to the server for this specific order
-  → The moment new coordinates arrive, the server pushes them to your app
-  → Your app moves the rider's icon smoothly on the map (small in-between
-    steps are animated, so it looks like continuous motion, not jumps)
-```
+1. Rider's phone sends GPS coordinates every 2-3 seconds while moving
+2. Coordinates go to the backend (not the main order database directly,
+3. but a fast, temporary store built for exactly this kind of data)
+4. Your app holds an open connection to the server for this specific order
+5. The moment new coordinates arrive, the server pushes them to your app
+6. Your app moves the rider's icon smoothly on the map (small in-between
+7. steps are animated, so it looks like continuous motion, not jumps)
 
 **Why a temporary, fast store instead of the main database:**
 
-```text
-Every rider's location changes every few seconds
-  → Writing every update into the main order database would overload it
-  → Instead, live location goes into a fast, temporary store (commonly Redis)
-  → Old location data automatically expires — it's only useful for a few
-    seconds anyway
-  → The main database still holds the order's actual state
-    (preparing / picked up / delivered)
-```
+1. Every rider's location changes every few seconds
+2. Writing every update into the main order database would overload it
+3. Instead, live location goes into a fast, temporary store (commonly Redis)
+4. Old location data automatically expires — it's only useful for a few
+5. seconds anyway
+6. The main database still holds the order's actual state
+7. (preparing / picked up / delivered)
 
 ---
 
-## S5 — Interactive Decision Lab
+## Decide what the app should show
+
+<HowAppsWorkJourney variant="tracking" />
 
 <HowAppsWorkLab variant="tracking" />
 
 **A design exercise, instead of a code snippet:**
 
-Sketch, in the same style as S4, what you think should happen if the rider's phone loses network connectivity for two minutes mid-delivery. What should your app show during those two minutes — the last known location, nothing, or something else? What should happen the moment their connection comes back?
+Sketch, in the same style as the earlier section, what you think should happen if the rider's phone loses network connectivity for two minutes mid-delivery. What should your app show during those two minutes — the last known location, nothing, or something else? What should happen the moment their connection comes back?
 
 ---
 
-## S6 — Real-World Scale
+## Tracking at busy-hour scale
 
 Publicly available engineering write-ups on real-time delivery tracking describe rider location updates as small payloads sent every few seconds while moving. A fast in-memory store can serve the latest position while old entries expire automatically because they are useful only briefly. The customer-facing map can animate the marker between updates through interpolation, creating smooth movement instead of visible jumps. Treat these as common illustrative engineering patterns rather than a confirmed disclosure of any specific company's exact system.
 
 ---
 
-## S7 — Failure Cases and Common Mistakes
+## When the dot is late or wrong
 
-1. **Assuming your app is constantly asking the server for updates** — as S3 covers, the more common and efficient pattern is the server pushing updates the moment they happen, not your app repeatedly polling.
-2. **Assuming rider location is stored the same way as order history** — as shown in S4, live, rapidly-changing location data is typically handled by a separate, fast, temporary store, distinct from the durable database holding the order's actual state.
+1. **Assuming your app is constantly asking the server for updates** — as the earlier section covers, the more common and efficient pattern is the server pushing updates the moment they happen, not your app repeatedly polling.
+2. **Assuming rider location is stored the same way as order history** — as shown in the earlier section, live, rapidly-changing location data is typically handled by a separate, fast, temporary store, distinct from the durable database holding the order's actual state.
 3. **Expecting the map marker to jump exactly in sync with the rider's real position** — what you see is often a smoothed, interpolated animation between the last two known points, not a live camera feed of their exact location.
-4. **Not planning for a connectivity gap** — as S5 asks, a rider losing signal briefly is a normal case that a tracking feature needs to handle gracefully, not an edge case to ignore.
+4. **Not planning for a connectivity gap** — as the earlier section asks, a rider losing signal briefly is a normal case that a tracking feature needs to handle gracefully, not an edge case to ignore.
 
 ---
 
-## S8 — Role-Based Application
+## How teams use tracking signals
 
 For frontend and backend engineers, the design decision is to separate durable order state from temporary live location. Product and support teams must also define what the customer sees when updates become stale. The same pattern works for shipments, service appointments, field staff and live support queues.
 
 ---
 
-## S9 — Compare User View and System View
+## What customers see and systems know
 
 | Aspect | Polling ("Are we there yet?") | Push (Server-Initiated Update) |
 |---|---|---|
@@ -107,13 +109,13 @@ For frontend and backend engineers, the design decision is to separate durable o
 
 ---
 
-## S10 — Hands-On Practice
+## Sketch a tracking experience
 
-Sketch (in S4's style) what you think happens when a rider is assigned a second delivery on the way to your address — a batched order. What additional status or piece of information would your app need to show that it didn't need before?
+Sketch (in the earlier section's style) what you think happens when a rider is assigned a second delivery on the way to your address — a batched order. What additional status or piece of information would your app need to show that it didn't need before?
 
 ---
 
-## S11 — Final Thought and Next Path
+## What to remember
 
 - A food delivery order involves three parties — restaurant, rider and customer app — whose statuses need to stay in sync.
 - **Push** (server-initiated updates) is generally more efficient than **polling** (the app repeatedly asking) for anything that changes frequently and unpredictably.
@@ -126,9 +128,7 @@ Sketch (in S4's style) what you think happens when a rider is assigned a second 
 
 ---
 
-## S12 — FAQ, Knowledge Check and References
-
-<HowAppsWorkQuiz variant="tracking" />
+## Questions learners ask
 
 **Q1: Does your app typically ask the server "where's my rider?" every few seconds?**
 Not in this model — the more common pattern is the server pushing location updates to your app the moment they change, rather than the app repeatedly asking.
@@ -139,7 +139,11 @@ No — live location is typically handled by a separate, fast, temporary store, 
 **Q3: Does the rider's icon on the map move exactly in real time with their actual position?**
 Not exactly — it's commonly a smoothed, animated interpolation between the last known update points, rather than a continuous live feed.
 
-### References and further reading
+## Check your understanding
+
+<HowAppsWorkQuiz variant="tracking" />
+
+## Primary sources
 
 - [MDN WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) — persistent two-way browser and server communication.
 - Public food-delivery system-design studies — real-time location, temporary state and map interpolation patterns.

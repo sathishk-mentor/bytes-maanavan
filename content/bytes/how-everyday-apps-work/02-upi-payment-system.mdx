@@ -11,96 +11,97 @@ order: 2
 isPopular: true
 ---
 
+<ThemeCard title="What you will learn" badge="EVERYDAY APPS HANDBOOK 02">
+
+Understand what the app, payment network and banks each do when a UPI payment completes or stays pending.
+
+</ThemeCard>
+
 <HowAppsWorkVisual variant="payment" />
 
-## S1 — Quick Start
+## From scan to confirmation
 
 This Byte traces **what actually happens when you complete a UPI payment** — the flow behind the "Payment Successful" screen you may see dozens of times a month. You do not need to know banking architecture before starting.
 
 This is an **illustrative model** built from publicly available explanations of how UPI works, not an internal disclosure from NPCI or any bank. It is designed to build sound intuition without claiming exact implementation details.
 
-**Time investment:** 20-25 mins.
-
 ---
 
-## S2 — Start from Basics: Familiar Scenario
+## A payment that looks stuck
 
 PaisaWise's own app processes UPI transfers, and support tickets sometimes read: "My payment failed but money got deducted — where did it go?" Rahul admits: "I've always trusted that UPI just works. I don't actually know what happens between tapping Pay and seeing the confirmation." Divya says tracing the payment state will make those support tickets much easier to reason about.
 
 ---
 
-## S3 — Core Explanation
+## The roles of the app, NPCI and banks
 
-A UPI payment looks like a single instant action to the user, but it actually involves at least four parties coordinating: your UPI app (like PaisaWise's own, or Google Pay/PhonePe), your bank, the recipient's bank, and NPCI (the National Payments Corporation of India) sitting in the middle as the switch that routes the request between the two banks. Think of NPCI like a central exchange: your bank and the recipient's bank don't talk to each other directly — they both talk to NPCI, which confirms your identity and balance with your bank, then instructs the recipient's bank to credit the amount.
+A UPI payment looks like a single instant action to the user, but it actually involves at least four parties coordinating: your UPI app (like PaisaWise's own, or Google Pay/PhonePe), your bank, the recipient's bank, and NPCI (the National Payments Corporation of India) sitting in the middle as the switch that routes the request between the two banks. Think of NPCI like a central exchange: NPCI routes payment messages between participants. Your bank handles your account checks and debit; the recipient's bank handles the credit.
 
 This is the same "multiple parties, one of which sits in the middle to coordinate" shape as plenty of other systems — it's worth noticing how often this pattern reappears once you start looking for it.
 
 ---
 
-## S4 — Architecture and Flow
+## Follow one payment
 
 **A simplified flow for a successful UPI payment:**
 
-```text
-You enter amount + recipient's UPI ID, then enter your UPI PIN
-  → Your UPI app sends the request to NPCI
-  → NPCI forwards the request to your bank
-  → Your bank verifies your identity and checks your account balance
-  → Your bank authorizes the debit and tells NPCI
-  → NPCI instructs the recipient's bank to credit the amount
-  → NPCI sends confirmation back to your app, with a reference ID
-  → You see "Payment Successful"
-```
+1. You enter amount + recipient's UPI ID, then enter your UPI PIN
+2. Your UPI app sends the request to NPCI
+3. NPCI forwards the request to your bank
+4. Your bank verifies your identity and checks your account balance
+5. Your bank authorizes the debit and tells NPCI
+6. The payment message reaches the recipient's bank, which processes the credit
+7. NPCI sends confirmation back to your app, with a reference ID
+8. You see "Payment Successful"
 
 **When something goes wrong partway through:**
 
-```text
-You enter amount + recipient's UPI ID, then enter your UPI PIN
-  → Your UPI app sends the request to NPCI
-  → NPCI forwards the request to your bank
-  → Your bank's system times out or the network drops mid-request
-  → Your app doesn't receive a clear "success" or "failure" response
-  → You see "Payment Pending" or no confirmation at all
-  → Reconciliation between banks resolves it — either completing the credit
-    or reversing the debit, usually within a short window
-```
+1. You enter amount + recipient's UPI ID, then enter your UPI PIN
+2. Your UPI app sends the request to NPCI
+3. NPCI forwards the request to your bank
+4. Your bank's system times out or the network drops mid-request
+5. Your app doesn't receive a clear "success" or "failure" response
+6. You see "Payment Pending" or no confirmation at all
+7. Bank status checks and reconciliation determine whether the payment completes or the debit must be reversed
 
 This "pending" state — money debited, but no confirmation received yet — is exactly what a support ticket like Rahul's is describing: the payment isn't lost, it's in an unresolved state that the banks still need to reconcile.
 
 ---
 
-## S5 — Interactive Decision Lab
+## Choose a safe next step
+
+<HowAppsWorkJourney variant="payment" />
 
 <HowAppsWorkLab variant="payment" />
 
 **A design exercise, instead of a code snippet:**
 
-Sketch, in the same style as S4, what you think should happen if you enter the wrong UPI PIN three times in a row. Where should that failure be caught — at your app, at your bank, or at NPCI? What should the recipient's side see, if anything?
+Sketch, in the same style as the earlier section, what you think should happen if you enter the wrong UPI PIN three times in a row. Where should that failure be caught — at your app, at your bank, or at NPCI? What should the recipient's side see, if anything?
 
 ---
 
-## S6 — Real-World Scale
+## What scale changes
 
-Publicly available explanations of UPI describe the payer's bank as verifying "the sender's credentials and account balance" before authorizing a debit with a digital signature, and NPCI as the layer that validates the request and triggers the transfer between banks — the whole exchange typically completing within seconds from the user's perspective, even though full settlement between the banks can reportedly take longer, on the order of a few hours. This gap — instant confirmation to the user, slightly slower settlement between banks — is exactly why a "pending" state can exist even when the eventual outcome is a success.
+At large scale, the payment network must route many requests and keep transaction references so participants can determine the final state when an app or network loses a response. A pending screen means the app has no confirmed outcome yet; check the transaction status before trying again.
 
 ---
 
-## S7 — Failure Cases and Common Mistakes
+## Pending, failed and reversed payments
 
-1. **Assuming "Payment Successful" and "money settled between banks" happen at the same instant** — as S6 notes, the user-facing confirmation and the actual bank-to-bank settlement aren't necessarily simultaneous, which is part of why a "pending" state is a real, expected state and not a bug.
-2. **Treating money as "lost" whenever a payment shows pending or fails after a debit** — as shown in S4, this is typically an unresolved reconciliation state between banks, not money disappearing; it usually resolves through either completion or reversal.
+1. **Assuming "Payment Successful" and "money settled between banks" happen at the same instant** — as the earlier section notes, the user-facing confirmation and the actual bank-to-bank settlement aren't necessarily simultaneous, which is part of why a "pending" state is a real, expected state and not a bug.
+2. **Treating money as "lost" whenever a payment shows pending or fails after a debit** — as shown in the earlier section, this is typically an unresolved reconciliation state between banks, not money disappearing; it usually resolves through either completion or reversal.
 3. **Assuming your bank and the recipient's bank talk to each other directly** — in this illustrative model, they coordinate through NPCI as the middle layer, not directly.
-4. **Not distinguishing where in the flow a failure happened** — a wrong PIN, insufficient balance, and a network timeout are different failure points (S5), and knowing which one occurred changes what a support agent should tell the customer.
+4. **Not distinguishing where in the flow a failure happened** — a wrong PIN, insufficient balance, and a network timeout are different failure points (the earlier section), and knowing which one occurred changes what a support agent should tell the customer.
 
 ---
 
-## S8 — Role-Based Application
+## How teams investigate payments
 
 For product and support teams, the key skill is separating the customer's screen from the authoritative transaction state. For backend engineers, it means using idempotency, status verification and reconciliation before retrying. That combination prevents duplicate payments and gives support teams a precise answer instead of a guess.
 
 ---
 
-## S9 — Compare User View and System View
+## The screen versus the bank record
 
 | What the user sees | What the system must establish |
 |---|---|
@@ -111,13 +112,13 @@ For product and support teams, the key skill is separating the customer's screen
 
 ---
 
-## S10 — Hands-On Practice
+## Trace a pending payment
 
-Using the same S4 flow style, sketch what you think happens when you send money to a UPI ID that doesn't exist (a typo in the recipient's ID). At which step in the chain should that be caught, and what should the sender see?
+Using the flow above, sketch what you think happens when you send money to a UPI ID that doesn't exist (a typo in the recipient's ID). At which step in the chain should that be caught, and what should the sender see?
 
 ---
 
-## S11 — Final Thought and Next Path
+## What to remember
 
 - A UPI payment involves at least four coordinating parties: your app, your bank, the recipient's bank, and NPCI as the routing layer in the middle.
 - This byte presents an **illustrative model**, not an official disclosure of NPCI's or any bank's exact systems.
@@ -130,9 +131,7 @@ Using the same S4 flow style, sketch what you think happens when you send money 
 
 ---
 
-## S12 — FAQ, Knowledge Check and References
-
-<HowAppsWorkQuiz variant="payment" />
+## Questions learners ask
 
 **Q1: Do your bank and the recipient's bank communicate directly during a UPI payment?**
 In this illustrative model, no — they coordinate through NPCI, which sits in the middle and routes the request between them.
@@ -143,7 +142,11 @@ No — it typically reflects an unresolved reconciliation between banks, which u
 **Q3: Why can a payment be confirmed to the user instantly, but settlement between banks take longer?**
 Because the user-facing confirmation and the full bank-to-bank settlement are reportedly two different steps in the process, not one simultaneous event.
 
-### References and further reading
+## Check your understanding
+
+<HowAppsWorkQuiz variant="payment" />
+
+## Primary sources
 
 - [NPCI UPI](https://www.npci.org.in/product/upi) — official UPI product overview and participant model.
 - Razorpay Learn — beginner-friendly explanations of UPI payment flow and transaction states.

@@ -11,25 +11,29 @@ order: 5
 isPopular: true
 ---
 
+<ThemeCard title="What you will learn" badge="EVERYDAY APPS HANDBOOK 05">
+
+Understand how maps compare routes, estimate travel time and reroute when traffic changes.
+
+</ThemeCard>
+
 <HowAppsWorkVisual variant="routing" />
 
-## S1 — Quick Start
+## From destination to ETA
 
 This Byte explains **how Google Maps finds a route and keeps updating it while you are already driving**. The core idea is combining patterns learned from the past with live conditions, then changing the route only when an alternative is meaningfully better.
 
 This is an **illustrative model** based on Google's public explanations of how Maps predicts traffic, not a full disclosure of every internal system.
 
-**Time investment:** 20-25 mins.
-
 ---
 
-## S2 — Start from Basics: Familiar Scenario
+## A trip that reroutes
 
 Rahul is driving to a client meeting using Maps, and it quietly reroutes him around a jam he cannot see yet. Karthik, in the passenger seat, asks: "How did it know that was coming?" Divya suggests separating the visible route from the signals and predictions used to build it.
 
 ---
 
-## S3 — Core Explanation
+## Road networks and travel times
 
 Google Maps' routing has two ingredients working together: **historical patterns** (how this road typically behaves at this time on this day — reliably slow at 6pm on a weekday, say) and **live conditions** (what's actually happening right now, inferred from aggregated, anonymized location data from people currently on the road). Neither one alone is enough: historical patterns miss today's unexpected accident, and live conditions alone can't predict what's about to happen five minutes ahead on a road you haven't reached yet.
 
@@ -37,66 +41,64 @@ This is the same "combine what usually happens with what's happening right now" 
 
 ---
 
-## S4 — Architecture and Flow
+## How a route gets chosen
 
 **A simplified flow for getting a route when you start navigation:**
 
-```text
-You enter a destination
-  → Maps checks historical traffic patterns for this road, this time, this day
-  → Maps checks live conditions, inferred from aggregated location data
-    of people currently on nearby roads
-  → Machine learning combines both into a traffic prediction
-  → Maps also factors in road quality, road size, tolls, and any
-    user-reported incidents (accidents, closures)
-  → Maps proposes the route(s) with the best predicted time
-```
+1. You enter a destination
+2. Maps checks historical traffic patterns for this road, this time, this day
+3. Maps checks live conditions, inferred from aggregated location data
+4. of people currently on nearby roads
+5. Machine learning combines both into a traffic prediction
+6. Maps also factors in road quality, road size, tolls, and any
+7. user-reported incidents (accidents, closures)
+8. Maps proposes the route(s) with the best predicted time
 
 **What happens while you're already driving:**
 
-```text
-You're partway through your route
-  → Maps continuously re-checks live conditions ahead of you
-  → If it predicts unexpected congestion on your current path
-  → Maps compares your current route's predicted time against alternatives
-  → If an alternative is meaningfully faster, Maps reroutes you automatically
-  → If not, Maps keeps you on the current route without interrupting you
-```
+1. You're partway through your route
+2. Maps continuously re-checks live conditions ahead of you
+3. If it predicts unexpected congestion on your current path
+4. Maps compares your current route's predicted time against alternatives
+5. If an alternative is meaningfully faster, Maps reroutes you automatically
+6. If not, Maps keeps you on the current route without interrupting you
 
 ---
 
-## S5 — Interactive Decision Lab
+## Choose when to reroute
+
+<HowAppsWorkJourney variant="routing" />
 
 <HowAppsWorkLab variant="routing" />
 
 **A design exercise, instead of a code snippet:**
 
-Sketch, in the same style as S4, what you think should happen if two different roads both look equally fast according to live conditions, but historical data shows one of them is usually far more reliable (fewer surprises) at this time of day. Which route should Maps prefer, and why?
+Sketch, in the same style as the earlier section, what you think should happen if two different roads both look equally fast according to live conditions, but historical data shows one of them is usually far more reliable (fewer surprises) at this time of day. Which route should Maps prefer, and why?
 
 ---
 
-## S6 — Real-World Scale
+## Routing across a city
 
 Google's public explanation describes combining historical traffic patterns with live conditions and using machine learning to predict how road conditions may change. Historical data supplies the normal pattern for a road and time of day; live signals reveal unusual conditions today. Together they provide a stronger ETA than either input alone.
 
 ---
 
-## S7 — Failure Cases and Common Mistakes
+## When the ETA goes wrong
 
-1. **Assuming Maps only reacts to traffic that's already happened** — as S6 shows, historical patterns let it anticipate predictable slowdowns (like a 6pm rush) before they're visible in live data at all.
+1. **Assuming Maps only reacts to traffic that's already happened** — as the earlier section shows, historical patterns let it anticipate predictable slowdowns (like a 6pm rush) before they're visible in live data at all.
 2. **Assuming live traffic data comes from official sensors alone** — this model relies heavily on aggregated, anonymized location data from people currently using the app, not just fixed road sensors.
-3. **Expecting a reroute the instant any alternative is even slightly faster** — as S4 shows, rerouting typically happens when an alternative is meaningfully better, not for marginal differences that wouldn't be worth the disruption.
-4. **Treating road distance as the same thing as predicted travel time** — as S3 covers, road quality, congestion prediction, and incidents all factor in; the shortest route by distance isn't necessarily the one Maps proposes.
+3. **Expecting a reroute the instant any alternative is even slightly faster** — as the earlier section shows, rerouting typically happens when an alternative is meaningfully better, not for marginal differences that wouldn't be worth the disruption.
+4. **Treating road distance as the same thing as predicted travel time** — as the earlier section covers, road quality, congestion prediction, and incidents all factor in; the shortest route by distance isn't necessarily the one Maps proposes.
 
 ---
 
-## S8 — Role-Based Application
+## How teams evaluate routes
 
 For navigation, logistics and dispatch teams, the useful skill is deciding which signals belong in the ETA and when a reroute is worth disrupting the user. Engineers combine graph search with historical and live weights; product teams define the improvement threshold and a clear explanation for route changes.
 
 ---
 
-## S9 — Compare User View and System View
+## What drivers see and maps estimate
 
 | What the user sees | What the routing system evaluates |
 |---|---|
@@ -107,13 +109,13 @@ For navigation, logistics and dispatch teams, the useful skill is deciding which
 
 ---
 
-## S10 — Hands-On Practice
+## Trace an alternate route
 
 Imagine a route with two options: Route A normally takes 25 minutes but currently has an accident; Route B normally takes 31 minutes and is moving normally. Write three inputs the routing system should consider, then decide whether it should reroute the driver. Explain what improvement threshold you used and why.
 
 ---
 
-## S11 — Final Thought and Next Path
+## What to remember
 
 - Google Maps' routing combines **historical patterns** (what usually happens) with **live conditions** (what's happening right now), since neither alone is sufficient.
 - Rerouting mid-drive happens when an alternative is predicted to be meaningfully better, not for every marginal difference.
@@ -126,9 +128,7 @@ Imagine a route with two options: Route A normally takes 25 minutes but currentl
 
 ---
 
-## S12 — FAQ, Knowledge Check and References
-
-<HowAppsWorkQuiz variant="routing" />
+## Questions learners ask
 
 **Q1: Does Google Maps rely only on historical traffic patterns, or only on live data?**
 Neither alone — it combines both, since historical patterns miss today's surprises and live data alone can't predict what's coming a few minutes ahead.
@@ -139,7 +139,11 @@ Typically not — rerouting happens when an alternative is meaningfully better, 
 **Q3: Why is a reroute threshold useful?**
 It prevents frequent route changes for tiny predicted savings and preserves a stable, understandable driving experience.
 
-### References and further reading
+## Check your understanding
+
+<HowAppsWorkQuiz variant="routing" />
+
+## Primary sources
 
 - [Google Maps 101](https://blog.google/products/maps/google-maps-101-how-ai-helps-predict-traffic-and-determine-routes/) — how AI and live traffic data help predict routes and ETAs.
 - [Google Maps Platform Routes](https://developers.google.com/maps/documentation/routes) — route computation and traffic-aware routing concepts.
