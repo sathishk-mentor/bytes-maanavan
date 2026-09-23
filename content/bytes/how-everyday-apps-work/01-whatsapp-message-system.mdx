@@ -13,23 +13,21 @@ isPopular: true
 
 <HowAppsWorkVisual variant="messaging" />
 
-## S1 — Quick Start
+## Your message’s journey
 
 This Byte starts with a simple question: **what actually happens when you send a WhatsApp message?** An app many people use every day is a practical way to understand queues, storage and delivery states before those terms appear in a system-design discussion.
 
 A note before we start: WhatsApp's exact internal architecture isn't fully public. What follows is an **illustrative model** — a reasonable, widely-referenced simplification of how a messaging app like this could work, useful for building intuition, not a claim about WhatsApp's precise current systems.
 
-**Time investment:** 20-25 mins.
-
 ---
 
-## S2 — Start from Basics: Familiar Scenario
+## A message to a friend
 
 PaisaWise is interviewing backend engineering candidates, and Meena sits in on one round out of curiosity. The interviewer asks: "Walk me through what happens when you send a WhatsApp message." Meena is puzzled afterward: "That's such an odd question for a fintech role — why does that come up so often?" Karthik laughs: "Because it's not really about WhatsApp. It's testing whether you can reason about a system — what happens when things go right, and what happens when they don't."
 
 ---
 
-## S3 — Core Explanation
+## What the ticks actually mean
 
 Think about the button you tap to send a WhatsApp message. From where you're sitting, it feels instant — the message just appears on the other side. But that one tap sets off a small journey: your message has to leave your phone, reach WhatsApp's servers, figure out where the recipient is, get to them (or wait if it can't), and let you know what happened at each step.
 
@@ -37,31 +35,27 @@ That journey — send, route, deliver, confirm, and handle the cases where somet
 
 ---
 
-## S4 — Architecture and Flow
+## From send to delivery
 
 **A simplified flow for what happens when you send a message to someone who's online:**
 
-```text
-You tap Send
-  → Message leaves your phone, reaches a WhatsApp server
-  → Server figures out the recipient is currently connected
-  → Server forwards the message to the recipient's device
-  → Recipient's phone confirms it arrived
-  → You see the tick status update
-```
+1. You tap Send
+2. Message leaves your phone, reaches a WhatsApp server
+3. Server figures out the recipient is currently connected
+4. Server forwards the message to the recipient's device
+5. Recipient's phone confirms it arrived
+6. You see the tick status update
 
 **When the recipient is offline, the flow branches:**
 
-```text
-You tap Send
-  → Message leaves your phone, reaches a WhatsApp server
-  → Server checks: is the recipient currently connected? No.
-  → Message is held ("queued") on the server, waiting
-  → Recipient's phone reconnects later
-  → Server delivers the held message
-  → Recipient's phone confirms it arrived
-  → You see the tick status update, now that delivery happened
-```
+1. You tap Send
+2. Message leaves your phone, reaches a WhatsApp server
+3. Server checks: is the recipient currently connected? No.
+4. Message is held ("queued") on the server, waiting
+5. Recipient's phone reconnects later
+6. Server delivers the held message
+7. Recipient's phone confirms it arrived
+8. You see the tick status update, now that delivery happened
 
 This "hold onto something until the receiving side is ready" pattern is often called a **queue** — a very common building block anywhere a sender and a receiver aren't guaranteed to be active at the same moment.
 
@@ -73,38 +67,38 @@ This "hold onto something until the receiving side is ready" pattern is often ca
 
 ---
 
-## S5 — Interactive Decision Lab
+## Choose what happens next
 
 <HowAppsWorkLab variant="messaging" />
 
 **A design exercise, instead of a code snippet:**
 
-Sketch out, in the same style as S4, what you think happens when you send a message to someone whose phone is completely switched off for three days, and they only turn it back on afterward. Where does your message sit during those three days? What has to happen the moment their phone reconnects?
+Sketch out, in the same style as the earlier section, what you think happens when you send a message to someone whose phone is completely switched off for three days, and they only turn it back on afterward. Where does your message sit during those three days? What has to happen the moment their phone reconnects?
 
 ---
 
-## S6 — Real-World Scale
+## What changes for millions of messages
 
 Engineering accounts of WhatsApp's systems that are widely cited in the industry describe a scale of roughly 40 billion messages handled daily, reportedly run historically by a strikingly small backend team — often cited as around 50 engineers, with fewer than a dozen focused specifically on core messaging infrastructure. These accounts describe the backend as built on Erlang, a programming language designed for exactly this kind of problem: managing huge numbers of independent, lightweight "conversations" happening at once, so that one user's connection doesn't block or slow down another's. It's worth repeating: these are commonly-cited illustrative figures from third-party engineering write-ups, not an official architecture disclosure from WhatsApp itself — but the underlying pattern (small teams can run massive scale when the system design fits the problem) is a useful lesson regardless of the exact numbers.
 
 ---
 
-## S7 — Failure Cases and Common Mistakes
+## When delivery is delayed
 
-1. **Assuming a single grey tick always means "they're ignoring me" or "they've blocked me"** — as covered in S4, it typically just means the message hasn't reached their device yet; WhatsApp is reportedly designed so that offline and blocked look identical, precisely to keep blocking private.
+1. **Assuming a single grey tick always means "they're ignoring me" or "they've blocked me"** — as covered in the earlier section, it typically just means the message hasn't reached their device yet; WhatsApp is reportedly designed so that offline and blocked look identical, precisely to keep blocking private.
 2. **Assuming messages travel directly from one phone to another** — in this illustrative model, messages are routed through a server in between (a "store-and-forward" pattern), not sent phone-to-phone directly, even though the content itself is end-to-end encrypted so the server can't read it.
 3. **Treating "delivered" and "read" as the same thing** — double grey ticks and blue ticks answer two different questions (did it arrive vs. was it displayed); conflating them leads to wrong conclusions about what the other person actually knows.
 4. **Assuming everything about a messaging app's actual internals is publicly documented** — as this byte states upfront, this is an illustrative model built from public write-ups and reasonable inference, not confirmed internal architecture.
 
 ---
 
-## S8 — Role-Based Application
+## How teams use this model
 
 For a backend developer, the useful skill is not memorising WhatsApp internals. It is recognising the reusable pattern: accept work, hold it safely when the receiver is unavailable, and confirm delivery only after the next system has accepted it. The same reasoning applies to notifications, email delivery, background jobs and device synchronisation.
 
 ---
 
-## S9 — Compare User View and System View
+## What you see and what the system knows
 
 | What You See as a User | What's Likely Happening Underneath (Illustrative) |
 |---|---|
@@ -115,13 +109,13 @@ For a backend developer, the useful skill is not memorising WhatsApp internals. 
 
 ---
 
-## S10 — Hands-On Practice
+## Try tracing a group message
 
-Using the same S4 flow style, sketch what you think happens when you send one message to a WhatsApp group of 50 people, where 10 of them are currently offline. What has to happen differently compared to a one-to-one message?
+Using the flow above, sketch what you think happens when you send one message to a WhatsApp group of 50 people, where 10 of them are currently offline. What has to happen differently compared to a one-to-one message?
 
 ---
 
-## S11 — Final Thought and Next Path
+## What to remember
 
 - Tracing a familiar app's flow — send, route, deliver, confirm, handle the exceptions — builds the same reasoning habit that system design interviews test for.
 - This byte presents an **illustrative model**, not WhatsApp's confirmed internal architecture, since the exact current systems aren't fully public.
@@ -134,9 +128,7 @@ Using the same S4 flow style, sketch what you think happens when you send one me
 
 ---
 
-## S12 — FAQ, Knowledge Check and References
-
-<HowAppsWorkQuiz variant="messaging" />
+## Questions learners ask
 
 **Q1: Is this byte describing WhatsApp's exact, confirmed internal architecture?**
 No — it's an illustrative model built from public engineering write-ups and reasonable simplification, useful for building intuition, not a confirmed technical disclosure.
@@ -147,7 +139,11 @@ The recipient's device likely isn't currently connected, so the message is queue
 **Q3: Do messages travel directly from one phone to another in this model?**
 No — in this illustrative model, they route through a server in between, even though the message content itself is end-to-end encrypted.
 
-### References and further reading
+## Check your understanding
+
+<HowAppsWorkQuiz variant="messaging" />
+
+## Primary sources
 
 - [WhatsApp Security](https://faq.whatsapp.com/990878486361178/) — public explanation of end-to-end encryption and message protection.
 - ByteByteGo — introductory messaging-system design patterns, including queues and delivery states.
