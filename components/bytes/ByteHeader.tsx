@@ -1,12 +1,17 @@
 import Link from 'next/link';
 import {
   Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, CheckCircle2, ChevronRight, Clock3, Code2,
-  Container, Database, FileCode2, FileSearch, FileText, Gauge, GitPullRequestArrow, HardDrive, KeyRound, MessageSquareText, Network, Rocket, ScanSearch, Search, Server, ShieldCheck, Sparkles, TestTube2, Users, Wrench,
+  Container, MapPin, Database, FileCode2, FileSearch, FileText, Gauge, GitPullRequestArrow, HardDrive, KeyRound, MessageSquareText, Network, Rocket, ScanSearch, Search, Server, ShieldCheck, Sparkles, TestTube2, Users, Wrench,
 } from 'lucide-react';
 import { ByteMetadata } from '@/lib/types';
 import { getCategoryBySlug } from '@/lib/categories';
 
 const handbookHeroes = {
+  '01-what-happens-when-you-send-whatsapp-message': { label: 'MESSAGE JOURNEY', icon: MessageSquareText, steps: [[MessageSquareText, 'Send'], [Server, 'Route'], [Clock3, 'Wait or deliver'], [CheckCircle2, 'Confirm']] },
+  '02-what-happens-when-you-complete-upi-payment': { label: 'UPI PAYMENT FLOW', icon: ShieldCheck, steps: [[KeyRound, 'Authorize'], [Network, 'Route'], [Database, 'Bank update'], [CheckCircle2, 'Confirm']] },
+  '03-how-live-food-delivery-tracking-works': { label: 'LIVE TRACKING', icon: MapPin, steps: [[Users, 'Rider'], [MapPin, 'Location'], [Server, 'Update'], [Gauge, 'Map']] },
+  '04-how-netflix-adaptive-streaming-works': { label: 'ADAPTIVE PLAYBACK', icon: Gauge, steps: [[Server, 'Video chunks'], [Network, 'Transfer'], [Database, 'Buffer'], [Gauge, 'Quality']] },
+  '05-how-google-maps-routing-and-rerouting-works': { label: 'ROUTE AND REROUTE', icon: MapPin, steps: [[MapPin, 'Destination'], [Network, 'Roads'], [Gauge, 'Traffic'], [CheckCircle2, 'Route']] },
   '01-what-is-an-ai-agent-from-answering-to-taking-action': { label: 'REPLY TO RESOLUTION', icon: Bot, steps: [[MessageSquareText, 'Question'], [Bot, 'Choose'], [Wrench, 'Use tool'], [CheckCircle2, 'Resolve']] },
   '02-how-an-ai-agent-works-goal-reasoning-tools-actions': { label: 'AGENT DECISION LOOP', icon: Network, steps: [[Users, 'Goal'], [Bot, 'Reason'], [Wrench, 'Act'], [ScanSearch, 'Observe']] },
   '03-tools-knowledge-memory-explained-simply': { label: 'USE-CASE FIT', icon: Gauge, steps: [[Search, 'Find task'], [Clock3, 'Measure time'], [ShieldCheck, 'Check risk'], [CheckCircle2, 'Pilot']] },
@@ -65,7 +70,7 @@ function TopicHeroVisual({ slug }: { slug: string }) {
         {index < visual.steps.length - 1 && <ChevronRight className="topic-hero-arrow" />}
       </div>)}
     </div>
-    <footer><span></span>Evidence and accountable ownership guide every stage</footer>
+    <footer><span></span>{slug.includes('how-') || slug.includes('upi-payment') ? 'Follow the events behind what you see on screen' : 'Evidence and accountable ownership guide every stage'}</footer>
   </aside>;
 }
 
