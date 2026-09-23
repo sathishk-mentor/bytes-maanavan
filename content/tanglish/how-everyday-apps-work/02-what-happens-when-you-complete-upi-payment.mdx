@@ -1,132 +1,80 @@
-<ThemeCard title="Enna kathukkap poreenga" badge="EVERYDAY APPS HANDBOOK 02">
+<ThemeCard title="Indha Byte-la enna puriyum?" badge="EVERYDAY APPS · 02">
 
-Indha familiar app-oda flow-ai step-by-step purinjukittu, user-ku theriyra status-um system-la nadakkura event-um epdi connect aagudhu-nu explain panna mudiyum.
+Pay tap pannadhum success screen varradhukkum idaiyila app, payment network, rendu banks enna role play pannudhu-nu puriyum. Pending aana udane repeat payment pannaama enna check pannanum-nu theriyum.
 
 </ThemeCard>
 
 <HowAppsWorkVisual variant="payment" />
 
-## Scan-lendhu confirmation varai
+## ₹500 payment: screen-la success varradhukku munnadi
 
-Indha Byte **oru UPI payment complete pannumbodhu actual-a enna nadakkuthu**-nu trace pannuthu. "Payment Successful" screen-oda pinnaadi irukkura flow-ai purinjukka banking architecture experience thevai illai.
+Rahul tea kadai-la QR scan panni ₹500 pay pannuraar. App “Processing…” nu kaattudhu. Account-la debit notification vandhudhu. Kadai owner-ku credit confirm aagala.
 
-Idhu publicly available UPI explanations-la irundhu build pannina oru **illustrative model**; NPCI illa bank-oda internal disclosure illai. Exact implementation claim pannaama, reliable mental model build pannuradhu-thaan goal.
+**Rahul:** “Money poiducha? Naan marubadiyum pay pannalama?”  
+**Divya:** “First transaction status and reference check pannuvom. Debit notification mattum final result illa.”
 
----
+Indha moment-la payment “pending” aagalam. App-ku final response varalai-na, actual outcome-ai verify pannanum.
 
-## Payment stuck aana moment
+<HowAppsWorkJourney variant="payment" language="tanglish" />
 
-PaisaWise app UPI transfers process pannuthu. Support ticket-la: "Payment fail aayiduchu, aana money deduct aayiduchu — enna aachu?" Rahul-kku Pay tap pannuradhukkum final confirmation varradhukkum idaiyila enna nadakkuthu-nu clear-a theriyala. Divya transaction state-ai trace panna sonnaanga.
+## Yaar enna pannuraanga?
 
----
+| Participant | Main role |
+|---|---|
+| UPI app | Pay request create panni status kaattum |
+| NPCI UPI network | Participant banks idaiyila payment messages route pannum |
+| Rahul-oda bank | Authentication, available funds and debit-ai handle pannum |
+| Kadai owner-oda bank | Recipient account credit and response-ai handle pannum |
 
-## App, NPCI, banks-oda roles
+**Important:** PIN verify and account balance check bank-side responsibilities. NPCI-ai ellathaiyum check panra “super bank” madhiri imagine panna vendam.
 
-Oru UPI payment, user-ku oru single instant action madhiri kaamikkum, aana actual-a idhula konjum-nu-paathaal moonu parties coordinate aaguthu: unga UPI app (PaisaWise-oda sondha adhu, illa Google Pay/PhonePe), unga bank, recipient-oda bank, and NPCI (National Payments Corporation of India) — idhu mella irukkura switch, rendu banks idaiyila request-ai route pannuthu. NPCI-ai oru central exchange madhiri nenachukonga: unga bank-um recipient-oda bank-um direct-a pesikkaadhu — rendum NPCI-oda-koodave pesum, adhu unga identity-um balance-aium unga bank-oda-koodave confirm panni, aprom recipient-oda bank-ku amount-ai credit panna instruct pannum.
+## Successful flow-ai follow pannunga
 
-Idhu vera palavagai systems-la irukkura "multiple parties, adhula ondru mella irundhu coordinate pannuthu" adhe shape-thaan — idha neenga paakka start pannitanaa, idhu edenglaam repeat aaguthu-nu kaamikka mudiyum.
+1. Rahul recipient name, amount check panni UPI PIN enter pannuraar.
+2. App payment request-ai network vazhiya send pannudhu.
+3. Rahul-oda bank authorization and debit process pannudhu.
+4. Recipient bank credit process pannudhu; participants result-ai exchange pannuraanga.
+5. App confirmed result and transaction reference-ai kaattudhu.
 
----
+Indha steps oru **simplified learning model**. Specific app and bank implementation details vary aagalam.
 
-## Oru payment-ai follow pannunga
+## Response varama timeout aana?
 
-**Oru successful UPI payment-ku oru simplified flow:**
-
-1. You enter amount + recipient's UPI ID, then enter your UPI PIN
-2. Your UPI app sends the request to NPCI
-3. NPCI forwards the request to your bank
-4. Your bank verifies your identity and checks your account balance
-5. Your bank authorizes the debit and tells NPCI
-6. NPCI instructs the recipient's bank to credit the amount
-7. NPCI sends confirmation back to your app, with a reference ID
-8. You see "Payment Successful"
-
-**Idaiyila edhavadhu wrong-a ponaa:**
-
-1. You enter amount + recipient's UPI ID, then enter your UPI PIN
-2. Your UPI app sends the request to NPCI
-3. NPCI forwards the request to your bank
-4. Your bank's system times out or the network drops mid-request
-5. Your app doesn't receive a clear "success" or "failure" response
-6. You see "Payment Pending" or no confirmation at all
-7. Reconciliation between banks resolves it — either completing the credit
-8. or reversing the debit, usually within a short window
-
-Idhu "pending" state — money debit aayiduchu, aana confirmation innum kidaikkala — Rahul-oda support ticket madhiri-ye-thaan describe pannuthu: payment lost aaga-ala, idhu oru unresolved state-la irukku, andha banks innum reconcile pannanum mattum-thaan.
-
----
-
-## Safe-aana adutha step
+Debit process aana piragum app-ku final response varaama pogalam. App “pending” nu kaattumbodhu rendu possibilities irukku: payment complete aagirukkalam; illa final-a fail/reverse aagalam. Screen-la uncertainty irukkaradhunaala result-ai guess panna koodadhu.
 
 <HowAppsWorkLab variant="payment" />
 
-**Code snippet-ku pathila, oru design exercise:**
+**Safe next step:** App transaction history-la status and reference check pannunga. Bank statement or official support-la verify pannunga. Same recipient-ku udane marubadiyum pay pannina duplicate payment risk irukku. Final outcome-ku applicable bank/NPCI dispute process follow pannunga.
 
-mela irukkura section-la irukkura adhe style-la, neenga wrong UPI PIN-ai moonu thadava thodarndhu-thodarndhu enter pannina enna nadakkanum-nu sketch pannunga. Andha failure evide catch aaganum — unga app-la-ye, unga bank-la, illa NPCI-la? Recipient side-la enna kaamikka venum, edhavadhu irundha?
+## Team idhai epdi design pannum?
 
----
+Support team “debit notification = success” nu solla koodadhu. Engineering team same request retry aana duplicate debit varama **idempotency** use pannalam. Reconciliation means participants-oda records compare panni final state kandupidikkaradhu. Customer-ku “checking status” nu honest-a kaattanum.
 
-## Scale adhigam aana
+## Neenga paakradhu vs actual state
 
-UPI-ai patri publicly available irukkura explanations, payer-oda bank-ai, oru digital signature-oda debit-ai authorize pannuradhukku munnadi "sender-oda credentials and account balance"-ai verify pannuthu-nu describe pannuthu, and NPCI-ai, request-ai validate panni banks idaiyila transfer-ai trigger panra layer-a — muzhuvadhum exchange, usually user-oda perspective-la seconds-ku ulla-ye complete aaguthu, aana banks idaiyila full settlement, report pannina padi konjum jaasthi neram edukkalam, oru rendu moonu mani hours varaikkum. Idhu gap — user-ku instant confirmation, banks idaiyila konjum slow-a irukkura settlement — idhu-thaan eventual outcome oru success-a irundhaalum, oru "pending" state irukkalam-nu artham.
-
----
-
-## Pending, failed, reversed states
-
-1. **"Payment Successful"-um "money banks idaiyila settle aayiduchu"-um adhe moment-la nadakkuthu-nu nenaikkuradhu** — mela irukkura section-la irukkura madhiri, user-facing confirmation-um actual bank-to-bank settlement-um necessarily simultaneous illai, adhu-thaan "pending" state genuine-a irukkalam-nu, bug illai-nu irukkura reason.
-2. **Payment pending kaamikka, illa debit-ku aprom fail aana, money "lost"-nu treat pannuradhu** — mela irukkura section-la kaamikkina madhiri, idhu usually banks idaiyila oru unresolved reconciliation state, money disappear aaga-ala; adhu usually completion illa reversal vazhi resolve aaguthu.
-3. **Unga bank-um recipient-oda bank-um direct-a pesikkum-nu nenaikkuradhu** — indha illustrative model-la, avanga NPCI-ai middle layer-a vachu coordinate pannuraanga, direct-a illai.
-4. **Flow-la evide failure nadandhadhu-nu distinguish panna-ama poradhu** — oru wrong PIN, insufficient balance, and oru network timeout, vera vera failure points (mela irukkura section), and evanavadhu nadandhadhu-nu therinjukonda, support agent customer-ku enna sollanum-nu maathum.
-
----
-
-## Team payment-ai epdi investigate pannum
-
-Product and support teams customer screen-ai authoritative transaction state-lendhu separate-a paakkanum. Backend engineers idempotency, status verification and reconciliation use panni retry pannanum. Idhu duplicate payment-ai prevent pannum; support team guess pannaama exact status explain panna help pannum.
-
----
-
-## Screen vs bank record
-
-| User enna paakkuraar | System enna establish pannanum |
+| App-la theriyradhu | Enna verify pannanum |
 |---|---|
-| PIN accepted | Request authenticate aayiduchu; idhu settlement proof illai |
-| Processing illa pending | Ella participants-kum final state innum authoritative-a illa |
-| Payment successful | Confirmed transaction state and reference available |
-| Failed illa reversed | Debit settle aagala, illa reconciliation money-ai return panniduchu |
+| PIN accepted | Authorization start aachaa? Final credit aachaa? |
+| Pending | Transaction reference-ku final state enna? |
+| Successful | Recipient credit confirm aachaa? |
+| Failed/reversed | Debit return aachaa? Bank record enna solludhu? |
 
----
+## Try pannunga
 
-## Pending payment-ai trace pannunga
-
-mela irukkura section-la irukkura adhe flow style use panni, illaadha oru UPI ID-ku (recipient ID-la oru typo) neenga money anupumbodhu enna nadakkum-nu sketch pannunga. Chain-oda evanavadhu step-la idha catch pannanum, sender enna paakkanum?
-
----
+QR scan pannumbodhu wrong recipient name therinjaal Pay tap panna munnadi enna pannanum? **Answer:** Stop. Recipient name and amount check pannunga. Payment complete aanadhukku appuram recover pannuradhai vida, munnadi check pannuradhu safer.
 
 ## Ninaivil vechukka
 
-- Oru UPI payment-la konjum-nu-paathaal moonu coordinating parties irukkalam: unga app, unga bank, recipient-oda bank, and middle-la routing layer-a NPCI.
-- Indha byte oru **illustrative model**-ai present pannuthu, NPCI-oda illa edhavadhu bank-oda exact systems-oda official disclosure illai.
-- Oru "pending" state, banks idaiyila irukkura oru unresolved reconciliation-ai reflect pannuthu, lost money illai — usually completion illa reversal vazhi resolve aaguthu.
-- User-ku instant confirmation-um banks idaiyila full settlement-um necessarily adhe moment illai, adhu-thaan "pending" oru genuine, expected state-a irukkalam-nu reason.
-- Indha byte-la irukkura "middle layer vazhi coordinate aagura multiple parties" shape, vera systems-la-um neenga paakka start pannitanaa constant-a repeat aaguthu.
-- Timeout failure-oda proof illai; response varradhukku munnadi bank request-ai process pannirukkalam.
-- Idempotency safe retry duplicate payment create pannaama protect pannum.
-- Next practice: invalid recipient illa delayed bank response flow-ai epdi change pannum-nu model pannunga.
-
----
+- Debit notification and final success ore event illa.
+- NPCI route pannum; banks account-side decisions handle pannum.
+- Pending-na outcome unknown; status verify panni dhaan retry decide pannunga.
+- Reference ID dispute and support-ku useful.
 
 ## Common questions
 
-**Q1: Oru UPI payment-la, unga bank-um recipient-oda bank-um direct-a communicate pannuthaa?**
-Indha illustrative model-la, illai — avanga NPCI-oda-koodave coordinate pannuraanga, adhu mella irukku, avangalukku idaiyila request-ai route pannuthu.
+**Pending-na money lost-a?** Illai. Final status confirm aagatha state-nu artham. Official transaction history and bank record-la check pannunga.
 
-**Q2: "Payment Pending" status, money lost aayiduchu-nnu artham-a?**
-Illai — idhu usually banks idaiyila irukkura oru unresolved reconciliation-ai reflect pannuthu, usually adhu oru completed credit-a illa reversed debit-a resolve aaguthu.
-
-**Q3: Oru payment user-ku instant-a confirm aagumbodhu, banks idaiyila settlement yaen jaasthi neram edukkalam?**
-Yaenna user-facing confirmation-um full bank-to-bank settlement-um, report pannina padi, process-la rendu vera steps, oru simultaneous event illai.
+**Timeout-na payment fail-a?** Avasiyam illa. Response lost aagirukkalam; bank processing complete aagirukkalam.
 
 ## Purinjiducha? Quiz
 
@@ -134,5 +82,7 @@ Yaenna user-facing confirmation-um full bank-to-bank settlement-um, report panni
 
 ## Primary sources
 
-- [NPCI UPI](https://www.npci.org.in/product/upi) — official UPI product overview.
-- Razorpay Learn — UPI payment flow and transaction states-ku beginner-friendly explanation.
+- [NPCI UPI](https://www.npci.org.in/product/upi) — UPI participants and payment network overview.
+- [NPCI UPI Help](https://www.npci.org.in/upihelp) — transaction complaint and help routes.
+
+*Next Byte: rider map-la moving dot epdi varudhu-nu paappom.*
