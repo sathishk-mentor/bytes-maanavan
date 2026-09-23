@@ -70,7 +70,7 @@ function TopicHeroVisual({ slug }: { slug: string }) {
         {index < visual.steps.length - 1 && <ChevronRight className="topic-hero-arrow" />}
       </div>)}
     </div>
-    <footer><span></span>{slug.includes('how-') || slug.includes('upi-payment') ? 'Follow the events behind what you see on screen' : 'Evidence and accountable ownership guide every stage'}</footer>
+    <footer><span></span>{slug.includes('how-') || slug.includes('upi-payment') || slug.includes('whatsapp-message') ? 'Follow the events behind what you see on screen' : 'Evidence and accountable ownership guide every stage'}</footer>
   </aside>;
 }
 
