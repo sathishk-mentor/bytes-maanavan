@@ -1,128 +1,77 @@
-<ThemeCard title="Enna kathukkap poreenga" badge="EVERYDAY APPS HANDBOOK 03">
+<ThemeCard title="Indha Byte-la enna puriyum?" badge="EVERYDAY APPS · 03">
 
-Indha familiar app-oda flow-ai step-by-step purinjukittu, user-ku theriyra status-um system-la nadakkura event-um epdi connect aagudhu-nu explain panna mudiyum.
+Rider phone-la location update create aagi, customer map-ku epdi varudhu-nu trace pannuveenga. Dot smooth-a move aaguradhum fresh GPS update varradhum same illa-nu puriyum.
 
 </ThemeCard>
 
 <HowAppsWorkVisual variant="tracking" />
 
-## Order-lendhu moving dot varai
+## Map-la moving dot enga irundhu varudhu?
 
-Indha Byte **Swiggy illa Zomato order-ai track pannumbodhu enna nadakkuthu**-nu explain pannuthu. Customer, restaurant and rider-ku useful-aana live status moving map-la correct-a reach aaganum. Earlier Byte knowledge thevai illai.
+Meena lunch order pannuraanga. App-la rider icon street-la move aagudhu. Karthik kekkiraar: “Map-la dot every second move aagudhe. Rider phone every second exact coordinate send pannudhaa?”
 
-Munnadi irukkura bytes madhiri-ye, idhum publicly available system-design write-ups-la irundhu build pannina oru **illustrative model**, Swiggy illa Zomato-oda internal disclosure illai.
+**Answer:** Avasiyam illa. Rider phone periodic location update send pannalam. App, vandha points idaiyila animation use panni dot-ai smooth-a move panna mudiyum.
 
----
+<HowAppsWorkJourney variant="tracking" language="tanglish" />
 
-## Map-la lunch-ai follow pannunga
+## Rendu data types-ai separate-a paarunga
 
-Karthik debug pannikondu irukkumbodhu lunch order pannuraan, rider-oda icon map-la smooth-a glide panradha idle-a paakkraan. Meena kekkiraanga: "Idhu epdi jerky illama irukku? Enga phone constant-a andha page-ai refresh panna-ala." Divya solraanga idhu actual-a PaisaWise discuss pannina oru feature-oda-koodave oru great parallel-a irukku — customer-oda support ticket illa refund request stages idaiyila pogumbodhu oru live status kaamikka vaikkuradhu. Rahul: "So idhu food-delivery trivia mattum illai — edhavadhu live status feature-oda adhe shape-thaan."
+**Order status:** Restaurant accepted, preparing, picked up, delivered. Idhu business event; reliable-a store pannanum.
 
----
+**Rider location:** Latitude, longitude, update timestamp. Idhu frequent-a change aagum; old position quick-a stale aagum.
 
-## Location updates-um order states-um
+Order “picked up” nu irundhaalum map dot old-a irukkalam. Adhanaala “last updated 2 min ago” madhiri clue customer-ku helpful.
 
-Oru food delivery order-la moonu parties irukkalam, avanga status consistent-a irukkanum: restaurant (order prepare pannuradhu), rider (adha pick up panni unga side-ku move panra adhu), and unga app (rendaium unga-ku kaamikkura adhu). Tricky part, oru status-ai kaamikkuradhu illai — adhu-oda specific ondru piece-ai, rider-oda live location-ai, unga phone constant-a "poganama irukkoma?"-nu kekka venam-arundha vagai continuously update pannuradhu.
+## Oru update-oda journey
 
-Common approach, update-ai evanavadhu initiate pannuthu-nnu flip pannuradhu: unga app server-kitta repeatedly "rider ippo evide irukkaanga?"-nu kekka adhukku (polling-nu peru) pathila, server-thaan rider-oda location maathumbodhu udanadiya unga app-ku *push* pannuthu, oru open-a irukkura connection vazhi (usually WebSockets vazhi). Idha, news check panna oru konjum seconds-kkum oru webpage-ai refresh pannuradhukku, news varra udanadiya varra oru notification-ku subscribe pannuradhukku irukkura difference madhiri nenachukonga — rendavadhu approach fast-um irukkum, scale-la waste-um kuraivum irukkum.
+1. Rider phone GPS-la approximate location edukkum.
+2. Network available-a irundha location update service-ku send pannum.
+3. Service order and rider connection-ai check pannum.
+4. Customer app-ku latest relevant position send pannalam; polling-um use pannalam.
+5. Map latest coordinate-ai kaatti, movement-ai smooth-a animate pannalam.
 
----
+Exact Swiggy/Zomato infrastructure full-a public illa. Idhu real-time tracking-ku oru **illustrative design**, fixed vendor stack claim illa.
 
-## Update phone-ku epdi varudhu
+## Network drop aana enna kaattanum?
 
-**Rider-oda location unga screen-ai epdi adaindhadhu-nnu oru simplified flow:**
-
-1. Rider's phone sends GPS coordinates every 2-3 seconds while moving
-2. Coordinates go to the backend (not the main order database directly,
-3. but a fast, temporary store built for exactly this kind of data)
-4. Your app holds an open connection to the server for this specific order
-5. The moment new coordinates arrive, the server pushes them to your app
-6. Your app moves the rider's icon smoothly on the map (small in-between
-7. steps are animated, so it looks like continuous motion, not jumps)
-
-**Main database-ku pathila oru temporary, fast store yaen use pannuthu:**
-
-1. Every rider's location changes every few seconds
-2. Writing every update into the main order database would overload it
-3. Instead, live location goes into a fast, temporary store (commonly Redis)
-4. Old location data automatically expires — it's only useful for a few
-5. seconds anyway
-6. The main database still holds the order's actual state
-7. (preparing / picked up / delivered)
-
----
-
-## App enna kaattanum?
+Rider underpass-ku pogumbodhu 90 seconds update varalai. Dot-ai road mela imagine panni “live” nu kaattina customer wrong conclusion edukka mudiyum.
 
 <HowAppsWorkLab variant="tracking" />
 
-**Code snippet-ku pathila, oru design exercise:**
+**Meena:** “Rider inge dhaan irukkaar-nu map solludhaa?”  
+**Karthik:** “Last known location inga. Fresh update varala-nu timestamp kaattanum.”
 
-mela irukkura section-la irukkura adhe style-la, delivery mid-la rider-oda phone rendu minutes network connectivity-ai izhandha, enna nadakkanum-nu sketch pannunga. Andha rendu minutes-la unga app enna kaamikkanum — last known location-a, edhuvum illama, illa vera edhavadhu? Avanga connection thirumbi varra moment-la enna nadakkanum?
+Reconnect aana latest useful coordinate kaattanum. Old coordinates ellathaiyum fast-a replay panna customer-ku confusing-a irukkum.
 
----
+## Busy hour-la scale
 
-## Busy hour-la tracking
-
-Real-time delivery tracking-ku publicly available engineering write-ups, rider location updates-ai chinna payloads-a (100 bytes-ku romba kuraiva) describe pannuthu, moving-la irukkumbodhu every 2-3 seconds-ku anuppapadaradha, main database-ku pathila oru fast in-memory store-la poguradha, old entries-um automatic-a expire aaguradhaa-nu — adhu konjum neram mattum-thaan useful. Indha accounts, customer-facing side-aium describe pannuthu, updates idaiyila rider-oda marker-ai interpolation vazhi animate pannuradhu-nu — movement-ai smooth pannuradhu — rider-oda icon actual-a real time-la ovvoru puthu coordinate-ku jump aaga-ama. Munnadi irukkura bytes madhiri-ye, idhaium commonly-cited illustrative engineering patterns-nu treat pannunga, edhavadhu specific company-oda exact system-oda confirmed disclosure illai.
-
----
-
-## Dot late-a illa wrong-a irundha
-
-1. **Unga app constant-a server-kitta updates kekkuthu-nu nenaikkuradhu** — mela irukkura section-la irukkura madhiri, jaasthi common-um efficient-um irukkura pattern, server-thaan edhavadhu nadakkumbodhu udanadiya push pannuradhu, unga app repeatedly poll panna-ama.
-2. **Rider location, order history madhiri adhe vagai store aaguthu-nu nenaikkuradhu** — mela irukkura section-la kaamikkina madhiri, live, rapidly-changing location data, usually oru separate, fast, temporary store vazhi handle aaguthu, order-oda actual state vachirukkura durable database-la irundhu vera.
-3. **Map marker exact-a rider-oda real position-oda-koodave jump aagum-nu expect pannuradhu** — neenga paakkuradhu usually last rendu known points idaiyila oru smoothed, interpolated animation, avanga exact location-oda oru live camera feed illai.
-4. **Connectivity gap-ku plan panna-ama poradhu** — mela irukkura section-la kekkura madhiri, rider konjum neram signal-ai izhandhadhu oru normal case, tracking feature-ku gracefully handle pannanum, ignore panna oru edge case illai.
-
----
-
-## Team tracking signals-ai epdi use pannum
-
-Frontend and backend engineers durable order state-ai temporary live location-lendhu separate panna vendum. Product and support teams updates stale aana customer-ku enna kaamikkanum-nu define pannanum. Shipments, service appointments, field staff and live support queues-la idhe pattern use panna mudiyum.
-
----
+Oru rider mattum illa; thousands of riders update send pannuvaanga. Ella customer-kum ella rider location thevai illa. Andha order-ku related rider updates mattum distribute pannina network load kuraiyum. Update frequency, battery, accuracy, privacy — ellathukkum trade-off irukku.
 
 ## Customer view vs system view
 
-| Aspect | Polling ("Poganama irukkoma?") | Push (Server-Initiated Update) |
-|---|---|---|
-| Update-ai evanavadhu initiate pannuthu | App, repeatedly kekkuthu | Server, edhavadhu maathumbodhu udanadiya |
-| Scale-la efficiency | Wasteful — mostta checks puthusu edhuvum kaamikka-ala | Efficient — venumaana podhu mattum updates anuppappadum |
-| Typical connection type | Repeated short requests | Ondru connection open-a irukkum (madhiri, WebSocket) |
-| User-ku enna madhiri feel aaguthu | Konjum delay, possible staleness | Near-instant updates |
+| Customer paakradhu | System check pannuradhu |
+|---|---|
+| “Picked up” | Order state update |
+| Moving dot | Latest position + display animation |
+| “Last updated” | GPS report timestamp |
+| “Delivered” | Delivery completion event |
 
----
+## Try pannunga
 
-## Tracking experience-ai sketch pannunga
-
-mela irukkura section-oda style-la, oru rider unga address-ku pogumbodhu rendavadhu delivery assign aana, enna nadakkum-nu sketch pannunga (oru batched order). Munnadi venam-arundha, ippo unga app kaamikka venuma additional status illa information enna?
-
----
+Rider phone 3 minutes offline. Customer app-la oru small sentence design pannunga. Example: **“Location update 3 minutes-a varala; order status unchanged.”** Fresh location vandha sentence update aaganum.
 
 ## Ninaivil vechukka
 
-- Oru food delivery order-la restaurant, rider and customer app-nu moonu parties-oda status sync-la irukkanum.
-- **Push** (server-initiated updates), frequently and unpredictably maathra edhavadhukkum, **polling**-vida (app repeatedly kekkuradhu) generally jaasthi efficient.
-- Live location madhiri rapidly-changing data, usually oru fast, temporary store vazhi handle aaguthu, order-oda actual state vachirukkura durable database-la irundhu separate-a.
-- Map-la smooth, continuous motion madhiri kaamikkuradhu, usually periodic real updates idaiyila oru animated interpolation, exact position-oda live feed illai.
-- Indha byte oru **illustrative model**-a present aaguthu, public write-ups-la irundhu build pannina, edhavadhu specific company-oda system-oda confirmed disclosure illai.
-- Old coordinate current-nu pretend pannuradhai vida stale-location indicator safer.
-- Reconnect aagumbodhu obsolete coordinates ellame replay pannaama latest useful state restore aaganum.
-- Next practice: short network gap-la map epdi behave pannanum-nu design pannunga.
-
----
+- Order status and GPS location vera data.
+- Smooth animation exact live movement-ku proof illa.
+- Old location-ai “live” nu sollama timestamp kaattunga.
+- Customer-ku relevant updates mattum send pannunga.
 
 ## Common questions
 
-**Q1: Unga app usually oru konjum seconds-kkum server-kitta "enga rider evide irukkaanga?"-nu kekkuthaa?**
-Indha model-la illai — jaasthi common-a irukkura pattern, server-thaan location updates-ai unga app-ku maathumbodhu udanadiya push pannuthu, app repeatedly kekkuradhukku pathila.
+**WebSocket compulsory-a?** Illai. Push channel or polling — app requirements-ku suitable-aana method choose pannalam.
 
-**Q2: Rider-oda live location, order-oda history vachirukkura adhe database-la usually store aaguthaa?**
-Illai — live location, usually oru separate, fast, temporary store vazhi handle aaguthu, yaenna durable order record-vida idhu romba jaasthi frequently maathum.
-
-**Q3: Map-la rider-oda icon, avanga actual position-oda-koodave exact-a real time-la move aaguthaa?**
-Exact-a illai — idhu commonly last known update points idaiyila oru smoothed, animated interpolation, oru continuous live feed illai.
+**Dot exact location-a?** GPS accuracy, network delay, animation ellam affect pannum; last known estimate-nu paakradhu better.
 
 ## Purinjiducha? Quiz
 
@@ -130,5 +79,7 @@ Exact-a illai — idhu commonly last known update points idaiyila oru smoothed, 
 
 ## Primary sources
 
-- [MDN WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) — browser and server idaiyila persistent two-way communication.
-- Public food-delivery system-design studies — live location, temporary state and map interpolation patterns.
+- [MDN WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) — persistent connection concept.
+- [Android location documentation](https://developer.android.com/training/location) — mobile location signals and constraints.
+
+*Next Byte: video quality change aanaalum playback epdi continue aagudhu?*
