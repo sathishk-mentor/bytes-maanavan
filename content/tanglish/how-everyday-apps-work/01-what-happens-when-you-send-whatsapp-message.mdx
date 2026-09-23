@@ -1,136 +1,77 @@
-<ThemeCard title="Enna kathukkap poreenga" badge="EVERYDAY APPS HANDBOOK 01">
+<ThemeCard title="Indha Byte-la enna puriyum?" badge="EVERYDAY APPS · 01">
 
-Indha familiar app-oda flow-ai step-by-step purinjukittu, user-ku theriyra status-um system-la nadakkura event-um epdi connect aagudhu-nu explain panna mudiyum.
+Oru message Send pannadhu, recipient phone-ku deliver aanadhu, avanga chat-la paathadhu — indha moonum vera vera events. Offline aana message-ku enna nadakkum-nu neengale explain panna mudiyum.
 
 </ThemeCard>
 
 <HowAppsWorkVisual variant="messaging" />
 
-## Message-oda payanam
+## Oru tap-ku appuram enna nadakkum?
 
-Indha Byte oru simple question-la start aaguthu: **neenga WhatsApp message anupumbodhu actual-a enna nadakkuthu?** Daily use panra oru familiar app vazhiya queues, storage, delivery states madhiri system-design concepts-ai beginner-friendly-a purinjukkalam.
+Meena, Karthik-ku WhatsApp-la “Meeting 5 mani-ku” nu message anuppuraanga. Udane oru grey tick varudhu. Karthik-oda phone switch off. Appo message enga irukku? Rendu ticks eppo varum?
 
-Start panna munnadi oru note: WhatsApp-oda exact internal architecture publicly full-a theriyathu. Ippo varra adhu oru **illustrative model** — indha maadhiri oru messaging app epdi work pannalam-nu irukkura oru reasonable, widely-referenced simplification, intuition build panna useful-a irukku, WhatsApp-oda precise current systems-oda claim illai.
+**Simple answer:** Meena-oda phone message-ai anuppum. Messaging service adhai receive panni, recipient available-a irundha deliver pannum. Illaina, later deliver panna hold pannum. Recipient device receive pannina appuram delivery status update aagum.
 
----
+<HowAppsWorkJourney variant="messaging" language="tanglish" />
 
-## Oru friend-ku message
+## Tick-ku oru precise meaning irukku
 
-PaisaWise, backend engineering candidates-ai interview panni irukku, Meena curiosity-la oru round-la sit pannuraanga. Interviewer kekkiraaru: "Neenga oru WhatsApp message anupumbodhu enna nadakkuthu-nu walk me through pannunga." Meena aprom confuse-a irukkaanga: "Idhu oru fintech role-ku romba odd-aana question — idhu yaen constant-a varuthu?" Karthik siripaan: "Yaenna idhu actual-a WhatsApp-ai patri illai. Neenga oru system-ai epdi reason pannureenga-nu test pannuthu — ella-um correct-a nadakkumbodhu enna aaguthu, illama poganaa enna aaguthu."
+| Meena paakradhu | Adhu sollum event |
+|---|---|
+| Oru grey tick | Message service-ku send aayiduchu; recipient device-ku delivery confirm aagala |
+| Rendu grey ticks | Recipient device-ku deliver aayiduchu |
+| Rendu blue ticks | Read receipt available-a irundha, message viewed-nu kaattum |
 
----
+**“Delivered” na “padichuttaanga” nu artham illa.** Read receipts settings, group chats, connection state madhiri details visible ticks-ai affect pannalam. Ticks-ai use panni oruthar enna ninaikkiraanga-nu guess panna koodadhu.
 
-## Ticks enna solludhu?
+## Phone offline aana?
 
-Neenga WhatsApp message anupra button-ai tap panra adha nenachukonga. Unga side-la irundha idhu instant-a irukkum-madhiri feel aaguthu — message andha side-la thaana varra madhiri. Aana andha oru tap, oru chinna journey-ai start pannuthu: unga message unga phone-la irundhu pogaanum, WhatsApp-oda servers-ai adaiyaanum, recipient evide irukkaanga-nu figure out pannaanum, avangalukku pogaanum (illa mudiyaama-na wait pannaanum), and ovvoru step-la enna aaguthu-nu unga-ku theriya vaikkaanum.
+1. Meena Send tap pannuraanga; app message-ai service-ku anuppudhu.
+2. Service recipient-ku delivery try pannudhu.
+3. Karthik phone offline-na, pending delivery state-la message wait pannudhu.
+4. Phone reconnect aanadhum delivery try aagudhu.
+5. Device acknowledgement vandha dhaan delivered status theriyum.
 
-Andha journey — send, route, deliver, confirm, and recipient offline irukkura madhiri straightforward illama irukkura cases-ai handle pannuradhu — idhu almost evvalavu real-world messaging illa notification system-oda-um adhe shape-thaan. Neenga already ella naalum use panra oru app-ku idha trace pannuradhu kathukkuradhu, "okay, aana idaiyila actual-a enna nadakkuthu?"-nu kekkura habit-ai build panna oru low-stakes vazhi — indha habit, WhatsApp-vida romba mele matter aaguthu.
+Idhai **queue** nu nenachukkonga: parcel courier office-la wait pannum; veetla yaaravadhu irukkumbodhu deliver pannuvaanga. Indha analogy delivery timing-ku mattum. WhatsApp-oda exact private infrastructure inga claim pannala.
 
----
-
-## Send-lendhu delivery varai
-
-**Online irukkura yaaravadhukku message anupumbodhu enna nadakkuthu-nnu oru simplified flow:**
-
-1. You tap Send
-2. Message leaves your phone, reaches a WhatsApp server
-3. Server figures out the recipient is currently connected
-4. Server forwards the message to the recipient's device
-5. Recipient's phone confirms it arrived
-6. You see the tick status update
-
-**Recipient offline irundha, flow branch aaguthu:**
-
-1. You tap Send
-2. Message leaves your phone, reaches a WhatsApp server
-3. Server checks: is the recipient currently connected? No.
-4. Message is held ("queued") on the server, waiting
-5. Recipient's phone reconnects later
-6. Server delivers the held message
-7. Recipient's phone confirms it arrived
-8. You see the tick status update, now that delivery happened
-
-Idhu "receiving side ready-a irukkura varaikkum edhavadhu vachu irukkuradhu" pattern, usually oru **queue**-nu solvom — sender-um receiver-um adhe moment-la active-a irupanga-nu guarantee illama irukkura edam ellame romba common-a irukkura oru building block.
-
-**Tick marks commonly enna represent pannuthu-nu irukkalam:**
-
-- **Ondru grey tick:** unga message WhatsApp server-ai adainjirukku, aana recipient-oda device-ai innum adaiyala — usually avanga offline-a irundha.
-- **Rendu grey ticks:** message recipient-oda device-ai adainjirukku (delivered), avanga chat-ai open panna-alum.
-- **Rendu blue ticks:** recipient chat-ai open pannirukaanga, message avanga screen-la display aayiduchu — idhu seen-nu kaamikkuthu, careful-a padichu understand pannirukaanga-nu illai.
-
----
-
-## Adutha step-ai choose pannunga
+## Neenga system designer-na?
 
 <HowAppsWorkLab variant="messaging" />
 
-**Code snippet-ku pathila, oru design exercise:**
+**Karthik:** “En phone three days off. Meena-ku ‘delivered’ nu udane kaattalama?”  
+**Meena:** “Vendam. En phone-la irundhu pochu-nu mattum theriyum; un phone receive pannina appuram dhaan delivery confirmation.”
 
-mela irukkura section-la irukkura adhe style-la, moonu naalku muzhuvadhum switch-off-a irukkura oru phone-ku neenga oru message anupinaa enna nadakkum-nu sketch pannunga, aprom avanga phone-ai thirumbi ON pannuraanga. Andha moonu naal-la unga message evide irukkum? Avanga phone reconnect aagura moment-la enna nadakkanum?
+App-la status, nadandha **event-ai** kaattanum. “We tried” and “it reached the device” rendu separate.
 
----
+## Group message-la enna maarum?
 
-## Millions of messages vandha
+One-to-one-la oru recipient. Group-la many recipients. 50-member group-la 10 per offline-na, online irukkura 40 devices-ku delivery nadakkalam; offline 10-ku later try panna vendum. Oru member offline irukkaradhu naala ellaroda message-um block aaga koodadhu. Each recipient-oda delivery state-ai separately think pannunga.
 
-WhatsApp-oda systems-ai patri industry-la widely cited engineering accounts, daadaapa **40 billion messages** naalonnukku handle panra scale-ai describe pannuthu, historically romba chinna oru backend team run pannirunthudhu-nu often cited-a irukku — daadaapa 50 engineers, adhula 12-ku kuraiva-a mattum core messaging infrastructure-ku specifically focus pannaanga. Indha accounts, backend-ai **Erlang**-la build pannirundhathu-nu describe pannuthu — idhe madhiri problem-ku exact-a design pannirukkura oru programming language: huge numbers of independent, lightweight "conversations" simultaneously manage panna, oru user-oda connection vera oru user-oda connection-ai block panna-ama illa slow panna-ama irukkanum. Idha repeat panna venum: idhu third-party engineering write-ups-la irukkura commonly-cited illustrative figures, WhatsApp-oda sondha official architecture disclosure illai — aana underlying lesson (system design problem-oda fit aana, chinna teams massive scale run panna mudiyum) exact numbers evlo irundhalum useful-a irukkum.
+## Namma view vs system view
 
----
-
-## Delivery delay aana
-
-1. **Ondru grey tick, always "avanga ennai ignore pannuraanga" illa "block pannitanga"-nu artham-nu nenaikkuradhu** — mela irukkura section-la irukkura madhiri, usually idhu message avanga device-ai innum adaiyala-nu artham; blocking-ai private-a vaikka, WhatsApp offline-um blocked-um identical-a kaamikka design pannuthu-nu report aaguthu.
-2. **Messages ondru phone-la irundhu vera phone-ku direct-a poguthu-nu nenaikkuradhu** — indha illustrative model-la, messages idaiyila irukkura oru server vazhi route aaguthu ("store-and-forward" pattern), phone-to-phone direct-a anuppaadhu, message content end-to-end encrypted irundhaalum, server adha padikka mudiyaadhu.
-3. **"Delivered"-um "read"-um onnu-nu treat pannuradhu** — double grey ticks and blue ticks, rendu vera questions-ku answer solluthu (adhu adainjuduchaa vs display aaguduchaa); idha conflate pannuradhu, andha veroru person actual-a enna therinjukanaanga-nu wrong conclusions-ku vazhi vaikkalam.
-4. **Oru messaging app-oda actual internals ellame publicly documented-nu nenaikkuradhu** — indha byte start-la-ye sonna madhiri, idhu public write-ups and reasonable inference-la irundhu build pannina oru illustrative model, confirmed internal architecture illai.
-
----
-
-## Team indha model-ai epdi use pannum
-
-Backend developer-ku useful-a irukkura skill WhatsApp internals-ai memorize pannuradhu illai. Work-ai accept panni, receiver unavailable-a irundha safe-a hold panni, next system accept pannina piragu mattum delivery confirm pannuradhu-thaan reusable pattern. Notifications, email delivery, background jobs and device sync-la idhe reasoning use aagum.
-
----
-
-## Neenga paakradhu vs system-ku theriyradhu
-
-| Neenga Oru User-a Paakkura Adhu | Adhula Nadakkalam (Illustrative) |
+| Screen-la theriyradhu | Behind the screen-la nadakkaradhu |
 |---|---|
-| Send tap pannunga, message vera person-ku "thaana" varra madhiri kaamikkuthu | Message oru server vazhi route aaguthu, recipient online irundha forward pannuthu |
-| Message ondru grey tick-la irukkuthu | Message server-la queue aagiruku, recipient reconnect aagura varaikkum wait pannuthu |
-| Message rendu grey ticks kaamikkuthu | Server, message recipient-oda device-ai adainjadhu-nu confirm pannuthu |
-| Message blue ticks kaamikkuthu | Recipient chat-ai open pannirukaanga, message screen-la display aayiduchu |
+| Send tap | Phone message-ai service-ku submit pannudhu |
+| Oru tick | Recipient delivery innum confirm aagala |
+| Rendu grey ticks | Device delivery acknowledgement |
+| Rendu blue ticks | Available read receipt |
 
----
+## Try pannunga
 
-## Group message-ai trace pannunga
-
-mela irukkura section-la irukkura adhe flow style use panni, 50 people irukkura oru WhatsApp group-ku neenga ondru message anupumbodhu enna nadakkum-nu sketch pannunga, adhula 10 per currently offline-a irukaanga. One-to-one message-ai vida, enna differently nadakkanum?
-
----
+Unga friend train-la network illama travel panraanga. Message-ku oru tick mattum irukku. Avanga network-ku thirumbi vandha appuram enna three events nadakkanum? **Hint:** reconnect → pending delivery → acknowledgement.
 
 ## Ninaivil vechukka
 
-- Oru familiar app-oda flow-ai trace pannuradhu — send, route, deliver, confirm, exceptions-ai handle pannuradhu — system design interviews test panra adhe reasoning habit-ai build pannuthu.
-- Indha byte oru **illustrative model**-ai present pannuthu, WhatsApp-oda confirmed internal architecture illai, yaenna exact current systems full-a public illai.
-- Oru **queue**-thaan "receiving side ready-a irukkura varaikkum idha vachu irukkuradhu"-ku irukkura common pattern — sender-um receiver-um adhe moment-la active-a irupanga-nu guarantee illathapodhu idhu varuthu.
-- Delivery (device-ai adainjadhu) and read (screen-la display aaguradhu) rendu vera confirmations, usually grey ticks and blue ticks-a irukkalam respectively.
-- Indha model-la messages, phone-to-phone direct-a pogaadhu, idaiyila irukkura oru server vazhi route aaguthu, content encrypted irundhaalum server adha padikka mudiyaadhu.
-- Offline delivery normal operating condition; unusual exception illai.
-- Status indicator accepted, delivered, displayed madhiri exact event-ai represent pannanum.
-- Next practice: group message flow-ai sketch panni fan-out enga nadakkum-nu identify pannunga.
-
----
+- Send, deliver, view — moonum ore action illa.
+- Recipient offline iruppadhu normal condition; pending delivery handle pannanum.
+- Status indicator oru real event-ai represent pannanum.
+- Exact WhatsApp internals full-a public illa; indha flow beginner mental model.
 
 ## Common questions
 
-**Q1: Indha byte WhatsApp-oda exact, confirmed internal architecture-ai describe pannuthaa?**
-Illai — idhu public engineering write-ups and reasonable simplification-la irundhu build pannina oru illustrative model, intuition build panna useful-a irukku, confirmed technical disclosure illai.
+**Oru tick-na block pannitaangala?** Adha ticks mattum vechu decide panna mudiyaadhu. Delivery confirmation innum varala-nu mattum sollalam.
 
-**Q2: Oru message romba neram ondru grey tick-la irukkumbodhi, commonly adhukku enna reason irukkalam?**
-Recipient-oda device currently connected-a irukkaadhu irukkalam, adhanaala message server-la queue aagi avanga reconnect aagura varaikkum wait pannuthu — aana WhatsApp idha blocked-oda identical-a kaamikka design pannuthu-nu report aaguthu, blocking-ai private-a vaikka.
-
-**Q3: Indha model-la messages ondru phone-la irundhu vera phone-ku direct-a pogudhaa?**
-Illai — indha illustrative model-la, idaiyila irukkura oru server vazhi route aaguthu, message content end-to-end encrypted irundhaalum.
+**End-to-end encryption irundha service epdi route pannum?** Service delivery-ku thevaiyaana routing information-ai handle pannalam; message content-ai padikka thevai illa.
 
 ## Purinjiducha? Quiz
 
@@ -138,5 +79,7 @@ Illai — indha illustrative model-la, idaiyila irukkura oru server vazhi route 
 
 ## Primary sources
 
-- [WhatsApp Security](https://faq.whatsapp.com/990878486361178/) — end-to-end encryption and message protection pathi public explanation.
-- ByteByteGo — messaging system design-la queues and delivery-state patterns.
+- [WhatsApp Security](https://faq.whatsapp.com/990878486361178/) — message protection pathi official explanation.
+- [WhatsApp Help Center](https://faq.whatsapp.com/) — message status and read receipts pathi help articles.
+
+*Next Byte: UPI payment-la “pending” and “successful” difference-ai trace pannuvom.*
