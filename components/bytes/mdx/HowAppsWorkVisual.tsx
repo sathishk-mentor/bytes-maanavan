@@ -9,12 +9,12 @@ const visuals = {
   payment: {
     kicker: 'PAYMENT RAIL', title: 'A ₹500 payment is a coordinated state change.', status: 'SUCCESS',
     steps: [[CreditCard,'UPI app','Authorise request'],[Banknote,'NPCI switch','Route securely'],[Server,'Your bank','Debit account'],[Store,'Receiver bank','Credit account']],
-    note: 'Every participant must agree on the final transaction state—even after a timeout.',
+    note: 'A timeout calls for status verification before another payment attempt.',
   },
   tracking: {
-    kicker: 'LIVE LOCATION', title: 'The map moves because updates are pushed.', status: 'LIVE',
+    kicker: 'LIVE LOCATION', title: 'The map moves as new updates arrive.', status: 'LIVE',
     steps: [[MapPin,'Rider GPS','Send coordinates'],[Server,'Location service','Process updates'],[Radio,'Live channel','Push changes'],[Smartphone,'Your map','Animate position']],
-    note: 'The experience combines precise events with visual smoothing between updates.',
+    note: 'The map can smooth movement between periodic location reports.',
   },
   streaming: {
     kicker: 'ADAPTIVE STREAM', title: 'Smooth playback wins over fixed quality.', status: 'PLAYING',
