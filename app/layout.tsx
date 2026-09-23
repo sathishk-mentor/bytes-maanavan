@@ -19,6 +19,7 @@ import './beginner-learning.css';
 import './fde-learning.css';
 import './fde-scenarios.css';
 import './fastapi-learning.css';
+import './byte-uniform.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { NavigationStability } from '@/components/navigation/NavigationStability';

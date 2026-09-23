@@ -7,6 +7,26 @@ import { ByteMetadata } from '@/lib/types';
 import { getCategoryBySlug } from '@/lib/categories';
 
 const handbookHeroes = {
+  '01-what-is-fastapi-turn-python-into-web-api': { label: 'FASTAPI REQUEST', icon: Server, steps: [[Users, 'Client'], [Network, 'HTTP request'], [Code2, 'Python endpoint'], [CheckCircle2, 'Response']] },
+  '02-rest-api-validation-error-handling': { label: 'VALIDATE API INPUT', icon: ShieldCheck, steps: [[Users, 'Request'], [ScanSearch, 'Validate'], [Code2, 'Process'], [CheckCircle2, 'Respond']] },
+  '03-databases-external-services-configuration': { label: 'SERVICE CONNECTIONS', icon: Database, steps: [[Network, 'API request'], [Server, 'Service'], [Database, 'Data source'], [CheckCircle2, 'Result']] },
+  '04-build-stream-generative-ai-api': { label: 'STREAM AI RESPONSE', icon: Sparkles, steps: [[Users, 'Prompt'], [Server, 'AI endpoint'], [Sparkles, 'Generate'], [Network, 'Stream']] },
+  '05-secure-test-deploy-production-fastapi': { label: 'FASTAPI RELEASE', icon: Rocket, steps: [[ShieldCheck, 'Secure'], [TestTube2, 'Test'], [Container, 'Deploy'], [Gauge, 'Monitor']] },
+  '01-what-is-a-forward-deployed-engineer': { label: 'FDE CUSTOMER LOOP', icon: BriefcaseBusiness, steps: [[Users, 'Customer'], [Search, 'Discover'], [Wrench, 'Build'], [Gauge, 'Outcome']] },
+  '02-forward-deployed-engineer-skillset': { label: 'FDE SKILL MIX', icon: Gauge, steps: [[Code2, 'Technical'], [Users, 'Communicate'], [Search, 'Diagnose'], [CheckCircle2, 'Deliver']] },
+  '03-forward-deployed-engineer-engagement-lifecycle': { label: 'FDE ENGAGEMENT', icon: Network, steps: [[Search, 'Discover'], [Users, 'Agree scope'], [Wrench, 'Pilot'], [Rocket, 'Handoff']] },
+  '04-build-customer-trust-as-an-fde': { label: 'TRUST THROUGH DELIVERY', icon: ShieldCheck, steps: [[Users, 'Listen'], [FileText, 'Commit'], [Wrench, 'Show work'], [CheckCircle2, 'Follow up']] },
+  '05-forward-deployed-engineer-career-path-compensation': { label: 'FDE CAREER PATH', icon: Rocket, steps: [[Code2, 'Build depth'], [Users, 'Work with teams'], [Gauge, 'Show outcomes'], [Rocket, 'Grow']] },
+  'build-ai-agents-tools-memory-python': { label: 'PYTHON AGENT LOOP', icon: Bot, steps: [[FileCode2, 'Define goal'], [Wrench, 'Use tool'], [Database, 'Keep state'], [ShieldCheck, 'Approve']] },
+  'build-generative-ai-application-python': { label: 'PYTHON AI APP', icon: Sparkles, steps: [[Users, 'Input'], [Search, 'Find facts'], [Sparkles, 'Generate'], [ShieldCheck, 'Validate']] },
+  'python-apis-json-llm-responses': { label: 'API RESPONSE FLOW', icon: Braces, steps: [[Code2, 'Request'], [Network, 'API'], [Braces, 'Parse JSON'], [ShieldCheck, 'Check result']] },
+  'python-foundations-for-ai-applications': { label: 'PYTHON FOUNDATIONS', icon: Code2, steps: [[Users, 'Input'], [Braces, 'Structure'], [Code2, 'Function'], [CheckCircle2, 'Output']] },
+  'test-secure-deploy-python-ai-applications': { label: 'PYTHON PRODUCTION', icon: Rocket, steps: [[TestTube2, 'Test'], [ShieldCheck, 'Secure'], [Container, 'Deploy'], [Gauge, 'Observe']] },
+  '01-sql-foundations-ask-questions-using-data': { label: 'SQL QUERY PATH', icon: Database, steps: [[Users, 'Question'], [Braces, 'SELECT'], [Database, 'Rows'], [CheckCircle2, 'Answer']] },
+  '02-analyse-business-data-with-sql': { label: 'SQL ANALYSIS', icon: Gauge, steps: [[Database, 'Records'], [Search, 'Filter'], [Blocks, 'Group'], [Gauge, 'Measure']] },
+  '03-connect-data-across-tables-joins': { label: 'SQL TABLE JOIN', icon: Network, steps: [[Database, 'Table A'], [KeyRound, 'Join key'], [Database, 'Table B'], [CheckCircle2, 'Combined rows']] },
+  '04-sql-data-rag-ai-agent-workflows': { label: 'SQL TO AI EVIDENCE', icon: Bot, steps: [[Users, 'Question'], [ShieldCheck, 'Validate SQL'], [Database, 'Query data'], [Sparkles, 'Explain']] },
+  '05-write-production-ready-sql': { label: 'SAFE SQL DELIVERY', icon: ShieldCheck, steps: [[Braces, 'Parameterise'], [Search, 'Index'], [Database, 'Transact'], [Gauge, 'Monitor']] },
   '01-what-happens-when-you-send-whatsapp-message': { label: 'MESSAGE JOURNEY', icon: MessageSquareText, steps: [[MessageSquareText, 'Send'], [Server, 'Route'], [Clock3, 'Wait or deliver'], [CheckCircle2, 'Confirm']] },
   '02-what-happens-when-you-complete-upi-payment': { label: 'UPI PAYMENT FLOW', icon: ShieldCheck, steps: [[KeyRound, 'Authorize'], [Network, 'Route'], [Database, 'Bank update'], [CheckCircle2, 'Confirm']] },
   '03-how-live-food-delivery-tracking-works': { label: 'LIVE TRACKING', icon: MapPin, steps: [[Users, 'Rider'], [MapPin, 'Location'], [Server, 'Update'], [Gauge, 'Map']] },
@@ -59,8 +79,8 @@ const handbookHeroes = {
   'production-mongodb-indexing-security-deployment': { label: 'PRODUCTION GATES', icon: ShieldCheck, steps: [[Gauge, 'Explain'], [Search, 'Index'], [ShieldCheck, 'Protect'], [Rocket, 'Operate']] },
 } as const;
 
-function TopicHeroVisual({ slug }: { slug: string }) {
-  const visual = handbookHeroes[slug as keyof typeof handbookHeroes] || handbookHeroes['62-how-developers-use-ai-tools'];
+function TopicHeroVisual({ slug, category }: { slug: string; category: string }) {
+  const visual = handbookHeroes[slug as keyof typeof handbookHeroes] || { label: 'LEARNING JOURNEY', icon: Network, steps: [[Users, 'Start'], [Search, 'Explore'], [Wrench, 'Practice'], [CheckCircle2, 'Apply']] };
   const VisualIcon = visual.icon;
   return <aside className={`topic-hero-visual visual-${slug}`} aria-label={`${visual.label} animated visual`}>
     <header><span><VisualIcon /></span><div><small>ANIMATED EXPLAINER</small><strong>{visual.label}</strong></div><i>LIVE</i></header>
@@ -70,7 +90,7 @@ function TopicHeroVisual({ slug }: { slug: string }) {
         {index < visual.steps.length - 1 && <ChevronRight className="topic-hero-arrow" />}
       </div>)}
     </div>
-    <footer><span></span>{slug.includes('how-') || slug.includes('upi-payment') || slug.includes('whatsapp-message') ? 'Follow the events behind what you see on screen' : 'Evidence and accountable ownership guide every stage'}</footer>
+    <footer><span></span>{category === 'how-everyday-apps-work' ? 'Follow the events behind what you see on screen' : category === 'ai-agents' ? 'Check the outcome and keep people in control' : 'Understand the flow, practise it, and check the result'}</footer>
   </aside>;
 }
 
@@ -79,6 +99,6 @@ export function ByteHeader({ byte, chapterNumber }: { byte: ByteMetadata; chapte
   return <header className="byte-editorial-hero"><div className="byte-hero-inner">
     <nav aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href={`/${byte.category}/`}>{category?.title}</Link><span>/</span><b>Chapter {chapterNumber}</b></nav>
     <div className="byte-hero-grid"><div><p className="byte-eyebrow"><Sparkles/>{category?.title} · PRACTICAL GUIDE</p><h1>{byte.title}</h1><p className="byte-deck">{byte.summary}</p><div className="byte-byline"><span><Clock3/>{byte.duration} read</span><time dateTime={byte.updatedAt}>Updated {byte.updatedAt}</time><span>Free learning guide</span></div></div>
-    <TopicHeroVisual slug={byte.slug} /></div>
+    <TopicHeroVisual slug={byte.slug} category={byte.category} /></div>
   </div></header>;
 }

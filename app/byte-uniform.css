@@ -1,0 +1,8 @@
+/* Shared Byte reading layout across every handbook. */
+@media (min-width:801px) {
+  .byte-toc { display:flex; flex-direction:column; max-height:calc(100dvh - 10rem); overflow:hidden; }
+  .byte-toc nav { min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#a9c6c8 transparent; }
+  .byte-toc header, .byte-toc footer { flex:none; }
+}
+.byte-toc nav button:focus-visible { outline:2px solid #087f8c; outline-offset:2px; }
+.byte-theme-card .theme-card-content p:last-child { margin-bottom:0; }
