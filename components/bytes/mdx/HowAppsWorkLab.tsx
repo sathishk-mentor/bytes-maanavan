@@ -11,16 +11,27 @@ const labs = {
   routing:{title:'A traffic jam appears ahead',mission:'The current route is now slower than an alternative. What should navigation do?',choices:['Keep the original route because it was once fastest','Compare updated ETAs and reroute when the gain is meaningful','Remove traffic data and calculate only by distance'],answer:1,result:'The routing service recalculates alternatives using live conditions and proposes the better path.',lesson:'Routing is a repeated prediction problem, not a one-time shortest-path answer.'},
 } as const;
 
-export function HowAppsWorkLab({variant}:{variant:keyof typeof labs}){
+
+const tanglishLabs = {
+  messaging:{title:'Recipient offline aana',mission:'Message service-ku pochu; recipient phone offline. App adutha enna pannanum?',choices:['Message drop panni error kaattanum','Phone reconnect aagura varaikkum hold pannanum','Every second copy anuppanum'],result:'Pending message later deliver aagum; device receive pannina status update aagum.',lesson:'Sender and recipient ore nerathula online irukkanum-nu avasiyam illa.'},
+  payment:{title:'Payment response varala',mission:'Bank debit process pannirukkalam; app-ku final response varala. Safe next step enna?',choices:['Udane same payment marubadiyum send pannanum','Check pannaama success nu kaattanum','Transaction status check panni appuram retry decide pannanum'],result:'App official transaction state verify panni duplicate payment risk-ai avoid pannudhu.',lesson:'Timeout-na failure-nu artham illa. Final result-ai verify pannanum.'},
+  tracking:{title:'Rider move aaguraar',mission:'Full page refresh pannaama customer map-la location update epdi kaattanum?',choices:['Relevant updates-ai live channel-la send pannalam','Every second full order-ai reload pannanum','Customer refresh tap pannina mattum update pannanum'],result:'Fresh coordinate customer map-ku varudhu; timestamp-um kaattalam.',lesson:'Relevant small updates-ai send pannina map responsive-a irukkum.'},
+  streaming:{title:'Network speed koraiyudhu',mission:'1080p chunk time-ku varala. Next chunk-ku player enna pannanum?',choices:['1080p varum varaikkum pause pannanum','Lighter quality chunk choose pannanum','Episode beginning-lendhu restart pannanum'],result:'Lighter next chunk buffer-ku timely-a varalam; playback continue aagum.',lesson:'Chunk-by-chunk quality change pannina interruption kuraiyum.'},
+  routing:{title:'Ahead-la traffic jam',mission:'Current route-vida alternative route faster-a irukkalam. Navigation enna pannanum?',choices:['Old route eppavum keep pannanum','Updated ETA compare panni useful-a irundha reroute pannanum','Traffic ignore panni distance mattum paakkanum'],result:'Routes-oda fresh ETA compare panni better path suggest pannudhu.',lesson:'Reroute oru repeated prediction and decision.'},
+} as const;
+
+export function HowAppsWorkLab({variant,language='english'}:{variant:keyof typeof labs;language?:'english'|'tanglish'}){
   const lab=labs[variant];
+  const copy=language==='tanglish'?tanglishLabs[variant]:lab;
+  const ta=language==='tanglish';
   const [selected,setSelected]=useState<number|null>(null);
   const correct=selected===lab.answer;
   return <section className={`apps-decision-lab apps-decision-${variant}`}>
-    <header><span><Play/></span><div><small>INTERACTIVE SYSTEM DECISION</small><h3>{lab.title}</h3></div><i>{selected===null?'CHOOSE':correct?'COMPLETE':'RETRY'}</i></header>
-    <div className="apps-decision-body"><p>{lab.mission}</p><div className="apps-decision-options">{lab.choices.map((choice,index)=><button type="button" key={choice} disabled={correct} className={selected===index?(correct?'selected correct':'selected wrong'):''} onClick={()=>setSelected(index)}><b>{String.fromCharCode(65+index)}</b><span>{choice}</span></button>)}</div>
-    {selected!==null&&<aside className={correct?'correct':'wrong'} aria-live="polite">{correct?<CheckCircle2/>:<XCircle/>}<div><b>{correct?'System decision accepted':'That choice creates a reliability problem'}</b><p>{correct?lab.result:lab.lesson}</p></div>{!correct&&<button type="button" onClick={()=>setSelected(null)}><RotateCcw/>Try again</button>}</aside>}
+    <header><span><Play/></span><div><small>INTERACTIVE SYSTEM DECISION</small><h3>{copy.title}</h3></div><i>{selected===null?'CHOOSE':correct?'COMPLETE':'RETRY'}</i></header>
+    <div className="apps-decision-body"><p>{copy.mission}</p><div className="apps-decision-options">{copy.choices.map((choice,index)=><button type="button" key={choice} disabled={correct} className={selected===index?(correct?'selected correct':'selected wrong'):''} onClick={()=>setSelected(index)}><b>{String.fromCharCode(65+index)}</b><span>{choice}</span></button>)}</div>
+    {selected!==null&&<aside className={correct?'correct':'wrong'} aria-live="polite">{correct?<CheckCircle2/>:<XCircle/>}<div><b>{correct?(ta?'Correct decision':'System decision accepted'):(ta?'Indha choice-la problem irukku':'That choice creates a reliability problem')}</b><p>{correct?copy.result:copy.lesson}</p></div>{!correct&&<button type="button" onClick={()=>setSelected(null)}><RotateCcw/>{ta?'Marubadi try pannunga':'Try again'}</button>}</aside>}
     </div>
-    <footer><ShieldCheck/><span><b>Why it matters:</b> {lab.lesson}</span><strong>{correct?'1 / 1':'0 / 1'}</strong></footer>
+    <footer><ShieldCheck/><span><b>{ta?'Yen important:':'Why it matters:'}</b> {copy.lesson}</span><strong>{correct?'1 / 1':'0 / 1'}</strong></footer>
   </section>;
 }
 
