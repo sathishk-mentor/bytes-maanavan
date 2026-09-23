@@ -35,7 +35,7 @@ PaisaWise's own app processes UPI transfers, and support tickets sometimes read:
 
 ## The roles of the app, NPCI and banks
 
-A UPI payment looks like a single instant action to the user, but it actually involves at least four parties coordinating: your UPI app (like PaisaWise's own, or Google Pay/PhonePe), your bank, the recipient's bank, and NPCI (the National Payments Corporation of India) sitting in the middle as the switch that routes the request between the two banks. Think of NPCI like a central exchange: your bank and the recipient's bank don't talk to each other directly — they both talk to NPCI routes payment messages; your bank handles your account checks and debit, while the recipient's bank handles the credit.
+A UPI payment looks like a single instant action to the user, but it actually involves at least four parties coordinating: your UPI app (like PaisaWise's own, or Google Pay/PhonePe), your bank, the recipient's bank, and NPCI (the National Payments Corporation of India) sitting in the middle as the switch that routes the request between the two banks. Think of NPCI like a central exchange: NPCI routes payment messages between participants. Your bank handles your account checks and debit; the recipient's bank handles the credit.
 
 This is the same "multiple parties, one of which sits in the middle to coordinate" shape as plenty of other systems — it's worth noticing how often this pattern reappears once you start looking for it.
 
