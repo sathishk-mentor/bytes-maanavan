@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { ArrowDown, ArrowUpRight, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, Database, FileSearch, Layers3, Network, Rocket, SearchCheck, Server, ShieldCheck, Sparkles, Workflow } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, CreditCard, Database, FileSearch, Layers3, MapPin, MessageCircle, Navigation, Network, Play, Rocket, SearchCheck, Server, ShieldCheck, Smartphone, Sparkles, Workflow } from 'lucide-react';
 import { CategoryPageClient } from '@/components/category/CategoryPageClient';
 import { getCategoryBySlug } from '@/lib/categories';
 import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'how-everyday-apps-work', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
@@ -110,6 +110,15 @@ const handbookDetails = {
     result: 'An AI-powered personal learning assistant',
     keywords: ['Python for Generative AI', 'Python Agentic AI tutorial', 'Python AI agents for beginners', 'build LLM application Python', 'Python tool calling', 'deploy Python AI application'],
   },
+  'how-everyday-apps-work': {
+    searchTitle: 'How Everyday Apps Work: Visual System Design Handbook',
+    eyebrow: 'EVERYDAY APPS · INVISIBLE SYSTEMS',
+    intro: 'Build system-design intuition by tracing what happens after you tap Send, Pay, Track, Play or Navigate in apps you already use every day.',
+    audience: 'Curious beginners, students and aspiring developers',
+    prerequisite: 'No coding or system-design background required',
+    result: 'A tap → service journey → system decision → user outcome mental model',
+    keywords: ['how apps work', 'system design for beginners', 'WhatsApp system design', 'UPI payment flow', 'Netflix streaming architecture', 'Google Maps routing'],
+  },
 } as const;
 type PublishedCategory = keyof typeof handbookDetails;
 
@@ -186,6 +195,11 @@ function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory 
   if (categorySlug === 'python-genai-agentic-ai') {
     return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated Python learning assistant architecture">
       <div className="langchain-orchestrator"><header><Code2/><span><small>PERSONAL LEARNING ASSISTANT</small><strong>Use Python to turn AI output into dependable action.</strong></span><i>VALIDATED</i></header><div><span><Code2/><small>Python</small></span><b>→</b><span><Network/><small>API + JSON</small></span><b>→</b><span><Sparkles/><small>LLM</small></span><b>→</b><span><Workflow/><small>Agent tools</small></span></div><footer><ShieldCheck/><span>Typed · tested · approved · observable</span></footer></div>
+    </div>;
+  }
+  if (categorySlug === 'how-everyday-apps-work') {
+    return <div className="handbook-hero-visual everyday-apps-hero" aria-label="Five everyday app actions connected to invisible backend systems">
+      <div className="everyday-apps-console"><header><Smartphone/><span><small>ONE TAP STARTS A JOURNEY</small><strong>See what happens in between</strong></span><i>LIVE</i></header><div><span><MessageCircle/><small>Send</small></span><span><CreditCard/><small>Pay</small></span><span><MapPin/><small>Track</small></span><span><Play/><small>Play</small></span><span><Navigation/><small>Navigate</small></span></div><footer><Network/><span>Client · services · data · real-time decisions</span></footer></div>
     </div>;
   }
   return <div className="handbook-hero-visual fde-hero-visual" aria-label="Animated Forward Deployed Engineer outcome loop">

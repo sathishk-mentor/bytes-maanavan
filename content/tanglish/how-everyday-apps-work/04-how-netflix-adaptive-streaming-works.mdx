@@ -1,0 +1,133 @@
+<HowAppsWorkVisual variant="streaming" />
+
+## S1 — Quick Start
+
+Indha Byte oru familiar question-ku answer pannuthu: **episode nadula network slow aanaalum Netflix video-ai epdi smooth-a play panna vaikkuthu?** Automatic quality changes and reduced buffering-ku pinnaadi irukkura high-level mechanism-ai neenga purinjuppeenga.
+
+Munnadi irukkura bytes madhiri-ye, idhum adaptive bitrate streaming-ai patri publicly available irukkura explanations-la irundhu build pannina oru **illustrative model**, Netflix-oda exact systems-oda internal disclosure illai.
+
+**Time investment:** 20-25 mins.
+
+---
+
+## S2 — Start from Basics: Familiar Scenario
+
+PaisaWise puthu customers-ku short onboarding videos record pannuthu. Divya observe pannuraanga: "Nalla connection-la video sharp-a irukku. Pantry pakkam Wi-Fi-la konjum blurry-a aaguthu; aana stop aagala." Rahul kekkuraar: "Smooth playback-ai protect panna picture quality-ai temporary-a reduce pannuthaa?"
+
+---
+
+## S3 — Core Explanation
+
+Idhu-thaan key idea: oru video oru single file-a store aaga-ala. Idhu vera vera versions-a encode aaguthu — **renditions**-nu peru — vera quality levels-la (madhiri, blurry-but-light, medium, and sharp-but-heavy), and ovvoru version-um konjum seconds irukkura short chunks-a chop aaguthu. Neenga paakkumbodhu, app muzhuvadhum video-ku ondru quality level-la commit aaga-ala — idhu constant-a choose panni kondu irukku, chunk-by-chunk, unga connection ippo evlo fast-a irukkuthu-nu, evlo video already buffer aagirukku-nu vachu, adhe next-a evanavadhu version download pannanum-nu.
+
+Idha, office-ku pogura moonu routes idaiyila choose pannuradhukku irukkura difference madhiri nenachukonga: oru smooth wide highway, oru decent two-lane road, illa oru narrow bumpy shortcut. Highway-la today traffic jaasthi-a irundha, neenga andha-la stuck-a irukkaadhu — pathila two-lane road edukkireenga. Video player-um exact-a adhe madhiri trade-off-ai automatic-a pannuthu, rendu-hours movie-la dozens of times, usually romba smooth-a, neenga andha switch-ai notice panna-ama.
+
+---
+
+## S4 — Architecture and Flow
+
+**Neenga paakkumbodhu enna nadakkuthu-nnu oru simplified flow:**
+
+```text
+Video is pre-encoded into multiple renditions (e.g., 360p, 720p, 1080p),
+  each split into short chunks (a few seconds each)
+While playing:
+  → Player checks: how fast is my connection right now?
+  → Player checks: how many seconds of video do I already have buffered?
+  → Player picks a rendition for the NEXT chunk based on both answers
+  → That chunk downloads and plays
+  → Repeat this decision for every new chunk
+```
+
+**Unga connection episode mid-la udanadiya worse aagumbodhu:**
+
+```text
+Download speed for the current chunk drops
+  → Player notices this before the buffer runs out
+  → Player requests the NEXT chunk in a lower-quality rendition
+  → Lower-quality chunk is smaller, so it still arrives in time
+  → Playback continues without stopping — picture may look softer,
+    but there's no stop-and-spin
+When your connection improves again:
+  → Player gradually requests higher-quality renditions again
+```
+
+---
+
+## S5 — Interactive Decision Lab
+
+<HowAppsWorkLab variant="streaming" />
+
+**Code snippet-ku pathila, oru design exercise:**
+
+S4-la irukkura adhe style-la, oru viewer-oda connection romba poor-a irundha, lowest-quality rendition kooda fast-a download aaga-ama irundha, enna nadakkanum-nu sketch pannunga. Player enna pannanum — visibly buffer pannanuma, playback-ai pause pannanuma, illa vera edhavadhu? "Buffering orupothum irukkaadhu" mudiyaadha irukkura oru floor edhavadhu irukkuthaa?
+
+---
+
+## S6 — Real-World Scale
+
+Adaptive bitrate streaming-ai patri publicly available irukkura explanations, oru video usually 360p daadaapa 800 kbps-la, 540p 1.5 Mbps-la, 720p 3 Mbps-la, and 1080p 6 Mbps-la renditions-a encode aaguradhaa describe pannuthu, ovvondrum 2-10 second segments-a chunk aaguthu — quality switches chunk boundaries-la nadakkalam, adhanaala oru change mudiyuma muzhuvadhum stream-ai restart panna-ama. Indha accounts, oru low-bitrate "floor" rendition irukkuradhu matter aaguthu-nnu-um serthu solluthu — ondru illama, genuinely slow connections-la irukkura viewers, switching logic evlo smart-a irundhaalum, constant-a buffer pannuvaanga. More advanced players-ai, predictive-a describe pannuthu, purely reactive illai — oru slowdown already nadandhukondu irukkumbodhu mattum react panna-ama, oru healthy buffer-ai maintain panna proactively quality-ai adjust pannuradhu.
+
+---
+
+## S7 — Failure Cases and Common Mistakes
+
+1. **Oru video, ondru fixed quality-la stream aagura single file-nnu nenaikkuradhu** — S3-la irukkura madhiri, usually idhu multiple pre-encoded renditions, player chunk-by-chunk avangalukku idaiyila switch pannuthu.
+2. **Oru quality drop, edhavadhu break aayiduchu-nnu artham-nu nenaikkuradhu** — S4-la kaamikkina madhiri, mid-playback-la oru lower rendition-ku switch pannuradhu, usually system correct-a work pannuthu-nnu artham, quality-ai smoothness-ku trade pannuthu, fail aaga-ama.
+3. **Smoothness muzhuvadhum internet speed-ai patri-nnu nenaikkuradhu** — S6-la irukkura madhiri, evlo already ahead-la buffer aagirukku-nu adhuvida important-a irukkum; oru healthy buffer irukkura player, quality-ai orupothum switch panna-ama, oru chinna speed drop-ai absorb panna mudiyum.
+4. **"Buffering orupothum irukkaadhu" always achievable-nnu nenaikkuradhu** — S5-la kekkura madhiri, oru connection-speed floor-ku keezhe, lowest-quality rendition kooda keep up panna mudiyaadhu, and adaptive streaming mattum fix panna mudiyuma adhukku genuine-a oru limit irukku.
+
+---
+
+## S8 — Role-Based Application
+
+Media and platform engineers multiple renditions prepare panni, sensible chunk size choose panni, rebuffering-ai monitor pannanum; maximum resolution mattum goal illai. Product team temporary clarity drop and playback stop idaiyila learner-friendly trade-off decide pannanum. Usually short quality reduction freeze-aaguradhai vida better.
+
+---
+
+## S9 — Compare User View and System View
+
+| User enna paakkuraar | Player enna decide pannuthu |
+|---|---|
+| Video seekiram start aaguthu | Estimated connection-ku safe-aana initial rendition |
+| Picture konjum soft aaguthu | Lighter next chunk stall-ai prevent pannuma |
+| Quality later improve aaguthu | Bandwidth and buffer step-up-ku strong-a irukkaa |
+| Playback pause aaguthu | Next chunk varradhukku munnadi buffer empty aayiduchu |
+
+---
+
+## S10 — Hands-On Practice
+
+S4-oda style-la, neenga innum download panna-ama irukkura video-la oru point-ku seek forward pannumbodhu enna nadakkum-nu sketch pannunga — madhiri, 20 minutes skip pannuradhu. Normal, sequential chunk-by-chunk playback-oda compare pannina, enna differently nadakkanum?
+
+---
+
+## S11 — Final Thought and Next Path
+
+- Oru video usually multiple quality **renditions**-a encode aaguthu, ovvondrum short chunks-a split aaguthu, ondru fixed-quality file-a store and stream aaga-ama.
+- Player, current download speed-um evlo video already buffer aagirukku-nu vachu, next-a evanavadhu rendition request pannanum-nu continuously choose pannuthu.
+- Mid-playback-la lower-quality rendition-ku switch pannuradhu, usually system quality-ai purpose-oda smoothness-ku trade pannuradhu, malfunction illai.
+- Oru low-bitrate "floor" rendition essential-a irukku — ondru illama, slow connections-la irukkura viewers, switching logic evlo smart-a irundhaalum constant-a buffer pannuvaanga.
+- Indha byte, adaptive bitrate streaming-ai patri public explanations-la irundhu build pannina oru **illustrative model**-a present aaguthu, Netflix-oda exact systems-oda confirmed disclosure illai.
+- Next chunk choose pannumbodhu raw download speed-oda buffer health-um important.
+- Romba frequent quality switching playback stop aagala-naalum unstable-a feel aagalam.
+- Next practice: viewer unbuffered point-ku jump pannumbodhu flow epdi change aagum-nu model pannunga.
+
+---
+
+## S12 — FAQ, Knowledge Check and References
+
+<HowAppsWorkQuiz variant="streaming" language="tanglish" />
+
+**Q1: Oru Netflix video, ondru fixed quality-la ondru single file-a stream aaguthaa?**
+Illai — indha model-la, idhu multiple quality renditions-a pre-encode aaguthu, short chunks-a split aaguthu, player paakkumbodhu avangalukku idaiyila choose pannuthu.
+
+**Q2: Mid-playback-la video quality drop aaguradhu usually edhavadhu break aayiduchu-nnu artham-a?**
+Illai — usually idhu player-oda-koodave playback smooth-a vachirukka deliberately oru lower-quality rendition-ku switch pannuradhu, failure illai.
+
+**Q3: Adaptive bitrate streaming-ku oru low-quality "floor" rendition yaen venum?**
+Yaenna ondru illama, genuinely slow connections-la irukkura viewers, switching logic evlo nalla-a work pannitalum constant-a buffer pannuvaanga.
+### References and further reading
+
+- [Mux: Adaptive Bitrate Streaming](https://www.mux.com/articles/what-is-adaptive-bitrate-streaming) — renditions and segments-ku visual introduction.
+- [Netflix Open Connect](https://openconnect.netflix.com/) — Netflix content-delivery architecture-oda public overview.
