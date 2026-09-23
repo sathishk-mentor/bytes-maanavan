@@ -1,22 +1,26 @@
+<ThemeCard title="Enna kathukkap poreenga" badge="EVERYDAY APPS HANDBOOK 01">
+
+Indha familiar app-oda flow-ai step-by-step purinjukittu, user-ku theriyra status-um system-la nadakkura event-um epdi connect aagudhu-nu explain panna mudiyum.
+
+</ThemeCard>
+
 <HowAppsWorkVisual variant="messaging" />
 
-## S1 — Quick Start
+## Message-oda payanam
 
 Indha Byte oru simple question-la start aaguthu: **neenga WhatsApp message anupumbodhu actual-a enna nadakkuthu?** Daily use panra oru familiar app vazhiya queues, storage, delivery states madhiri system-design concepts-ai beginner-friendly-a purinjukkalam.
 
 Start panna munnadi oru note: WhatsApp-oda exact internal architecture publicly full-a theriyathu. Ippo varra adhu oru **illustrative model** — indha maadhiri oru messaging app epdi work pannalam-nu irukkura oru reasonable, widely-referenced simplification, intuition build panna useful-a irukku, WhatsApp-oda precise current systems-oda claim illai.
 
-**Time investment:** 20-25 mins.
-
 ---
 
-## S2 — Start from Basics: Familiar Scenario
+## Oru friend-ku message
 
 PaisaWise, backend engineering candidates-ai interview panni irukku, Meena curiosity-la oru round-la sit pannuraanga. Interviewer kekkiraaru: "Neenga oru WhatsApp message anupumbodhu enna nadakkuthu-nu walk me through pannunga." Meena aprom confuse-a irukkaanga: "Idhu oru fintech role-ku romba odd-aana question — idhu yaen constant-a varuthu?" Karthik siripaan: "Yaenna idhu actual-a WhatsApp-ai patri illai. Neenga oru system-ai epdi reason pannureenga-nu test pannuthu — ella-um correct-a nadakkumbodhu enna aaguthu, illama poganaa enna aaguthu."
 
 ---
 
-## S3 — Core Explanation
+## Ticks enna solludhu?
 
 Neenga WhatsApp message anupra button-ai tap panra adha nenachukonga. Unga side-la irundha idhu instant-a irukkum-madhiri feel aaguthu — message andha side-la thaana varra madhiri. Aana andha oru tap, oru chinna journey-ai start pannuthu: unga message unga phone-la irundhu pogaanum, WhatsApp-oda servers-ai adaiyaanum, recipient evide irukkaanga-nu figure out pannaanum, avangalukku pogaanum (illa mudiyaama-na wait pannaanum), and ovvoru step-la enna aaguthu-nu unga-ku theriya vaikkaanum.
 
@@ -24,31 +28,27 @@ Andha journey — send, route, deliver, confirm, and recipient offline irukkura 
 
 ---
 
-## S4 — Architecture and Flow
+## Send-lendhu delivery varai
 
 **Online irukkura yaaravadhukku message anupumbodhu enna nadakkuthu-nnu oru simplified flow:**
 
-```text
-You tap Send
-  → Message leaves your phone, reaches a WhatsApp server
-  → Server figures out the recipient is currently connected
-  → Server forwards the message to the recipient's device
-  → Recipient's phone confirms it arrived
-  → You see the tick status update
-```
+1. You tap Send
+2. Message leaves your phone, reaches a WhatsApp server
+3. Server figures out the recipient is currently connected
+4. Server forwards the message to the recipient's device
+5. Recipient's phone confirms it arrived
+6. You see the tick status update
 
 **Recipient offline irundha, flow branch aaguthu:**
 
-```text
-You tap Send
-  → Message leaves your phone, reaches a WhatsApp server
-  → Server checks: is the recipient currently connected? No.
-  → Message is held ("queued") on the server, waiting
-  → Recipient's phone reconnects later
-  → Server delivers the held message
-  → Recipient's phone confirms it arrived
-  → You see the tick status update, now that delivery happened
-```
+1. You tap Send
+2. Message leaves your phone, reaches a WhatsApp server
+3. Server checks: is the recipient currently connected? No.
+4. Message is held ("queued") on the server, waiting
+5. Recipient's phone reconnects later
+6. Server delivers the held message
+7. Recipient's phone confirms it arrived
+8. You see the tick status update, now that delivery happened
 
 Idhu "receiving side ready-a irukkura varaikkum edhavadhu vachu irukkuradhu" pattern, usually oru **queue**-nu solvom — sender-um receiver-um adhe moment-la active-a irupanga-nu guarantee illama irukkura edam ellame romba common-a irukkura oru building block.
 
@@ -60,38 +60,38 @@ Idhu "receiving side ready-a irukkura varaikkum edhavadhu vachu irukkuradhu" pat
 
 ---
 
-## S5 — Interactive Decision Lab
+## Adutha step-ai choose pannunga
 
 <HowAppsWorkLab variant="messaging" />
 
 **Code snippet-ku pathila, oru design exercise:**
 
-S4-la irukkura adhe style-la, moonu naalku muzhuvadhum switch-off-a irukkura oru phone-ku neenga oru message anupinaa enna nadakkum-nu sketch pannunga, aprom avanga phone-ai thirumbi ON pannuraanga. Andha moonu naal-la unga message evide irukkum? Avanga phone reconnect aagura moment-la enna nadakkanum?
+mela irukkura section-la irukkura adhe style-la, moonu naalku muzhuvadhum switch-off-a irukkura oru phone-ku neenga oru message anupinaa enna nadakkum-nu sketch pannunga, aprom avanga phone-ai thirumbi ON pannuraanga. Andha moonu naal-la unga message evide irukkum? Avanga phone reconnect aagura moment-la enna nadakkanum?
 
 ---
 
-## S6 — Real-World Scale
+## Millions of messages vandha
 
 WhatsApp-oda systems-ai patri industry-la widely cited engineering accounts, daadaapa **40 billion messages** naalonnukku handle panra scale-ai describe pannuthu, historically romba chinna oru backend team run pannirunthudhu-nu often cited-a irukku — daadaapa 50 engineers, adhula 12-ku kuraiva-a mattum core messaging infrastructure-ku specifically focus pannaanga. Indha accounts, backend-ai **Erlang**-la build pannirundhathu-nu describe pannuthu — idhe madhiri problem-ku exact-a design pannirukkura oru programming language: huge numbers of independent, lightweight "conversations" simultaneously manage panna, oru user-oda connection vera oru user-oda connection-ai block panna-ama illa slow panna-ama irukkanum. Idha repeat panna venum: idhu third-party engineering write-ups-la irukkura commonly-cited illustrative figures, WhatsApp-oda sondha official architecture disclosure illai — aana underlying lesson (system design problem-oda fit aana, chinna teams massive scale run panna mudiyum) exact numbers evlo irundhalum useful-a irukkum.
 
 ---
 
-## S7 — Failure Cases and Common Mistakes
+## Delivery delay aana
 
-1. **Ondru grey tick, always "avanga ennai ignore pannuraanga" illa "block pannitanga"-nu artham-nu nenaikkuradhu** — S4-la irukkura madhiri, usually idhu message avanga device-ai innum adaiyala-nu artham; blocking-ai private-a vaikka, WhatsApp offline-um blocked-um identical-a kaamikka design pannuthu-nu report aaguthu.
+1. **Ondru grey tick, always "avanga ennai ignore pannuraanga" illa "block pannitanga"-nu artham-nu nenaikkuradhu** — mela irukkura section-la irukkura madhiri, usually idhu message avanga device-ai innum adaiyala-nu artham; blocking-ai private-a vaikka, WhatsApp offline-um blocked-um identical-a kaamikka design pannuthu-nu report aaguthu.
 2. **Messages ondru phone-la irundhu vera phone-ku direct-a poguthu-nu nenaikkuradhu** — indha illustrative model-la, messages idaiyila irukkura oru server vazhi route aaguthu ("store-and-forward" pattern), phone-to-phone direct-a anuppaadhu, message content end-to-end encrypted irundhaalum, server adha padikka mudiyaadhu.
 3. **"Delivered"-um "read"-um onnu-nu treat pannuradhu** — double grey ticks and blue ticks, rendu vera questions-ku answer solluthu (adhu adainjuduchaa vs display aaguduchaa); idha conflate pannuradhu, andha veroru person actual-a enna therinjukanaanga-nu wrong conclusions-ku vazhi vaikkalam.
 4. **Oru messaging app-oda actual internals ellame publicly documented-nu nenaikkuradhu** — indha byte start-la-ye sonna madhiri, idhu public write-ups and reasonable inference-la irundhu build pannina oru illustrative model, confirmed internal architecture illai.
 
 ---
 
-## S8 — Role-Based Application
+## Team indha model-ai epdi use pannum
 
 Backend developer-ku useful-a irukkura skill WhatsApp internals-ai memorize pannuradhu illai. Work-ai accept panni, receiver unavailable-a irundha safe-a hold panni, next system accept pannina piragu mattum delivery confirm pannuradhu-thaan reusable pattern. Notifications, email delivery, background jobs and device sync-la idhe reasoning use aagum.
 
 ---
 
-## S9 — Compare User View and System View
+## Neenga paakradhu vs system-ku theriyradhu
 
 | Neenga Oru User-a Paakkura Adhu | Adhula Nadakkalam (Illustrative) |
 |---|---|
@@ -102,13 +102,13 @@ Backend developer-ku useful-a irukkura skill WhatsApp internals-ai memorize pann
 
 ---
 
-## S10 — Hands-On Practice
+## Group message-ai trace pannunga
 
-S4-la irukkura adhe flow style use panni, 50 people irukkura oru WhatsApp group-ku neenga ondru message anupumbodhu enna nadakkum-nu sketch pannunga, adhula 10 per currently offline-a irukaanga. One-to-one message-ai vida, enna differently nadakkanum?
+mela irukkura section-la irukkura adhe flow style use panni, 50 people irukkura oru WhatsApp group-ku neenga ondru message anupumbodhu enna nadakkum-nu sketch pannunga, adhula 10 per currently offline-a irukaanga. One-to-one message-ai vida, enna differently nadakkanum?
 
 ---
 
-## S11 — Final Thought and Next Path
+## Ninaivil vechukka
 
 - Oru familiar app-oda flow-ai trace pannuradhu — send, route, deliver, confirm, exceptions-ai handle pannuradhu — system design interviews test panra adhe reasoning habit-ai build pannuthu.
 - Indha byte oru **illustrative model**-ai present pannuthu, WhatsApp-oda confirmed internal architecture illai, yaenna exact current systems full-a public illai.
@@ -121,9 +121,7 @@ S4-la irukkura adhe flow style use panni, 50 people irukkura oru WhatsApp group-
 
 ---
 
-## S12 — FAQ, Knowledge Check and References
-
-<HowAppsWorkQuiz variant="messaging" language="tanglish" />
+## Common questions
 
 **Q1: Indha byte WhatsApp-oda exact, confirmed internal architecture-ai describe pannuthaa?**
 Illai — idhu public engineering write-ups and reasonable simplification-la irundhu build pannina oru illustrative model, intuition build panna useful-a irukku, confirmed technical disclosure illai.
@@ -133,7 +131,12 @@ Recipient-oda device currently connected-a irukkaadhu irukkalam, adhanaala messa
 
 **Q3: Indha model-la messages ondru phone-la irundhu vera phone-ku direct-a pogudhaa?**
 Illai — indha illustrative model-la, idaiyila irukkura oru server vazhi route aaguthu, message content end-to-end encrypted irundhaalum.
-### References and further reading
+
+## Purinjiducha? Quiz
+
+<HowAppsWorkQuiz variant="messaging" language="tanglish" />
+
+## Primary sources
 
 - [WhatsApp Security](https://faq.whatsapp.com/990878486361178/) — end-to-end encryption and message protection pathi public explanation.
 - ByteByteGo — messaging system design-la queues and delivery-state patterns.
