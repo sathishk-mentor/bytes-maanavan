@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { ArrowDown, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, Database, FileSearch, Layers3, Network, Rocket, SearchCheck, Server, ShieldCheck, Sparkles, Workflow } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, Database, FileSearch, Layers3, Network, Rocket, SearchCheck, Server, ShieldCheck, Sparkles, Workflow } from 'lucide-react';
 import { CategoryPageClient } from '@/components/category/CategoryPageClient';
 import { getCategoryBySlug } from '@/lib/categories';
 import { getBytesByCategory } from '@/lib/mdx';
@@ -252,6 +252,19 @@ export default async function TrackPage({ params }: { params: { categorySlug: st
       <section id="handbook-learning-path" className="handbook-learning-path">
         <div className="container-custom"><header><div><p className="eyebrow dark">CONNECTED LEARNING PATH</p><h2>Learn in the order the work happens.</h2><p>Complete one focused concept at a time. Every chapter includes practical guidance you can use immediately.</p></div><span><CheckCircle2/>Complete handbook</span></header></div>
         <CategoryPageClient bytes={lessons}/>
+        <div className="container-custom">
+          <aside className="handbook-course-library-cta">
+            <div className="handbook-course-library-icon"><BookOpenCheck/></div>
+            <div className="handbook-course-library-copy">
+              <p>CONTINUE YOUR LEARNING</p>
+              <h2>Ready to go beyond the handbook?</h2>
+              <span>Explore structured MaanavaN courses with guided lessons, practical exercises and project-based learning.</span>
+            </div>
+            <a href="https://www.maanavan.com/course-library" target="_blank" rel="noopener noreferrer" aria-label="Explore the MaanavaN Course Library in a new tab">
+              Explore Course Library <ArrowUpRight/>
+            </a>
+          </aside>
+        </div>
       </section>
     </div>
   </>;
