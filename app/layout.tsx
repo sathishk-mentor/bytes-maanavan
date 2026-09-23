@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_Tamil } from 'next/font/google';
 import './globals.css';
 import './maanavan-brand.css';
 import './conversion-panels.css';
+import './how-apps-work.css';
 import './journey-cards.css';
 import './handbook-quick-nav.css';
 import './reading-mode.css';

@@ -150,6 +150,19 @@ export const handbooks: Handbook[] = [
       { title: 'Test, secure and deploy', outcome: 'Evaluate, protect, containerise, monitor and roll back the application.', href: '/python-genai-agentic-ai/test-secure-deploy-python-ai-applications/' },
     ],
   },
+  {
+    slug: 'how-everyday-apps-work', title: 'How Everyday Apps Work: A Visual System Design Handbook', shortTitle: 'How Everyday Apps Work',
+    audience: 'Curious Beginners · Students · Aspiring Developers', tone: 'cyan', status: 'available', category: 'software-engineering', label: 'EVERYDAY TAP TO INVISIBLE SYSTEM',
+    description: 'Trace the invisible journeys behind messaging, payments, live delivery tracking, video streaming and navigation.',
+    promise: 'Build system-design intuition using apps you already understand as a user.',
+    chapters: [
+      { title: 'What happens when you send a WhatsApp message?', outcome: 'Trace routing, queues, delivery and acknowledgement states.', href: '/how-everyday-apps-work/01-what-happens-when-you-send-whatsapp-message/' },
+      { title: 'What happens during a UPI payment?', outcome: 'Follow a transaction across the app, NPCI and two banks.', href: '/how-everyday-apps-work/02-what-happens-when-you-complete-upi-payment/' },
+      { title: 'How does live food-delivery tracking work?', outcome: 'Connect GPS updates, real-time channels and the moving map.', href: '/how-everyday-apps-work/03-how-live-food-delivery-tracking-works/' },
+      { title: 'How does Netflix stream smoothly?', outcome: 'Understand chunks, CDNs, buffers and adaptive quality.', href: '/how-everyday-apps-work/04-how-netflix-adaptive-streaming-works/' },
+      { title: 'How does Google Maps reroute?', outcome: 'Combine road graphs, traffic signals, prediction and ETA.', href: '/how-everyday-apps-work/05-how-google-maps-routing-and-rerouting-works/' },
+    ],
+  },
 ];
 
 export function getHandbook(slug: string) { return handbooks.find((handbook) => handbook.slug === slug); }
