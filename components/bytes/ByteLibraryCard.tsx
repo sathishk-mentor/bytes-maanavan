@@ -2,13 +2,14 @@ import type { CSSProperties } from 'react';
 import Link from 'next/link';
 import {
   ArrowUpRight, Blocks, Bot, Box, Braces, BriefcaseBusiness, CheckCircle2, Code2, Compass,
-  Container, Database, FileText, Gauge, GitPullRequestArrow, HardDrive, Layers3,
+  Container, Database, FileText, Gauge, GitPullRequestArrow, HardDrive, Layers3, MapPin, Play,
   MessageSquareText, Network, Rocket, Search, ShieldCheck, Sparkles, TerminalSquare,
   Workflow, Wrench,
 } from 'lucide-react';
 import type { ByteMetadata } from '@/lib/types';
 
 const journeyProfiles = {
+  'how-everyday-apps-work': { category: 'Everyday App Systems', handbook: 'How Everyday Apps Work', accent: '#087f87', glow: '#7ce5e9', stages: ['Message delivery', 'UPI payments', 'Live tracking', 'Video streaming', 'Route updates'], icons: [MessageSquareText, Database, MapPin, Play, Compass] },
   'software-engineering': { category: 'Software Engineering', handbook: 'GitHub Copilot Handbook', accent: '#2f6fed', glow: '#8bb8ff', stages: ['Understand Copilot', 'Work with context', 'Prompt well', 'Use agent mode', 'Review & govern'], icons: [Bot, MessageSquareText, Braces, GitPullRequestArrow, ShieldCheck] },
   'forward-deployed-engineer': { category: 'Technology Careers', handbook: 'Forward Deployed Engineer', accent: '#7657d6', glow: '#c9b9ff', stages: ['Understand the role', 'Build the skillset', 'Run the engagement', 'Earn customer trust', 'Grow the career'], icons: [BriefcaseBusiness, Blocks, Layers3, ShieldCheck, Rocket] },
   'cloud-devops': { category: 'Cloud & DevOps', handbook: 'Docker Handbook', accent: '#1678c8', glow: '#87d7ff', stages: ['Understand Docker', 'Build an image', 'Configure runtime', 'Compose services', 'Deploy an AI app'], icons: [Container, Box, HardDrive, Network, Rocket] },
@@ -25,6 +26,9 @@ const journeyProfiles = {
 const defaultProfile = { category: 'Technology Learning', handbook: 'MaanavaN Handbook', accent: '#087f87', glow: '#7ce5e9', stages: ['Understand', 'Explore', 'Apply', 'Practise', 'Master'], icons: [Compass, Blocks, Workflow, Wrench, Rocket] } as const;
 
 const learningVisuals: Record<string, readonly (readonly string[])[]> = {
+  'how-everyday-apps-work': [
+    ['Send', 'Route', 'Deliver'], ['Pay', 'Bank checks', 'Confirm'], ['Rider GPS', 'Live updates', 'Moving map'], ['Video chunks', 'CDN', 'Smooth playback'], ['Road graph', 'Traffic', 'Better route'],
+  ],
   'ai-agents': [
     ['Chatbot|Answers', 'Copilot|Suggests', 'Agent|Plans & acts'],
     ['Goal', 'Plan', 'Use tools', 'Act', 'Check'],
@@ -66,6 +70,7 @@ const learningVisuals: Record<string, readonly (readonly string[])[]> = {
 
 export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5, compact = false }: { chapter: ByteMetadata; chapterNumber: number; totalChapters?: number; compact?: boolean }) {
   const profile = journeyProfiles[chapter.category as keyof typeof journeyProfiles] ?? defaultProfile;
+  const everyday = chapter.category === 'how-everyday-apps-work';
   const safeIndex = Math.max(0, Math.min(chapterNumber - 1, profile.stages.length - 1));
   const Icon = profile.icons[safeIndex];
   const visualSteps = learningVisuals[chapter.category]?.[safeIndex] ?? [profile.stages[safeIndex], 'Practise', 'Apply'];
@@ -83,21 +88,21 @@ export function ByteLibraryCard({ chapter, chapterNumber, totalChapters = 5, com
         <div className="scene-ui scene-ui-cover">
           <span className="scene-cover-icon"><Icon/></span>
           <div><small>{profile.category}</small><strong>{profile.stages[safeIndex]}</strong><p><span>{coverStart}</span><i>→</i><span>{coverEnd}</span></p></div>
-          <footer><span>LEARNING STEP</span><b>{String(chapterNumber).padStart(2, '0')} / {String(totalChapters).padStart(2, '0')}</b></footer>
+          {!everyday && <footer><span>LEARNING STEP</span><b>{String(chapterNumber).padStart(2, '0')} / {String(totalChapters).padStart(2, '0')}</b></footer>}
         </div>
       </div>
       <b>{String(chapterNumber).padStart(2, '0')}</b>
     </div>
     <div className="journey-card-content">
       <header className="journey-card-header">
-        <div><small>{compact ? profile.category : `BYTE ${String(chapterNumber).padStart(2, '0')} OF ${String(totalChapters).padStart(2, '0')} · ${profile.category}`}</small>{!compact && <strong>{profile.stages[safeIndex]}</strong>}</div>
+        <div><small>{everyday ? `CHAPTER ${String(chapterNumber).padStart(2, '0')} · ${profile.category}` : compact ? profile.category : `BYTE ${String(chapterNumber).padStart(2, '0')} OF ${String(totalChapters).padStart(2, '0')} · ${profile.category}`}</small>{!compact && !everyday && <strong>{profile.stages[safeIndex]}</strong>}</div>
         <i>{chapter.level} · {chapter.duration}</i>
       </header>
       <div className="journey-card-copy">
         <h3>{chapter.title}</h3><p>{chapter.summary}</p>
-        {!compact && <div className="journey-card-outcome"><CheckCircle2/><div><span>AFTER THIS BYTE</span><strong>{outcomes[safeIndex]}</strong></div></div>}
+        {!compact && !everyday && <div className="journey-card-outcome"><CheckCircle2/><div><span>AFTER THIS BYTE</span><strong>{outcomes[safeIndex]}</strong></div></div>}
       </div>
-      <footer><span><Sparkles/>{profile.handbook}</span><b>{compact ? 'Start Learning' : 'Start this Byte'} <ArrowUpRight/></b></footer>
+      <footer>{!everyday && <span><Sparkles/>{profile.handbook}</span>}<b>{everyday ? 'Explore chapter' : compact ? 'Start Learning' : 'Start this Byte'} <ArrowUpRight/></b></footer>
     </div>
   </Link>;
 }

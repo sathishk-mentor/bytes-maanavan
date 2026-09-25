@@ -21,6 +21,8 @@ export async function GET() {
 - [MongoDB for AI Application Engineering Handbook](https://bytes.maanavan.com/mongodb/): Documents, query-first data modelling, aggregation, Python and FastAPI integration, Atlas Vector Search, indexing, security and production operations.
 - [Python for GenAI and Agentic AI Handbook](https://bytes.maanavan.com/python-genai-agentic-ai/): Python foundations, APIs and JSON, grounded LLM applications, tool-using agents, evaluation, security, Docker and production operations.
 
+- [How Everyday Apps Work](https://bytes.maanavan.com/how-everyday-apps-work/): Five connected visual Bytes on messaging, UPI payments, delivery tracking, video streaming and navigation.
+
 ## Published Bytes
 
 ${entries}

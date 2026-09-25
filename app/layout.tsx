@@ -29,8 +29,8 @@ const notoTamil = Noto_Sans_Tamil({ subsets: ['tamil'], variable: '--font-tamil'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bytes.maanavan.com'),
-  title: { default: 'Free AI & Technology Tutorials | MaanavaN Bytes', template: '%s | MaanavaN Bytes' },
-  description: 'Learn AI, AI agents, data engineering, cloud, DevOps, software engineering and cybersecurity through clear bite-sized tutorials with Tamil learner support.',
+  title: { default: 'Free AI & Technology Handbooks | MaanavaN Bytes', template: '%s | MaanavaN Bytes' },
+  description: 'Learn AI, AI agents, data engineering, cloud, DevOps, software engineering and cybersecurity through clear visual handbooks and practical Bytes with clear examples.',
   keywords: ['Generative AI', 'GenAI', 'Prompt Engineering', 'Cloud', 'Data Engineering', 'AI Agents', 'Tanglish', 'Tamil', 'Learning'],
   authors: [{ name: 'Sathish Kumar', url: 'https://www.maanavan.com/about/sathish-kumar' }],
   creator: 'Sathish Kumar',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   openGraph: {
     title: 'MaanavaN Bytes | Free AI and Technology Learning',
-    description: 'Clear technology lessons with practical examples, architecture walkthroughs and interview insights.',
+    description: 'Visual technology handbooks with practical examples, workflows and learning checks.',
     url: '/',
     type: 'website',
     locale: 'en_IN',
@@ -62,8 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-IN" data-reading-mode="english" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{__html:`try{var m=localStorage.getItem('maanavan-reading-mode');if(m==='tanglish'){document.documentElement.dataset.readingMode='tanglish';document.documentElement.lang='ta-Latn-IN'}}catch(e){}`}} /></head>
-      <body className={`${inter.className} ${notoTamil.variable}`}>
+          <body className={`${inter.className} ${notoTamil.variable}`}>
         <NavigationStability />
         <a className="skip-link" href="#main-content">Skip to content</a>
         <div className="flex min-h-screen flex-col">
@@ -74,7 +73,7 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({
           '@context':'https://schema.org','@graph':[
             {'@type':'Organization','@id':'https://www.maanavan.com/#organization',name:'MaanavaN',url:'https://www.maanavan.com/',founder:{'@type':'Person',name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'},sameAs:['https://www.linkedin.com/in/sathish-kumar-ceo/']},
-            {'@type':'WebSite','@id':'https://bytes.maanavan.com/#website',name:'MaanavaN Bytes',alternateName:'MaanavaN Technology Handbooks',url:'https://bytes.maanavan.com/',description:'Free visual technology handbooks and practical bite-sized tutorials for Tamil-speaking learners worldwide.',publisher:{'@id':'https://www.maanavan.com/#organization'},inLanguage:['en-IN','ta-Latn-IN']}
+            {'@type':'WebSite','@id':'https://bytes.maanavan.com/#website',name:'MaanavaN Bytes',alternateName:'MaanavaN Technology Handbooks',url:'https://bytes.maanavan.com/',description:'Free visual technology handbooks and practical bite-sized tutorials for Tamil-speaking learners worldwide.',publisher:{'@id':'https://www.maanavan.com/#organization'},inLanguage:'en-IN'}
           ]
         })}} />
       </body>
