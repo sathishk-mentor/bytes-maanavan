@@ -14,7 +14,6 @@ import {
   getBytesByCategory,
   extractHeadings,
   getEnglishContent,
-  getTanglishContent,
 } from '@/lib/mdx';
 import { getCategoryBySlug } from '@/lib/categories';
 import { CourseRecommendation } from '@/components/bytes/CourseRecommendation';
@@ -22,7 +21,6 @@ import { ReadingReveal } from '@/components/bytes/ReadingReveal';
 import { AuthorCard } from '@/components/bytes/AuthorCard';
 import { BeginnerAnalogy } from '@/components/bytes/BeginnerAnalogy';
 import { HandbookQuickNav } from '@/components/bytes/HandbookQuickNav';
-import { ReadingModeToggle } from '@/components/bytes/ReadingMode';
 
 interface BytePageProps {
   params: {
@@ -201,14 +199,12 @@ export default async function BytePage({ params }: BytePageProps) {
 
   const uploadedEnglishContent = await getEnglishContent(categorySlug, byteSlug);
   const primaryContent = uploadedEnglishContent || byte.content;
-  const tanglishContent = await getTanglishContent(categorySlug, byteSlug);
   const headings = extractHeadings(primaryContent);
-  const tanglishHeadings = tanglishContent ? extractHeadings(tanglishContent) : [];
 
   const canonical=`https://bytes.maanavan.com/${categorySlug}/${byteSlug}/`;
   const minutes=Number.parseInt(byte.duration,10) || 10;
   const schema={'@context':'https://schema.org','@graph':[
-    {'@type':['Article','LearningResource'],'@id':`${canonical}#learning-resource`,headline:byte.title,name:byte.title,description:byte.summary,abstract:byte.summary,url:canonical,mainEntityOfPage:{'@type':'WebPage','@id':canonical},image:'https://bytes.maanavan.com/opengraph-image',datePublished:byte.publishedAt || byte.updatedAt,dateModified:byte.updatedAt,author:{'@type':'Person',name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'},publisher:{'@id':'https://www.maanavan.com/#organization'},provider:{'@id':'https://www.maanavan.com/#organization'},isPartOf:{'@id':`https://bytes.maanavan.com/${categorySlug}/#collection`},educationalLevel:byte.level,learningResourceType:'Tutorial',timeRequired:`PT${minutes}M`,inLanguage:['en-IN','ta-Latn-IN'],isAccessibleForFree:true,keywords:byte.tags.join(', '),about:byte.tags.map((name)=>({'@type':'Thing',name})),teaches:[byte.title,byte.summary],audience:{'@type':'Audience',audienceType:'Beginners, working professionals and Tamil-speaking technology learners'}},
+    {'@type':['Article','LearningResource'],'@id':`${canonical}#learning-resource`,headline:byte.title,name:byte.title,description:byte.summary,abstract:byte.summary,url:canonical,mainEntityOfPage:{'@type':'WebPage','@id':canonical},image:'https://bytes.maanavan.com/opengraph-image',datePublished:byte.publishedAt || byte.updatedAt,dateModified:byte.updatedAt,author:{'@type':'Person',name:'Sathish Kumar',url:'https://www.maanavan.com/about/sathish-kumar'},publisher:{'@id':'https://www.maanavan.com/#organization'},provider:{'@id':'https://www.maanavan.com/#organization'},isPartOf:{'@id':`https://bytes.maanavan.com/${categorySlug}/#collection`},educationalLevel:byte.level,learningResourceType:'Tutorial',timeRequired:`PT${minutes}M`,inLanguage:'en-IN',isAccessibleForFree:true,keywords:byte.tags.join(', '),about:byte.tags.map((name)=>({'@type':'Thing',name})),teaches:[byte.title,byte.summary],audience:{'@type':'Audience',audienceType:'Beginners, working professionals and Tamil-speaking technology learners'}},
     {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'MaanavaN Bytes',item:'https://bytes.maanavan.com/'},{'@type':'ListItem',position:2,name:category?.title,item:`https://bytes.maanavan.com/${categorySlug}/`},{'@type':'ListItem',position:3,name:byte.title,item:canonical}]}
   ]};
   return (
@@ -218,11 +214,10 @@ export default async function BytePage({ params }: BytePageProps) {
 
       <div className="byte-reading-canvas">
         <div className="byte-reading-layout">
-          <AccordionTableOfContents headings={headings} tanglishHeadings={tanglishHeadings} byteSlug={byte.slug} />
+          <AccordionTableOfContents headings={headings} byteSlug={byte.slug} />
           <div className="byte-main-column">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} mobile />
-            {tanglishContent && <ReadingModeToggle />}
-            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={primaryContent} tanglishContent={tanglishContent} /><AuthorCard/><ConnectedLearning items={connectedLearning}/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
+            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={primaryContent} /><AuthorCard/><ConnectedLearning items={connectedLearning}/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
           </div>
           <aside className="byte-trust-rail" aria-label="Handbook quick navigation">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} />
