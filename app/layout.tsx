@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
+import { JourneyTracker } from '@/components/analytics/JourneyTracker';
 import { Inter, Noto_Sans_Tamil } from 'next/font/google';
 import './globals.css';
 import './maanavan-brand.css';
@@ -23,6 +25,9 @@ import './byte-uniform.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { NavigationStability } from '@/components/navigation/NavigationStability';
+
+const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const validGaMeasurementId = gaMeasurementId && /^G-[A-Z0-9]+$/.test(gaMeasurementId) ? gaMeasurementId : null;
 
 const inter = Inter({ subsets: ['latin'] });
 const notoTamil = Noto_Sans_Tamil({ subsets: ['tamil'], variable: '--font-tamil', display: 'swap' });
@@ -64,6 +69,11 @@ export default function RootLayout({
     <html lang="en-IN" data-reading-mode="english" suppressHydrationWarning>
           <body className={`${inter.className} ${notoTamil.variable}`}>
         <NavigationStability />
+        <JourneyTracker />
+        {validGaMeasurementId && <>
+          <Script id="ga4-init" strategy="beforeInteractive">{`window.dataLayer = window.dataLayer || []; window.gtag = function(){window.dataLayer.push(arguments)}; window.gtag("js", new Date()); window.gtag("config", ${JSON.stringify(validGaMeasurementId)});`}</Script>
+          <Script src={`https://www.googletagmanager.com/gtag/js?id=${validGaMeasurementId}`} strategy="afterInteractive" />
+        </>}
         <a className="skip-link" href="#main-content">Skip to content</a>
         <div className="flex min-h-screen flex-col">
           <Header />

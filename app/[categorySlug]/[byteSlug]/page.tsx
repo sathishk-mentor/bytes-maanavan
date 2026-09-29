@@ -21,6 +21,7 @@ import { ReadingReveal } from '@/components/bytes/ReadingReveal';
 import { AuthorCard } from '@/components/bytes/AuthorCard';
 import { BeginnerAnalogy } from '@/components/bytes/BeginnerAnalogy';
 import { HandbookQuickNav } from '@/components/bytes/HandbookQuickNav';
+import { ByteViewTracker } from '@/components/analytics/ByteViewTracker';
 
 interface BytePageProps {
   params: {
@@ -210,6 +211,7 @@ export default async function BytePage({ params }: BytePageProps) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema)}}/>
+      <ByteViewTracker category={categorySlug} slug={byteSlug} />
       <ByteHeader byte={byte} chapterNumber={chapterNumber} />
 
       <div className="byte-reading-canvas">
