@@ -3,37 +3,38 @@
 import { useDeferredValue, useMemo, useState } from 'react';
 import { ChevronDown, Search, X } from 'lucide-react';
 import type { ByteMetadata } from '@/lib/types';
+import { handbooks } from '@/lib/handbooks';
 import { ByteLibraryCard } from '@/components/bytes/ByteLibraryCard';
 
 const filters = [
   {label:'All Bytes',value:'all'},
-  {label:'AI Agents',value:'ai-agents'},
-  {label:'Software Engineering',value:'software-engineering'},
-  {label:'Technology Careers',value:'forward-deployed-engineer'},
+  {label:'AI & Application Engineering',value:'ai-application-engineering'},
+  {label:'Software Engineering & Everyday Apps',value:'software-engineering'},
   {label:'Cloud & DevOps',value:'cloud-devops'},
-  {label:'Generative AI & Agents',value:'langchain'},
-  {label:'RAG Application Engineering',value:'rag-application-engineering'},
-  {label:'API & Backend Engineering',value:'fastapi-ai-applications'},
-  {label:'Modern Java & GenAI',value:'modern-java-spring-boot-genai'},
-  {label:'SQL for Data & AI',value:'sql-data-ai-applications'},
-  {label:'MongoDB for AI Apps',value:'mongodb'},
+  {label:'Technology Careers',value:'technology-careers'},
 ];
+const handbookByChapterCategory = new Map(
+  handbooks.flatMap((handbook) =>
+    handbook.chapters.map((chapter) => [chapter.href.split('/').filter(Boolean)[0], handbook] as const)
+  )
+);
 export function BytesLibrary({ chapters }: { chapters: ByteMetadata[] }) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('all');
   const [visibleCount, setVisibleCount] = useState(12);
   const deferredQuery = useDeferredValue(query);
   const results = useMemo(() => chapters.filter((chapter) => {
-    const searchable = `${chapter.title} ${chapter.summary} ${chapter.tags.join(' ')}`.toLowerCase();
-    return searchable.includes(deferredQuery.trim().toLowerCase()) && (filter === 'all' || chapter.category === filter);
+    const handbook = handbookByChapterCategory.get(chapter.category);
+    const searchable = `${chapter.title} ${chapter.summary} ${chapter.tags.join(' ')} ${handbook?.title ?? ''} ${handbook?.shortTitle ?? ''}`.toLowerCase();
+    return searchable.includes(deferredQuery.trim().toLowerCase()) && (filter === 'all' || handbook?.category === filter);
   }), [chapters, deferredQuery, filter]);
   const visibleResults = results.slice(0, visibleCount);
 
   return <section className="bytes-library" id="bytes-library">
     <div className="container-custom">
-      <div className="library-heading"><div><p className="eyebrow dark">BYTE LIBRARY</p><h2>Find the exact concept you need.</h2><p>Search the library or choose a subject from the category sidebar.</p></div></div>
+      <div className="library-heading"><div><p className="eyebrow dark">BYTE LIBRARY</p><h2>Find the exact concept you need.</h2><p>Search a concept or choose a subject. Each result opens the individual Byte.</p></div></div>
       <div className="library-search-row">
-        <label className="library-search"><Search/><span className="sr-only">Search Bytes</span><input value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(12); }} placeholder="Search FDE, Copilot, workflow, debugging…" />{query && <button onClick={() => { setQuery(''); setVisibleCount(12); }} aria-label="Clear search"><X/></button>}</label>
+        <label className="library-search"><Search/><span className="sr-only">Search Bytes</span><input aria-label="Search individual Bytes" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(12); }} placeholder="Search WhatsApp, RAG, Docker, Python…" />{query && <button onClick={() => { setQuery(''); setVisibleCount(12); }} aria-label="Clear search"><X/></button>}</label>
       </div>
       <div className="library-with-sidebar">
         <aside className="library-category-sidebar"><p>BYTE CATEGORIES</p><nav aria-label="Filter Bytes by category">{filters.map((item) => <button key={item.value} className={filter === item.value ? 'active' : ''} onClick={() => { setFilter(item.value); setVisibleCount(12); }}><span>{item.label}</span><i>›</i></button>)}</nav><small>Choose a subject area to narrow the library.</small></aside>

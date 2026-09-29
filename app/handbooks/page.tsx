@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { BookOpen, Layers3, Users } from 'lucide-react';
 import { handbooks } from '@/lib/handbooks';
 import { PublishedHandbooks } from '@/components/home/PublishedHandbooks';
+import { BytesLibrary } from '@/components/home/BytesLibrary';
 
 export const metadata: Metadata = {
   title: 'AI & Technology Handbooks',
@@ -21,5 +22,6 @@ export default async function HandbooksPage() {
   return <><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema)}}/>
     <section className="handbooks-hero"><div className="container-custom"><p className="eyebrow">MAANAVAN HANDBOOK LIBRARY</p><h1>Focused handbooks for practical technology learning.</h1><p>Build the mental model first, then learn through visual explanations, familiar analogies, real project scenarios and decisions you can apply.</p><div><span><BookOpen/>Connected learning paths</span><span><Layers3/>Practical visual Bytes</span><span><Users/>Beginner-friendly learning</span></div></div></section>
     <PublishedHandbooks handbooks={handbooks} variant="library"/>
+    <BytesLibrary chapters={bytes}/>
   </>;
 }
