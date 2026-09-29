@@ -21,6 +21,7 @@ import { ReadingReveal } from '@/components/bytes/ReadingReveal';
 import { AuthorCard } from '@/components/bytes/AuthorCard';
 import { BeginnerAnalogy } from '@/components/bytes/BeginnerAnalogy';
 import { HandbookQuickNav } from '@/components/bytes/HandbookQuickNav';
+import { LessonCompletion } from '@/components/bytes/LessonCompletion';
 
 interface BytePageProps {
   params: {
@@ -217,7 +218,7 @@ export default async function BytePage({ params }: BytePageProps) {
           <AccordionTableOfContents headings={headings} byteSlug={byte.slug} />
           <div className="byte-main-column">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} mobile />
-            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={primaryContent} /><AuthorCard/><ConnectedLearning items={connectedLearning}/><CourseRecommendation categorySlug={categorySlug} /><div className="mt-12"><PrevNextNav prev={prev} next={next} /></div></ReadingReveal>
+            <ReadingReveal><BeginnerAnalogy slug={byte.slug}/><ByteContent content={primaryContent} /><LessonCompletion slug={byte.slug}/><div className="mt-8"><PrevNextNav prev={prev} next={next} /></div><ConnectedLearning items={connectedLearning}/><AuthorCard/><CourseRecommendation categorySlug={categorySlug} /></ReadingReveal>
           </div>
           <aside className="byte-trust-rail" aria-label="Handbook quick navigation">
             <HandbookQuickNav bytes={handbookBytes} currentSlug={byteSlug} handbookTitle={category?.title || 'MaanavaN Handbook'} duration={byte.duration} />

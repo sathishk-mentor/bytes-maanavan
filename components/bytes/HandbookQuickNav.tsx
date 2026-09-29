@@ -1,3 +1,7 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { getProgress } from '@/lib/progress';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check, ChevronRight } from 'lucide-react';
 import type { ByteMetadata } from '@/lib/types';
@@ -42,7 +46,19 @@ export function HandbookQuickNav({
 }: HandbookQuickNavProps) {
   const currentIndex = Math.max(0, bytes.findIndex((item) => item.slug === currentSlug));
   const currentNumber = currentIndex + 1;
-  const progress = bytes.length ? (currentNumber / bytes.length) * 100 : 0;
+  const [completed, setCompleted] = useState<string[]>([]);
+  useEffect(() => {
+    const sync = () => setCompleted(getProgress().completedBytes);
+    sync();
+    window.addEventListener('storage', sync);
+    window.addEventListener('byte-progress-change', sync);
+    return () => {
+      window.removeEventListener('storage', sync);
+      window.removeEventListener('byte-progress-change', sync);
+    };
+  }, []);
+  const completedCount = bytes.filter((item) => completed.includes(item.slug)).length;
+  const progress = bytes.length ? (completedCount / bytes.length) * 100 : 0;
   const previous = bytes[currentIndex - 1];
   const next = bytes[currentIndex + 1];
 
@@ -52,17 +68,17 @@ export function HandbookQuickNav({
         <span>HANDBOOK JOURNEY</span>
         <strong>Byte {currentNumber} of {bytes.length}</strong>
         <p>{handbookTitle}</p>
-        <div className="byte-progress-track" aria-label={`${currentNumber} of ${bytes.length} Bytes`}>
+        <div className="byte-progress-track" aria-label={`${completedCount} of ${bytes.length} Bytes completed`}>
           <i style={{ width: `${progress}%` }} />
         </div>
-        <small>{duration} focused reading</small>
+        <small>{completedCount} of {bytes.length} completed · {duration} for this Byte</small>
       </div>
 
       <ol className="handbook-byte-list">
         {bytes.map((item, index) => {
           const number = index + 1;
           const isCurrent = item.slug === currentSlug;
-          const isComplete = index < currentIndex;
+          const isComplete = completed.includes(item.slug);
           const itemContent = (
             <>
               <span className="handbook-byte-number">
@@ -78,7 +94,7 @@ export function HandbookQuickNav({
           );
 
           return (
-            <li key={item.slug} className={isCurrent ? 'is-current' : isComplete ? 'is-complete' : ''}>
+            <li key={item.slug} className={`${isCurrent ? 'is-current' : ''} ${isComplete ? 'is-complete' : ''}`.trim()}>
               {isCurrent ? (
                 <div className="handbook-byte-link" aria-current="page">{itemContent}</div>
               ) : (
