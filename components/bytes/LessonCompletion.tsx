@@ -16,6 +16,7 @@ export function LessonCompletion({ slug }: { slug: string }) {
     else markByteComplete(slug);
     setComplete(!complete);
     window.dispatchEvent(new Event('byte-progress-change'));
+    (window as Window & { gtag?: (...args: unknown[]) => void }).gtag?.('event', complete ? 'byte_completion_undone' : 'byte_complete', { byte_slug: slug, site: 'bytes' });
   };
 
   return (
