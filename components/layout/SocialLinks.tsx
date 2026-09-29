@@ -1,6 +1,6 @@
 export const socialLinks = [
   { label: 'Facebook', href: 'https://www.facebook.com/maanavanlearncode/' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/showcase/maanavan' },
+  { label: 'LinkedIn', href: 'https://in.linkedin.com/company/maanavanofficial' },
   { label: 'YouTube', href: 'https://www.youtube.com/channel/UCZN9jOlj8Dm1nYidAGJuA-w/featured' },
   { label: 'Instagram', href: 'https://www.instagram.com/maanavan_learn_code/' },
   { label: 'X', href: 'https://x.com/maanavan_code' },

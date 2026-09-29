@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { ArrowDown, ArrowUpRight, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, CreditCard, Database, FileSearch, Layers3, MapPin, MessageCircle, Navigation, Network, Play, Rocket, SearchCheck, Server, ShieldCheck, Smartphone, Sparkles, Workflow } from 'lucide-react';
+import { ArrowUpRight, BookOpenCheck, Box, CheckCircle2, Code2, Compass, Container, CreditCard, Database, FileSearch, Layers3, MapPin, MessageCircle, Navigation, Network, Play, Rocket, SearchCheck, Server, ShieldCheck, Smartphone, Sparkles, Workflow } from 'lucide-react';
 import { CategoryPageClient } from '@/components/category/CategoryPageClient';
 import { getCategoryBySlug } from '@/lib/categories';
 import { getBytesByCategory } from '@/lib/mdx';
@@ -233,7 +233,7 @@ export default async function TrackPage({ params }: { params: { categorySlug: st
       <section className={`track-hero track-hero-${params.categorySlug}`}><div className="container-custom track-hero-inner">
         <div className="track-hero-copy"><p className="eyebrow"><Sparkles/>{detail.eyebrow}</p><h1>{category.title}</h1><p>{detail.intro}</p>
           <div className="track-hero-points"><span><BookOpenCheck/>Connected learning path</span><span>Beginner-friendly</span><span>Real project scenarios</span></div>
-          <a href="#handbook-learning-path">Start with Byte 01 <ArrowDown/></a>
+          <a href={`/${params.categorySlug}/${lessons[0].slug}/`}>Start with Byte 01 <ArrowUpRight/></a>
         </div>
         <HandbookHeroVisual categorySlug={params.categorySlug as PublishedCategory}/>
       </div></section>
