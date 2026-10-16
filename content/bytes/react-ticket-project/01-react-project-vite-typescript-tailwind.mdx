@@ -12,6 +12,8 @@ order: 1
 
 ## What you will build
 
+**Milestone 11:** Start with a completely empty project. We will create the Support Desk shell before introducing tickets, state or APIs. The important outcome is a page you can run and understand, not an unexplained collection of packages.
+
 A project needs a repeatable setup and clear folder structure before adding features.
 
 **Visible checkpoint:** The app shows a clean Support Desk heading and description. You can study this Byte by itself, though the project can also be built progressively.
@@ -23,6 +25,8 @@ Vite runs and builds a React project. TypeScript checks types during development
 In plain language, an interface should show useful information and respond predictably to users. We begin with one small technical change before introducing more features.
 
 ## Architecture: what happens underneath
+
+<ReactTicketLearningFlow byte={1} />
 
 **Execution path**
 
@@ -39,6 +43,8 @@ Follow the arrows and explain which step is React state, which is a browser acti
 Use the visual to predict what a user would see. The preview uses simulated demo data and does not represent a connected enterprise service.
 
 ## Coding walkthrough step by step
+
+**Complete, ordered project checkpoints:** [Read the source-of-truth build guide](https://github.com/sathishk-mentor/bytes-maanavan/blob/feature/react-ticket-gold-standard/docs/react-ticket-project-complete-checkpoints.md). Use the full replacement files from that guide alongside the focused explanations below. Some snippets below demonstrate an insertion rather than a complete file.
 
 ### Step 1 — Create the app
 
@@ -128,20 +134,22 @@ Add a white content panel and a secondary heading. Confirm the layout works on a
 
 **Evidence:** Capture the visible result, explain the code you changed, and reproduce one failure case.
 
-## Interview Bit and Key Takeaways
+## Interview Bit
 
-**Interview question:** Why use Vite and TypeScript? Vite provides development tooling; TypeScript catches many type errors before running code.
+**Question:** How does this milestone change what the learner can actually do?
 
-**Eight takeaways:**
+**Answer:** It creates the working React shell and explains the relationship between the files and the browser.
 
-1. Start with a visible user goal.
-2. Explain the React concept before writing code.
-3. Keep UI components small and reusable.
-4. Use typed interfaces and explicit data flows.
-5. Validate inputs and failures clearly.
-6. Test behavior from a user's perspective.
-7. Avoid premature optimization and needless dependencies.
-8. Confirm each project milestone works before continuing.
+## Key Takeaways
+
+1. Vite creates a practical React development project.
+2. TypeScript's TSX files contain typed JSX.
+3. Tailwind's Vite plugin must be registered.
+4. Import Tailwind CSS from your global stylesheet.
+5. main.tsx mounts React in the root HTML element.
+6. App.tsx describes the initial visible interface.
+7. Run npm run dev and open the displayed local URL.
+8. Verify the first screen before adding more complexity.
 
 ## Knowledge Check and Primary Sources
 
