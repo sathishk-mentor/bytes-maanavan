@@ -12,6 +12,8 @@ order: 2
 
 ## What you will build
 
+**Milestone 12:** Use the project created in Byte 11. One data object represents one support ticket, while a reusable component controls its appearance. Add a record and watch the visible dashboard change without copying the card markup.
+
 Repeated ticket cards should share one design and receive data through props.
 
 **Visible checkpoint:** Two ticket cards render from one component with distinct priority/status labels. You can study this Byte by itself, though the project can also be built progressively.
@@ -23,6 +25,8 @@ Model each ticket as a typed object. Render arrays with map and stable keys. Kee
 In plain language, an interface should show useful information and respond predictably to users. We begin with one small technical change before introducing more features.
 
 ## Architecture: what happens underneath
+
+<ReactTicketLearningFlow byte={2} />
 
 **Execution path**
 
@@ -39,6 +43,8 @@ Follow the arrows and explain which step is React state, which is a browser acti
 Use the visual to predict what a user would see. The preview uses simulated demo data and does not represent a connected enterprise service.
 
 ## Coding walkthrough step by step
+
+**Complete, ordered project checkpoints:** [Read the source-of-truth build guide](https://github.com/sathishk-mentor/bytes-maanavan/blob/feature/react-ticket-gold-standard/docs/react-ticket-project-complete-checkpoints.md). Use the full replacement files from that guide alongside the focused explanations below. Some snippets below demonstrate an insertion rather than a complete file.
 
 ### Step 1 — Create the ticket type and records
 
@@ -117,20 +123,22 @@ Add another ticket in the data file and compute the number of Open tickets using
 
 **Evidence:** Capture the visible result, explain the code you changed, and reproduce one failure case.
 
-## Interview Bit and Key Takeaways
+## Interview Bit
 
-**Interview question:** Why reuse TicketCard? It separates presentation from ticket data so the same component handles different records.
+**Question:** How does this milestone change what the learner can actually do?
 
-**Eight takeaways:**
+**Answer:** It turns typed records into reusable task cards with accurate derived counts.
 
-1. Start with a visible user goal.
-2. Explain the React concept before writing code.
-3. Keep UI components small and reusable.
-4. Use typed interfaces and explicit data flows.
-5. Validate inputs and failures clearly.
-6. Test behavior from a user's perspective.
-7. Avoid premature optimization and needless dependencies.
-8. Confirm each project milestone works before continuing.
+## Key Takeaways
+
+1. A Ticket type defines the fields in each record.
+2. A typed array can hold multiple ticket objects.
+3. One TicketCard component renders different tickets.
+4. Props supply a record to the reusable component.
+5. React maps the tickets array into JSX elements.
+6. Each rendered ticket must have a stable key.
+7. Dashboard totals can be calculated from ticket data.
+8. A data change should not require duplicated JSX.
 
 ## Knowledge Check and Primary Sources
 

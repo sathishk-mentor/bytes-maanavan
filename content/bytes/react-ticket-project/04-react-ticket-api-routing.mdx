@@ -12,6 +12,8 @@ order: 4
 
 ## What you will build
 
+**Milestone 14:** Separate URL navigation from ticket data retrieval. Use a replaceable mock adapter, a list route and a detail route. This checkpoint is for learning routing and network boundaries; it is not a production ticket system.
+
 A real interface must display asynchronous data, separate ticket list and detail views, and recover from failures.
 
 **Visible checkpoint:** The mock issue list loads after a short delay; users can navigate list/detail routes and retry errors. You can study this Byte by itself, though the project can also be built progressively.
@@ -23,6 +25,8 @@ Use React Router to map URLs to screens. Treat the server as the authoritative s
 In plain language, an interface should show useful information and respond predictably to users. We begin with one small technical change before introducing more features.
 
 ## Architecture: what happens underneath
+
+<ReactTicketLearningFlow byte={4} />
 
 **Execution path**
 
@@ -39,6 +43,8 @@ Follow the arrows and explain which step is React state, which is a browser acti
 Use the visual to predict what a user would see. The preview uses simulated demo data and does not represent a connected enterprise service.
 
 ## Coding walkthrough step by step
+
+**Complete, ordered project checkpoints:** [Read the source-of-truth build guide](https://github.com/sathishk-mentor/bytes-maanavan/blob/feature/react-ticket-gold-standard/docs/react-ticket-project-complete-checkpoints.md). Use the full replacement files from that guide alongside the focused explanations below. Some snippets below demonstrate an insertion rather than a complete file.
 
 ### Step 1 — Install routing
 
@@ -128,20 +134,22 @@ Implement the two page components with a mock ticket lookup and an accessible er
 
 **Evidence:** Capture the visible result, explain the code you changed, and reproduce one failure case.
 
-## Interview Bit and Key Takeaways
+## Interview Bit
 
-**Interview question:** Why isolate an API adapter? The UI should not depend on hard-coded mock data paths when a real service is added.
+**Question:** How does this milestone change what the learner can actually do?
 
-**Eight takeaways:**
+**Answer:** It demonstrates separate routes, mock data loading and error recovery without claiming a real backend.
 
-1. Start with a visible user goal.
-2. Explain the React concept before writing code.
-3. Keep UI components small and reusable.
-4. Use typed interfaces and explicit data flows.
-5. Validate inputs and failures clearly.
-6. Test behavior from a user's perspective.
-7. Avoid premature optimization and needless dependencies.
-8. Confirm each project milestone works before continuing.
+## Key Takeaways
+
+1. BrowserRouter supplies browser-based navigation.
+2. Routes connect URLs to list and detail pages.
+3. Route parameters identify the selected ticket.
+4. Mock adapters make remote-data boundaries explicit.
+5. Loading should be announced while requests run.
+6. Errors should include a meaningful retry option.
+7. Prevent outdated requests from updating current screens.
+8. A mock API is not a persistent multi-user backend.
 
 ## Knowledge Check and Primary Sources
 
