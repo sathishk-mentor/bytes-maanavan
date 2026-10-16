@@ -12,6 +12,8 @@ order: 4
 
 ## Why this concept matters
 
+Types catch many mistakes while coding, but API responses arrive at runtime. Learn the difference between a checked TypeScript union and an unchecked JSON value.
+
 A wrong prop value or unexpected API payload can quietly break a screen. **You will learn:** explain the idea, follow the execution flow, read a compact example and try one realistic decision. Basic React components, props and useState are helpful; this Byte also works as a standalone introduction.
 
 ## Start with a familiar scenario
@@ -21,6 +23,8 @@ Think of a form that accepts only Low, Medium or High priority. TypeScript check
 **Vocabulary:** TypeScript, TSX, union type, props, runtime validation.
 
 ## Understand the core concept
+
+Imagine an application accepts only three priorities—low, medium or high. A TypeScript union prevents a developer from typing another value into a checked prop. But a server can still send *urgent*; a runtime guard must decide whether to accept it.
 
 Use TSX files for typed JSX. Give props meaningful types and use string unions for restricted options. TypeScript types disappear at runtime, so validate external JSON before trusting it. Use typed event handlers only where inference is insufficient.
 
@@ -41,6 +45,12 @@ API value → runtime validation → typed prop → component → rendered badge
 Choose an answer to a realistic development situation. Review the resulting explanation before writing code.
 
 <AdvancedReactLab byte={4} />
+
+## Try It Yourself — code and browser output
+
+<AdvancedReactTryIt byte={4} />
+
+**Experiment:** Select **high** and observe a valid badge value. Then select **urgent (invalid)**. Explain why declaring a type alone cannot protect your application from unpredictable external data.
 
 ## Guided code walkthrough
 
@@ -86,24 +96,22 @@ Create a typed IssueCard; try an invalid priority and examine the error.
 
 **Success check:** describe the input, the React action and the output. Try the failure case once, then explain the recovery.
 
-## Interview Bit and key takeaways
+## Interview Bit
 
-**Interview question:** Does TypeScript verify API responses at runtime?
+**Does TypeScript validate an API JSON response?** No. A compile-time type does not inspect real network data; validate the response at runtime before treating it as trusted.
 
-**Simple answer:** No. TypeScript helps during development; use runtime guards or schemas for untrusted responses.
+## Key Takeaways
 
-**Eight takeaways:**
+1. JSX in TypeScript is commonly written in .tsx files.
+2. Props should clearly describe expected input values.
+3. String unions restrict known alternatives.
+4. Types help during development, before code runs.
+5. Types disappear from JavaScript at runtime.
+6. Type assertions are not runtime validation.
+7. Validate untrusted API fields at their boundaries.
+8. A type guard narrows unknown values safely.
 
-1. Start by describing the user's problem.
-2. Identify which values are local and which originate outside React.
-3. Use explicit types and state transitions where helpful.
-4. Prefer readable components over one large file.
-5. Show loading, invalid and error states clearly.
-6. Verify the observable result after changes.
-7. Avoid unnecessary Effects and premature optimization.
-8. Choose tools according to actual complexity.
-
-## FAQ, knowledge check and primary sources
+## Knowledge Check and Primary Sources
 
 **FAQ: Is this technique required in every React component?** No; apply it only when the corresponding problem exists.
 

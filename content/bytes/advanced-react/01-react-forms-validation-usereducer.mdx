@@ -12,6 +12,8 @@ order: 1
 
 ## Why this concept matters
 
+A real form must reject empty input and update the screen without rewriting the whole component. Start with a controlled input, then move related updates into a reducer.
+
 A multi-field issue form needs predictable validation and state changes. **You will learn:** explain the idea, follow the execution flow, read a compact example and try one realistic decision. Basic React components, props and useState are helpful; this Byte also works as a standalone introduction.
 
 ## Start with a familiar scenario
@@ -21,6 +23,8 @@ A form is a conversation: the user supplies values, the app checks them, and onl
 **Vocabulary:** controlled field, validation, reducer, action, state transition.
 
 ## Understand the core concept
+
+Think of a reducer as a clerk receiving a clear instruction: **add this issue**. It takes the current records plus that instruction and returns a new record list. The reducer does not reach into the browser or call an API.
 
 Controlled inputs receive their value from state and report edits with onChange. Validation checks inputs and shows recovery guidance. useReducer groups related state updates as explicit actions; reducers must be pure.
 
@@ -41,6 +45,12 @@ Input → controlled state → validation → action → reducer → screen
 Choose an answer to a realistic development situation. Review the resulting explanation before writing code.
 
 <AdvancedReactLab byte={1} />
+
+## Try It Yourself — code and browser output
+
+<AdvancedReactTryIt byte={1} />
+
+**Experiment:** Leave the title blank and press **Add issue**. Notice that the list does not change. Now enter *Printer not working*, choose High and submit. The new item should appear once.
 
 ## Guided code walkthrough
 
@@ -88,24 +98,22 @@ Create a title input with required validation and a priority selector. Submit em
 
 **Success check:** describe the input, the React action and the output. Try the failure case once, then explain the recovery.
 
-## Interview Bit and key takeaways
+## Interview Bit
 
-**Interview question:** What is the difference between useState and useReducer?
+**When should you choose useReducer over useState?** Use useState for a few independent values. Choose a reducer when several related updates benefit from explicit actions and centralized transition logic.
 
-**Simple answer:** useState is effective for small independent values; useReducer organizes more complex related transitions as actions.
+## Key Takeaways
 
-**Eight takeaways:**
+1. Controlled form values come from React state.
+2. onChange updates the draft value a user is editing.
+3. Validation runs before accepting a submission.
+4. useReducer returns a state value and a dispatch function.
+5. An action describes what happened rather than mutating state.
+6. A reducer returns a new state and must be pure.
+7. Error messages should explain exactly how to recover.
+8. Not every form needs useReducer; prefer simple state when sufficient.
 
-1. Start by describing the user's problem.
-2. Identify which values are local and which originate outside React.
-3. Use explicit types and state transitions where helpful.
-4. Prefer readable components over one large file.
-5. Show loading, invalid and error states clearly.
-6. Verify the observable result after changes.
-7. Avoid unnecessary Effects and premature optimization.
-8. Choose tools according to actual complexity.
-
-## FAQ, knowledge check and primary sources
+## Knowledge Check and Primary Sources
 
 **FAQ: Is this technique required in every React component?** No; apply it only when the corresponding problem exists.
 

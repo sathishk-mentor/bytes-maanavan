@@ -12,6 +12,8 @@ order: 2
 
 ## Why this concept matters
 
+Unlike a local array, server data arrives later and may fail. A dependable React screen distinguishes waiting, success and failure.
+
 Server responses can take time, fail or contain unexpected data. **You will learn:** explain the idea, follow the execution flow, read a compact example and try one realistic decision. Basic React components, props and useState are helpful; this Byte also works as a standalone introduction.
 
 ## Start with a familiar scenario
@@ -21,6 +23,8 @@ Ordering online shows the idea: an order can be pending, confirmed, or failed. A
 **Vocabulary:** request, response, loading, error, retry, server state.
 
 ## Understand the core concept
+
+Think of ordering a parcel: *processing* is not the same as *delivered*, and a failed delivery needs a retry path. A data view similarly has at least pending, error and success situations.
 
 Keep remote data distinct from local UI state. Fetch may resolve on HTTP errors, so check response.ok. Represent loading, success and error; provide a retry action. Protect against stale requests. For larger systems, server-state libraries can handle caching and synchronization.
 
@@ -41,6 +45,12 @@ Request → loading → response validation → success / error → retry
 Choose an answer to a realistic development situation. Review the resulting explanation before writing code.
 
 <AdvancedReactLab byte={2} />
+
+## Try It Yourself — code and browser output
+
+<AdvancedReactTryIt byte={2} />
+
+**Experiment:** Click **Load / Retry** with failure disabled. Then enable *Simulate server failure*, retry and inspect the visible error. Disable it and retry again. Explain why the UI must not display old data as a successful new response.
 
 ## Guided code walkthrough
 
@@ -86,24 +96,22 @@ Use a mock Promise returning two issues; simulate an error and show Retry.
 
 **Success check:** describe the input, the React action and the output. Try the failure case once, then explain the recovery.
 
-## Interview Bit and key takeaways
+## Interview Bit
 
-**Interview question:** When should React useEffect fetch data?
+**Does fetch reject automatically for HTTP 404?** No. Network failures can reject, but HTTP responses normally resolve; inspect response.ok and handle the returned status.
 
-**Simple answer:** An Effect can synchronize with an external API in a client-only app, but framework loaders or dedicated server-state tools may be preferable. Handle pending, errors and cancellation.
+## Key Takeaways
 
-**Eight takeaways:**
+1. API records are server data, not the same as local input draft state.
+2. fetch is asynchronous, so loading must be visible.
+3. HTTP error status does not always reject the fetch promise.
+4. Check response.ok before trusting the response.
+5. Handle invalid data and network failures separately.
+6. Retry must start another request, not merely hide the message.
+7. Ignore or cancel stale responses when requests overlap.
+8. For larger apps, routing or server-state libraries may simplify loading and caching.
 
-1. Start by describing the user's problem.
-2. Identify which values are local and which originate outside React.
-3. Use explicit types and state transitions where helpful.
-4. Prefer readable components over one large file.
-5. Show loading, invalid and error states clearly.
-6. Verify the observable result after changes.
-7. Avoid unnecessary Effects and premature optimization.
-8. Choose tools according to actual complexity.
-
-## FAQ, knowledge check and primary sources
+## Knowledge Check and Primary Sources
 
 **FAQ: Is this technique required in every React component?** No; apply it only when the corresponding problem exists.
 
