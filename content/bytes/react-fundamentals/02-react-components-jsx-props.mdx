@@ -14,29 +14,29 @@ order: 2
 
 ## Why reusable task items matter
 
-JSX describes what should be on screen. Props pass read-only data from a parent component into a child. Reusable TaskItem components let us avoid copying markup for every task. A stable key tells React which list item is which.
+Our first to-do list contains two hard-coded `<li>` elements. Imagine 100 tasks: copying JSX 100 times would be difficult to maintain. A reusable component can display any task when we provide its text as input.
 
-**In this Byte:** First understand the concept, then apply it to one small Task Manager milestone. **What you need:** Basic JavaScript. You do not need to know advanced React.
+**What you will build:** Milestone 2 of a small browser-based To-Do List. No backend or advanced architecture is needed.
 
 ## One design, different task titles
 
-A reusable printed task card has the same layout but different text in each card; props supply that text.
-
-**Important words:** JSX, props, read-only data, arrays, map, key, TypeScript type. Take each term one at a time; the code below makes the idea visible.
+A printed label template stays the same, but the name written on each label changes. A React component is the template; **props** are the supplied values. The parent `App` has the task data, and each child `TaskItem` displays one title.
 
 ## JSX, props and stable keys
 
-JSX describes what should be on screen. Props pass read-only data from a parent component into a child. Reusable TaskItem components let us avoid copying markup for every task. A stable key tells React which list item is which.
-
-**Why this matters:** The Task Manager gives us a consistent visible result. The principle is useful in many other kinds of React interfaces.
+A **prop** is data passed from parent to child. In `<TaskItem title={task.title} />`, `title` is the prop name. The braces evaluate the JavaScript expression. Inside the component, `{ title }` extracts that input. The `tasks` array is ordinary JavaScript data, and `.map()` creates one element for each item. React needs a stable `key` on the mapped elements so it can follow their identity. The `key` is not an ordinary prop available inside `TaskItem`.
 
 ## How data reaches TaskItem
 
-```text
-App has tasks → map each task → TaskItem receives title → distinct task cards
-```
+1. `App` imports `initialTasks`.
 
-Follow the arrows from the starting input to the final browser output. These are simplified teaching flows, not a full explanation of React's internal reconciler.
+2. `.map()` visits every task object.
+
+3. `<TaskItem title={task.title} />` passes a prop.
+
+4. `TaskItem` renders an `<li>` using the prop.
+
+5. React displays both list items. Updating data requires no duplicated JSX.
 
 ## Explore props and reusable cards
 
@@ -108,9 +108,10 @@ export default function App() {
 
 ## Common JSX and props mistakes
 
-Do not mutate props in a child component. Avoid array indexes as keys for lists that can change order. A component named taskItem in JSX would be treated like a native element; use PascalCase.
-
-When something breaks, read the first error message, identify the file involved, and compare your code against the prior working checkpoint.
+- **Forgetting `key`:** React warns when list elements lack stable keys.
+- **Mutating props:** Children must treat props as read-only.
+- **Passing a string literally:** `title="task.title"` prints the words `task.title`; use `title={task.title}` to evaluate JavaScript.
+- **Confusing TypeScript:** The `{ title: string }` type is a developer check, not text displayed on screen.
 
 ## Reusable UI in professional applications
 
@@ -125,20 +126,22 @@ React uses the same underlying idea in many applications: a product list, a shop
 
 ## Add your third task
 
-Add a third record to initialTasks. Notice you don't need another TaskItem line in JSX.
+**Challenge 1:** Add `{ id: 3, title: 'Practise components' }` to `initialTasks` and count the displayed items.
 
-**Verification:** Perform the action, observe the visible result, and explain which React concept made it possible.
+**Challenge 2:** Change the first task title. Why does the `TaskItem` implementation not change?
+
+**Explain it:** Which component is the parent? What value does the prop carry? Why do we use `task.id` as `key`?
 
 ## Key takeaways
 
-1. Begin with the user-facing result.
-2. Learn the concept before writing code.
-3. Keep one clear goal per change.
-4. Use components for reusable UI.
-5. Treat props as read-only inputs.
-6. Update state with setter functions.
-7. Inspect the browser after every step.
-8. Prefer simple code to unnecessary optimization.
+1. A reusable component prevents copied markup.
+2. Props are inputs supplied by a parent.
+3. The same component can receive different props.
+4. JSX braces evaluate JavaScript expressions.
+5. An array can represent repeated UI data.
+6. .map() creates one element per array item.
+7. Stable keys help React preserve list identity.
+8. Props are read-only; interactive changes require state.
 
 ## FAQ and knowledge check
 
