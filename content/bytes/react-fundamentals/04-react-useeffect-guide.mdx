@@ -1,9 +1,9 @@
 ---
-title: "React useEffect Explained: Dependencies and Cleanup"
+title: "React useEffect Explained with a Page Timer"
 slug: "04-react-useeffect-guide"
-summary: "A ticket list can subscribe to changes outside React, such as a browser event or live connection, and must clean up the subscription."
+summary: "Understand Effects, dependencies and cleanup using a timer that counts seconds."
 category: "react-fundamentals"
-tags: ["React.js", "React tutorial for beginners", "useEffect"]
+tags: ["React JS", "React beginners", "useEffect"]
 level: "beginner"
 duration: "20 min"
 updatedAt: "2026-10-16"
@@ -12,141 +12,120 @@ order: 4
 
 <ReactByteHero byte={4} />
 
-## When React must synchronize with something external
+## When React needs an Effect
 
-A ticket list can subscribe to changes outside React, such as a browser event or live connection, and must clean up the subscription.
+Some things happen outside React, like a browser timer. useEffect helps React synchronize with them. A small seconds timer makes the lifecycle visible.
 
-**You will learn:** Explain the concept, predict the visible UI result and implement one small change. **Prerequisite:** Familiarity with basic JavaScript expressions helps, but no prior React experience is required.
+**Goal:** Explain the concept in simple words and create an output that you can see in your browser. **Prerequisite:** Basic JavaScript is useful; advanced React knowledge is not required.
 
-## Following changes outside the React component
+## A timer that updates every second
 
-Imagine a software company's customer-support dashboard. Staff read tickets, filter the list, change ticket status and navigate between records. We use this *illustrative* workflow to learn React rather than claiming it is a real company's internal application.
+useEffect runs after React commits a render. It can start a timer or subscribe to an external system, then return cleanup to stop it. Ordinary calculated values do not need Effects.
 
-Effect: synchronization with an external system. Dependency array: reactive values used by the effect. Cleanup: teardown before replacement/unmount. Subscription: outside callback source. Stale response: outdated async result. Render: pure UI calculation.
+Think about what someone sees first. Learn the smallest React concept that makes that visible result possible.
 
-## Understanding useEffect and cleanup
+## Effects and cleanup explained
 
-Use an Effect to synchronize with something outside React—not for ordinary calculations or click handlers. Include reactive dependencies. Clean up timers, subscriptions and stale requests when appropriate.
+useEffect runs after React commits a render. It can start a timer or subscribe to an external system, then return cleanup to stop it. Ordinary calculated values do not need Effects.
 
-A useful analogy is an office display board: inputs describe which cards belong on the board and an update changes the visible board. React coordinates that display; a real backend remains responsible for permanent records and access control.
+**Remember:** A React component describes interface output. React is not a database, and this beginner example does not need an enterprise application.
 
-## The effect lifecycle explained
-
-**Visual execution path**
+## How timer setup and teardown work
 
 ```text
-Render → commit → Effect subscribes → external event → setState → render. Cleanup runs when dependencies change or component unmounts.
+Render → Effect starts interval → setSeconds → new render → cleanup clears interval on unmount
 ```
 
-Read the arrows in sequence. Identify which part is a user action, which is React behaviour and which result the browser displays.
+Read each arrow as a small change: input or click, JavaScript/React action, and the browser result.
 
-## Explore subscriptions and cleanup
+## Explore the Effect lifecycle
 
 <ReactLearningExplorer byte={4} />
 
-Use the visual explorer first: change an input, follow the updated UI, then answer the decision question below.
+Use the interactive visual to predict what happens next. Then check your choice.
 
 <ReactConceptLab byte={4} />
 
-## Build the Support Dashboard: Step-by-Step Code
+## Code along: build a seconds timer
 
-Effects synchronize React with external systems. Here, browser localStorage is outside React; an Effect can save the ticket list after it changes.
+Follow these steps in a **small React + TypeScript project**. Each step gives you a visible result.
 
-**Connected learning:** These files belong to one `support-desk` application. Each code step updates or adds to the same project. The final code from this Byte is the starting point for the next Byte. **Project checkpoint:** State change → commit → effect → localStorage.
-
-### Step 1 — Keep the working ticket components
+### Step 1 — Display a seconds value
 
 ```tsx
-// Keep src/components/TicketCard.tsx and src/data/tickets.ts from Byte 03 unchanged.
+// src/App.tsx
+import { useState } from 'react';
+export default function App() {
+ const [seconds, setSeconds] = useState(0);
+ return <main><h1>Seconds: {seconds}</h1></main>;
+}
 ```
 
-**Expected result:** The interactive Resolve/Reopen workflow still works.
+**What you should see:** Seconds: 0 appears.
 
-### Step 2 — Load saved tickets once
-
-```tsx
-// src/App.tsx — inside App, replace useState(initialTickets)
-const [tickets, setTickets] = useState(() => {
-  if (typeof window === 'undefined') return initialTickets;
-  try {
-    const saved = window.localStorage.getItem('support-tickets-demo');
-    return saved ? JSON.parse(saved) as typeof initialTickets : initialTickets;
-  } catch { return initialTickets; }
-});
-```
-
-**Expected result:** React starts with locally saved tickets when valid JSON exists.
-
-### Step 3 — Synchronize updates with localStorage
+### Step 2 — Start a browser interval
 
 ```tsx
-// src/App.tsx — import useEffect, then add inside App
+// Import useEffect as well, then add inside App:
 useEffect(() => {
-  window.localStorage.setItem('support-tickets-demo', JSON.stringify(tickets));
-}, [tickets]);
+ const timer = window.setInterval(() => setSeconds(value => value + 1), 1000);
+ return () => window.clearInterval(timer);
+}, []);
 ```
 
-**Expected result:** After a ticket update, React commits and the Effect stores the new list.
+**What you should see:** The count increases every second.
 
-### Step 4 — Observe the flow
+### Step 3 — Understand cleanup
 
 ```tsx
-// No further code required: click Resolve, then refresh the page.
-// To start over, clear the support-tickets-demo key in DevTools.
+// Observe the return statement in useEffect:
+return () => window.clearInterval(timer);
 ```
 
-**Expected result:** The resolved ticket remains visible after refresh in the same browser.
-
-
-### Try it yourself
-
-Explain why `tickets.filter(t => t.status === 'open').length` belongs in render rather than in a useEffect.
+**What you should see:** When the component is removed, React clears the interval. In development Strict Mode, setup/cleanup may be tested more than once.
 
 ## Common useEffect mistakes
 
-Do not compute fullName from firstName and lastName inside an Effect; calculate it during rendering. Browser globals require client execution.
+Do not omit cleanup for intervals. Do not write an Effect just to compute a number from existing state. Include all reactive dependencies when used.
 
-If the UI looks wrong, inspect data input, state updates, console errors and element semantics separately. Compare the expected output above with the actual browser result.
+If the output differs from the example, inspect the browser console, component syntax, event handlers and state updates before adding more code.
 
-## Managing side effects in applications
+## Where applications use Effects
 
-Frontend engineers manage subscriptions and cleanup; reviewers investigate memory leaks and stale responses. Product managers describe the workflow outcome and acceptance criteria. A support team member can validate that the wording and action match the intended business process.
+A frontend developer uses this concept while building forms, menus, product cards and dashboards. The same simple idea can appear in large applications, but understanding it does not require learning an entire business workflow.
 
-## What users see versus effect execution
+## What appears vs what happens underneath
 
-| What the user sees | What happens underneath |
+| What you see | What React does |
 |---|---|
-| User sees Online/Offline | Effect subscribes and updates state when browser connectivity events arrive |
-| A responsive interface | React decides which UI description to reconcile with the DOM |
-| A visible result after interaction | The application determines whether data is only local or saved remotely |
+| Seconds tick on screen | An interval outside React calls a state updater and cleanup stops the interval |
+| You change a component input or interact with the page | React updates the output according to props and state |
 
-## Try it: explain effect cleanup
+## Practice: pause the timer
 
-**Try it:** Explain why cleanup is necessary if a component is mounted and removed repeatedly.
+Add a Start/Pause control using an enabled state and include it in the Effect dependency array.
 
-**Check your result:** The UI, or your component-tree sketch, must show the expected change. Explain which data is an input, which part is state (if any) and how React produces the output.
+**Success check:** Show the result in the browser and describe which line of code made it happen.
 
-## Key takeaways
+## Eight things to remember
 
-1. Begin with the real user problem.
-2. Separate UI from persistent backend concerns.
-3. Name each component or Hook by its purpose.
-4. Distinguish inputs from state.
-5. Trace interactions step by step.
-6. Inspect the rendered result, not only code.
-7. Prefer clarity over unnecessary complexity.
-8. Validate behaviour, accessibility and failure cases.
-
-**Continue:** Browse the other standalone React fundamentals lessons when ready.
+1. Begin with one simple problem.
+2. Identify what should appear in the browser.
+3. Use readable component names.
+4. Keep code small and understandable.
+5. Separate component inputs from state.
+6. Trace changes from action to result.
+7. Check expected output after each step.
+8. Choose simple React patterns before optimizing.
 
 ## FAQ, knowledge check and references
 
-Does an Effect run before render? No. Must every API request use an Effect? No, framework data APIs and event handlers may be better. What does [] mean? No reactive dependencies.
+- When does an Effect run? After React commits.
+- Why return a function? To clean up subscriptions and timers.
+- Does every button click require an Effect? No.
 
-**Interview-ready explanation:** Use an Effect to synchronize with something outside React—not for ordinary calculations or click handlers.
+**Interview explanation:** useEffect runs after React commits a render. It can start a timer or subscribe to an external system, then return cleanup to stop it. Ordinary calculated values do not need Effects.
 
 <ReactFiveQuestionQuiz byte={4} />
 
-**Primary reference:** [Official React documentation](https://react.dev/learn/synchronizing-with-effects).
-
-**Further reading:** [React Learn](https://react.dev/learn), [Vite guide](https://vite.dev/guide/).
+**References:** [React official documentation](https://react.dev/learn/synchronizing-with-effects) · [React Learn](https://react.dev/learn) · [Vite guide](https://vite.dev/guide/).
