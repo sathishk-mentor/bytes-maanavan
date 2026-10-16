@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next';
 import { getAllBytes } from '@/lib/mdx';
-import { reactChapters } from '@/lib/react-handbook';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const bytes=await getAllBytes();
   const newestSiteDate = bytes.reduce((latest, byte) => byte.updatedAt > latest ? byte.updatedAt : latest, '2026-09-13');
@@ -14,5 +13,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {url:'https://bytes.maanavan.com/handbooks/',lastModified:new Date(newestSiteDate),changeFrequency:'weekly',priority:.9},
     ...Array.from(categoryDates.entries()).map(([category,lastModified])=>({url:`https://bytes.maanavan.com/${category}/`,lastModified:new Date(lastModified),changeFrequency:'monthly' as const,priority:.9})),
   ];
-  return [...core,{url:'https://bytes.maanavan.com/react-js/',lastModified:new Date('2026-10-16'),changeFrequency:'monthly' as const,priority:.9},...reactChapters.map(chapter=>({url:`https://bytes.maanavan.com/react-js/${chapter.slug}/`,lastModified:new Date('2026-10-16'),changeFrequency:'monthly' as const,priority:.8})),...bytes.map((byte)=>({url:`https://bytes.maanavan.com/${byte.category}/${byte.slug}/`,lastModified:new Date(byte.updatedAt),changeFrequency:'monthly' as const,priority:.8}))];
+  return [...core,...bytes.map((byte)=>({url:`https://bytes.maanavan.com/${byte.category}/${byte.slug}/`,lastModified:new Date(byte.updatedAt),changeFrequency:'monthly' as const,priority:.8}))];
 }
