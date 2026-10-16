@@ -8,6 +8,20 @@ export type Handbook = {
 
 export const handbooks: Handbook[] = [
   {
+    slug: 'react-js', title: 'React JS Handbook: From Beginner to Real Apps', shortTitle: 'React JS',
+    audience: 'Students · Front-End Beginners · Developers', tone: 'blue', status: 'available', category: 'software-engineering', label: 'COMPONENTS TO REAL APPLICATIONS',
+    description: 'Learn React with five practical Bytes covering JSX, state, hooks, forms, APIs, TypeScript, styling and project deployment.',
+    promise: 'Build a Student Learning Dashboard one component at a time.',
+    chapters: [
+      { title: 'Components and JSX', outcome: 'Build reusable React UI components.', href: '/react-js/01-react-components-jsx/' },
+      { title: 'Hooks, state and events', outcome: 'Make interactive state-driven screens.', href: '/react-js/02-react-hooks-state/' },
+      { title: 'Forms and APIs', outcome: 'Connect user input and asynchronous data.', href: '/react-js/03-react-forms-api/' },
+      { title: 'TypeScript, routing and Tailwind', outcome: 'Structure navigation, types and design.', href: '/react-js/04-react-typescript-router-tailwind/' },
+      { title: 'Build and deploy', outcome: 'Complete a practical React portfolio project.', href: '/react-js/05-build-deploy-react-project/' },
+    ],
+  },
+
+  {
     slug: 'ai-agents', title: 'AI Agents Handbook for Everyone', shortTitle: 'AI Agents',
     audience: 'Non-technical Beginners · Professionals', tone: 'violet', status: 'available', category: 'ai-application-engineering', label: 'FROM ANSWERING TO TAKING ACTION',
     description: 'Understand AI agents through familiar work and life scenarios—without coding or unnecessary technical language.',
