@@ -1,9 +1,9 @@
 ---
-title: "React State and Event Handling with useState"
+title: "React useState Explained with a Simple Counter"
 slug: "03-react-usestate-events"
-summary: "A support agent clicks Resolve and expects the ticket's status label to update immediately."
+summary: "Learn state, events and re-rendering by creating a working counter."
 category: "react-fundamentals"
-tags: ["React.js", "React tutorial for beginners", "useState"]
+tags: ["React JS", "React beginners", "useState"]
 level: "beginner"
 duration: "20 min"
 updatedAt: "2026-10-16"
@@ -12,152 +12,118 @@ order: 3
 
 <ReactByteHero byte={3} />
 
-## When the UI needs to change
+## Why buttons need state
 
-A support agent clicks Resolve and expects the ticket's status label to update immediately.
+A greeting can stay the same, but what happens when someone clicks a button? React state helps the page remember a number and display changes.
 
-**You will learn:** Explain the concept, predict the visible UI result and implement one small change. **Prerequisite:** Familiarity with basic JavaScript expressions helps, but no prior React experience is required.
+**Goal:** Explain the concept in simple words and create an output that you can see in your browser. **Prerequisite:** Basic JavaScript is useful; advanced React knowledge is not required.
 
-## Resolving a customer-support ticket
+## A simple plus/minus counter
 
-Imagine a software company's customer-support dashboard. Staff read tickets, filter the list, change ticket status and navigate between records. We use this *illustrative* workflow to learn React rather than claiming it is a real company's internal application.
+useState gives you a current value and an update function. Clicking a button calls an event handler, which updates state and causes React to render the new number.
 
-State: component memory. useState: Hook for render-dependent data. Setter: function that requests an update. Event handler: callback for interaction. Re-render: recalculation of UI. Snapshot: state values captured per render.
+Think about what someone sees first. Learn the smallest React concept that makes that visible result possible.
 
-## Understanding state and render snapshots
+## Understanding useState and events
 
-Use the setter from useState instead of changing the state variable directly. Treat arrays and objects as immutable. State represents UI memory, not permanent server storage.
+useState gives you a current value and an update function. Clicking a button calls an event handler, which updates state and causes React to render the new number.
 
-A useful analogy is an office display board: inputs describe which cards belong on the board and an update changes the visible board. React coordinates that display; a real backend remains responsible for permanent records and access control.
+**Remember:** A React component describes interface output. React is not a database, and this beginner example does not need an enterprise application.
 
-## From button click to updated UI
-
-**Visual execution path**
+## How a click updates the UI
 
 ```text
-Click Resolve → onClick handler → setStatus('resolved') → render → label updates.
+Click + → onClick handler → setCount(previous + 1) → React renders → 1 appears
 ```
 
-Read the arrows in sequence. Identify which part is a user action, which is React behaviour and which result the browser displays.
+Read each arrow as a small change: input or click, JavaScript/React action, and the browser result.
 
-## Simulate state changes
+## Try the state-change simulator
 
 <ReactLearningExplorer byte={3} />
 
-Use the visual explorer first: change an input, follow the updated UI, then answer the decision question below.
+Use the interactive visual to predict what happens next. Then check your choice.
 
 <ReactConceptLab byte={3} />
 
-## Build the Support Dashboard: Step-by-Step Code
+## Code along: your React counter
 
-State is React's memory for values that change on screen. Event handlers request changes; React renders the updated status.
+Follow these steps in a **small React + TypeScript project**. Each step gives you a visible result.
 
-**Connected learning:** These files belong to one `support-desk` application. Each code step updates or adds to the same project. The final code from this Byte is the starting point for the next Byte. **Project checkpoint:** Click → handler → setter → render.
-
-### Step 1 — Extend the ticket type
-
-```tsx
-// src/components/TicketCard.tsx
-export type Ticket = { id: number; subject: string; priority: 'High' | 'Medium' | 'Low'; status: 'open' | 'resolved' };
-```
-
-**Expected result:** Status is now an explicit part of every ticket.
-
-### Step 2 — Update initial records
-
-```tsx
-// src/data/tickets.ts
-import type { Ticket } from '../components/TicketCard';
-export const initialTickets: Ticket[] = [
- {id:101,subject:'Login problem',priority:'High',status:'open'},
- {id:102,subject:'Payment question',priority:'Medium',status:'open'}
-];
-```
-
-**Expected result:** Both example tickets start as open.
-
-### Step 3 — Create an interactive card
-
-```tsx
-// src/components/TicketCard.tsx
-export default function TicketCard({ ticket, onToggle }: { ticket: Ticket; onToggle: (id: number) => void }) {
-  return <article><strong>#{ticket.id} {ticket.subject}</strong>
-    <p>Priority: {ticket.priority} · {ticket.status}</p>
-    <button onClick={() => onToggle(ticket.id)}>{ticket.status === 'open' ? 'Resolve' : 'Reopen'}</button>
-  </article>;
-}
-```
-
-**Expected result:** The card asks its parent to change the selected ticket.
-
-### Step 4 — Manage state in App
+### Step 1 — Create a counter
 
 ```tsx
 // src/App.tsx
 import { useState } from 'react';
-import TicketCard from './components/TicketCard';
-import { initialTickets } from './data/tickets';
 export default function App() {
- const [tickets, setTickets] = useState(initialTickets);
- function toggle(id: number) {
-   setTickets(current => current.map(t => t.id === id ? {...t,status: t.status === 'open' ? 'resolved' as const : 'open' as const} : t));
- }
- return <main><h1>Support Desk</h1>{tickets.map(t => <TicketCard key={t.id} ticket={t} onToggle={toggle} />)}</main>;
+  const [count, setCount] = useState(0);
+  return <main><h1>Count: {count}</h1></main>;
 }
 ```
 
-**Expected result:** Click Resolve or Reopen and see only the chosen ticket's status change.
+**What you should see:** Count: 0 is displayed.
 
+### Step 2 — Add Increment
 
-### Try it yourself
+```tsx
+// Add inside <main> after the heading:
+<button onClick={() => setCount(previous => previous + 1)}>Increase</button>
+```
 
-Display the number of open tickets above the list using tickets.filter(...).length; do not duplicate it in separate state.
+**What you should see:** Clicking Increase updates the number.
 
-## Common state and event mistakes
+### Step 3 — Add Decrement and Reset
 
-Never mutate an object in state in place and expect React to notice. For updates based on previous state, prefer the functional setter.
+```tsx
+// Add after Increase:
+<button onClick={() => setCount(previous => previous - 1)}>Decrease</button>
+<button onClick={() => setCount(0)}>Reset</button>
+```
 
-If the UI looks wrong, inspect data input, state updates, console errors and element semantics separately. Compare the expected output above with the actual browser result.
+**What you should see:** The three buttons change the displayed state.
 
-## Managing UI state in real teams
+## Common state mistakes
 
-Frontend developers connect business interactions to state; QA engineers test transitions. Product managers describe the workflow outcome and acceptance criteria. A support team member can validate that the wording and action match the intended business process.
+Do not write count = count + 1 to update React state. Use the setter. Prefer functional updates when the new value depends on the previous value.
 
-## What the user sees after setState
+If the output differs from the example, inspect the browser console, component syntax, event handlers and state updates before adding more code.
 
-| What the user sees | What happens underneath |
+## Where developers use state
+
+A frontend developer uses this concept while building forms, menus, product cards and dashboards. The same simple idea can appear in large applications, but understanding it does not require learning an entire business workflow.
+
+## What changes behind a button click
+
+| What you see | What React does |
 |---|---|
-| User sees resolved | React schedules a render after the state setter runs |
-| A responsive interface | React decides which UI description to reconcile with the DOM |
-| A visible result after interaction | The application determines whether data is only local or saved remotely |
+| The number changes after clicking | React processes a state update and renders the new value |
+| You change a component input or interact with the page | React updates the output according to props and state |
 
-## Try it: resolve and reopen
+## Practice: add Reset
 
-**Try it:** Add a Reopen button that switches status back to open. Show the state transitions.
+Add a +5 button and explain how many renders are required to show the new number.
 
-**Check your result:** The UI, or your component-tree sketch, must show the expected change. Explain which data is an input, which part is state (if any) and how React produces the output.
+**Success check:** Show the result in the browser and describe which line of code made it happen.
 
-## Key takeaways
+## Eight things to remember
 
-1. Begin with the real user problem.
-2. Separate UI from persistent backend concerns.
-3. Name each component or Hook by its purpose.
-4. Distinguish inputs from state.
-5. Trace interactions step by step.
-6. Inspect the rendered result, not only code.
-7. Prefer clarity over unnecessary complexity.
-8. Validate behaviour, accessibility and failure cases.
-
-**Continue:** Browse the other standalone React fundamentals lessons when ready.
+1. Begin with one simple problem.
+2. Identify what should appear in the browser.
+3. Use readable component names.
+4. Keep code small and understandable.
+5. Separate component inputs from state.
+6. Trace changes from action to result.
+7. Check expected output after each step.
+8. Choose simple React patterns before optimizing.
 
 ## FAQ, knowledge check and references
 
-Does setting state change the current variable instantly? No, it schedules a new render. Does state persist after refresh? Not automatically. Can state hold arrays? Yes.
+- Is state a regular variable? No, React tracks it across renders.
+- Does updating state save to a database? No.
+- Why use previous => previous + 1? It uses the most recent pending value.
 
-**Interview-ready explanation:** Use the setter from useState instead of changing the state variable directly.
+**Interview explanation:** useState gives you a current value and an update function. Clicking a button calls an event handler, which updates state and causes React to render the new number.
 
 <ReactFiveQuestionQuiz byte={3} />
 
-**Primary reference:** [Official React documentation](https://react.dev/learn/state-a-components-memory).
-
-**Further reading:** [React Learn](https://react.dev/learn), [Vite guide](https://vite.dev/guide/).
+**References:** [React official documentation](https://react.dev/learn/state-a-components-memory) · [React Learn](https://react.dev/learn) · [Vite guide](https://vite.dev/guide/).
