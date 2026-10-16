@@ -1,0 +1,128 @@
+---
+title: "React Router, Context API and Custom Hooks"
+slug: "03-react-router-context-custom-hooks"
+summary: "Different screens need URLs, and some values must be shared between distant components."
+category: "advanced-react"
+tags: ["Advanced React", "React TypeScript", "React Router"]
+level: "intermediate"
+duration: "25 min"
+updatedAt: "2026-10-16"
+order: 3
+---
+
+## Why this concept matters
+
+An application with multiple screens needs meaningful URLs. A router maps those URLs to components, while Context and custom Hooks solve different reuse problems.
+
+Different screens need URLs, and some values must be shared between distant components. **You will learn:** explain the idea, follow the execution flow, read a compact example and try one realistic decision. Basic React components, props and useState are helpful; this Byte also works as a standalone introduction.
+
+## Start with a familiar scenario
+
+A building has numbered rooms. A URL points to a room; shared context is like a building-wide theme setting, while each room still owns its local controls.
+
+**Vocabulary:** route, navigation, context, provider, custom Hook.
+
+## Understand the core concept
+
+Think of URLs as room numbers in a building. The router selects a room; Context provides truly shared information to different rooms; a custom Hook packages reusable React behavior. They should not be combined into one unexplained feature.
+
+React Router maps URL paths to components. Declarative mode uses BrowserRouter, Routes, Route and Link. Context makes shared values available without repetitive prop passing. Custom Hooks reuse Hook-driven logic and start with use.
+
+**When not to use it:** Select the simplest React feature that solves the actual problem. An advanced API or Hook is not a requirement for every component.
+
+## Architecture and execution flow
+
+Trace the information as it moves through the application. Every stage has a specific purpose.
+
+<AdvancedReactFlow byte={3} />
+
+```text
+URL → Router match → component → shared context → visible page
+```
+
+## Interactive decision lab
+
+Choose an answer to a realistic development situation. Review the resulting explanation before writing code.
+
+<AdvancedReactLab byte={3} />
+
+## Try It Yourself — code and browser output
+
+<AdvancedReactTryIt byte={3} />
+
+**Experiment:** Click **/issues** and then **/issues/42**. Describe how the URL corresponds to a list view or a detail view. Then explain why a single local input should usually stay local rather than be moved into Context.
+
+## Guided code walkthrough
+
+**Step 1 — Identify the inputs and the expected output.** Different screens need URLs, and some values must be shared between distant components.
+
+**Step 2 — Read the implementation.** The example is intentionally small; it isolates the concept before introducing additional application architecture.
+
+```tsx
+import { BrowserRouter, Link, Route, Routes } from 'react-router';
+export default function App() {
+  return <BrowserRouter>
+    <nav><Link to='/issues'>Issues</Link></nav>
+    <Routes>
+      <Route path='/issues' element={<h1>Issue list</h1>} />
+      <Route path='/issues/:id' element={<h1>Issue details</h1>} />
+    </Routes>
+  </BrowserRouter>;
+}
+```
+
+**Step 3 — Predict the browser result.** Clicking Issues navigates to /issues and displays the Issue list. The nested route requires host fallback configuration on refresh.
+
+**Step 4 — Explain the execution.** URL; then Router match; then component; then shared context; then visible page.
+
+**Step 5 — Verify.** Run the example in a React/TypeScript project with the appropriate installed package or mock API. The purpose is understanding behavior, not copy-pasting an unexplained application.
+
+## Common mistakes and recovery
+
+Putting every input in Context; using ordinary anchors for all internal navigation; assuming routing stores data.
+
+When behavior is surprising, verify the inputs and first observable failure. Check browser-console warnings, network responses and visible error states before adding complexity.
+
+## How developers use this at work
+
+This pattern appears in customer portals, internal dashboards and SaaS products. Developers use it to make interfaces predictable and maintainable. QA engineers test the user-facing outcome, while product teams define valid states and errors.
+
+## What users see versus system behavior
+
+| User-visible experience | Underlying behavior |
+|---|---|
+| Clicking Issues navigates to /issues and displays the Issue list. The nested route requires host fallback configuration on refresh. | URL → Router match → component → shared context → visible page |
+| Recovery from a failure | The application handles an invalid input, request or state explicitly |
+
+## Practice task
+
+Create an Issues and About route; extract a small usePageTitle Hook that updates document.title.
+
+**Success check:** describe the input, the React action and the output. Try the failure case once, then explain the recovery.
+
+## Interview Bit
+
+**What is the difference between React Router and Context?** Router chooses UI based on the URL; Context lets components receive shared values without passing props through every intermediate level.
+
+## Key Takeaways
+
+1. Routes connect URL paths with React components.
+2. A Link performs client-side navigation within the router.
+3. A dynamic segment such as :id identifies a resource.
+4. BrowserRouter uses browser history in declarative routing.
+5. Context shares values without repeated intermediate props.
+6. Context is not a replacement for all component state.
+7. A custom Hook starts with use and can call other Hooks.
+8. Refreshing nested routes also requires correct server fallback configuration.
+
+## Knowledge Check and Primary Sources
+
+**FAQ: Is this technique required in every React component?** No; apply it only when the corresponding problem exists.
+
+**FAQ: Can it be tested without a real backend?** Yes, with local examples and mock responses.
+
+**FAQ: Should learners understand the underlying JavaScript?** Yes. Hooks and libraries build on ordinary functions, arrays, objects and promises.
+
+<AdvancedReactQuiz byte={3} />
+
+**Primary sources:** [Official reference 1](https://reactrouter.com/start/declarative/installation) · [Official reference 2](https://react.dev/learn/passing-data-deeply-with-context).

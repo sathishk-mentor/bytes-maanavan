@@ -1,0 +1,125 @@
+---
+title: "React Testing, Accessibility and Performance"
+slug: "05-react-testing-accessibility-performance"
+summary: "An app can render correctly once and still fail when users interact, use a keyboard or have a slow device."
+category: "advanced-react"
+tags: ["Advanced React", "React TypeScript", "React testing"]
+level: "intermediate"
+duration: "25 min"
+updatedAt: "2026-10-16"
+order: 5
+---
+
+## Why this concept matters
+
+Good code is not enough when learners or customers cannot use the interface reliably. Test what a user can see and do, including keyboard access and failures.
+
+An app can render correctly once and still fail when users interact, use a keyboard or have a slow device. **You will learn:** explain the idea, follow the execution flow, read a compact example and try one realistic decision. Basic React components, props and useState are helpful; this Byte also works as a standalone introduction.
+
+## Start with a familiar scenario
+
+A lift is tested using its buttons and the destination reached, not by peeking inside its internal motor. React testing should likewise focus on observable behavior.
+
+**Vocabulary:** test, assertion, accessible name, role, performance profiling.
+
+## Understand the core concept
+
+Think of testing a door: verify that a person can find its handle and open it, not that the internal manufacturing method matches a private implementation detail. UI tests should prefer accessible names and observable results.
+
+React Testing Library queries elements as a user would, preferably by accessible role and name. Check validation, loading, retry and errors. Give inputs real labels and useful feedback. Optimize based on measurements rather than wrapping everything in useMemo or useCallback.
+
+**When not to use it:** Select the simplest React feature that solves the actual problem. An advanced API or Hook is not a requirement for every component.
+
+## Architecture and execution flow
+
+Trace the information as it moves through the application. Every stage has a specific purpose.
+
+<AdvancedReactFlow byte={5} />
+
+```text
+Requirement → user action → DOM output → test evidence → performance check
+```
+
+## Interactive decision lab
+
+Choose an answer to a realistic development situation. Review the resulting explanation before writing code.
+
+<AdvancedReactLab byte={5} />
+
+## Try It Yourself — code and browser output
+
+<AdvancedReactTryIt byte={5} />
+
+**Experiment:** Choose **HIGH** to simulate a passing output assertion. Change the expected value to **LOW** to simulate failure. Explain why the actual visible output—not an internal variable name—is the test's evidence.
+
+## Guided code walkthrough
+
+**Step 1 — Identify the inputs and the expected output.** An app can render correctly once and still fail when users interact, use a keyboard or have a slow device.
+
+**Step 2 — Read the implementation.** The example is intentionally small; it isolates the concept before introducing additional application architecture.
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { expect, test } from 'vitest';
+import IssueBadge from './IssueBadge';
+test('shows priority', () => {
+  render(<IssueBadge priority='high' />);
+  expect(screen.getByText('HIGH')).toBeTruthy();
+});
+```
+
+**Step 3 — Predict the browser result.** The test passes when HIGH is visible, and fails if the badge displays the wrong result.
+
+**Step 4 — Explain the execution.** Requirement; then user action; then DOM output; then test evidence; then performance check.
+
+**Step 5 — Verify.** Run the example in a React/TypeScript project with the appropriate installed package or mock API. The purpose is understanding behavior, not copy-pasting an unexplained application.
+
+## Common mistakes and recovery
+
+Relying only on CSS selectors; testing implementation details; premature performance optimization.
+
+When behavior is surprising, verify the inputs and first observable failure. Check browser-console warnings, network responses and visible error states before adding complexity.
+
+## How developers use this at work
+
+This pattern appears in customer portals, internal dashboards and SaaS products. Developers use it to make interfaces predictable and maintainable. QA engineers test the user-facing outcome, while product teams define valid states and errors.
+
+## What users see versus system behavior
+
+| User-visible experience | Underlying behavior |
+|---|---|
+| The test passes when HIGH is visible, and fails if the badge displays the wrong result. | Requirement → user action → DOM output → test evidence → performance check |
+| Recovery from a failure | The application handles an invalid input, request or state explicitly |
+
+## Practice task
+
+Write tests for submitting an empty form and loading failures. Use accessible labels and measure before optimizing.
+
+**Success check:** describe the input, the React action and the output. Try the failure case once, then explain the recovery.
+
+## Interview Bit
+
+**Why use getByRole in UI testing?** It finds elements the way assistive technology and users can perceive them, encouraging accessible and maintainable tests.
+
+## Key Takeaways
+
+1. Testing Library encourages behavior-focused UI tests.
+2. getByRole queries accessible elements and names.
+3. Input labels improve access and testability.
+4. A good test verifies visible outcomes and error recovery.
+5. Mock external dependencies when appropriate.
+6. Automated tests do not replace keyboard/manual testing.
+7. Measure bottlenecks before adding memoization.
+8. Release checks should include build, routes and error states.
+
+## Knowledge Check and Primary Sources
+
+**FAQ: Is this technique required in every React component?** No; apply it only when the corresponding problem exists.
+
+**FAQ: Can it be tested without a real backend?** Yes, with local examples and mock responses.
+
+**FAQ: Should learners understand the underlying JavaScript?** Yes. Hooks and libraries build on ordinary functions, arrays, objects and promises.
+
+<AdvancedReactQuiz byte={5} />
+
+**Primary sources:** [Official reference 1](https://testing-library.com/docs/react-testing-library/intro/) · [Official reference 2](https://react.dev/learn/you-might-not-need-an-effect).

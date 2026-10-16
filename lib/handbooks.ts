@@ -7,6 +7,7 @@ export type Handbook = {
 };
 
 export const handbooks: Handbook[] = [
+  { slug:'advanced-react',title:'Advanced React Development Handbook',shortTitle:'Advanced React',audience:'React learners · Frontend developers',tone:'blue',status:'available',category:'software-engineering',label:'REACT APPLICATION ENGINEERING',description:'Five focused Bytes covering complex state, remote data, routing, TypeScript and dependable UI testing.',promise:'Choose appropriate React patterns, handle failure states and test what users experience.',chapters:[{title:"Forms and useReducer",outcome:"Validate forms and use a reducer",href:'/advanced-react/01-react-forms-validation-usereducer/'},{title:"API Loading, Error and Retry",outcome:"Handle remote server data and failures",href:'/advanced-react/02-react-api-fetch-loading-errors/'},{title:"Router, Context and Custom Hooks",outcome:"Navigate screens and share appropriate state",href:'/advanced-react/03-react-router-context-custom-hooks/'},{title:"TypeScript for React",outcome:"Create type-safe components",href:'/advanced-react/04-react-typescript-components-hooks/'},{title:"Testing, Accessibility and Performance",outcome:"Test behavior and optimize responsibly",href:'/advanced-react/05-react-testing-accessibility-performance/'}] },
   {
     slug: 'ai-agents', title: 'AI Agents Handbook for Everyone', shortTitle: 'AI Agents',
     audience: 'Non-technical Beginners · Professionals', tone: 'violet', status: 'available', category: 'ai-application-engineering', label: 'FROM ANSWERING TO TAKING ACTION',

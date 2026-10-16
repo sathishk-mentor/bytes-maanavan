@@ -7,10 +7,11 @@ import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'how-everyday-apps-work', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['advanced-react', 'software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'how-everyday-apps-work', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
+  'advanced-react':{searchTitle:'Advanced React Tutorial — Forms, APIs, Router, TypeScript and Testing',eyebrow:'PRACTICAL REACT APPLICATION DEVELOPMENT',intro:'Learn more advanced React patterns with clear visual explanations, focused coding examples, real UI failure states and interactive checks.',audience:'React learners and frontend developers',prerequisite:'Basic React components, props and state',result:'Form → API → Routes → Types → Tests',keywords:['advanced React tutorial','React useReducer','React API integration','React Router','React TypeScript','React Testing Library']},
   'ai-agents': {
     searchTitle: 'AI Agents Handbook for Everyone',
     eyebrow: 'FROM ANSWERING TO TAKING ACTION',
@@ -137,6 +138,7 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
 }
 
 function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory }) {
+  if(categorySlug==='advanced-react')return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Advanced React application journey"><div className="langchain-orchestrator"><header><Code2/><span><small>ADVANCED REACT</small><strong>Build interfaces that respond reliably</strong></span><i>READY</i></header><div><span><Layers3/><small>Forms</small></span><b>→</b><span><Network/><small>APIs</small></span><b>→</b><span><Workflow/><small>Routes</small></span><b>→</b><span><CheckCircle2/><small>Tests</small></span></div><footer><ShieldCheck/><span>Typed · accessible · tested</span></footer></div></div>;
   if (categorySlug === 'ai-agents') {
     return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated AI agent goal to action workflow">
       <div className="langchain-orchestrator"><header><Sparkles/><span><small>AI AGENT</small><strong>Turn a goal into checked action</strong></span><i>READY</i></header><div><span><Compass/><small>Goal</small></span><b>→</b><span><Workflow/><small>Plan</small></span><b>→</b><span><Layers3/><small>Tools</small></span><b>→</b><span><CheckCircle2/><small>Check</small></span></div><footer><ShieldCheck/><span>Authorised · bounded · human-reviewed</span></footer></div>
