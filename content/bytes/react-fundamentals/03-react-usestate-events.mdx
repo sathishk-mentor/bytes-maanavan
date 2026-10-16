@@ -173,25 +173,37 @@ React uses the same underlying idea in many applications: a product list, a shop
 
 **Explain it:** Why do we create a new array rather than call `tasks.push()`?
 
-## Key takeaways
+## Interview Bit
 
-1. State stores UI values between renders.
-2. useState returns a value and setter.
-3. A controlled input displays its state.
-4. onChange updates input state.
-5. onClick responds to a user action.
-6. State arrays should be updated immutably.
-7. Derived counts should not be separate state.
-8. The app now adds and completes tasks in memory.
+**Question: Why should React state be updated with a setter instead of changing the variable directly?**
 
-## FAQ and knowledge check
+**Simple answer:** React state stores data between renders. Calling setTasks with a new array tells React to render the updated list. Mutating the old array with push can prevent React from detecting the intended update.
+
+**How to explain it:** Point to the related code in the To-Do List and describe what appears in the browser.
+
+## Key Takeaways
+
+1. useState provides a value and a setter.
+2. State retains values between component renders.
+3. Controlled inputs use state for displayed values.
+4. Event handlers run in response to interaction.
+5. State updates request a new render.
+6. Create new arrays and objects instead of mutating state.
+7. Calculate the pending count from tasks, not duplicate state.
+8. Byte 03 adds and completes tasks interactively.
+
+## Knowledge Check
+
+Review these common questions before attempting the scored quiz.
 
 - Why use the setter? React needs to know the state changed.
 - Should pending count be another state variable? No, derive it from tasks.
 - Does the task survive refresh? Not yet; Byte 04 addresses that.
 
-**Interview-ready explanation:** State is data React remembers between renders. useState gives a value and an update function. A controlled input displays a state value. Event handlers respond to clicking or typing. Never mutate the old task array; create a new array and pass it to the setter.
-
 <ReactFiveQuestionQuiz byte={3} />
 
-**Primary references:** [React Learn](https://react.dev/learn) · [React API](https://react.dev/reference/react) · [Vite Guide](https://vite.dev/guide/).
+## Primary Sources
+
+- [State: A Component's Memory](https://react.dev/learn/state-a-components-memory)
+- [Updating Arrays in State](https://react.dev/learn/updating-arrays-in-state)
+- [Responding to Events](https://react.dev/learn/responding-to-events)
