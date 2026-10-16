@@ -14,29 +14,31 @@ order: 3
 
 ## Why a static task list is not enough
 
-State is data React remembers between renders. useState gives a value and an update function. A controlled input displays a state value. Event handlers respond to clicking or typing. Never mutate the old task array; create a new array and pass it to the setter.
+The current to-do list is only a display. A learner should be able to type a task, click **Add**, and tick a checkbox. These actions change what appears on the screen. For that we need *state* and *event handlers*.
 
-**In this Byte:** First understand the concept, then apply it to one small Task Manager milestone. **What you need:** Basic JavaScript. You do not need to know advanced React.
+**What you will build:** Milestone 3 of a small browser-based To-Do List. No backend or advanced architecture is needed.
 
 ## Adding and completing tasks
 
-A whiteboard can now accept new cards and mark completed cards, and React redraws the relevant result.
-
-**Important words:** useState, controlled input, event handler, immutability, render snapshot, derived count. Take each term one at a time; the code below makes the idea visible.
+Imagine an editable whiteboard: the list is what everyone sees, and the marker actions change it. In React, **state** is the current remembered list and `setTasks` is how we request an update. React then renders the new list.
 
 ## State, events and immutable updates
 
-State is data React remembers between renders. useState gives a value and an update function. A controlled input displays a state value. Event handlers respond to clicking or typing. Never mutate the old task array; create a new array and pass it to the setter.
-
-**Why this matters:** The Task Manager gives us a consistent visible result. The principle is useful in many other kinds of React interfaces.
+`useState(initialTasks)` returns `[tasks, setTasks]`: the current value and a setter. The typed input has another state value, `draft`. A **controlled input** gets `value={draft}` and updates through `onChange`. An **event handler** such as `onClick={addTask}` runs after a click. To add a task, create a new array with `[...current, newTask]`. To toggle one task, use `.map()` and copy only the matching object. Never mutate the old array in place. `pending` is *derived data* and should be calculated using `.filter()` rather than stored separately.
 
 ## Follow an Add Task click
 
-```text
-Type → setDraft → render input; click Add → setTasks → render new row; click Complete → setTasks → updated checkbox
-```
+1. Learner types `Buy notebook` → `onChange` calls `setDraft`.
 
-Follow the arrows from the starting input to the final browser output. These are simplified teaching flows, not a full explanation of React's internal reconciler.
+2. React renders the new input value.
+
+3. Learner clicks Add → `addTask` checks for empty text.
+
+4. `setTasks` creates a new array with the added task.
+
+5. React renders an extra row and clears the input.
+
+6. Checking a box updates the matching task and pending count.
 
 ## Explore task-state updates
 
@@ -144,9 +146,11 @@ export default function App() {
 
 ## Common useState mistakes
 
-Do not write tasks.push(newTask) because it mutates the old array. Prevent empty task names. Date.now IDs are acceptable for this small teaching demo but not guaranteed unique for rapid production writes.
-
-When something breaks, read the first error message, identify the file involved, and compare your code against the prior working checkpoint.
+- **`onClick={addTask()}`:** This executes during rendering; pass `onClick={addTask}`.
+- **Mutating arrays:** `tasks.push()` does not create the next state snapshot.
+- **Empty items:** Use `trim()` and return early.
+- **Separate pending state:** Duplicated state can disagree with the actual tasks.
+- **Refresh loses tasks:** Correct for now; Byte 04 adds persistence.
 
 ## Where UI state matters
 
@@ -161,20 +165,24 @@ React uses the same underlying idea in many applications: a product list, a shop
 
 ## Create a Delete action
 
-Add a Delete button by passing onDelete to TaskItem and removing a task with filter.
+**Challenge 1:** Add two tasks. Confirm each appears once and input clears.
 
-**Verification:** Perform the action, observe the visible result, and explain which React concept made it possible.
+**Challenge 2:** Mark the first item completed, then reopen it. Observe the pending count.
+
+**Challenge 3:** Implement Delete using `filter()` and check that only the selected task disappears.
+
+**Explain it:** Why do we create a new array rather than call `tasks.push()`?
 
 ## Key takeaways
 
-1. Begin with the user-facing result.
-2. Learn the concept before writing code.
-3. Keep one clear goal per change.
-4. Use components for reusable UI.
-5. Treat props as read-only inputs.
-6. Update state with setter functions.
-7. Inspect the browser after every step.
-8. Prefer simple code to unnecessary optimization.
+1. State stores UI values between renders.
+2. useState returns a value and setter.
+3. A controlled input displays its state.
+4. onChange updates input state.
+5. onClick responds to a user action.
+6. State arrays should be updated immutably.
+7. Derived counts should not be separate state.
+8. The app now adds and completes tasks in memory.
 
 ## FAQ and knowledge check
 
