@@ -18,7 +18,8 @@ export function JourneyTracker() {
       const source = window.location.pathname;
       let step: string | undefined;
       if (host === 'www.maanavan.com' || host === 'maanavan.com') {
-        if (path.startsWith('/course/') || path === '/course-library') step = 'open_courses';
+        if (path === '/react-js-training') step = 'react_live_training_open';
+        else if (path.startsWith('/course/') || path === '/course-library') step = 'open_courses';
         else if (path.startsWith('/start-here')) step = 'open_learning_guides';
       } else if (host === 'courses.maanavanlearncode.com') step = 'lms_handoff';
       else if (host === window.location.hostname || host === 'bytes.maanavan.com') {
