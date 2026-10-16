@@ -7,10 +7,13 @@ import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'how-everyday-apps-work', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['react-fundamentals', 'advanced-react', 'react-ticket-project', 'software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'how-everyday-apps-work', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
+  'react-ticket-project':{searchTitle:'Build a React Project — Ticket Dashboard with TypeScript',eyebrow:'REACT PROJECT · 5 GUIDED BYTES',intro:'Build an illustrative support ticket dashboard step by step: setup, components, forms, routing, API states, testing and deployment.',audience:'React learners, students and frontend developers',prerequisite:'React components, props and state basics',result:'Setup → UI → State → API → Release',keywords:['React project tutorial','React TypeScript project','support ticket dashboard React','React useReducer project','React Router project']},
+  'advanced-react':{searchTitle:'Advanced React Tutorial — Forms, APIs, Router, TypeScript and Testing',eyebrow:'PRACTICAL REACT APPLICATION DEVELOPMENT',intro:'Learn more advanced React patterns with clear visual explanations, focused coding examples, real UI failure states and interactive checks.',audience:'React learners and frontend developers',prerequisite:'Basic React components, props and state',result:'Form → API → Routes → Types → Tests',keywords:['advanced React tutorial','React useReducer','React API integration','React Router','React TypeScript','React Testing Library']},
+  'react-fundamentals': {searchTitle:'React.js Fundamentals Tutorial — Components, State and Hooks',eyebrow:'REACT UI FUNDAMENTALS',intro:'Learn React from the ground up through components, JSX, props, useState, useEffect and essential Hooks with practical ticket-dashboard examples.',audience:'Beginners, students and aspiring frontend developers',prerequisite:'Basic JavaScript familiarity is helpful',result:'Components → Props → State → Effects → Hooks',keywords:['React tutorial for beginners','React components','JSX props','React useState','React useEffect','React Hooks']},
   'ai-agents': {
     searchTitle: 'AI Agents Handbook for Everyone',
     eyebrow: 'FROM ANSWERING TO TAKING ACTION',

@@ -1,0 +1,149 @@
+---
+title: "Build a React Ticket Dashboard with Reusable Components"
+slug: "02-react-ticket-dashboard-components"
+summary: "Repeated ticket cards should share one design and receive data through props."
+category: "react-ticket-project"
+tags: ["React project","React TypeScript","Customer support dashboard","components"]
+level: "intermediate"
+duration: "30 min"
+updatedAt: "2026-10-16"
+order: 2
+---
+
+## What you will build
+
+**Milestone 12:** Use the project created in Byte 11. One data object represents one support ticket, while a reusable component controls its appearance. Add a record and watch the visible dashboard change without copying the card markup.
+
+Repeated ticket cards should share one design and receive data through props.
+
+**Visible checkpoint:** Two ticket cards render from one component with distinct priority/status labels. You can study this Byte by itself, though the project can also be built progressively.
+
+## Understand the concept first
+
+Model each ticket as a typed object. Render arrays with map and stable keys. Keep tickets as the source of truth; calculate counts directly from the array instead of storing duplicate totals.
+
+In plain language, an interface should show useful information and respond predictably to users. We begin with one small technical change before introducing more features.
+
+## Architecture: what happens underneath
+
+<ReactTicketLearningFlow byte={2} />
+
+**Execution path**
+
+```text
+Ticket data → typed props → TicketCard → dashboard
+```
+
+Follow the arrows and explain which step is React state, which is a browser action, and which would require a real backend.
+
+## Explore a realistic preview
+
+<TicketProjectExplorer byte={2} />
+
+Use the visual to predict what a user would see. The preview uses simulated demo data and does not represent a connected enterprise service.
+
+## Coding walkthrough step by step
+
+**Complete, ordered project checkpoints:** [Read the source-of-truth build guide](https://github.com/sathishk-mentor/bytes-maanavan/blob/feature/react-ticket-gold-standard/docs/react-ticket-project-complete-checkpoints.md). Use the full replacement files from that guide alongside the focused explanations below. Some snippets below demonstrate an insertion rather than a complete file.
+
+### Step 1 — Create the ticket type and records
+
+**Edit or create the indicated file.**
+
+```tsx
+// src/data/tickets.ts
+export type Ticket={id:number;subject:string;priority:'Low'|'Medium'|'High';status:'Open'|'In progress'|'Resolved'};
+export const initialTickets:Ticket[]=[
+ {id:101,subject:'Unable to sign in',priority:'High',status:'Open'},
+ {id:102,subject:'Payment receipt needed',priority:'Medium',status:'In progress'}
+];
+```
+
+**What this step accomplishes:** Repeated ticket cards should share one design and receive data through props.
+
+**Check:** Run your app or inspect the updated component before continuing.
+
+### Step 2 — Create a reusable ticket card
+
+**Edit or create the indicated file.**
+
+```tsx
+// src/components/TicketCard.tsx
+import type {Ticket} from '../data/tickets';
+export default function TicketCard({ticket}:{ticket:Ticket}){
+ return <article className="rounded-xl border bg-white p-4"><h2 className="font-semibold">#{ticket.id} {ticket.subject}</h2><p>{ticket.priority} priority · {ticket.status}</p></article>;
+}
+```
+
+**What this step accomplishes:** Two ticket cards render from one component with distinct priority/status labels.
+
+**Check:** Run your app or inspect the updated component before continuing.
+
+### Step 3 — Render cards and computed count
+
+**Edit or create the indicated file.**
+
+```tsx
+// src/App.tsx
+import TicketCard from './components/TicketCard';
+import {initialTickets} from './data/tickets';
+export default function App(){return <main className="mx-auto max-w-3xl p-6"><h1 className="text-3xl font-bold">Support Desk</h1><p>{initialTickets.length} tickets</p><div className="mt-4 grid gap-3">{initialTickets.map(t=><TicketCard key={t.id} ticket={t}/>)}</div></main>}
+```
+
+**What this step accomplishes:** Two ticket cards render from one component with distinct priority/status labels.
+
+**Check:** Run your app or inspect the updated component before continuing.
+
+## Expected screen and execution
+
+**What you should observe:** Two ticket cards render from one component with distinct priority/status labels.
+
+**Trace it:** Ticket data → typed props → TicketCard → dashboard. A user-visible output is stronger evidence than a code snippet alone.
+
+## Interactive decision and diagnosis
+
+If the expected result does not appear, inspect the relevant file and resolve the first console error. Compare your current code to the preceding checkpoint.
+
+**Typical issue:** Array indexes are fragile keys when records can be added or reordered; use ticket.id.
+
+## How teams use this pattern
+
+A frontend developer implements the interface, a tester verifies accessible controls and failure behavior, and the product owner describes the expected result. This is a simplified demonstration of that collaboration, not a representation of a particular company's internal infrastructure.
+
+## Compare UI and implementation
+
+| What the user sees | What the application does |
+|---|---|
+| Two ticket cards render from one component with distinct priority/status labels. | Ticket data → typed props → TicketCard → dashboard |
+| An action or failure | A typed handler, state transition or error boundary determines the visible response |
+
+## Hands-on practice
+
+Add another ticket in the data file and compute the number of Open tickets using filter.
+
+**Evidence:** Capture the visible result, explain the code you changed, and reproduce one failure case.
+
+## Interview Bit
+
+**Question:** How does this milestone change what the learner can actually do?
+
+**Answer:** It turns typed records into reusable task cards with accurate derived counts.
+
+## Key Takeaways
+
+1. A Ticket type defines the fields in each record.
+2. A typed array can hold multiple ticket objects.
+3. One TicketCard component renders different tickets.
+4. Props supply a record to the reusable component.
+5. React maps the tickets array into JSX elements.
+6. Each rendered ticket must have a stable key.
+7. Dashboard totals can be calculated from ticket data.
+8. A data change should not require duplicated JSX.
+
+## Knowledge Check and Primary Sources
+
+<TicketProjectQuiz byte={2} />
+
+**Frequently asked:** Is a real backend required for this Byte? No; this handbook uses a mock boundary until you supply a real API. Does the demo contain real customer data? No.
+
+**Primary sources:** [Passing props](https://react.dev/learn/passing-props-to-a-component) · [Rendering lists](https://react.dev/learn/rendering-lists).

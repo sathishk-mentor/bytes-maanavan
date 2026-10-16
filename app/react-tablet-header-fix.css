@@ -1,0 +1,10 @@
+/* Tablet-width utility bar: prevent portal links from extending beyond viewport. */
+@media (min-width:700px) and (max-width:960px) {
+  .header-utility-inner { gap:.75rem; min-width:0; }
+  .header-utility-contact { flex-shrink:0; }
+  .header-utility-right { min-width:0; gap:0; }
+  .header-utility-bar .utility-email,
+  .header-utility-bar .header-social-links { display:none!important; }
+  .header-utility-bar .learner-portal-link,
+  .header-utility-bar .membership-portal-link { padding-inline:.65rem; font-size:.65rem; }
+}

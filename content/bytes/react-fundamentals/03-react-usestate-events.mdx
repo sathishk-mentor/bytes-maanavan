@@ -1,0 +1,215 @@
+---
+title: "React useState and Events: Add and Complete Tasks"
+slug: "03-react-usestate-events"
+summary: "Learn useState and event handling through a simple progressive Task Manager example."
+category: "react-fundamentals"
+tags: ["React.js","React for beginners","useState"]
+level: "beginner"
+duration: "25 min"
+updatedAt: "2026-10-16"
+order: 3
+---
+
+<TaskManagerByteHero byte={3} />
+
+## Why a static task list is not enough
+
+The current to-do list is only a display. A learner should be able to type a task, click **Add**, and tick a checkbox. These actions change what appears on the screen. For that we need *state* and *event handlers*.
+
+**What you will build:** Milestone 3 of a small browser-based To-Do List. No backend or advanced architecture is needed.
+
+## Adding and completing tasks
+
+Imagine an editable whiteboard: the list is what everyone sees, and the marker actions change it. In React, **state** is the current remembered list and `setTasks` is how we request an update. React then renders the new list.
+
+## State, events and immutable updates
+
+`useState(initialTasks)` returns `[tasks, setTasks]`: the current value and a setter. The typed input has another state value, `draft`. A **controlled input** gets `value={draft}` and updates through `onChange`. An **event handler** such as `onClick={addTask}` runs after a click. To add a task, create a new array with `[...current, newTask]`. To toggle one task, use `.map()` and copy only the matching object. Never mutate the old array in place. `pending` is *derived data* and should be calculated using `.filter()` rather than stored separately.
+
+## Follow an Add Task click
+
+**Before the diagram:** A local variable resets when a component runs again. React state remembers a value between renders. An event handler tells React when to update that remembered value.
+
+<ReactLearningFlow byte={3} />
+
+**Predict the output:** If the list has two tasks and you add “Buy notebook,” the next render shows three tasks. Changing an object directly without calling a setter is not a reliable way to update React state.
+
+1. Learner types `Buy notebook` → `onChange` calls `setDraft`.
+
+2. React renders the new input value.
+
+3. Learner clicks Add → `addTask` checks for empty text.
+
+4. `setTasks` creates a new array with the added task.
+
+5. React renders an extra row and clears the input.
+
+6. Checking a box updates the matching task and pending count.
+
+## Explore task-state updates
+
+<TaskManagerConceptLab byte={3} />
+
+**Check the idea:** Answer this question before coding.
+
+<ReactConceptLab byte={3} />
+
+## Build the interactive Task Manager
+
+**Our learning project:** A tiny Task Manager, not an enterprise support system. The app grows gradually across the five Bytes; each code step below tells you exactly which file to edit.
+
+**Milestone 3:** React useState and Events: Add and Complete Tasks.
+
+### Step 1: Extend the task data model
+
+**Where:** `src/components/TaskItem.tsx`
+
+```tsx
+export type Task = { id: number; title: string; completed: boolean };
+export default function TaskItem({
+  task, onToggle
+}: {
+  task: Task; onToggle: (id: number) => void
+}) {
+  return (
+    <li>
+      <label>
+        <input type="checkbox" checked={task.completed}
+          onChange={() => onToggle(task.id)} />
+        <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
+          {task.title}
+        </span>
+      </label>
+    </li>
+  );
+}
+```
+
+**Expected screen/result:** Each row displays a checkbox and completed styling.
+
+### Step 2: Update starting data
+
+**Where:** `src/data/tasks.ts`
+
+```tsx
+import type { Task } from '../components/TaskItem';
+export const initialTasks: Task[] = [
+  { id: 1, title: 'Read React notes', completed: false },
+  { id: 2, title: 'Practise JSX', completed: false }
+];
+```
+
+**Expected screen/result:** Each task has a completed flag.
+
+### Step 3: Add task state and events
+
+**Where:** `src/App.tsx`
+
+```tsx
+import { useState } from 'react';
+import TaskItem, { type Task } from './components/TaskItem';
+import { initialTasks } from './data/tasks';
+
+export default function App() {
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [draft, setDraft] = useState('');
+
+  function addTask() {
+    const title = draft.trim();
+    if (!title) return;
+    setTasks(current => [
+      ...current,
+      { id: Date.now(), title, completed: false }
+    ]);
+    setDraft('');
+  }
+
+  function toggleTask(id: number) {
+    setTasks(current => current.map(task =>
+      task.id === id ? { ...task, completed: !task.completed } : task
+    ));
+  }
+
+  return (
+    <main>
+      <h1>My Task Manager</h1>
+      <label htmlFor="new-task">New task</label>
+      <input id="new-task" value={draft}
+        onChange={event => setDraft(event.target.value)} />
+      <button type="button" onClick={addTask}>Add</button>
+      <p>{tasks.filter(task => !task.completed).length} pending</p>
+      <ul>{tasks.map(task =>
+        <TaskItem key={task.id} task={task} onToggle={toggleTask} />
+      )}</ul>
+    </main>
+  );
+}
+```
+
+**Expected screen/result:** Typing and clicking Add creates a new task; checking it updates pending count and completion state.
+
+**Project checkpoint:** Add and complete tasks.
+
+## Common useState mistakes
+
+- **`onClick={addTask()}`:** This executes during rendering; pass `onClick={addTask}`.
+- **Mutating arrays:** `tasks.push()` does not create the next state snapshot.
+- **Empty items:** Use `trim()` and return early.
+- **Separate pending state:** Duplicated state can disagree with the actual tasks.
+- **Refresh loses tasks:** Correct for now; Byte 04 adds persistence.
+
+## Where UI state matters
+
+React uses the same underlying idea in many applications: a product list, a shopping basket, a learning progress page, or a dashboard. We are using task management only to keep the learning journey simple.
+
+## What happens when state changes
+
+| What a learner sees | What React or the browser does |
+|---|---|
+| updated checkbox | Type  →  setDraft  →  render input; click Add  →  setTasks  →  render new row; click Complete  →  setTasks |
+| A task list ready for interaction | React creates output from component inputs and state |
+
+## Create a Delete action
+
+**Challenge 1:** Add two tasks. Confirm each appears once and input clears.
+
+**Challenge 2:** Mark the first item completed, then reopen it. Observe the pending count.
+
+**Challenge 3:** Implement Delete using `filter()` and check that only the selected task disappears.
+
+**Explain it:** Why do we create a new array rather than call `tasks.push()`?
+
+## Interview Bit
+
+**Question: Why should React state be updated with a setter instead of changing the variable directly?**
+
+**Simple answer:** React state stores data between renders. Calling setTasks with a new array tells React to render the updated list. Mutating the old array with push can prevent React from detecting the intended update.
+
+**How to explain it:** Point to the related code in the To-Do List and describe what appears in the browser.
+
+## Key Takeaways
+
+1. useState provides a value and a setter.
+2. State retains values between component renders.
+3. Controlled inputs use state for displayed values.
+4. Event handlers run in response to interaction.
+5. State updates request a new render.
+6. Create new arrays and objects instead of mutating state.
+7. Calculate the pending count from tasks, not duplicate state.
+8. Byte 03 adds and completes tasks interactively.
+
+## Knowledge Check
+
+Review these common questions before attempting the scored quiz.
+
+- Why use the setter? React needs to know the state changed.
+- Should pending count be another state variable? No, derive it from tasks.
+- Does the task survive refresh? Not yet; Byte 04 addresses that.
+
+<ReactFiveQuestionQuiz byte={3} />
+
+## Primary Sources
+
+- [State: A Component's Memory](https://react.dev/learn/state-a-components-memory)
+- [Updating Arrays in State](https://react.dev/learn/updating-arrays-in-state)
+- [Responding to Events](https://react.dev/learn/responding-to-events)
