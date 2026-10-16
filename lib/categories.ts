@@ -1,6 +1,7 @@
 import { Category } from './types';
 
 export const CATEGORIES: Category[] = [
+  {slug:'advanced-react',title:'Advanced React Development Handbook',description:'Learn forms, API integration, routing, shared state, TypeScript and testing through practical React examples.',icon:'Code2',color:'blue',order:13,heroLine:'From basic React to maintainable application development'},
   { slug: 'genai', title: 'Generative AI', description: 'Understand LLMs, prompting, RAG and practical AI applications.', icon: 'Sparkles', color: 'cyan', order: 1, heroLine: 'From your first prompt to production-ready AI thinking' },
   { slug: 'ai-agents', title: 'AI Agents', description: 'Design agents that reason, use tools and complete real work.', icon: 'Bot', color: 'violet', order: 2, heroLine: 'Build reliable AI systems that can take action' },
   { slug: 'data-engineering', title: 'Data Engineering', description: 'Learn pipelines, warehouses, streaming and dependable data systems.', icon: 'Database', color: 'blue', order: 3, heroLine: 'Turn raw data into trusted, useful products' },
