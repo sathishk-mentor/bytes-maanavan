@@ -1,0 +1,116 @@
+---
+title: "React API Integration: Loading, Error Handling and Retry"
+slug: "02-react-api-fetch-loading-errors"
+summary: "Server responses can take time, fail or contain unexpected data."
+category: "advanced-react"
+tags: ["Advanced React", "React TypeScript", "API integration"]
+level: "intermediate"
+duration: "25 min"
+updatedAt: "2026-10-16"
+order: 2
+---
+
+## Why this concept matters
+
+Server responses can take time, fail or contain unexpected data. **You will learn:** explain the idea, follow the execution flow, read a compact example and try one realistic decision. Basic React components, props and useState are helpful; this Byte also works as a standalone introduction.
+
+## Start with a familiar scenario
+
+Ordering online shows the idea: an order can be pending, confirmed, or failed. API-backed screens need the same explicit states.
+
+**Vocabulary:** request, response, loading, error, retry, server state.
+
+## Understand the core concept
+
+Keep remote data distinct from local UI state. Fetch may resolve on HTTP errors, so check response.ok. Represent loading, success and error; provide a retry action. Protect against stale requests. For larger systems, server-state libraries can handle caching and synchronization.
+
+**When not to use it:** Select the simplest React feature that solves the actual problem. An advanced API or Hook is not a requirement for every component.
+
+## Architecture and execution flow
+
+Trace the information as it moves through the application. Every stage has a specific purpose.
+
+<AdvancedReactFlow byte={2} />
+
+```text
+Request → loading → response validation → success / error → retry
+```
+
+## Interactive decision lab
+
+Choose an answer to a realistic development situation. Review the resulting explanation before writing code.
+
+<AdvancedReactLab byte={2} />
+
+## Guided code walkthrough
+
+**Step 1 — Identify the inputs and the expected output.** Server responses can take time, fail or contain unexpected data.
+
+**Step 2 — Read the implementation.** The example is intentionally small; it isolates the concept before introducing additional application architecture.
+
+```tsx
+type Issue = { id: number; title: string };
+async function loadIssues(signal: AbortSignal): Promise<Issue[]> {
+  const response = await fetch('/api/issues', { signal });
+  if (!response.ok) throw new Error('Could not load issues');
+  return (await response.json()) as Issue[];
+}
+```
+
+**Step 3 — Predict the browser result.** Show pending status, then issues or an error with Retry. The API path is illustrative, not included as a backend.
+
+**Step 4 — Explain the execution.** Request; then loading; then response validation; then success / error; then retry.
+
+**Step 5 — Verify.** Run the example in a React/TypeScript project with the appropriate installed package or mock API. The purpose is understanding behavior, not copy-pasting an unexplained application.
+
+## Common mistakes and recovery
+
+Assuming fetch rejects on HTTP 404; showing a blank screen during loading; displaying stale results.
+
+When behavior is surprising, verify the inputs and first observable failure. Check browser-console warnings, network responses and visible error states before adding complexity.
+
+## How developers use this at work
+
+This pattern appears in customer portals, internal dashboards and SaaS products. Developers use it to make interfaces predictable and maintainable. QA engineers test the user-facing outcome, while product teams define valid states and errors.
+
+## What users see versus system behavior
+
+| User-visible experience | Underlying behavior |
+|---|---|
+| Show pending status, then issues or an error with Retry. The API path is illustrative, not included as a backend. | Request → loading → response validation → success / error → retry |
+| Recovery from a failure | The application handles an invalid input, request or state explicitly |
+
+## Practice task
+
+Use a mock Promise returning two issues; simulate an error and show Retry.
+
+**Success check:** describe the input, the React action and the output. Try the failure case once, then explain the recovery.
+
+## Interview Bit and key takeaways
+
+**Interview question:** When should React useEffect fetch data?
+
+**Simple answer:** An Effect can synchronize with an external API in a client-only app, but framework loaders or dedicated server-state tools may be preferable. Handle pending, errors and cancellation.
+
+**Eight takeaways:**
+
+1. Start by describing the user's problem.
+2. Identify which values are local and which originate outside React.
+3. Use explicit types and state transitions where helpful.
+4. Prefer readable components over one large file.
+5. Show loading, invalid and error states clearly.
+6. Verify the observable result after changes.
+7. Avoid unnecessary Effects and premature optimization.
+8. Choose tools according to actual complexity.
+
+## FAQ, knowledge check and primary sources
+
+**FAQ: Is this technique required in every React component?** No; apply it only when the corresponding problem exists.
+
+**FAQ: Can it be tested without a real backend?** Yes, with local examples and mock responses.
+
+**FAQ: Should learners understand the underlying JavaScript?** Yes. Hooks and libraries build on ordinary functions, arrays, objects and promises.
+
+<AdvancedReactQuiz byte={2} />
+
+**Primary sources:** [Official reference 1](https://react.dev/learn/synchronizing-with-effects) · [Official reference 2](https://tanstack.com/query/latest/docs/framework/react).
