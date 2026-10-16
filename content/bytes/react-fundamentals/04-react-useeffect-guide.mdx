@@ -1,0 +1,116 @@
+---
+title: "React useEffect Explained: Dependencies and Cleanup"
+slug: "04-react-useeffect-guide"
+summary: "A ticket list can subscribe to changes outside React, such as a browser event or live connection, and must clean up the subscription."
+category: "react-fundamentals"
+tags: ["React.js", "React tutorial for beginners", "useEffect"]
+level: "beginner"
+duration: "20 min"
+updatedAt: "2026-10-16"
+order: 4
+---
+
+## S1 — Quick Start
+
+A ticket list can subscribe to changes outside React, such as a browser event or live connection, and must clean up the subscription.
+
+**You will learn:** Explain the concept, predict the visible UI result and implement one small change. **Prerequisite:** Familiarity with basic JavaScript expressions helps, but no prior React experience is required.
+
+## S2 — Start from Basics: Familiar Scenario
+
+Imagine a software company's customer-support dashboard. Staff read tickets, filter the list, change ticket status and navigate between records. We use this *illustrative* workflow to learn React rather than claiming it is a real company's internal application.
+
+Effect: synchronization with an external system. Dependency array: reactive values used by the effect. Cleanup: teardown before replacement/unmount. Subscription: outside callback source. Stale response: outdated async result. Render: pure UI calculation.
+
+## S3 — Core Explanation
+
+Use an Effect to synchronize with something outside React—not for ordinary calculations or click handlers. Include reactive dependencies. Clean up timers, subscriptions and stale requests when appropriate.
+
+A useful analogy is an office display board: inputs describe which cards belong on the board and an update changes the visible board. React coordinates that display; a real backend remains responsible for permanent records and access control.
+
+## S4 — Architecture and Flow
+
+**Visual execution path**
+
+```text
+Render → commit → Effect subscribes → external event → setState → render. Cleanup runs when dependencies change or component unmounts.
+```
+
+Read the arrows in sequence. Identify which part is a user action, which is React behaviour and which result the browser displays.
+
+## S5 — Interactive Concept Lab
+
+Try this decision before reading the worked example. The lab reports what happens in the component.
+
+<ReactConceptLab byte={4} />
+
+## S6 — Guided Walkthrough
+
+This is a small standalone teaching example. For a real Vite app use the React + TypeScript template, place it in a component file, import it into App and run the development server.
+
+```tsx
+import { useEffect, useState } from "react";
+export function OnlineBadge() {
+  const [online, setOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine);
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    return () => { window.removeEventListener("online", update); window.removeEventListener("offline", update); };
+  }, []);
+  return <strong>{online ? "Online" : "Offline"}</strong>;
+}
+```
+
+**Expected output:** The badge responds to browser online/offline events and unregisters listeners when removed.
+
+**Execution explanation:** Follow the component inputs, the code decision, the changed React output and what a user can observe. Keep the example small enough to explain aloud during an interview.
+
+## S7 — Failure Cases and Common Mistakes
+
+Do not compute fullName from firstName and lastName inside an Effect; calculate it during rendering. Browser globals require client execution.
+
+If the UI looks wrong, inspect data input, state updates, console errors and element semantics separately. Compare the expected output above with the actual browser result.
+
+## S8 — Role-Based Application
+
+Frontend engineers manage subscriptions and cleanup; reviewers investigate memory leaks and stale responses. Product managers describe the workflow outcome and acceptance criteria. A support team member can validate that the wording and action match the intended business process.
+
+## S9 — Compare User View and System View
+
+| What the user sees | What happens underneath |
+|---|---|
+| User sees Online/Offline | Effect subscribes and updates state when browser connectivity events arrive |
+| A responsive interface | React decides which UI description to reconcile with the DOM |
+| A visible result after interaction | The application determines whether data is only local or saved remotely |
+
+## S10 — Hands-On Practice
+
+**Try it:** Explain why cleanup is necessary if a component is mounted and removed repeatedly.
+
+**Check your result:** The UI, or your component-tree sketch, must show the expected change. Explain which data is an input, which part is state (if any) and how React produces the output.
+
+## S11 — Final Thought and Next Path
+
+1. Begin with the real user problem.
+2. Separate UI from persistent backend concerns.
+3. Name each component or Hook by its purpose.
+4. Distinguish inputs from state.
+5. Trace interactions step by step.
+6. Inspect the rendered result, not only code.
+7. Prefer clarity over unnecessary complexity.
+8. Validate behaviour, accessibility and failure cases.
+
+**Continue:** Browse the other standalone React fundamentals lessons when ready.
+
+## S12 — FAQ, Knowledge Check and References
+
+Does an Effect run before render? No. Must every API request use an Effect? No, framework data APIs and event handlers may be better. What does [] mean? No reactive dependencies.
+
+**Interview-ready explanation:** Use an Effect to synchronize with something outside React—not for ordinary calculations or click handlers.
+
+<ReactFiveQuestionQuiz byte={4} />
+
+**Primary reference:** [Official React documentation](https://react.dev/learn/synchronizing-with-effects).
+
+**Further reading:** [React Learn](https://react.dev/learn), [Vite guide](https://vite.dev/guide/).
