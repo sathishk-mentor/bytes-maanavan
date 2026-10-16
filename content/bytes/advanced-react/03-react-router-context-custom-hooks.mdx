@@ -12,6 +12,8 @@ order: 3
 
 ## Why this concept matters
 
+An application with multiple screens needs meaningful URLs. A router maps those URLs to components, while Context and custom Hooks solve different reuse problems.
+
 Different screens need URLs, and some values must be shared between distant components. **You will learn:** explain the idea, follow the execution flow, read a compact example and try one realistic decision. Basic React components, props and useState are helpful; this Byte also works as a standalone introduction.
 
 ## Start with a familiar scenario
@@ -21,6 +23,8 @@ A building has numbered rooms. A URL points to a room; shared context is like a 
 **Vocabulary:** route, navigation, context, provider, custom Hook.
 
 ## Understand the core concept
+
+Think of URLs as room numbers in a building. The router selects a room; Context provides truly shared information to different rooms; a custom Hook packages reusable React behavior. They should not be combined into one unexplained feature.
 
 React Router maps URL paths to components. Declarative mode uses BrowserRouter, Routes, Route and Link. Context makes shared values available without repetitive prop passing. Custom Hooks reuse Hook-driven logic and start with use.
 
@@ -41,6 +45,12 @@ URL → Router match → component → shared context → visible page
 Choose an answer to a realistic development situation. Review the resulting explanation before writing code.
 
 <AdvancedReactLab byte={3} />
+
+## Try It Yourself — code and browser output
+
+<AdvancedReactTryIt byte={3} />
+
+**Experiment:** Click **/issues** and then **/issues/42**. Describe how the URL corresponds to a list view or a detail view. Then explain why a single local input should usually stay local rather than be moved into Context.
 
 ## Guided code walkthrough
 
@@ -90,24 +100,22 @@ Create an Issues and About route; extract a small usePageTitle Hook that updates
 
 **Success check:** describe the input, the React action and the output. Try the failure case once, then explain the recovery.
 
-## Interview Bit and key takeaways
+## Interview Bit
 
-**Interview question:** When should Context replace props?
+**What is the difference between React Router and Context?** Router chooses UI based on the URL; Context lets components receive shared values without passing props through every intermediate level.
 
-**Simple answer:** Use Context when many distant components require the same value. Props remain clearer for nearby components.
+## Key Takeaways
 
-**Eight takeaways:**
+1. Routes connect URL paths with React components.
+2. A Link performs client-side navigation within the router.
+3. A dynamic segment such as :id identifies a resource.
+4. BrowserRouter uses browser history in declarative routing.
+5. Context shares values without repeated intermediate props.
+6. Context is not a replacement for all component state.
+7. A custom Hook starts with use and can call other Hooks.
+8. Refreshing nested routes also requires correct server fallback configuration.
 
-1. Start by describing the user's problem.
-2. Identify which values are local and which originate outside React.
-3. Use explicit types and state transitions where helpful.
-4. Prefer readable components over one large file.
-5. Show loading, invalid and error states clearly.
-6. Verify the observable result after changes.
-7. Avoid unnecessary Effects and premature optimization.
-8. Choose tools according to actual complexity.
-
-## FAQ, knowledge check and primary sources
+## Knowledge Check and Primary Sources
 
 **FAQ: Is this technique required in every React component?** No; apply it only when the corresponding problem exists.
 
