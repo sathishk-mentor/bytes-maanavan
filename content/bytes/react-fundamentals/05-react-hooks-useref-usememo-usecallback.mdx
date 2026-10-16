@@ -14,29 +14,29 @@ order: 5
 
 ## When to use other React Hooks
 
-useRef can hold a DOM input reference without triggering rendering. A simple task filter should usually be calculated directly. useMemo can cache an expensive calculation if profiling justifies it; useCallback can retain function identity when there is a concrete reason. Do not introduce extra Hooks for decoration.
+Our To-Do List can grow. Learners should be able to find a task quickly and focus the search field with a button. This is a useful place to understand **useRef** and to discuss when other Hooks are—and are not—necessary.
 
-**In this Byte:** First understand the concept, then apply it to one small Task Manager milestone. **What you need:** Basic JavaScript. You do not need to know advanced React.
+**What you will build:** Milestone 5 of a small browser-based To-Do List. No backend or advanced architecture is needed.
 
 ## Finding tasks without scrolling
 
-A ref is like pointing at the search field; a memo is like keeping a calculated list handy only when recalculating it is costly.
-
-**Important words:** useRef, DOM node, derived state, useMemo, useCallback, dependencies, performance. Take each term one at a time; the code below makes the idea visible.
+Search is like checking a list for matching names. The query is visible state, because typing changes the list. A **ref** is like pointing at the search box to move focus to it. **Memoization** is like keeping the result of an expensive calculation—but there is no reason to cache a three-item list.
 
 ## useRef versus memoization
 
-useRef can hold a DOM input reference without triggering rendering. A simple task filter should usually be calculated directly. useMemo can cache an expensive calculation if profiling justifies it; useCallback can retain function identity when there is a concrete reason. Do not introduce extra Hooks for decoration.
-
-**Why this matters:** The Task Manager gives us a consistent visible result. The principle is useful in many other kinds of React interfaces.
+`useRef<HTMLInputElement>(null)` gives us a persistent object whose `.current` can refer to a DOM element. Calling `searchRef.current?.focus()` focuses it. The query must use `useState`, since changing it should rerender matching tasks. Start with `tasks.filter(...)`: this is ordinary JavaScript and generally sufficient. `useMemo` optionally caches a calculated value when an expensive calculation warrants it. `useCallback` optionally preserves a function reference when memoized children or dependency relationships benefit. Neither is required just because a component has an input or button.
 
 ## Follow search, focus and filtering
 
-```text
-Type query → setQuery → React renders matching tasks; Focus button → ref.current.focus(); optional memo caches derived list
-```
+1. Learner types `React` → `setQuery` updates state.
 
-Follow the arrows from the starting input to the final browser output. These are simplified teaching flows, not a full explanation of React's internal reconciler.
+2. Render calculates `visibleTasks = tasks.filter(...)`.
+
+3. Only matching tasks are displayed.
+
+4. Clicking Focus uses `searchRef.current?.focus()`.
+
+5. `useMemo` and `useCallback` may be compared, but are not required for this tiny app.
 
 ## Explore search and focus
 
@@ -122,9 +122,11 @@ const focusSearch = useCallback(() => {
 
 ## Common Hooks mistakes
 
-Do not use useMemo and useCallback everywhere. Do not store the query only in a ref if it must update the rendered list. Performance optimizations require evidence.
-
-When something breaks, read the first error message, identify the file involved, and compare your code against the prior working checkpoint.
+- **Keeping query only in `ref.current`:** Changes to refs don't trigger React rendering.
+- **Calling `focus()` during render:** Call it from a deliberate event handler.
+- **Adding `useMemo` everywhere:** Measure first; optimization creates mental overhead.
+- **Misreading `useCallback`:** It stabilizes a function reference, not the result of running the function.
+- **Replacing the source task list while filtering:** Keep all tasks in state, derive visible tasks.
 
 ## When performance tools are useful
 
@@ -139,20 +141,24 @@ React uses the same underlying idea in many applications: a product list, a shop
 
 ## Filter completed and pending tasks
 
-Add an All / Pending / Completed filter using state; combine it with the text query.
+**Challenge 1:** Search for a word in one task and verify only matching tasks appear.
 
-**Verification:** Perform the action, observe the visible result, and explain which React concept made it possible.
+**Challenge 2:** Click Focus and confirm the cursor moves to the search box.
+
+**Challenge 3:** Add an All / Pending / Completed filter using state; combine with text search.
+
+**Explain it:** Which data must cause a rerender? Does the small task list genuinely need memoization?
 
 ## Key takeaways
 
-1. Begin with the user-facing result.
-2. Learn the concept before writing code.
-3. Keep one clear goal per change.
-4. Use components for reusable UI.
-5. Treat props as read-only inputs.
-6. Update state with setter functions.
-7. Inspect the browser after every step.
-8. Prefer simple code to unnecessary optimization.
+1. useState controls a visible search query.
+2. Filtering creates a derived visible list.
+3. useRef can point to an input DOM node.
+4. Changing a ref does not cause a render.
+5. useMemo caches calculated values when useful.
+6. useCallback caches function identity when useful.
+7. Begin with simple readable code.
+8. The five Bytes now produce a searchable To-Do List.
 
 ## FAQ and knowledge check
 
