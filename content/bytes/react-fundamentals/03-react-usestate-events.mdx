@@ -28,6 +28,12 @@ Imagine an editable whiteboard: the list is what everyone sees, and the marker a
 
 ## Follow an Add Task click
 
+**Before the diagram:** A local variable resets when a component runs again. React state remembers a value between renders. An event handler tells React when to update that remembered value.
+
+<ReactLearningFlow byte={3} />
+
+**Predict the output:** If the list has two tasks and you add “Buy notebook,” the next render shows three tasks. Changing an object directly without calling a setter is not a reliable way to update React state.
+
 1. Learner types `Buy notebook` → `onChange` calls `setDraft`.
 
 2. React renders the new input value.

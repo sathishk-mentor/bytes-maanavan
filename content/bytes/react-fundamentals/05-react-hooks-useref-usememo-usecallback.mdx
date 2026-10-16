@@ -28,6 +28,12 @@ Search is like checking a list for matching names. The query is visible state, b
 
 ## Follow search, focus and filtering
 
+**Before the diagram:** Search text belongs in state because typing should update the displayed results. The input DOM node belongs in a ref because clicking Focus should move the cursor without triggering a state update.
+
+<ReactLearningFlow byte={5} />
+
+**Predict the output:** Typing `React` shows only matching task titles. Click Focus to move the typing cursor to the search box. For a short task list, `filter()` is usually sufficient without `useMemo`.
+
 1. Learner types `React` → `setQuery` updates state.
 
 2. Render calculates `visibleTasks = tasks.filter(...)`.

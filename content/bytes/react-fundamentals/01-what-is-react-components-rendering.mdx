@@ -1,60 +1,117 @@
 ---
-title: "What Is React? Build the First Task Manager Screen"
+title: "React for Absolute Beginners: Your First Component and To-Do List"
 slug: "01-what-is-react-components-rendering"
-summary: "Learn React components and rendering through a simple progressive Task Manager example."
+summary: "Start from HTML, JavaScript and JSX. Create a complete React component, predict the browser output, and practise editing your first To-Do List."
 category: "react-fundamentals"
-tags: ["React.js","React for beginners","components"]
+tags: ["React for beginners","JSX","React components","Vite"]
 level: "beginner"
-duration: "25 min"
+duration: "35 min"
 updatedAt: "2026-10-16"
 order: 1
 ---
 
-<TaskManagerByteHero byte={1} />
+## Start here: what will you create?
 
-## Why build interfaces with React?
+At the end of this lesson you will have a tiny **To-Do List** running in your own browser. It has a heading, one sentence and two tasks. You will then change the heading and add a third task yourself.
 
-Imagine writing a shopping list on paper. You can read it, but pressing a button cannot change it. Web applications add behavior to the screen. React helps us organize that screen into reusable pieces. First, we build a *static* To-Do List; interaction comes later.
+**You do not need to know React already.** You should be comfortable opening files, typing a command in a terminal and reading a little HTML. We will explain the JavaScript used here.
 
-**What you will build:** Milestone 1 of a small browser-based To-Do List. No backend or advanced architecture is needed.
+**What React does:** React helps you describe a screen as smaller, reusable UI pieces called **components**. It is a JavaScript library for user interfaces—not a database, programming language, or backend.
 
-## A task list you already understand
+## Before React: HTML, CSS and JavaScript
 
-Before React, learn three layers: **HTML** describes content (a heading or list); **CSS** controls appearance (spacing and colors); **JavaScript** decides behavior (what happens after a click). React is a JavaScript library for building the interface. It does not replace HTML or CSS. **Vite** starts a local development project and converts JSX/TypeScript into browser-friendly code.
+Imagine a handwritten list on a wall. It has words, but cannot react to user actions. A website combines three building blocks:
 
-## Components, JSX and rendering
+| Technology | Think of it as | In our list |
+|---|---|---|
+| **HTML** | The structure of a house | A heading and list items |
+| **CSS** | Its paint and layout | Spacing, fonts, colors |
+| **JavaScript** | The switches and behavior | What will happen when a button is clicked |
 
-A **component** is a function whose name begins with a capital letter and which returns a description of UI. **JSX** resembles HTML, but it lives inside JavaScript. `className` is used instead of HTML's `class`; JavaScript expressions go inside `{ }`. **Rendering** means React evaluates components and updates the browser when needed. `App` is our starting component, not a special React keyword. A nested element goes inside its parent; JSX must return one enclosing root (or fragment).
+**React uses JavaScript to describe the interface.** You still use ordinary HTML-like elements and styling. React becomes especially valuable when the UI grows or changes often.
 
-## Trace the first React render
+## A component is a small UI building block
 
-1. Browser loads the application.
+Look at this complete example:
 
-2. React renders `App()`.
+```tsx
+// src/App.tsx
+export default function App() {
+  return <h1>My Task Manager</h1>;
+}
+```
 
-3. `App` returns JSX containing a heading and list.
+Read it line by line:
 
-4. React commits the matching elements to the browser DOM.
+1. `function App()` declares a JavaScript function. Its name starts with a capital letter because **React component names start with capital letters**.
+2. `return` gives React the UI description.
+3. `<h1>` is a heading element written as **JSX**.
+4. `export default` allows this component to be imported by another file.
 
-5. The learner sees two to-do items. No interaction or storage yet.
+**Expected browser output:** A large heading reading **My Task Manager**.
 
-## Explore the component tree
+Try to explain this sentence: *App is a JavaScript function that returns a JSX heading.*
 
-<TaskManagerConceptLab byte={1} />
+## What is JSX and why does React use it?
 
-**Check the idea:** Answer this question before coding.
+JSX looks like HTML written in a JavaScript file, but it has stricter rules. You will often see JSX in files ending in `.jsx` or `.tsx` (TypeScript plus JSX).
 
-<ReactConceptLab byte={1} />
+```tsx
+export default function App() {
+  return (
+    <main>
+      <h1>My Task Manager</h1>
+      <p>Tasks to complete today</p>
+    </main>
+  );
+}
+```
 
-## Create the first Task Manager screen
+**Why is `main` around everything?** A component should return one enclosing root element (or a fragment). **Why parentheses?** They make multiline JSX easy to read and prevent mistakes when returning it. **What is `App`?** Just a component name; it is not a special built-in React command.
 
-**Our learning project:** A tiny Task Manager, not an enterprise support system. The app grows gradually across the five Bytes; each code step below tells you exactly which file to edit.
+JSX differences you will use soon:
 
-**Milestone 1:** What Is React? Build the First Task Manager Screen.
+- Write `className` instead of the HTML `class` attribute.
+- Close tags properly—for example `<img alt="Example" />`.
+- Put JavaScript expressions in curly braces, such as `{2 + 3}`, to display computed values.
 
-### Step 1: Create a fresh Vite app
+## See how React creates the screen
 
-**Where:** `Terminal`
+<ReactBeginnerFlow kind="render" />
+
+```text
+Your browser opens the app
+          ↓
+React calls the App component
+          ↓
+App returns JSX markup
+          ↓
+React creates/updates DOM elements
+          ↓
+You see the heading and list
+```
+
+The browser's **DOM** is its representation of elements on the page. For now, the list is static. We will add changing data and interaction in later lessons.
+
+**Predict the result:** If you add another `<li>` inside a `<ul>`, how many list items appear? The answer is the number of `li` elements you return.
+
+## Try it yourself: change the screen
+
+Change a heading, add a task, see the matching code and compare the output. Then copy the generated code into your local app.
+
+<ReactFirstLessonPlayground />
+
+**Important:** This is a guided edit-and-preview simulation. It does not execute arbitrary JavaScript. For real JSX execution, run the code in the Vite project below or the React documentation sandbox.
+
+## Set up your own React project
+
+We'll use the official Vite React + TypeScript template. **Vite** is the development/build tool, **React** builds UI components, and **TypeScript** checks types while you develop. You do not need to write advanced TypeScript yet.
+
+**Before starting:** Install a supported version of Node.js. Current Vite requirements are listed in the [official getting-started guide](https://vite.dev/guide/).
+
+### Step 1 — Open a terminal
+
+Run these commands **one at a time**:
 
 ```bash
 npm create vite@latest task-manager -- --template react-ts
@@ -63,13 +120,16 @@ npm install
 npm run dev
 ```
 
-**Expected screen/result:** Open the local Vite address and confirm the starter page appears.
+The terminal shows a local address, often `http://localhost:5173/`. Open the address in your browser. If that port is busy, Vite might choose a different one.
 
-### Step 2: Build a static screen
+**Expected result:** The standard Vite/React starter page appears. This tells us the development server is running.
 
-**Where:** `src/App.tsx`
+### Step 2 — Replace src/App.tsx completely
+
+Open `src/App.tsx`, remove the starter component, and paste this **complete file**:
 
 ```tsx
+// src/App.tsx
 export default function App() {
   return (
     <main>
@@ -84,83 +144,81 @@ export default function App() {
 }
 ```
 
-**Expected screen/result:** You see a heading and two list items.
+Save the file. Return to the browser.
 
-### Step 3: Understand the tree
+**Expected result:** A heading, a sentence, and two list items. The design is intentionally plain; learning what JSX renders matters more than styling in Byte 01.
 
-**Where:** `No code change`
+### Step 3 — Understand how the files connect
 
-```tsx
-App
- └─ main
-    ├─ h1
-    ├─ p
-    └─ ul
-       ├─ li
-       └─ li
+<ReactBeginnerFlow kind="files" />
+
+```text
+index.html       contains the root div
+      ↓
+src/main.tsx     starts React inside that root
+      ↓
+src/App.tsx      defines the App component
+      ↓
+Browser           displays the App's markup
 ```
 
-**Expected screen/result:** The visible output is built from a component returning a nested JSX tree.
+You do **not** need to edit `main.tsx` for this first example. The generated Vite template already imports App.
 
-**Project checkpoint:** A static task list.
+## Make your first three changes
 
-## Mistakes beginners often make
+Try these challenges without copying the answer first:
 
-- **Blank page?** Check the terminal and browser console for a JSX syntax error.
-- **Two root elements?** Wrap them with `<main>...</main>` or a fragment.
-- **Component name lowercase?** React treats lowercase JSX names as built-in HTML tags.
-- **Expecting buttons already?** This is a static screen; state and event handling arrive in Byte 03.
+1. Change the heading to **My First To-Do List**.
+2. Add `<li>Learn JSX</li>` under the two existing tasks.
+3. Replace the paragraph with **Three things I want to learn**.
 
-## Where React components are used
+**Check the result:** Your browser should now show the new heading, the new paragraph and three list items. Save the file after every change and watch what changes.
 
-React uses the same underlying idea in many applications: a product list, a shopping basket, a learning progress page, or a dashboard. We are using task management only to keep the learning journey simple.
+**Need help?** Return to the interactive example above and choose **Apply practice solution** for the heading and third task.
 
-## The visible screen and the render process
+## Common mistakes and quick fixes
 
-| What a learner sees | What React or the browser does |
-|---|---|
-| browser shows tasks | App() → JSX `main` → `h1` and `ul` |
-| A task list ready for interaction | React creates output from component inputs and state |
+| Problem | Why it happens | What to do |
+|---|---|---|
+| A blank page | JSX may have invalid syntax | Inspect the terminal and browser error |
+| Two elements returned side by side | JSX requires a single root | Wrap elements in `<main>…</main>` |
+| Lowercase component name | React interprets lowercase JSX tags as built-in elements | Name it `App`, not `app` |
+| App does not update | File might not be saved or development server stopped | Save `App.tsx` and check `npm run dev` |
+| Expecting Add/Delete to work | This is static JSX without React state | We introduce events and `useState` later |
 
-## Make your first change
+## How this becomes a real To-Do List
 
-**Challenge 1:** Change the heading to `My First To-Do List`.
+Today the two tasks are written directly in JSX. The next stages will make this screen reusable: move list entries into a component, pass task data using props, then add state and events. Later, browser storage can remember tasks after refresh.
 
-**Challenge 2:** Add `Learn JSX` as a third `<li>`. Confirm three list items appear after saving the file.
-
-**Explain it:** Which part is JavaScript? Which text is JSX? What role does Vite play?
+We are deliberately **not** adding `useState`, API calls, or a database in the first lesson. Understanding components and JSX first makes the later code easier.
 
 ## Interview Bit
 
-**Question: What is React, and what is a component?**
+**Question: What is a React component, and how is JSX different from HTML?**
 
-**Simple answer:** React is a JavaScript library used to build user interfaces. A component is a reusable function that describes part of the screen using JSX. In our To-Do List, App displays the heading and tasks.
+**Simple answer:** A React component is a JavaScript function that returns a description of the interface. JSX looks like HTML but is written in JavaScript and follows additional rules, such as `className` and one enclosing root.
 
-**How to explain it:** Point to the related code in the To-Do List and describe what appears in the browser.
+**Show evidence:** Point to `function App()`, `return`, the `main` wrapper, and the list that appears in your browser.
 
 ## Key Takeaways
 
-1. React is a JavaScript UI library, not a backend.
+1. React is a JavaScript library for building user interfaces.
 2. HTML describes content, CSS styles it, and JavaScript adds behavior.
-3. A React component is a function returning UI.
-4. Component names begin with a capital letter.
-5. JSX describes elements within JavaScript.
-6. JSX expressions go inside curly braces.
-7. React renders components into the browser interface.
-8. Byte 01 creates a static To-Do List.
+3. A component is a JavaScript function returning UI.
+4. React component names start with a capital letter.
+5. JSX looks like HTML, but has stricter rules.
+6. Multiline JSX is commonly wrapped in parentheses.
+7. Vite runs a local development server and builds the application.
+8. Byte 01 creates a working static To-Do List that can grow in later lessons.
 
 ## Knowledge Check
 
-Review these common questions before attempting the scored quiz.
-
-- Why React rather than repeating HTML? Reusable components become useful as interfaces grow.
-- Is a backend required? No. This first screen is static.
-- Does React save tasks yet? No, it only displays the list.
+Answer the questions below before moving to the next Byte. These cover components, JSX and project setup—not advanced React Hooks.
 
 <ReactFiveQuestionQuiz byte={1} />
 
 ## Primary Sources
 
-- [Your First Component](https://react.dev/learn/your-first-component)
-- [Writing Markup with JSX](https://react.dev/learn/writing-markup-with-jsx)
-- [Getting Started with Vite](https://vite.dev/guide/)
+- [Your First Component — React](https://react.dev/learn/your-first-component)
+- [Writing Markup with JSX — React](https://react.dev/learn/writing-markup-with-jsx)
+- [Getting Started — Vite](https://vite.dev/guide/)
