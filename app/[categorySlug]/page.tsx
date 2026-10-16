@@ -7,10 +7,11 @@ import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'how-everyday-apps-work', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['react-ticket-project', 'software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'how-everyday-apps-work', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
+  'react-ticket-project':{searchTitle:'Build a React Project — Ticket Dashboard with TypeScript',eyebrow:'REACT PROJECT · 5 GUIDED BYTES',intro:'Build an illustrative support ticket dashboard step by step: setup, components, forms, routing, API states, testing and deployment.',audience:'React learners, students and frontend developers',prerequisite:'React components, props and state basics',result:'Setup → UI → State → API → Release',keywords:['React project tutorial','React TypeScript project','support ticket dashboard React','React useReducer project','React Router project']},
   'ai-agents': {
     searchTitle: 'AI Agents Handbook for Everyone',
     eyebrow: 'FROM ANSWERING TO TAKING ACTION',
@@ -137,6 +138,7 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
 }
 
 function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory }) {
+  if(categorySlug==='react-ticket-project')return <div className="handbook-hero-visual langchain-hero-visual" aria-label="React support dashboard development flow"><div className="langchain-orchestrator"><header><Code2/><span><small>SUPPORT TICKET DASHBOARD</small><strong>Build and verify real UI behavior</strong></span><i>DEMO</i></header><div><span><Layers3/><small>UI</small></span><b>→</b><span><Workflow/><small>State</small></span><b>→</b><span><Network/><small>API</small></span><b>→</b><span><CheckCircle2/><small>Tests</small></span></div><footer><ShieldCheck/><span>Typed · accessible · mock data</span></footer></div></div>;
   if (categorySlug === 'ai-agents') {
     return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated AI agent goal to action workflow">
       <div className="langchain-orchestrator"><header><Sparkles/><span><small>AI AGENT</small><strong>Turn a goal into checked action</strong></span><i>READY</i></header><div><span><Compass/><small>Goal</small></span><b>→</b><span><Workflow/><small>Plan</small></span><b>→</b><span><Layers3/><small>Tools</small></span><b>→</b><span><CheckCircle2/><small>Check</small></span></div><footer><ShieldCheck/><span>Authorised · bounded · human-reviewed</span></footer></div>

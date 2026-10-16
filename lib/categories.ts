@@ -1,6 +1,7 @@
 import { Category } from './types';
 
 export const CATEGORIES: Category[] = [
+  {slug:'react-ticket-project',title:'Build a React Support Ticket Dashboard',description:'Build a practical React and TypeScript ticket dashboard from setup to testing and deployment.',icon:'Code2',color:'blue',order:14,heroLine:'From first component to tested customer-support UI'},
   { slug: 'genai', title: 'Generative AI', description: 'Understand LLMs, prompting, RAG and practical AI applications.', icon: 'Sparkles', color: 'cyan', order: 1, heroLine: 'From your first prompt to production-ready AI thinking' },
   { slug: 'ai-agents', title: 'AI Agents', description: 'Design agents that reason, use tools and complete real work.', icon: 'Bot', color: 'violet', order: 2, heroLine: 'Build reliable AI systems that can take action' },
   { slug: 'data-engineering', title: 'Data Engineering', description: 'Learn pipelines, warehouses, streaming and dependable data systems.', icon: 'Database', color: 'blue', order: 3, heroLine: 'Turn raw data into trusted, useful products' },
