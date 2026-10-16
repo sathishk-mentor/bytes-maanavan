@@ -1,9 +1,9 @@
 ---
-title: "What Is React.js? Components, UI Trees and Rendering"
+title: "What Is React.js? Your First React Component"
 slug: "01-what-is-react-components-rendering"
-summary: "A support desk updates ticket cards when data changes. React lets developers describe the interface as reusable components."
+summary: "Understand React, create a Vite project and display your first greeting component."
 category: "react-fundamentals"
-tags: ["React.js", "React tutorial for beginners", "rendering"]
+tags: ["React JS", "React beginners", "React components"]
 level: "beginner"
 duration: "20 min"
 updatedAt: "2026-10-16"
@@ -12,138 +12,122 @@ order: 1
 
 <ReactByteHero byte={1} />
 
-## Start with a real support dashboard
+## Why developers use React
 
-A support desk updates ticket cards when data changes. React lets developers describe the interface as reusable components.
+React helps us create web interfaces using small reusable components. Start with one message on a webpage before learning about larger applications.
 
-**You will learn:** Explain the concept, predict the visible UI result and implement one small change. **Prerequisite:** Familiarity with basic JavaScript expressions helps, but no prior React experience is required.
+**Goal:** Explain the concept in simple words and create an output that you can see in your browser. **Prerequisite:** Basic JavaScript is useful; advanced React knowledge is not required.
 
-## A support dashboard built from reusable UI
+## A greeting on a webpage
 
-Imagine a software company's customer-support dashboard. Staff read tickets, filter the list, change ticket status and navigate between records. We use this *illustrative* workflow to learn React rather than claiming it is a real company's internal application.
+A component is a JavaScript function that returns JSX. React renders the component to describe what should appear on the screen. You do not need a backend to learn this.
 
-React: a library for building user interfaces. Component: reusable UI function. JSX: markup-like syntax. Render: React calling components to determine UI. Props: component inputs. State: changing component data.
+Think about what someone sees first. Learn the smallest React concept that makes that visible result possible.
 
-## Why React helps developers build interfaces
+## Components and rendering explained
 
-A browser does not understand JSX directly; a build tool transforms it. React calculates UI from props and state and commits necessary changes to the DOM. A component tree is a useful mental model; React is not a database or backend.
+A component is a JavaScript function that returns JSX. React renders the component to describe what should appear on the screen. You do not need a backend to learn this.
 
-A useful analogy is an office display board: inputs describe which cards belong on the board and an update changes the visible board. React coordinates that display; a real backend remains responsible for permanent records and access control.
+**Remember:** A React component describes interface output. React is not a database, and this beginner example does not need an enterprise application.
 
-## How React renders a component tree
-
-**Visual execution path**
+## How React displays your component
 
 ```text
-App → Dashboard → TicketList → TicketCard. A status change → new React render → updated ticket status in the DOM.
+App component → JSX heading → React rendering → browser displays Hello React
 ```
 
-Read the arrows in sequence. Identify which part is a user action, which is React behaviour and which result the browser displays.
+Read each arrow as a small change: input or click, JavaScript/React action, and the browser result.
 
-## Explore the React component tree
+## Explore the component tree
 
 <ReactLearningExplorer byte={1} />
 
-Use the visual explorer first: change an input, follow the updated UI, then answer the decision question below.
+Use the interactive visual to predict what happens next. Then check your choice.
 
 <ReactConceptLab byte={1} />
 
-## Build the Support Dashboard: Step-by-Step Code
+## Code along: your first React page
 
-A React component is a function describing a piece of the interface. React renders components to make what people see in the browser.
+Follow these steps in a **small React + TypeScript project**. Each step gives you a visible result.
 
-**Connected learning:** These files belong to one `support-desk` application. Each code step updates or adds to the same project. The final code from this Byte is the starting point for the next Byte. **Project checkpoint:** App → main → TicketCard → browser UI.
+### Step 1 — Create a React project
 
-### Step 1 — Create the project
-
-```tsx
-npm create vite@latest support-desk -- --template react-ts
-cd support-desk
+```bash
+npm create vite@latest my-react-app -- --template react-ts
+cd my-react-app
 npm install
 npm run dev
 ```
 
-**Expected result:** Vite launches a local React + TypeScript development server.
+**What you should see:** Vite prints a local URL. Open it in your browser.
 
-### Step 2 — Create a starting dashboard
+### Step 2 — Edit the main component
 
 ```tsx
 // src/App.tsx
 export default function App() {
-  return <main>
-    <h1>Support Desk</h1>
-    <p>Tickets waiting for the team</p>
-    <article>Ticket #101 — Login problem</article>
-  </main>;
+  return <h1>Hello React!</h1>;
 }
 ```
 
-**Expected result:** A heading, description and first ticket appear.
+**What you should see:** The browser displays Hello React!
 
-### Step 3 — Introduce a child component
+### Step 3 — Create a second component
 
 ```tsx
 // src/App.tsx
-function TicketCard() {
-  return <article>Ticket #101 — Login problem</article>;
+function Welcome() {
+  return <p>My first component</p>;
 }
 export default function App() {
-  return <main><h1>Support Desk</h1><TicketCard /></main>;
+  return <main><h1>Hello React!</h1><Welcome /></main>;
 }
 ```
 
-**Expected result:** The same ticket now comes from a reusable React component.
+**What you should see:** The page now shows a heading and a second line.
 
+## Common beginner mistakes
 
-### Try it yourself
+Use PascalCase for component names. Return valid JSX. Do not expect a component to store information in a database.
 
-Add a second TicketCard to the dashboard. Observe that both show the same text; Byte 02 will solve that with props.
+If the output differs from the example, inspect the browser console, component syntax, event handlers and state updates before adding more code.
 
-## Common React misconceptions
+## Where developers use components
 
-Do not assume React automatically stores ticket data on a server. Rendering a card does not persist records.
+A frontend developer uses this concept while building forms, menus, product cards and dashboards. The same simple idea can appear in large applications, but understanding it does not require learning an entire business workflow.
 
-If the UI looks wrong, inspect data input, state updates, console errors and element semantics separately. Compare the expected output above with the actual browser result.
+## What the browser shows vs what React renders
 
-## How frontend teams use React
-
-Frontend engineers compose views; designers provide UI patterns; testers verify output and accessibility. Product managers describe the workflow outcome and acceptance criteria. A support team member can validate that the wording and action match the intended business process.
-
-## What users see and what React does
-
-| What the user sees | What happens underneath |
+| What you see | What React does |
 |---|---|
-| User sees a ticket title | React calls TicketCard and creates matching DOM updates |
-| A responsive interface | React decides which UI description to reconcile with the DOM |
-| A visible result after interaction | The application determines whether data is only local or saved remotely |
+| A greeting appears | App returns JSX and React updates the browser DOM |
+| You change a component input or interact with the page | React updates the output according to props and state |
 
-## Try it: design a component tree
+## Practice: change your greeting
 
-**Try it:** Draw a component tree for a support dashboard with Header, TicketFilters, TicketList and TicketCard.
+Change Hello React! to Welcome to React Learning and add another paragraph component.
 
-**Check your result:** The UI, or your component-tree sketch, must show the expected change. Explain which data is an input, which part is state (if any) and how React produces the output.
+**Success check:** Show the result in the browser and describe which line of code made it happen.
 
-## Key takeaways
+## Eight things to remember
 
-1. Begin with the real user problem.
-2. Separate UI from persistent backend concerns.
-3. Name each component or Hook by its purpose.
-4. Distinguish inputs from state.
-5. Trace interactions step by step.
-6. Inspect the rendered result, not only code.
-7. Prefer clarity over unnecessary complexity.
-8. Validate behaviour, accessibility and failure cases.
-
-**Continue:** Browse the other standalone React fundamentals lessons when ready.
+1. Begin with one simple problem.
+2. Identify what should appear in the browser.
+3. Use readable component names.
+4. Keep code small and understandable.
+5. Separate component inputs from state.
+6. Trace changes from action to result.
+7. Check expected output after each step.
+8. Choose simple React patterns before optimizing.
 
 ## FAQ, knowledge check and references
 
-Is React a framework? React is primarily a UI library. Does React need a backend? Not for a static interface. Is the Virtual DOM the browser DOM? No; it describes React's internal UI representation.
+- Is React a programming language? No, it is a JavaScript UI library.
+- Do I need TypeScript first? No; the basic JSX ideas also work in JavaScript.
+- Does a React app require a server API? No, not for this greeting.
 
-**Interview-ready explanation:** A browser does not understand JSX directly; a build tool transforms it.
+**Interview explanation:** A component is a JavaScript function that returns JSX. React renders the component to describe what should appear on the screen. You do not need a backend to learn this.
 
 <ReactFiveQuestionQuiz byte={1} />
 
-**Primary reference:** [Official React documentation](https://react.dev/learn/describing-the-ui).
-
-**Further reading:** [React Learn](https://react.dev/learn), [Vite guide](https://vite.dev/guide/).
+**References:** [React official documentation](https://react.dev/learn/your-first-component) · [React Learn](https://react.dev/learn) · [Vite guide](https://vite.dev/guide/).
