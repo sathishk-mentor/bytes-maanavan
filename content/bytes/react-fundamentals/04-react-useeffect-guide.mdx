@@ -28,6 +28,12 @@ An **Effect** runs after React has committed the UI and can synchronize with som
 
 ## Trace save and restore
 
+**Before the diagram:** React state holds the current list while the page is open. Browser `localStorage` holds serialized text between refreshes on the same browser. An Effect synchronizes React state with that external storage.
+
+<ReactLearningFlow byte={4} />
+
+**Predict the output:** After adding a task, the save Effect stores JSON. On a subsequent refresh, the state initializer loads the JSON before the initial list is displayed. Browser storage is not a database or multi-device synchronization.
+
 1. App mounts → lazy state initializer reads saved JSON or defaults.
 
 2. React renders the current tasks.
