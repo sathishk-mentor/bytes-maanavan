@@ -46,23 +46,61 @@ Use the visual explorer first: change an input, follow the updated UI, then answ
 
 <ReactConceptLab byte={5} />
 
-## Build ticket search and input focus
+## Build the Support Dashboard: Step-by-Step Code
 
-This is a small standalone teaching example. For a real Vite app use the React + TypeScript template, place it in a component file, import it into App and run the development server.
+useRef can focus a browser input. useMemo may avoid repeated expensive calculations. useCallback may preserve a function reference when a child benefits; ordinary code is often enough.
+
+**Connected learning:** These files belong to one `support-desk` application. Each code step updates or adds to the same project. The final code from this Byte is the starting point for the next Byte. **Project checkpoint:** Search → filter → matching tickets.
+
+### Step 1 — Add a search field
 
 ```tsx
-import { useRef, useMemo, useState } from "react";
-export function TicketSearch({ tickets }: { tickets: string[] }) {
-  const input = useRef<HTMLInputElement>(null);
-  const [query, setQuery] = useState("");
-  const visible = useMemo(() => tickets.filter(t => t.toLowerCase().includes(query.toLowerCase())), [tickets, query]);
-  return <div><input ref={input} value={query} onChange={e=>setQuery(e.target.value)} /><button onClick={()=>input.current?.focus()}>Focus</button><ul>{visible.map(t=><li key={t}>{t}</li>)}</ul></div>;
-}
+// src/App.tsx — import useRef and useState
+const searchRef = useRef<HTMLInputElement>(null);
+const [query, setQuery] = useState('');
+// Put this before the ticket cards in JSX:
+<input ref={searchRef} value={query} onChange={e => setQuery(e.target.value)} placeholder="Search tickets" aria-label="Search tickets" />
+<button onClick={() => searchRef.current?.focus()}>Focus search</button>
 ```
 
-**Expected output:** Typing filters the list; clicking Focus moves keyboard focus into the input. Memoization is optional for small lists.
+**Expected result:** Typing changes the search query; the Focus button moves keyboard focus.
 
-**Execution explanation:** Follow the component inputs, the code decision, the changed React output and what a user can observe. Keep the example small enough to explain aloud during an interview.
+### Step 2 — Filter tickets before rendering
+
+```tsx
+// src/App.tsx — compute inside App
+const visibleTickets = tickets.filter(t => t.subject.toLowerCase().includes(query.toLowerCase()));
+// Change tickets.map(...) to visibleTickets.map(...)
+```
+
+**Expected result:** The list narrows as the user types. Filtering can start as ordinary JavaScript.
+
+### Step 3 — Learn memoization only if useful
+
+```tsx
+// src/App.tsx — optional optimization
+const visibleTickets = useMemo(() => tickets.filter(t =>
+  t.subject.toLowerCase().includes(query.toLowerCase())
+), [tickets, query]);
+```
+
+**Expected result:** The cached result recalculates when tickets or query changes. Do not use this optimization without a reason.
+
+### Step 4 — Recognize useCallback
+
+```tsx
+// Optional: import useCallback and wrap the existing toggle handler
+const toggle = useCallback((id: number) => {
+  setTickets(current => current.map(t => t.id === id ? {...t,status: t.status === 'open' ? 'resolved' as const : 'open' as const} : t));
+}, []);
+```
+
+**Expected result:** The toggle reference remains stable; this matters mainly for memoized children or Hook dependencies.
+
+
+### Try it yourself
+
+Add a No tickets match your search message. Explain whether this small dashboard needs useMemo or useCallback.
 
 ## Common Hook optimization mistakes
 
