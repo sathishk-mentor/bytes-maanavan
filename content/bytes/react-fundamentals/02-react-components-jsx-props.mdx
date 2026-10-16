@@ -12,25 +12,25 @@ order: 2
 
 <TaskManagerByteHero byte={2} />
 
-## Why this React concept matters
+## Why reusable task items matter
 
 JSX describes what should be on screen. Props pass read-only data from a parent component into a child. Reusable TaskItem components let us avoid copying markup for every task. A stable key tells React which list item is which.
 
 **In this Byte:** First understand the concept, then apply it to one small Task Manager milestone. **What you need:** Basic JavaScript. You do not need to know advanced React.
 
-## Understand the concept with a familiar example
+## One design, different task titles
 
 A reusable printed task card has the same layout but different text in each card; props supply that text.
 
 **Important words:** JSX, props, read-only data, arrays, map, key, TypeScript type. Take each term one at a time; the code below makes the idea visible.
 
-## How React works behind the screen
+## JSX, props and stable keys
 
 JSX describes what should be on screen. Props pass read-only data from a parent component into a child. Reusable TaskItem components let us avoid copying markup for every task. A stable key tells React which list item is which.
 
 **Why this matters:** The Task Manager gives us a consistent visible result. The principle is useful in many other kinds of React interfaces.
 
-## Visual flow of the concept
+## How data reaches TaskItem
 
 ```text
 App has tasks → map each task → TaskItem receives title → distinct task cards
@@ -38,7 +38,7 @@ App has tasks → map each task → TaskItem receives title → distinct task ca
 
 Follow the arrows from the starting input to the final browser output. These are simplified teaching flows, not a full explanation of React's internal reconciler.
 
-## Explore it interactively
+## Explore props and reusable cards
 
 <TaskManagerConceptLab byte={2} />
 
@@ -46,7 +46,7 @@ Follow the arrows from the starting input to the final browser output. These are
 
 <ReactConceptLab byte={2} />
 
-## Build the Task Manager step by step
+## Extract TaskItem and render a list
 
 **Our learning project:** A tiny Task Manager, not an enterprise support system. The app grows gradually across the five Bytes; each code step below tells you exactly which file to edit.
 
@@ -106,24 +106,24 @@ export default function App() {
 
 **Project checkpoint:** Reusable task cards.
 
-## Common mistakes and how to avoid them
+## Common JSX and props mistakes
 
 Do not mutate props in a child component. Avoid array indexes as keys for lists that can change order. A component named taskItem in JSX would be treated like a native element; use PascalCase.
 
 When something breaks, read the first error message, identify the file involved, and compare your code against the prior working checkpoint.
 
-## Where this concept is used
+## Reusable UI in professional applications
 
 React uses the same underlying idea in many applications: a product list, a shopping basket, a learning progress page, or a dashboard. We are using task management only to keep the learning journey simple.
 
-## What learners see versus what React does
+## How a task title reaches the screen
 
 | What a learner sees | What React or the browser does |
 |---|---|
 | distinct task cards | App has tasks  →  map each task  →  TaskItem receives title |
 | A task list ready for interaction | React creates output from component inputs and state |
 
-## Practice and expected outcome
+## Add your third task
 
 Add a third record to initialTasks. Notice you don't need another TaskItem line in JSX.
 
