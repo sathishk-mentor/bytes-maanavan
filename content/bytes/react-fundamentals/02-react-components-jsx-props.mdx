@@ -132,25 +132,36 @@ React uses the same underlying idea in many applications: a product list, a shop
 
 **Explain it:** Which component is the parent? What value does the prop carry? Why do we use `task.id` as `key`?
 
-## Key takeaways
+## Interview Bit
 
-1. A reusable component prevents copied markup.
-2. Props are inputs supplied by a parent.
-3. The same component can receive different props.
+**Question: What are props in React, and why do list items need keys?**
+
+**Simple answer:** Props are read-only inputs passed from parent to child components. We pass each task title to TaskItem. A stable key such as task.id helps React identify list items when a list changes.
+
+**How to explain it:** Point to the related code in the To-Do List and describe what appears in the browser.
+
+## Key Takeaways
+
+1. Reusable components avoid repeating the same JSX.
+2. Props transfer information from a parent to a child.
+3. Props are read-only inputs.
 4. JSX braces evaluate JavaScript expressions.
-5. An array can represent repeated UI data.
-6. .map() creates one element per array item.
-7. Stable keys help React preserve list identity.
-8. Props are read-only; interactive changes require state.
+5. Arrays store multiple task objects.
+6. .map() creates UI elements from array items.
+7. Stable keys identify list items across renders.
+8. TaskItem displays different tasks using the same component.
 
-## FAQ and knowledge check
+## Knowledge Check
+
+Review these common questions before attempting the scored quiz.
 
 - Why a key? It helps React track list item identity.
 - Why props? One component can display different inputs.
 - Can the child change the parent's prop? Treat props as read-only.
 
-**Interview-ready explanation:** JSX describes what should be on screen. Props pass read-only data from a parent component into a child. Reusable TaskItem components let us avoid copying markup for every task. A stable key tells React which list item is which.
-
 <ReactFiveQuestionQuiz byte={2} />
 
-**Primary references:** [React Learn](https://react.dev/learn) · [React API](https://react.dev/reference/react) · [Vite Guide](https://vite.dev/guide/).
+## Primary Sources
+
+- [Passing Props to a Component](https://react.dev/learn/passing-props-to-a-component)
+- [Rendering Lists](https://react.dev/learn/rendering-lists)
