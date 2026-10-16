@@ -26,3 +26,13 @@
  .byte-article .byte-section-title{scroll-margin-top:8rem}
 }
 @media(prefers-reduced-motion:reduce){.byte-toc nav button,.knowledge-check-interactive>div>button{transition:none!important;transform:none!important}}
+
+/* FAQ questions should not look like graded/completed answers */
+.byte-article>.byte-section-title[id*="faq"]~.byte-list,
+.byte-article>.byte-section-title[id*="knowledge-check"]~.byte-list{list-style:none!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.byte-article>.byte-section-title[id*="faq"]~.byte-list>li,
+.byte-article>.byte-section-title[id*="knowledge-check"]~.byte-list>li{position:relative;list-style:none!important;margin:.55rem 0;padding:1rem 1.15rem!important;border:1px solid #dce8e7!important;border-radius:.85rem;background:#fff;color:#2e4c56;line-height:1.65}
+.byte-article>.byte-section-title[id*="faq"]~.byte-list>li::before,
+.byte-article>.byte-section-title[id*="knowledge-check"]~.byte-list>li::before{content:none!important;display:none!important}
+.byte-article>.byte-section-title[id*="faq"]~.byte-list>li::marker,
+.byte-article>.byte-section-title[id*="knowledge-check"]~.byte-list>li::marker{content:""!important}
