@@ -12,25 +12,25 @@ order: 3
 
 <TaskManagerByteHero byte={3} />
 
-## Why this React concept matters
+## Why a static task list is not enough
 
 State is data React remembers between renders. useState gives a value and an update function. A controlled input displays a state value. Event handlers respond to clicking or typing. Never mutate the old task array; create a new array and pass it to the setter.
 
 **In this Byte:** First understand the concept, then apply it to one small Task Manager milestone. **What you need:** Basic JavaScript. You do not need to know advanced React.
 
-## Understand the concept with a familiar example
+## Adding and completing tasks
 
 A whiteboard can now accept new cards and mark completed cards, and React redraws the relevant result.
 
 **Important words:** useState, controlled input, event handler, immutability, render snapshot, derived count. Take each term one at a time; the code below makes the idea visible.
 
-## How React works behind the screen
+## State, events and immutable updates
 
 State is data React remembers between renders. useState gives a value and an update function. A controlled input displays a state value. Event handlers respond to clicking or typing. Never mutate the old task array; create a new array and pass it to the setter.
 
 **Why this matters:** The Task Manager gives us a consistent visible result. The principle is useful in many other kinds of React interfaces.
 
-## Visual flow of the concept
+## Follow an Add Task click
 
 ```text
 Type → setDraft → render input; click Add → setTasks → render new row; click Complete → setTasks → updated checkbox
@@ -38,7 +38,7 @@ Type → setDraft → render input; click Add → setTasks → render new row; c
 
 Follow the arrows from the starting input to the final browser output. These are simplified teaching flows, not a full explanation of React's internal reconciler.
 
-## Explore it interactively
+## Explore task-state updates
 
 <TaskManagerConceptLab byte={3} />
 
@@ -46,7 +46,7 @@ Follow the arrows from the starting input to the final browser output. These are
 
 <ReactConceptLab byte={3} />
 
-## Build the Task Manager step by step
+## Build the interactive Task Manager
 
 **Our learning project:** A tiny Task Manager, not an enterprise support system. The app grows gradually across the five Bytes; each code step below tells you exactly which file to edit.
 
@@ -142,24 +142,24 @@ export default function App() {
 
 **Project checkpoint:** Add and complete tasks.
 
-## Common mistakes and how to avoid them
+## Common useState mistakes
 
 Do not write tasks.push(newTask) because it mutates the old array. Prevent empty task names. Date.now IDs are acceptable for this small teaching demo but not guaranteed unique for rapid production writes.
 
 When something breaks, read the first error message, identify the file involved, and compare your code against the prior working checkpoint.
 
-## Where this concept is used
+## Where UI state matters
 
 React uses the same underlying idea in many applications: a product list, a shopping basket, a learning progress page, or a dashboard. We are using task management only to keep the learning journey simple.
 
-## What learners see versus what React does
+## What happens when state changes
 
 | What a learner sees | What React or the browser does |
 |---|---|
 | updated checkbox | Type  →  setDraft  →  render input; click Add  →  setTasks  →  render new row; click Complete  →  setTasks |
 | A task list ready for interaction | React creates output from component inputs and state |
 
-## Practice and expected outcome
+## Create a Delete action
 
 Add a Delete button by passing onDelete to TaskItem and removing a task with filter.
 
