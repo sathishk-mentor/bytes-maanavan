@@ -12,6 +12,8 @@ order: 5
 
 ## Why this concept matters
 
+Good code is not enough when learners or customers cannot use the interface reliably. Test what a user can see and do, including keyboard access and failures.
+
 An app can render correctly once and still fail when users interact, use a keyboard or have a slow device. **You will learn:** explain the idea, follow the execution flow, read a compact example and try one realistic decision. Basic React components, props and useState are helpful; this Byte also works as a standalone introduction.
 
 ## Start with a familiar scenario
@@ -21,6 +23,8 @@ A lift is tested using its buttons and the destination reached, not by peeking i
 **Vocabulary:** test, assertion, accessible name, role, performance profiling.
 
 ## Understand the core concept
+
+Think of testing a door: verify that a person can find its handle and open it, not that the internal manufacturing method matches a private implementation detail. UI tests should prefer accessible names and observable results.
 
 React Testing Library queries elements as a user would, preferably by accessible role and name. Check validation, loading, retry and errors. Give inputs real labels and useful feedback. Optimize based on measurements rather than wrapping everything in useMemo or useCallback.
 
@@ -41,6 +45,12 @@ Requirement → user action → DOM output → test evidence → performance che
 Choose an answer to a realistic development situation. Review the resulting explanation before writing code.
 
 <AdvancedReactLab byte={5} />
+
+## Try It Yourself — code and browser output
+
+<AdvancedReactTryIt byte={5} />
+
+**Experiment:** Choose **HIGH** to simulate a passing output assertion. Change the expected value to **LOW** to simulate failure. Explain why the actual visible output—not an internal variable name—is the test's evidence.
 
 ## Guided code walkthrough
 
@@ -87,24 +97,22 @@ Write tests for submitting an empty form and loading failures. Use accessible la
 
 **Success check:** describe the input, the React action and the output. Try the failure case once, then explain the recovery.
 
-## Interview Bit and key takeaways
+## Interview Bit
 
-**Interview question:** Why test by role and accessible name?
+**Why use getByRole in UI testing?** It finds elements the way assistive technology and users can perceive them, encouraging accessible and maintainable tests.
 
-**Simple answer:** These queries reflect the interface available to real users and encourage accessible, maintainable components.
+## Key Takeaways
 
-**Eight takeaways:**
+1. Testing Library encourages behavior-focused UI tests.
+2. getByRole queries accessible elements and names.
+3. Input labels improve access and testability.
+4. A good test verifies visible outcomes and error recovery.
+5. Mock external dependencies when appropriate.
+6. Automated tests do not replace keyboard/manual testing.
+7. Measure bottlenecks before adding memoization.
+8. Release checks should include build, routes and error states.
 
-1. Start by describing the user's problem.
-2. Identify which values are local and which originate outside React.
-3. Use explicit types and state transitions where helpful.
-4. Prefer readable components over one large file.
-5. Show loading, invalid and error states clearly.
-6. Verify the observable result after changes.
-7. Avoid unnecessary Effects and premature optimization.
-8. Choose tools according to actual complexity.
-
-## FAQ, knowledge check and primary sources
+## Knowledge Check and Primary Sources
 
 **FAQ: Is this technique required in every React component?** No; apply it only when the corresponding problem exists.
 
