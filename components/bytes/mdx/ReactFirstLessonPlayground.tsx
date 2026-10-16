@@ -12,6 +12,23 @@ ${items.map(item=>`        <li>${item}</li>`).join('\n')}
     </main>
   );
 }`;
+function HighlightedSource({heading,tasks}:{heading:string;tasks:string[]}) {
+ const lines=[
+ {indent:0,parts:[['kw','export default function'],['fn',' App'],['plain','() {']]},
+ {indent:1,parts:[['kw','return'],['plain',' (']]},
+ {indent:2,parts:[['tag','<main>']]},
+ {indent:3,parts:[['tag','<h1>'],['str',heading],['tag','</h1>']]},
+ {indent:3,parts:[['tag','<p>'],['str','Tasks to complete today'],['tag','</p>']]},
+ {indent:3,parts:[['tag','<ul>']]},
+ ...tasks.map(task=>({indent:4,parts:[['tag','<li>'],['str',task],['tag','</li>']]})),
+ {indent:3,parts:[['tag','</ul>']]},
+ {indent:2,parts:[['tag','</main>']]},
+ {indent:1,parts:[['plain',');']]},
+ {indent:0,parts:[['plain','}']]}
+ ];
+ return <pre className="overflow-x-auto p-4 text-[13px] leading-7 sm:text-sm" aria-label="Syntax highlighted App.tsx"><code>{lines.map((line,i)=><span key={i} className="block whitespace-pre"><span className="mr-4 inline-block w-5 select-none text-right text-slate-500" aria-hidden="true">{i+1}</span>{'  '.repeat(line.indent)}{line.parts.map(([type,value],j)=><span key={j} className={type==='kw'?'text-fuchsia-300':type==='fn'?'text-sky-300':type==='tag'?'text-cyan-300':type==='str'?'text-amber-200':'text-slate-100'}>{value}</span>)}</span>)}</code></pre>;
+}
+
 export function ReactFirstLessonPlayground(){
  const [heading,setHeading]=useState('My Task Manager');
  const [tasks,setTasks]=useState<string[]>(defaultItems);
@@ -30,7 +47,7 @@ export function ReactFirstLessonPlayground(){
  </div>
  <div className="overflow-hidden rounded-xl border border-slate-200"><div className="border-b bg-slate-100 px-4 py-2 text-xs text-slate-600">2. Browser output · instant preview</div><div className="min-h-52 bg-white p-5" aria-live="polite"><h4 className="text-xl font-bold text-slate-900">{heading||' '}</h4><p className="mt-1 text-sm text-slate-600">Tasks to complete today</p><ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-slate-800">{tasks.map((t,i)=><li key={i}>{t}</li>)}</ul></div></div>
  </div>
- <div className="mx-4 mb-4 overflow-hidden rounded-xl border border-slate-700 bg-slate-950 text-slate-100"><div className="flex items-center justify-between gap-2 border-b border-slate-700 p-3"><strong className="text-xs">3. Matching App.tsx source</strong><button type="button" className="rounded-lg border border-slate-500 px-3 py-1 text-xs font-semibold" onClick={async()=>{try{await navigator.clipboard.writeText(code);setCopied(true)}catch{setCopied(false)}}}>{copied?'Copied':'Copy code'}</button></div><pre className="overflow-x-auto p-4 text-xs leading-6"><code>{code}</code></pre></div>
+ <div className="mx-4 mb-4 overflow-hidden rounded-xl border border-slate-700 bg-slate-950 text-slate-100"><div className="flex items-center justify-between gap-2 border-b border-slate-700 p-3"><strong className="text-xs">3. Matching App.tsx source</strong><button type="button" className="rounded-lg border border-slate-500 px-3 py-1 text-xs font-semibold" onClick={async()=>{try{await navigator.clipboard.writeText(code);setCopied(true)}catch{setCopied(false)}}}>{copied?'Copied':'Copy code'}</button></div><HighlightedSource heading={heading} tasks={tasks}/></div>
  <p className="px-5 pb-5 text-xs leading-relaxed text-slate-600">Safety note: The editable fields are converted to text in a demonstration component. This is not a JSX editor and does not execute arbitrary code. For real JSX execution, use Vite locally or an official React sandbox.</p>
  </section>;
 }
