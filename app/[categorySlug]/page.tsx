@@ -7,10 +7,11 @@ import { getBytesByCategory } from '@/lib/mdx';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return ['software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'how-everyday-apps-work', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
+  return ['react-fundamentals', 'software-engineering', 'forward-deployed-engineer', 'langchain', 'rag-application-engineering', 'fastapi-ai-applications', 'modern-java-spring-boot-genai', 'sql-data-ai-applications', 'mongodb', 'python-genai-agentic-ai', 'how-everyday-apps-work', 'genai', 'ai-agents', 'data-engineering', 'cloud-devops', 'cybersecurity', 'case-studies'].map((categorySlug) => ({ categorySlug }));
 }
 
 const handbookDetails = {
+  'react-fundamentals': {searchTitle:'React.js Fundamentals Tutorial — Components, State and Hooks',eyebrow:'REACT UI FUNDAMENTALS',intro:'Learn React from the ground up through components, JSX, props, useState, useEffect and essential Hooks with practical ticket-dashboard examples.',audience:'Beginners, students and aspiring frontend developers',prerequisite:'Basic JavaScript familiarity is helpful',result:'Components → Props → State → Effects → Hooks',keywords:['React tutorial for beginners','React components','JSX props','React useState','React useEffect','React Hooks']},
   'ai-agents': {
     searchTitle: 'AI Agents Handbook for Everyone',
     eyebrow: 'FROM ANSWERING TO TAKING ACTION',
@@ -137,6 +138,7 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
 }
 
 function HandbookHeroVisual({ categorySlug }: { categorySlug: PublishedCategory }) {
+  if (categorySlug === 'react-fundamentals') return <div className="handbook-hero-visual langchain-hero-visual" aria-label="React component to interactive UI workflow"><div className="langchain-orchestrator"><header><Code2/><span><small>REACT COMPONENT TREE</small><strong>From reusable components to live UI</strong></span><i>RENDER</i></header><div><span><Box/><small>Component</small></span><b>→</b><span><Layers3/><small>Props</small></span><b>→</b><span><Workflow/><small>State</small></span><b>→</b><span><CheckCircle2/><small>UI</small></span></div><footer><Network/><span>Declarative · reusable · interactive</span></footer></div></div>;
   if (categorySlug === 'ai-agents') {
     return <div className="handbook-hero-visual langchain-hero-visual" aria-label="Animated AI agent goal to action workflow">
       <div className="langchain-orchestrator"><header><Sparkles/><span><small>AI AGENT</small><strong>Turn a goal into checked action</strong></span><i>READY</i></header><div><span><Compass/><small>Goal</small></span><b>→</b><span><Workflow/><small>Plan</small></span><b>→</b><span><Layers3/><small>Tools</small></span><b>→</b><span><CheckCircle2/><small>Check</small></span></div><footer><ShieldCheck/><span>Authorised · bounded · human-reviewed</span></footer></div>
