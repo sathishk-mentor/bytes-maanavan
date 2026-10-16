@@ -130,25 +130,37 @@ React uses the same underlying idea in many applications: a product list, a shop
 
 **Explain it:** Which part is JavaScript? Which text is JSX? What role does Vite play?
 
-## Key takeaways
+## Interview Bit
 
-1. HTML describes the page structure.
-2. CSS styles that structure.
-3. JavaScript adds behavior.
-4. React is a UI library built on JavaScript.
-5. A component is a function that returns UI.
-6. JSX lets us describe elements within JavaScript.
-7. Vite helps create and run the development project.
-8. Our first milestone is a static list—not a complete app.
+**Question: What is React, and what is a component?**
 
-## FAQ and knowledge check
+**Simple answer:** React is a JavaScript library used to build user interfaces. A component is a reusable function that describes part of the screen using JSX. In our To-Do List, App displays the heading and tasks.
+
+**How to explain it:** Point to the related code in the To-Do List and describe what appears in the browser.
+
+## Key Takeaways
+
+1. React is a JavaScript UI library, not a backend.
+2. HTML describes content, CSS styles it, and JavaScript adds behavior.
+3. A React component is a function returning UI.
+4. Component names begin with a capital letter.
+5. JSX describes elements within JavaScript.
+6. JSX expressions go inside curly braces.
+7. React renders components into the browser interface.
+8. Byte 01 creates a static To-Do List.
+
+## Knowledge Check
+
+Review these common questions before attempting the scored quiz.
 
 - Why React rather than repeating HTML? Reusable components become useful as interfaces grow.
 - Is a backend required? No. This first screen is static.
 - Does React save tasks yet? No, it only displays the list.
 
-**Interview-ready explanation:** React is a JavaScript library for describing user interfaces with reusable components. A component is a function that returns JSX. When React renders App, it determines what should appear in the browser. At this stage there is no state, no form and no backend.
-
 <ReactFiveQuestionQuiz byte={1} />
 
-**Primary references:** [React Learn](https://react.dev/learn) · [React API](https://react.dev/reference/react) · [Vite Guide](https://vite.dev/guide/).
+## Primary Sources
+
+- [Your First Component](https://react.dev/learn/your-first-component)
+- [Writing Markup with JSX](https://react.dev/learn/writing-markup-with-jsx)
+- [Getting Started with Vite](https://vite.dev/guide/)
