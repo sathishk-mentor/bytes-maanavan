@@ -10,25 +10,25 @@ updatedAt: "2026-10-16"
 order: 5
 ---
 
-## S1 — Quick Start
+## Choosing the right React Hook
 
 A real support interface needs input focus and may have expensive filtering, but unnecessary memoization adds complexity.
 
 **You will learn:** Explain the concept, predict the visible UI result and implement one small change. **Prerequisite:** Familiarity with basic JavaScript expressions helps, but no prior React experience is required.
 
-## S2 — Start from Basics: Familiar Scenario
+## A searchable ticket interface
 
 Imagine a software company's customer-support dashboard. Staff read tickets, filter the list, change ticket status and navigate between records. We use this *illustrative* workflow to learn React rather than claiming it is a real company's internal application.
 
 Hook: React function providing component capabilities. useRef: persistent mutable reference. useMemo: caching calculated values. useCallback: caching function identity. Dependency: reactive input to memoization. Custom Hook: reusable Hook-based logic.
 
-## S3 — Core Explanation
+## How useRef, useMemo and useCallback differ
 
 Use useRef for DOM focus and non-rendering mutable values. useMemo may cache expensive calculations; useCallback may preserve function identity when useful. Neither should be added to every component by default.
 
 A useful analogy is an office display board: inputs describe which cards belong on the board and an update changes the visible board. React coordinates that display; a real backend remains responsible for permanent records and access control.
 
-## S4 — Architecture and Flow
+## A practical React Hooks decision flow
 
 **Visual execution path**
 
@@ -38,7 +38,7 @@ Need render update? useState. Need DOM focus? useRef. Expensive recalculation? c
 
 Read the arrows in sequence. Identify which part is a user action, which is React behaviour and which result the browser displays.
 
-## S5 — Interactive Concept Lab
+## Explore a Hook-powered interface
 
 <ReactLearningExplorer byte={5} />
 
@@ -46,7 +46,7 @@ Use the visual explorer first: change an input, follow the updated UI, then answ
 
 <ReactConceptLab byte={5} />
 
-## S6 — Guided Walkthrough
+## Build ticket search and input focus
 
 This is a small standalone teaching example. For a real Vite app use the React + TypeScript template, place it in a component file, import it into App and run the development server.
 
@@ -64,17 +64,17 @@ export function TicketSearch({ tickets }: { tickets: string[] }) {
 
 **Execution explanation:** Follow the component inputs, the code decision, the changed React output and what a user can observe. Keep the example small enough to explain aloud during an interview.
 
-## S7 — Failure Cases and Common Mistakes
+## Common Hook optimization mistakes
 
 Do not use refs to store displayed state or assume useMemo guarantees faster execution. Measure performance before optimizing.
 
 If the UI looks wrong, inspect data input, state updates, console errors and element semantics separately. Compare the expected output above with the actual browser result.
 
-## S8 — Role-Based Application
+## Choosing Hooks in frontend teams
 
 Frontend engineers use references and optimize verified bottlenecks; reviewers discourage premature optimization. Product managers describe the workflow outcome and acceptance criteria. A support team member can validate that the wording and action match the intended business process.
 
-## S9 — Compare User View and System View
+## Visible behavior versus React internals
 
 | What the user sees | What happens underneath |
 |---|---|
@@ -82,13 +82,13 @@ Frontend engineers use references and optimize verified bottlenecks; reviewers d
 | A responsive interface | React decides which UI description to reconcile with the DOM |
 | A visible result after interaction | The application determines whether data is only local or saved remotely |
 
-## S10 — Hands-On Practice
+## Try it: decide when memoization helps
 
 **Try it:** Decide whether a small three-item filter really needs useMemo. Explain your trade-off.
 
 **Check your result:** The UI, or your component-tree sketch, must show the expected change. Explain which data is an input, which part is state (if any) and how React produces the output.
 
-## S11 — Final Thought and Next Path
+## Key takeaways
 
 1. Begin with the real user problem.
 2. Separate UI from persistent backend concerns.
@@ -101,7 +101,7 @@ Frontend engineers use references and optimize verified bottlenecks; reviewers d
 
 **Continue:** Browse the other standalone React fundamentals lessons when ready.
 
-## S12 — FAQ, Knowledge Check and References
+## FAQ, knowledge check and references
 
 Does changing ref.current re-render? No. Is useMemo always necessary? No. Is useCallback always faster? No.
 
