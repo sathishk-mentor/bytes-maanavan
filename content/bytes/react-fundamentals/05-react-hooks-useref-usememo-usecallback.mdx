@@ -149,25 +149,37 @@ React uses the same underlying idea in many applications: a product list, a shop
 
 **Explain it:** Which data must cause a rerender? Does the small task list genuinely need memoization?
 
-## Key takeaways
+## Interview Bit
 
-1. useState controls a visible search query.
-2. Filtering creates a derived visible list.
-3. useRef can point to an input DOM node.
-4. Changing a ref does not cause a render.
-5. useMemo caches calculated values when useful.
-6. useCallback caches function identity when useful.
-7. Begin with simple readable code.
-8. The five Bytes now produce a searchable To-Do List.
+**Question: What is the difference between useRef, useMemo and useCallback?**
 
-## FAQ and knowledge check
+**Simple answer:** useRef retains a mutable reference, such as an input element for focusing. useMemo may cache an expensive calculated value. useCallback may retain a function reference. For a small To-Do List, simple filtering usually needs neither memoization Hook.
+
+**How to explain it:** Point to the related code in the To-Do List and describe what appears in the browser.
+
+## Key Takeaways
+
+1. Search text uses state because it changes visible results.
+2. Filtering derives matching tasks from the full list.
+3. useRef can reference an input DOM element.
+4. Changing ref.current does not cause a render.
+5. useMemo caches calculated results when beneficial.
+6. useCallback caches function identity when beneficial.
+7. Do not optimize small calculations without evidence.
+8. Byte 05 completes the searchable To-Do List.
+
+## Knowledge Check
+
+Review these common questions before attempting the scored quiz.
 
 - Does updating ref.current redraw the interface? No.
 - Must a filter use useMemo? No.
 - Is useCallback needed for every click handler? No.
 
-**Interview-ready explanation:** useRef can hold a DOM input reference without triggering rendering. A simple task filter should usually be calculated directly. useMemo can cache an expensive calculation if profiling justifies it; useCallback can retain function identity when there is a concrete reason. Do not introduce extra Hooks for decoration.
-
 <ReactFiveQuestionQuiz byte={5} />
 
-**Primary references:** [React Learn](https://react.dev/learn) · [React API](https://react.dev/reference/react) · [Vite Guide](https://vite.dev/guide/).
+## Primary Sources
+
+- [useRef](https://react.dev/reference/react/useRef)
+- [useMemo](https://react.dev/reference/react/useMemo)
+- [useCallback](https://react.dev/reference/react/useCallback)
