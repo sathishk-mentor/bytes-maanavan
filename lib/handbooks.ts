@@ -8,6 +8,12 @@ export type Handbook = {
 
 export const handbooks: Handbook[] = [
   {
+    slug:'react-fundamentals',title:'React.js Fundamentals Handbook',shortTitle:'React Fundamentals',audience:'Beginners · Students · Frontend Developers',tone:'blue',status:'available',category:'software-engineering',label:'MODERN REACT · BUILD THE UI MENTAL MODEL',
+    description:'Learn React concepts first, then apply them through five carefully guided Task Manager milestones.',
+    promise:'Understand components, props, state, Effects and Hooks by building one small working Task Manager.',
+    chapters:[{title:"What Is React?",outcome:"Explain components and rendering",href:'/react-fundamentals/01-what-is-react-components-rendering/'},{title:"Components and Props",outcome:"Build reusable ticket cards",href:'/react-fundamentals/02-react-components-jsx-props/'},{title:"Add and Complete Tasks with useState",outcome:"Update an interface using state",href:'/react-fundamentals/03-react-usestate-events/'},{title:"Save Tasks with useEffect",outcome:"Synchronize external systems safely",href:'/react-fundamentals/04-react-useeffect-guide/'},{title:"Search Tasks with React Hooks",outcome:"Choose appropriate React Hooks",href:'/react-fundamentals/05-react-hooks-useref-usememo-usecallback/'}],
+  },
+  {
     slug: 'ai-agents', title: 'AI Agents Handbook for Everyone', shortTitle: 'AI Agents',
     audience: 'Non-technical Beginners · Professionals', tone: 'violet', status: 'available', category: 'ai-application-engineering', label: 'FROM ANSWERING TO TAKING ACTION',
     description: 'Understand AI agents through familiar work and life scenarios—without coding or unnecessary technical language.',

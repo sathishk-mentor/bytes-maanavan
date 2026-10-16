@@ -1,0 +1,185 @@
+---
+title: "React Hooks in Practice: Search, Focus and Filter Tasks"
+slug: "05-react-hooks-useref-usememo-usecallback"
+summary: "Learn useRef and sensible memoization through a simple progressive Task Manager example."
+category: "react-fundamentals"
+tags: ["React.js","React for beginners","React Hooks"]
+level: "beginner"
+duration: "25 min"
+updatedAt: "2026-10-16"
+order: 5
+---
+
+<TaskManagerByteHero byte={5} />
+
+## When to use other React Hooks
+
+Our To-Do List can grow. Learners should be able to find a task quickly and focus the search field with a button. This is a useful place to understand **useRef** and to discuss when other Hooks are—and are not—necessary.
+
+**What you will build:** Milestone 5 of a small browser-based To-Do List. No backend or advanced architecture is needed.
+
+## Finding tasks without scrolling
+
+Search is like checking a list for matching names. The query is visible state, because typing changes the list. A **ref** is like pointing at the search box to move focus to it. **Memoization** is like keeping the result of an expensive calculation—but there is no reason to cache a three-item list.
+
+## useRef versus memoization
+
+`useRef<HTMLInputElement>(null)` gives us a persistent object whose `.current` can refer to a DOM element. Calling `searchRef.current?.focus()` focuses it. The query must use `useState`, since changing it should rerender matching tasks. Start with `tasks.filter(...)`: this is ordinary JavaScript and generally sufficient. `useMemo` optionally caches a calculated value when an expensive calculation warrants it. `useCallback` optionally preserves a function reference when memoized children or dependency relationships benefit. Neither is required just because a component has an input or button.
+
+## Follow search, focus and filtering
+
+1. Learner types `React` → `setQuery` updates state.
+
+2. Render calculates `visibleTasks = tasks.filter(...)`.
+
+3. Only matching tasks are displayed.
+
+4. Clicking Focus uses `searchRef.current?.focus()`.
+
+5. `useMemo` and `useCallback` may be compared, but are not required for this tiny app.
+
+## Explore search and focus
+
+<TaskManagerConceptLab byte={5} />
+
+**Check the idea:** Answer this question before coding.
+
+<ReactConceptLab byte={5} />
+
+## Add search to the Task Manager
+
+**Our learning project:** A tiny Task Manager, not an enterprise support system. The app grows gradually across the five Bytes; each code step below tells you exactly which file to edit.
+
+**Milestone 5:** React Hooks in Practice: Search, Focus and Filter Tasks.
+
+### Step 1: Add a search field
+
+**Where:** `src/App.tsx`
+
+```tsx
+// Import useRef, then inside App:
+const searchRef = useRef<HTMLInputElement>(null);
+const [query, setQuery] = useState('');
+
+// Add just above the task list in returned JSX:
+<label htmlFor="task-search">Search tasks</label>
+<input id="task-search" ref={searchRef}
+  value={query} onChange={e => setQuery(e.target.value)} />
+<button type="button" onClick={() => searchRef.current?.focus()}>
+  Focus search
+</button>
+```
+
+**Expected screen/result:** Typing updates the search state, and Focus sends keyboard focus to the input.
+
+### Step 2: Filter the displayed tasks
+
+**Where:** `src/App.tsx`
+
+```tsx
+// Inside App, before return:
+const visibleTasks = tasks.filter(task =>
+  task.title.toLowerCase().includes(query.toLowerCase())
+);
+
+// Replace tasks.map(...) with:
+visibleTasks.map(task =>
+  <TaskItem key={task.id} task={task} onToggle={toggleTask} />
+)
+```
+
+**Expected screen/result:** Only tasks matching the query appear; all original task data stays in state.
+
+### Step 3: Explain optional useMemo
+
+**Where:** `src/App.tsx`
+
+```tsx
+// Optional example only — use it when filtering is genuinely expensive:
+const visibleTasks = useMemo(() =>
+  tasks.filter(task =>
+    task.title.toLowerCase().includes(query.toLowerCase())
+  ), [tasks, query]);
+```
+
+**Expected screen/result:** The same tasks appear. For a tiny task list, simple filter is preferable.
+
+### Step 4: Explain useCallback with a real dependency
+
+**Where:** `src/App.tsx`
+
+```tsx
+// Optional example — stabilizes callback identity when needed:
+const focusSearch = useCallback(() => {
+  searchRef.current?.focus();
+}, []);
+// Use onClick={focusSearch} instead of an inline handler.
+```
+
+**Expected screen/result:** The button behaves exactly the same; memoization only matters when its stable identity has a useful consumer.
+
+**Project checkpoint:** Search and focus with appropriate Hooks.
+
+## Common Hooks mistakes
+
+- **Keeping query only in `ref.current`:** Changes to refs don't trigger React rendering.
+- **Calling `focus()` during render:** Call it from a deliberate event handler.
+- **Adding `useMemo` everywhere:** Measure first; optimization creates mental overhead.
+- **Misreading `useCallback`:** It stabilizes a function reference, not the result of running the function.
+- **Replacing the source task list while filtering:** Keep all tasks in state, derive visible tasks.
+
+## When performance tools are useful
+
+React uses the same underlying idea in many applications: a product list, a shopping basket, a learning progress page, or a dashboard. We are using task management only to keep the learning journey simple.
+
+## The UI change and the Hook behind it
+
+| What a learner sees | What React or the browser does |
+|---|---|
+| ref.current.focus(); optional memo caches derived list | Type query  →  setQuery  →  React renders matching tasks; Focus button |
+| A task list ready for interaction | React creates output from component inputs and state |
+
+## Filter completed and pending tasks
+
+**Challenge 1:** Search for a word in one task and verify only matching tasks appear.
+
+**Challenge 2:** Click Focus and confirm the cursor moves to the search box.
+
+**Challenge 3:** Add an All / Pending / Completed filter using state; combine with text search.
+
+**Explain it:** Which data must cause a rerender? Does the small task list genuinely need memoization?
+
+## Interview Bit
+
+**Question: What is the difference between useRef, useMemo and useCallback?**
+
+**Simple answer:** useRef retains a mutable reference, such as an input element for focusing. useMemo may cache an expensive calculated value. useCallback may retain a function reference. For a small To-Do List, simple filtering usually needs neither memoization Hook.
+
+**How to explain it:** Point to the related code in the To-Do List and describe what appears in the browser.
+
+## Key Takeaways
+
+1. Search text uses state because it changes visible results.
+2. Filtering derives matching tasks from the full list.
+3. useRef can reference an input DOM element.
+4. Changing ref.current does not cause a render.
+5. useMemo caches calculated results when beneficial.
+6. useCallback caches function identity when beneficial.
+7. Do not optimize small calculations without evidence.
+8. Byte 05 completes the searchable To-Do List.
+
+## Knowledge Check
+
+Review these common questions before attempting the scored quiz.
+
+- Does updating ref.current redraw the interface? No.
+- Must a filter use useMemo? No.
+- Is useCallback needed for every click handler? No.
+
+<ReactFiveQuestionQuiz byte={5} />
+
+## Primary Sources
+
+- [useRef](https://react.dev/reference/react/useRef)
+- [useMemo](https://react.dev/reference/react/useMemo)
+- [useCallback](https://react.dev/reference/react/useCallback)

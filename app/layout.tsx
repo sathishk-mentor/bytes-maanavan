@@ -1,3 +1,5 @@
+import './react-output-preview.css';
+import './react-byte-hero.css';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import { JourneyTracker } from '@/components/analytics/JourneyTracker';

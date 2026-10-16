@@ -108,7 +108,7 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const bytes = await getAllBytes();
-  const published = bytes.filter((byte) => ['ai-agents','software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications','modern-java-spring-boot-genai','sql-data-ai-applications','mongodb','python-genai-agentic-ai','how-everyday-apps-work'].includes(byte.category)).map((byte) => ({
+  const published = bytes.filter((byte) => ['ai-agents','software-engineering','forward-deployed-engineer','cloud-devops','langchain','rag-application-engineering','fastapi-ai-applications','modern-java-spring-boot-genai','sql-data-ai-applications','mongodb','python-genai-agentic-ai','how-everyday-apps-work','react-fundamentals'].includes(byte.category)).map((byte) => ({
     categorySlug: byte.category,
     byteSlug: byte.slug,
   }));
@@ -139,6 +139,7 @@ function legacyDestination(categorySlug: string) {
     mongodb:'/mongodb/',
     'python-genai-agentic-ai':'/python-genai-agentic-ai/',
     'how-everyday-apps-work':'/how-everyday-apps-work/',
+    'react-fundamentals':'/react-fundamentals/',
     cybersecurity:'https://www.maanavan.com/courses/cybersecurity',
     'case-studies':'/forward-deployed-engineer/',
   };
