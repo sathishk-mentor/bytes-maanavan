@@ -14,29 +14,29 @@ order: 1
 
 ## Why build interfaces with React?
 
-React is a JavaScript library for describing user interfaces with reusable components. A component is a function that returns JSX. When React renders App, it determines what should appear in the browser. At this stage there is no state, no form and no backend.
+Imagine writing a shopping list on paper. You can read it, but pressing a button cannot change it. Web applications add behavior to the screen. React helps us organize that screen into reusable pieces. First, we build a *static* To-Do List; interaction comes later.
 
-**In this Byte:** First understand the concept, then apply it to one small Task Manager milestone. **What you need:** Basic JavaScript. You do not need to know advanced React.
+**What you will build:** Milestone 1 of a small browser-based To-Do List. No backend or advanced architecture is needed.
 
 ## A task list you already understand
 
-Think of a task board drawn on a whiteboard: the list is visible, but it cannot change until we introduce interaction.
-
-**Important words:** component, JSX, render, UI tree, Vite, browser DOM. Take each term one at a time; the code below makes the idea visible.
+Before React, learn three layers: **HTML** describes content (a heading or list); **CSS** controls appearance (spacing and colors); **JavaScript** decides behavior (what happens after a click). React is a JavaScript library for building the interface. It does not replace HTML or CSS. **Vite** starts a local development project and converts JSX/TypeScript into browser-friendly code.
 
 ## Components, JSX and rendering
 
-React is a JavaScript library for describing user interfaces with reusable components. A component is a function that returns JSX. When React renders App, it determines what should appear in the browser. At this stage there is no state, no form and no backend.
-
-**Why this matters:** The Task Manager gives us a consistent visible result. The principle is useful in many other kinds of React interfaces.
+A **component** is a function whose name begins with a capital letter and which returns a description of UI. **JSX** resembles HTML, but it lives inside JavaScript. `className` is used instead of HTML's `class`; JavaScript expressions go inside `{ }`. **Rendering** means React evaluates components and updates the browser when needed. `App` is our starting component, not a special React keyword. A nested element goes inside its parent; JSX must return one enclosing root (or fragment).
 
 ## Trace the first React render
 
-```text
-App() → JSX <main> → <h1> and <ul> → browser shows tasks
-```
+1. Browser loads the application.
 
-Follow the arrows from the starting input to the final browser output. These are simplified teaching flows, not a full explanation of React's internal reconciler.
+2. React renders `App()`.
+
+3. `App` returns JSX containing a heading and list.
+
+4. React commits the matching elements to the browser DOM.
+
+5. The learner sees two to-do items. No interaction or storage yet.
 
 ## Explore the component tree
 
@@ -106,9 +106,10 @@ App
 
 ## Mistakes beginners often make
 
-A component is not a stored HTML document or backend. JSX needs one enclosing root element; do not confuse React rendering with data persistence.
-
-When something breaks, read the first error message, identify the file involved, and compare your code against the prior working checkpoint.
+- **Blank page?** Check the terminal and browser console for a JSX syntax error.
+- **Two root elements?** Wrap them with `<main>...</main>` or a fragment.
+- **Component name lowercase?** React treats lowercase JSX names as built-in HTML tags.
+- **Expecting buttons already?** This is a static screen; state and event handling arrive in Byte 03.
 
 ## Where React components are used
 
@@ -123,20 +124,22 @@ React uses the same underlying idea in many applications: a product list, a shop
 
 ## Make your first change
 
-Change the heading and add one more static task; point to the JSX element that creates it.
+**Challenge 1:** Change the heading to `My First To-Do List`.
 
-**Verification:** Perform the action, observe the visible result, and explain which React concept made it possible.
+**Challenge 2:** Add `Learn JSX` as a third `<li>`. Confirm three list items appear after saving the file.
+
+**Explain it:** Which part is JavaScript? Which text is JSX? What role does Vite play?
 
 ## Key takeaways
 
-1. Begin with the user-facing result.
-2. Learn the concept before writing code.
-3. Keep one clear goal per change.
-4. Use components for reusable UI.
-5. Treat props as read-only inputs.
-6. Update state with setter functions.
-7. Inspect the browser after every step.
-8. Prefer simple code to unnecessary optimization.
+1. HTML describes the page structure.
+2. CSS styles that structure.
+3. JavaScript adds behavior.
+4. React is a UI library built on JavaScript.
+5. A component is a function that returns UI.
+6. JSX lets us describe elements within JavaScript.
+7. Vite helps create and run the development project.
+8. Our first milestone is a static list—not a complete app.
 
 ## FAQ and knowledge check
 
