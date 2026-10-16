@@ -1,135 +1,151 @@
 ---
-title: "What Is React.js? Your First React Component"
+title: "What Is React? Build the First Task Manager Screen"
 slug: "01-what-is-react-components-rendering"
-summary: "Understand React, create a Vite project and display your first greeting component."
+summary: "Learn React components and rendering through a simple progressive Task Manager example."
 category: "react-fundamentals"
-tags: ["React JS", "React beginners", "React components"]
+tags: ["React.js","React for beginners","components"]
 level: "beginner"
-duration: "20 min"
+duration: "25 min"
 updatedAt: "2026-10-16"
 order: 1
 ---
 
 <ReactByteHero byte={1} />
 
-## Why developers use React
+## Why this React concept matters
 
-React helps us create web interfaces using small reusable components. Start with one message on a webpage before learning about larger applications.
+React is a JavaScript library for describing user interfaces with reusable components. A component is a function that returns JSX. When React renders App, it determines what should appear in the browser. At this stage there is no state, no form and no backend.
 
-**Goal:** Explain the concept in simple words and create an output that you can see in your browser. **Prerequisite:** Basic JavaScript is useful; advanced React knowledge is not required.
+**In this Byte:** First understand the concept, then apply it to one small Task Manager milestone. **What you need:** Basic JavaScript. You do not need to know advanced React.
 
-## A greeting on a webpage
+## Understand the concept with a familiar example
 
-A component is a JavaScript function that returns JSX. React renders the component to describe what should appear on the screen. You do not need a backend to learn this.
+Think of a task board drawn on a whiteboard: the list is visible, but it cannot change until we introduce interaction.
 
-Think about what someone sees first. Learn the smallest React concept that makes that visible result possible.
+**Important words:** component, JSX, render, UI tree, Vite, browser DOM. Take each term one at a time; the code below makes the idea visible.
 
-## Components and rendering explained
+## How React works behind the screen
 
-A component is a JavaScript function that returns JSX. React renders the component to describe what should appear on the screen. You do not need a backend to learn this.
+React is a JavaScript library for describing user interfaces with reusable components. A component is a function that returns JSX. When React renders App, it determines what should appear in the browser. At this stage there is no state, no form and no backend.
 
-**Remember:** A React component describes interface output. React is not a database, and this beginner example does not need an enterprise application.
+**Why this matters:** The Task Manager gives us a consistent visible result. The principle is useful in many other kinds of React interfaces.
 
-## How React displays your component
+## Visual flow of the concept
 
 ```text
-App component → JSX heading → React rendering → browser displays Hello React
+App() → JSX <main> → <h1> and <ul> → browser shows tasks
 ```
 
-Read each arrow as a small change: input or click, JavaScript/React action, and the browser result.
+Follow the arrows from the starting input to the final browser output. These are simplified teaching flows, not a full explanation of React's internal reconciler.
 
-## Explore the component tree
+## Explore it interactively
 
 <ReactLearningExplorer byte={1} />
 
-Use the interactive visual to predict what happens next. Then check your choice.
+**Check the idea:** Answer this question before coding.
 
 <ReactConceptLab byte={1} />
 
-<ReactOutputPreview byte={1} />
+## Build the Task Manager step by step
 
-## Code along: your first React page
+**Our learning project:** A tiny Task Manager, not an enterprise support system. The app grows gradually across the five Bytes; each code step below tells you exactly which file to edit.
 
-Follow these steps in a **small React + TypeScript project**. Each step gives you a visible result.
+**Milestone 1:** What Is React? Build the First Task Manager Screen.
 
-### Step 1 — Create a React project
+### Step 1: Create a fresh Vite app
+
+**Where:** `Terminal`
 
 ```bash
-npm create vite@latest my-react-app -- --template react-ts
-cd my-react-app
+npm create vite@latest task-manager -- --template react-ts
+cd task-manager
 npm install
 npm run dev
 ```
 
-**What you should see:** Vite prints a local URL. Open it in your browser.
+**Expected screen/result:** Open the local Vite address and confirm the starter page appears.
 
-### Step 2 — Edit the main component
+### Step 2: Build a static screen
+
+**Where:** `src/App.tsx`
 
 ```tsx
-// src/App.tsx
 export default function App() {
-  return <h1>Hello React!</h1>;
+  return (
+    <main>
+      <h1>My Task Manager</h1>
+      <p>Tasks to complete today</p>
+      <ul>
+        <li>Read React notes</li>
+        <li>Practise JSX</li>
+      </ul>
+    </main>
+  );
 }
 ```
 
-**What you should see:** The browser displays Hello React!
+**Expected screen/result:** You see a heading and two list items.
 
-### Step 3 — Create a second component
+### Step 3: Understand the tree
+
+**Where:** `No code change`
 
 ```tsx
-// src/App.tsx
-function Welcome() {
-  return <p>My first component</p>;
-}
-export default function App() {
-  return <main><h1>Hello React!</h1><Welcome /></main>;
-}
+App
+ └─ main
+    ├─ h1
+    ├─ p
+    └─ ul
+       ├─ li
+       └─ li
 ```
 
-**What you should see:** The page now shows a heading and a second line.
+**Expected screen/result:** The visible output is built from a component returning a nested JSX tree.
 
-## Common beginner mistakes
+**Project checkpoint:** A static task list.
 
-Use PascalCase for component names. Return valid JSX. Do not expect a component to store information in a database.
+## Common mistakes and how to avoid them
 
-If the output differs from the example, inspect the browser console, component syntax, event handlers and state updates before adding more code.
+A component is not a stored HTML document or backend. JSX needs one enclosing root element; do not confuse React rendering with data persistence.
 
-## Where developers use components
+When something breaks, read the first error message, identify the file involved, and compare your code against the prior working checkpoint.
 
-A frontend developer uses this concept while building forms, menus, product cards and dashboards. The same simple idea can appear in large applications, but understanding it does not require learning an entire business workflow.
+## Where this concept is used
 
-## What the browser shows vs what React renders
+React uses the same underlying idea in many applications: a product list, a shopping basket, a learning progress page, or a dashboard. We are using task management only to keep the learning journey simple.
 
-| What you see | What React does |
+## What learners see versus what React does
+
+| What a learner sees | What React or the browser does |
 |---|---|
-| A greeting appears | App returns JSX and React updates the browser DOM |
-| You change a component input or interact with the page | React updates the output according to props and state |
+| browser shows tasks | App()  →  JSX <main>  →  <h1> and <ul> |
+| A task list ready for interaction | React creates output from component inputs and state |
 
-## Practice: change your greeting
+## Practice and expected outcome
 
-Change Hello React! to Welcome to React Learning and add another paragraph component.
+Change the heading and add one more static task; point to the JSX element that creates it.
 
-**Success check:** Show the result in the browser and describe which line of code made it happen.
+**Verification:** Perform the action, observe the visible result, and explain which React concept made it possible.
 
-## Eight things to remember
+## Key takeaways
 
-1. Begin with one simple problem.
-2. Identify what should appear in the browser.
-3. Use readable component names.
-4. Keep code small and understandable.
-5. Separate component inputs from state.
-6. Trace changes from action to result.
-7. Check expected output after each step.
-8. Choose simple React patterns before optimizing.
+1. Begin with the user-facing result.
+2. Learn the concept before writing code.
+3. Keep one clear goal per change.
+4. Use components for reusable UI.
+5. Treat props as read-only inputs.
+6. Update state with setter functions.
+7. Inspect the browser after every step.
+8. Prefer simple code to unnecessary optimization.
 
-## FAQ, knowledge check and references
+## FAQ and knowledge check
 
-- Is React a programming language? No, it is a JavaScript UI library.
-- Do I need TypeScript first? No; the basic JSX ideas also work in JavaScript.
-- Does a React app require a server API? No, not for this greeting.
+- Why React rather than repeating HTML? Reusable components become useful as interfaces grow.
+- Is a backend required? No. This first screen is static.
+- Does React save tasks yet? No, it only displays the list.
 
-**Interview explanation:** A component is a JavaScript function that returns JSX. React renders the component to describe what should appear on the screen. You do not need a backend to learn this.
+**Interview-ready explanation:** React is a JavaScript library for describing user interfaces with reusable components. A component is a function that returns JSX. When React renders App, it determines what should appear in the browser. At this stage there is no state, no form and no backend.
 
 <ReactFiveQuestionQuiz byte={1} />
 
-**References:** [React official documentation](https://react.dev/learn/your-first-component) · [React Learn](https://react.dev/learn) · [Vite guide](https://vite.dev/guide/).
+**Primary references:** [React Learn](https://react.dev/learn) · [React API](https://react.dev/reference/react) · [Vite Guide](https://vite.dev/guide/).
