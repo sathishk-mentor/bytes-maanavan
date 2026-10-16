@@ -46,21 +46,70 @@ Use the visual explorer first: change an input, follow the updated UI, then answ
 
 <ReactConceptLab byte={3} />
 
-## Create interactive ticket status
+## Build the Support Dashboard: Step-by-Step Code
 
-This is a small standalone teaching example. For a real Vite app use the React + TypeScript template, place it in a component file, import it into App and run the development server.
+State is React's memory for values that change on screen. Event handlers request changes; React renders the updated status.
+
+**Connected learning:** These files belong to one `support-desk` application. Each code step updates or adds to the same project. The final code from this Byte is the starting point for the next Byte. **Project checkpoint:** Click → handler → setter → render.
+
+### Step 1 — Extend the ticket type
 
 ```tsx
-import { useState } from "react";
-export function TicketStatus() {
-  const [status, setStatus] = useState<"open" | "resolved">("open");
-  return <div><strong>{status}</strong><button onClick={() => setStatus("resolved")}>Resolve</button></div>;
+// src/components/TicketCard.tsx
+export type Ticket = { id: number; subject: string; priority: 'High' | 'Medium' | 'Low'; status: 'open' | 'resolved' };
+```
+
+**Expected result:** Status is now an explicit part of every ticket.
+
+### Step 2 — Update initial records
+
+```tsx
+// src/data/tickets.ts
+import type { Ticket } from '../components/TicketCard';
+export const initialTickets: Ticket[] = [
+ {id:101,subject:'Login problem',priority:'High',status:'open'},
+ {id:102,subject:'Payment question',priority:'Medium',status:'open'}
+];
+```
+
+**Expected result:** Both example tickets start as open.
+
+### Step 3 — Create an interactive card
+
+```tsx
+// src/components/TicketCard.tsx
+export default function TicketCard({ ticket, onToggle }: { ticket: Ticket; onToggle: (id: number) => void }) {
+  return <article><strong>#{ticket.id} {ticket.subject}</strong>
+    <p>Priority: {ticket.priority} · {ticket.status}</p>
+    <button onClick={() => onToggle(ticket.id)}>{ticket.status === 'open' ? 'Resolve' : 'Reopen'}</button>
+  </article>;
 }
 ```
 
-**Expected output:** Initially open; after clicking Resolve, resolved.
+**Expected result:** The card asks its parent to change the selected ticket.
 
-**Execution explanation:** Follow the component inputs, the code decision, the changed React output and what a user can observe. Keep the example small enough to explain aloud during an interview.
+### Step 4 — Manage state in App
+
+```tsx
+// src/App.tsx
+import { useState } from 'react';
+import TicketCard from './components/TicketCard';
+import { initialTickets } from './data/tickets';
+export default function App() {
+ const [tickets, setTickets] = useState(initialTickets);
+ function toggle(id: number) {
+   setTickets(current => current.map(t => t.id === id ? {...t,status: t.status === 'open' ? 'resolved' as const : 'open' as const} : t));
+ }
+ return <main><h1>Support Desk</h1>{tickets.map(t => <TicketCard key={t.id} ticket={t} onToggle={toggle} />)}</main>;
+}
+```
+
+**Expected result:** Click Resolve or Reopen and see only the chosen ticket's status change.
+
+
+### Try it yourself
+
+Display the number of open tickets above the list using tickets.filter(...).length; do not duplicate it in separate state.
 
 ## Common state and event mistakes
 
