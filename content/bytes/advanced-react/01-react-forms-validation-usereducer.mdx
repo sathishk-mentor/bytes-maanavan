@@ -1,0 +1,118 @@
+---
+title: "Advanced React Forms, Validation and useReducer"
+slug: "01-react-forms-validation-usereducer"
+summary: "A multi-field issue form needs predictable validation and state changes."
+category: "advanced-react"
+tags: ["Advanced React", "React TypeScript", "useReducer"]
+level: "intermediate"
+duration: "25 min"
+updatedAt: "2026-10-16"
+order: 1
+---
+
+## Why this concept matters
+
+A multi-field issue form needs predictable validation and state changes. **You will learn:** explain the idea, follow the execution flow, read a compact example and try one realistic decision. Basic React components, props and useState are helpful; this Byte also works as a standalone introduction.
+
+## Start with a familiar scenario
+
+A form is a conversation: the user supplies values, the app checks them, and only valid data is accepted.
+
+**Vocabulary:** controlled field, validation, reducer, action, state transition.
+
+## Understand the core concept
+
+Controlled inputs receive their value from state and report edits with onChange. Validation checks inputs and shows recovery guidance. useReducer groups related state updates as explicit actions; reducers must be pure.
+
+**When not to use it:** Select the simplest React feature that solves the actual problem. An advanced API or Hook is not a requirement for every component.
+
+## Architecture and execution flow
+
+Trace the information as it moves through the application. Every stage has a specific purpose.
+
+<AdvancedReactFlow byte={1} />
+
+```text
+Input → controlled state → validation → action → reducer → screen
+```
+
+## Interactive decision lab
+
+Choose an answer to a realistic development situation. Review the resulting explanation before writing code.
+
+<AdvancedReactLab byte={1} />
+
+## Guided code walkthrough
+
+**Step 1 — Identify the inputs and the expected output.** A multi-field issue form needs predictable validation and state changes.
+
+**Step 2 — Read the implementation.** The example is intentionally small; it isolates the concept before introducing additional application architecture.
+
+```tsx
+type Issue = { title: string; priority: 'low' | 'high' };
+type State = { issues: Issue[] };
+type Action = { type: 'added'; issue: Issue };
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'added': return { issues: [...state.issues, action.issue] };
+  }
+}
+```
+
+**Step 3 — Predict the browser result.** A valid issue is added; an empty title is rejected.
+
+**Step 4 — Explain the execution.** Input; then controlled state; then validation; then action; then reducer; then screen.
+
+**Step 5 — Verify.** Run the example in a React/TypeScript project with the appropriate installed package or mock API. The purpose is understanding behavior, not copy-pasting an unexplained application.
+
+## Common mistakes and recovery
+
+Mutating reducer state; hiding field errors; using a reducer for one simple boolean.
+
+When behavior is surprising, verify the inputs and first observable failure. Check browser-console warnings, network responses and visible error states before adding complexity.
+
+## How developers use this at work
+
+This pattern appears in customer portals, internal dashboards and SaaS products. Developers use it to make interfaces predictable and maintainable. QA engineers test the user-facing outcome, while product teams define valid states and errors.
+
+## What users see versus system behavior
+
+| User-visible experience | Underlying behavior |
+|---|---|
+| A valid issue is added; an empty title is rejected. | Input → controlled state → validation → action → reducer → screen |
+| Recovery from a failure | The application handles an invalid input, request or state explicitly |
+
+## Practice task
+
+Create a title input with required validation and a priority selector. Submit empty and valid values to compare results.
+
+**Success check:** describe the input, the React action and the output. Try the failure case once, then explain the recovery.
+
+## Interview Bit and key takeaways
+
+**Interview question:** What is the difference between useState and useReducer?
+
+**Simple answer:** useState is effective for small independent values; useReducer organizes more complex related transitions as actions.
+
+**Eight takeaways:**
+
+1. Start by describing the user's problem.
+2. Identify which values are local and which originate outside React.
+3. Use explicit types and state transitions where helpful.
+4. Prefer readable components over one large file.
+5. Show loading, invalid and error states clearly.
+6. Verify the observable result after changes.
+7. Avoid unnecessary Effects and premature optimization.
+8. Choose tools according to actual complexity.
+
+## FAQ, knowledge check and primary sources
+
+**FAQ: Is this technique required in every React component?** No; apply it only when the corresponding problem exists.
+
+**FAQ: Can it be tested without a real backend?** Yes, with local examples and mock responses.
+
+**FAQ: Should learners understand the underlying JavaScript?** Yes. Hooks and libraries build on ordinary functions, arrays, objects and promises.
+
+<AdvancedReactQuiz byte={1} />
+
+**Primary sources:** [Official reference 1](https://react.dev/reference/react/useReducer) · [Official reference 2](https://react.dev/learn/updating-objects-in-state).
