@@ -1,0 +1,173 @@
+---
+title: "React Components and Props: Display Reusable Task Cards"
+slug: "02-react-components-jsx-props"
+summary: "Learn JSX and props through a simple progressive Task Manager example."
+category: "react-fundamentals"
+tags: ["React.js","React for beginners","JSX props"]
+level: "beginner"
+duration: "25 min"
+updatedAt: "2026-10-16"
+order: 2
+---
+
+<TaskManagerByteHero byte={2} />
+
+## Why reusable task items matter
+
+Our first to-do list contains two hard-coded `<li>` elements. Imagine 100 tasks: copying JSX 100 times would be difficult to maintain. A reusable component can display any task when we provide its text as input.
+
+**What you will build:** Milestone 2 of a small browser-based To-Do List. No backend or advanced architecture is needed.
+
+## One design, different task titles
+
+A printed label template stays the same, but the name written on each label changes. A React component is the template; **props** are the supplied values. The parent `App` has the task data, and each child `TaskItem` displays one title.
+
+## JSX, props and stable keys
+
+A **prop** is data passed from parent to child. In `<TaskItem title={task.title} />`, `title` is the prop name. The braces evaluate the JavaScript expression. Inside the component, `{ title }` extracts that input. The `tasks` array is ordinary JavaScript data, and `.map()` creates one element for each item. React needs a stable `key` on the mapped elements so it can follow their identity. The `key` is not an ordinary prop available inside `TaskItem`.
+
+## How data reaches TaskItem
+
+**Before the diagram:** The parent component decides *which data exists*. The child decides *how one item looks*. Data travels downward through props; the child does not change the prop it receives.
+
+<ReactLearningFlow byte={2} />
+
+**Code → output:** Passing `title="Read React notes"` displays exactly “Read React notes” inside the list item. Passing a different title changes the label, not the reusable component design.
+
+1. `App` imports `initialTasks`.
+
+2. `.map()` visits every task object.
+
+3. `<TaskItem title={task.title} />` passes a prop.
+
+4. `TaskItem` renders an `<li>` using the prop.
+
+5. React displays both list items. Updating data requires no duplicated JSX.
+
+## Explore props and reusable cards
+
+<TaskManagerConceptLab byte={2} />
+
+**Check the idea:** Answer this question before coding.
+
+<ReactConceptLab byte={2} />
+
+## Extract TaskItem and render a list
+
+**Our learning project:** A tiny Task Manager, not an enterprise support system. The app grows gradually across the five Bytes; each code step below tells you exactly which file to edit.
+
+**Milestone 2:** React Components and Props: Display Reusable Task Cards.
+
+### Step 1: Create a typed reusable component
+
+**Where:** `src/components/TaskItem.tsx`
+
+```tsx
+export type Task = { id: number; title: string };
+export default function TaskItem({ title }: { title: string }) {
+  return <li>{title}</li>;
+}
+```
+
+**Expected screen/result:** A component is ready to receive a title prop.
+
+### Step 2: Create task data
+
+**Where:** `src/data/tasks.ts`
+
+```tsx
+import type { Task } from '../components/TaskItem';
+
+export const initialTasks: Task[] = [
+  { id: 1, title: 'Read React notes' },
+  { id: 2, title: 'Practise JSX' }
+];
+```
+
+**Expected screen/result:** Tasks are separate from the UI; each has a stable id.
+
+### Step 3: Update App to render components
+
+**Where:** `src/App.tsx`
+
+```tsx
+import TaskItem from './components/TaskItem';
+import { initialTasks } from './data/tasks';
+
+export default function App() {
+  return (
+    <main>
+      <h1>My Task Manager</h1>
+      <ul>
+        {initialTasks.map(task => (
+          <TaskItem key={task.id} title={task.title} />
+        ))}
+      </ul>
+    </main>
+  );
+}
+```
+
+**Expected screen/result:** Both tasks appear, this time through the same reusable component.
+
+**Project checkpoint:** Reusable task cards.
+
+## Common JSX and props mistakes
+
+- **Forgetting `key`:** React warns when list elements lack stable keys.
+- **Mutating props:** Children must treat props as read-only.
+- **Passing a string literally:** `title="task.title"` prints the words `task.title`; use `title={task.title}` to evaluate JavaScript.
+- **Confusing TypeScript:** The `{ title: string }` type is a developer check, not text displayed on screen.
+
+## Reusable UI in professional applications
+
+React uses the same underlying idea in many applications: a product list, a shopping basket, a learning progress page, or a dashboard. We are using task management only to keep the learning journey simple.
+
+## How a task title reaches the screen
+
+| What a learner sees | What React or the browser does |
+|---|---|
+| distinct task cards | App has tasks  →  map each task  →  TaskItem receives title |
+| A task list ready for interaction | React creates output from component inputs and state |
+
+## Add your third task
+
+**Challenge 1:** Add `{ id: 3, title: 'Practise components' }` to `initialTasks` and count the displayed items.
+
+**Challenge 2:** Change the first task title. Why does the `TaskItem` implementation not change?
+
+**Explain it:** Which component is the parent? What value does the prop carry? Why do we use `task.id` as `key`?
+
+## Interview Bit
+
+**Question: What are props in React, and why do list items need keys?**
+
+**Simple answer:** Props are read-only inputs passed from parent to child components. We pass each task title to TaskItem. A stable key such as task.id helps React identify list items when a list changes.
+
+**How to explain it:** Point to the related code in the To-Do List and describe what appears in the browser.
+
+## Key Takeaways
+
+1. Reusable components avoid repeating the same JSX.
+2. Props transfer information from a parent to a child.
+3. Props are read-only inputs.
+4. JSX braces evaluate JavaScript expressions.
+5. Arrays store multiple task objects.
+6. .map() creates UI elements from array items.
+7. Stable keys identify list items across renders.
+8. TaskItem displays different tasks using the same component.
+
+## Knowledge Check
+
+Review these common questions before attempting the scored quiz.
+
+- Why a key? It helps React track list item identity.
+- Why props? One component can display different inputs.
+- Can the child change the parent's prop? Treat props as read-only.
+
+<ReactFiveQuestionQuiz byte={2} />
+
+## Primary Sources
+
+- [Passing Props to a Component](https://react.dev/learn/passing-props-to-a-component)
+- [Rendering Lists](https://react.dev/learn/rendering-lists)

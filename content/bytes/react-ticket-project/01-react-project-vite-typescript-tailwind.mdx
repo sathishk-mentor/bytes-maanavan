@@ -1,0 +1,160 @@
+---
+title: "Build a React Project: Vite, TypeScript and Tailwind"
+slug: "01-react-project-vite-typescript-tailwind"
+summary: "A project needs a repeatable setup and clear folder structure before adding features."
+category: "react-ticket-project"
+tags: ["React project","React TypeScript","Customer support dashboard","Vite"]
+level: "beginner"
+duration: "30 min"
+updatedAt: "2026-10-16"
+order: 1
+---
+
+## What you will build
+
+**Milestone 11:** Start with a completely empty project. We will create the Support Desk shell before introducing tickets, state or APIs. The important outcome is a page you can run and understand, not an unexplained collection of packages.
+
+A project needs a repeatable setup and clear folder structure before adding features.
+
+**Visible checkpoint:** The app shows a clean Support Desk heading and description. You can study this Byte by itself, though the project can also be built progressively.
+
+## Understand the concept first
+
+Vite runs and builds a React project. TypeScript checks types during development; Tailwind provides utility CSS classes. Create a small application shell before adding ticket features.
+
+In plain language, an interface should show useful information and respond predictably to users. We begin with one small technical change before introducing more features.
+
+## Architecture: what happens underneath
+
+<ReactTicketLearningFlow byte={1} />
+
+**Execution path**
+
+```text
+Vite setup → App → layout → mock tickets → browser
+```
+
+Follow the arrows and explain which step is React state, which is a browser action, and which would require a real backend.
+
+## Explore a realistic preview
+
+<TicketProjectExplorer byte={1} />
+
+Use the visual to predict what a user would see. The preview uses simulated demo data and does not represent a connected enterprise service.
+
+## Coding walkthrough step by step
+
+**Complete, ordered project checkpoints:** [Read the source-of-truth build guide](https://github.com/sathishk-mentor/bytes-maanavan/blob/feature/react-ticket-gold-standard/docs/react-ticket-project-complete-checkpoints.md). Use the full replacement files from that guide alongside the focused explanations below. Some snippets below demonstrate an insertion rather than a complete file.
+
+### Step 1 — Create the app
+
+**Edit or create the indicated file.**
+
+```bash
+npm create vite@latest support-desk -- --template react-ts
+cd support-desk
+npm install
+npm install tailwindcss @tailwindcss/vite
+```
+
+**What this step accomplishes:** A project needs a repeatable setup and clear folder structure before adding features.
+
+**Check:** Run your app or inspect the updated component before continuing.
+
+### Step 2 — Configure Tailwind in Vite
+
+**Edit or create the indicated file.**
+
+```tsx
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+export default defineConfig({plugins:[react(),tailwindcss()]});
+```
+
+**What this step accomplishes:** The app shows a clean Support Desk heading and description.
+
+**Check:** Run your app or inspect the updated component before continuing.
+
+### Step 3 — Add Tailwind styles
+
+**Edit or create the indicated file.**
+
+```css
+/* src/index.css */
+@import 'tailwindcss';
+```
+
+**What this step accomplishes:** The app shows a clean Support Desk heading and description.
+
+**Check:** Run your app or inspect the updated component before continuing.
+
+### Step 4 — Render your first screen
+
+**Edit or create the indicated file.**
+
+```tsx
+// src/App.tsx
+export default function App(){
+ return <main className="min-h-screen bg-slate-50 p-8"><h1 className="text-3xl font-bold">Support Desk</h1><p>Customer requests in one place</p></main>;
+}
+```
+
+**What this step accomplishes:** The app shows a clean Support Desk heading and description.
+
+**Check:** Run your app or inspect the updated component before continuing.
+
+## Expected screen and execution
+
+**What you should observe:** The app shows a clean Support Desk heading and description.
+
+**Trace it:** Vite setup → App → layout → mock tickets → browser. A user-visible output is stronger evidence than a code snippet alone.
+
+## Interactive decision and diagnosis
+
+If the expected result does not appear, inspect the relevant file and resolve the first console error. Compare your current code to the preceding checkpoint.
+
+**Typical issue:** If utility classes do not apply, check the Tailwind Vite plugin and CSS import in main.tsx.
+
+## How teams use this pattern
+
+A frontend developer implements the interface, a tester verifies accessible controls and failure behavior, and the product owner describes the expected result. This is a simplified demonstration of that collaboration, not a representation of a particular company's internal infrastructure.
+
+## Compare UI and implementation
+
+| What the user sees | What the application does |
+|---|---|
+| The app shows a clean Support Desk heading and description. | Vite setup → App → layout → mock tickets → browser |
+| An action or failure | A typed handler, state transition or error boundary determines the visible response |
+
+## Hands-on practice
+
+Add a white content panel and a secondary heading. Confirm the layout works on a narrow viewport.
+
+**Evidence:** Capture the visible result, explain the code you changed, and reproduce one failure case.
+
+## Interview Bit
+
+**Question:** How does this milestone change what the learner can actually do?
+
+**Answer:** It creates the working React shell and explains the relationship between the files and the browser.
+
+## Key Takeaways
+
+1. Vite creates a practical React development project.
+2. TypeScript's TSX files contain typed JSX.
+3. Tailwind's Vite plugin must be registered.
+4. Import Tailwind CSS from your global stylesheet.
+5. main.tsx mounts React in the root HTML element.
+6. App.tsx describes the initial visible interface.
+7. Run npm run dev and open the displayed local URL.
+8. Verify the first screen before adding more complexity.
+
+## Knowledge Check and Primary Sources
+
+<TicketProjectQuiz byte={1} />
+
+**Frequently asked:** Is a real backend required for this Byte? No; this handbook uses a mock boundary until you supply a real API. Does the demo contain real customer data? No.
+
+**Primary sources:** [Vite guide](https://vite.dev/guide/) · [Tailwind Vite installation](https://tailwindcss.com/docs/installation/using-vite).
