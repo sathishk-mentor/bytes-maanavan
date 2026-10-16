@@ -1,0 +1,28 @@
+/* Shared Byte reading experience — scoped additions, preserve handbook designs */
+@media(min-width:801px){
+ .byte-toc{max-height:calc(100dvh - 10rem);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+ .byte-toc nav{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b9d2d2 transparent;padding-right:.35rem}
+ .byte-toc header,.byte-toc footer{flex-shrink:0}
+ .byte-toc nav::-webkit-scrollbar{width:5px}
+ .byte-toc nav::-webkit-scrollbar-thumb{background:#b9d2d2;border-radius:8px}
+ .byte-trust-rail{max-height:calc(100dvh - 10rem);overflow-y:auto;scrollbar-width:thin}
+}
+.byte-toc nav button{min-height:42px;text-wrap:pretty;overflow-wrap:anywhere}
+.byte-toc nav button:focus-visible,.knowledge-check-panel button:focus-visible{outline:3px solid #0d8795;outline-offset:3px}
+.byte-article .byte-section-title{scroll-margin-top:7.5rem}
+.knowledge-check-panel{max-width:100%;overflow:hidden}
+.knowledge-check-content>.byte-list li{padding-block:.65rem}
+.knowledge-check-content>.byte-list li+li{border-top:1px solid #e3eded}
+.knowledge-check-content>.byte-list li::marker{color:#6c8690}
+.knowledge-check-interactive>div{grid-template-columns:1fr!important}
+.knowledge-check-interactive>div>button{min-height:3.4rem;padding:.85rem 1rem;font-size:.92rem;line-height:1.5}
+.knowledge-check-interactive>div>button>span{font-size:.74rem}
+.byte-article .byte-list{overflow-wrap:anywhere}
+@media(max-width:800px){
+ .byte-toc{max-height:none}
+ .byte-toc nav{overflow-y:visible}
+ .byte-toc nav button{font-size:.92rem;line-height:1.5}
+ .byte-main-column{max-width:100%;overflow-wrap:anywhere}
+ .byte-article .byte-section-title{scroll-margin-top:8rem}
+}
+@media(prefers-reduced-motion:reduce){.byte-toc nav button,.knowledge-check-interactive>div>button{transition:none!important;transform:none!important}}
