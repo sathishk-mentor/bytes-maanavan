@@ -28,6 +28,12 @@ A **prop** is data passed from parent to child. In `<TaskItem title={task.title}
 
 ## How data reaches TaskItem
 
+**Before the diagram:** The parent component decides *which data exists*. The child decides *how one item looks*. Data travels downward through props; the child does not change the prop it receives.
+
+<ReactLearningFlow byte={2} />
+
+**Code → output:** Passing `title="Read React notes"` displays exactly “Read React notes” inside the list item. Passing a different title changes the label, not the reusable component design.
+
 1. `App` imports `initialTasks`.
 
 2. `.map()` visits every task object.
