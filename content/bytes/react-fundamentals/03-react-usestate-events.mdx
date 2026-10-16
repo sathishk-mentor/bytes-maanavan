@@ -1,0 +1,110 @@
+---
+title: "React State and Event Handling with useState"
+slug: "03-react-usestate-events"
+summary: "A support agent clicks Resolve and expects the ticket's status label to update immediately."
+category: "react-fundamentals"
+tags: ["React.js", "React tutorial for beginners", "useState"]
+level: "beginner"
+duration: "20 min"
+updatedAt: "2026-10-16"
+order: 3
+---
+
+## S1 — Quick Start
+
+A support agent clicks Resolve and expects the ticket's status label to update immediately.
+
+**You will learn:** Explain the concept, predict the visible UI result and implement one small change. **Prerequisite:** Familiarity with basic JavaScript expressions helps, but no prior React experience is required.
+
+## S2 — Start from Basics: Familiar Scenario
+
+Imagine a software company's customer-support dashboard. Staff read tickets, filter the list, change ticket status and navigate between records. We use this *illustrative* workflow to learn React rather than claiming it is a real company's internal application.
+
+State: component memory. useState: Hook for render-dependent data. Setter: function that requests an update. Event handler: callback for interaction. Re-render: recalculation of UI. Snapshot: state values captured per render.
+
+## S3 — Core Explanation
+
+Use the setter from useState instead of changing the state variable directly. Treat arrays and objects as immutable. State represents UI memory, not permanent server storage.
+
+A useful analogy is an office display board: inputs describe which cards belong on the board and an update changes the visible board. React coordinates that display; a real backend remains responsible for permanent records and access control.
+
+## S4 — Architecture and Flow
+
+**Visual execution path**
+
+```text
+Click Resolve → onClick handler → setStatus('resolved') → render → label updates.
+```
+
+Read the arrows in sequence. Identify which part is a user action, which is React behaviour and which result the browser displays.
+
+## S5 — Interactive Concept Lab
+
+Try this decision before reading the worked example. The lab reports what happens in the component.
+
+<ReactConceptLab byte={3} />
+
+## S6 — Guided Walkthrough
+
+This is a small standalone teaching example. For a real Vite app use the React + TypeScript template, place it in a component file, import it into App and run the development server.
+
+```tsx
+import { useState } from "react";
+export function TicketStatus() {
+  const [status, setStatus] = useState<"open" | "resolved">("open");
+  return <div><strong>{status}</strong><button onClick={() => setStatus("resolved")}>Resolve</button></div>;
+}
+```
+
+**Expected output:** Initially open; after clicking Resolve, resolved.
+
+**Execution explanation:** Follow the component inputs, the code decision, the changed React output and what a user can observe. Keep the example small enough to explain aloud during an interview.
+
+## S7 — Failure Cases and Common Mistakes
+
+Never mutate an object in state in place and expect React to notice. For updates based on previous state, prefer the functional setter.
+
+If the UI looks wrong, inspect data input, state updates, console errors and element semantics separately. Compare the expected output above with the actual browser result.
+
+## S8 — Role-Based Application
+
+Frontend developers connect business interactions to state; QA engineers test transitions. Product managers describe the workflow outcome and acceptance criteria. A support team member can validate that the wording and action match the intended business process.
+
+## S9 — Compare User View and System View
+
+| What the user sees | What happens underneath |
+|---|---|
+| User sees resolved | React schedules a render after the state setter runs |
+| A responsive interface | React decides which UI description to reconcile with the DOM |
+| A visible result after interaction | The application determines whether data is only local or saved remotely |
+
+## S10 — Hands-On Practice
+
+**Try it:** Add a Reopen button that switches status back to open. Show the state transitions.
+
+**Check your result:** The UI, or your component-tree sketch, must show the expected change. Explain which data is an input, which part is state (if any) and how React produces the output.
+
+## S11 — Final Thought and Next Path
+
+1. Begin with the real user problem.
+2. Separate UI from persistent backend concerns.
+3. Name each component or Hook by its purpose.
+4. Distinguish inputs from state.
+5. Trace interactions step by step.
+6. Inspect the rendered result, not only code.
+7. Prefer clarity over unnecessary complexity.
+8. Validate behaviour, accessibility and failure cases.
+
+**Continue:** Browse the other standalone React fundamentals lessons when ready.
+
+## S12 — FAQ, Knowledge Check and References
+
+Does setting state change the current variable instantly? No, it schedules a new render. Does state persist after refresh? Not automatically. Can state hold arrays? Yes.
+
+**Interview-ready explanation:** Use the setter from useState instead of changing the state variable directly.
+
+<ReactFiveQuestionQuiz byte={3} />
+
+**Primary reference:** [Official React documentation](https://react.dev/learn/state-a-components-memory).
+
+**Further reading:** [React Learn](https://react.dev/learn), [Vite guide](https://vite.dev/guide/).
