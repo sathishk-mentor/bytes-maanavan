@@ -46,27 +46,59 @@ Use the visual explorer first: change an input, follow the updated UI, then answ
 
 <ReactConceptLab byte={4} />
 
-## Build an online-status example
+## Build the Support Dashboard: Step-by-Step Code
 
-This is a small standalone teaching example. For a real Vite app use the React + TypeScript template, place it in a component file, import it into App and run the development server.
+Effects synchronize React with external systems. Here, browser localStorage is outside React; an Effect can save the ticket list after it changes.
+
+**Connected learning:** These files belong to one `support-desk` application. Each code step updates or adds to the same project. The final code from this Byte is the starting point for the next Byte. **Project checkpoint:** State change → commit → effect → localStorage.
+
+### Step 1 — Keep the working ticket components
 
 ```tsx
-import { useEffect, useState } from "react";
-export function OnlineBadge() {
-  const [online, setOnline] = useState(navigator.onLine);
-  useEffect(() => {
-    const update = () => setOnline(navigator.onLine);
-    window.addEventListener("online", update);
-    window.addEventListener("offline", update);
-    return () => { window.removeEventListener("online", update); window.removeEventListener("offline", update); };
-  }, []);
-  return <strong>{online ? "Online" : "Offline"}</strong>;
-}
+// Keep src/components/TicketCard.tsx and src/data/tickets.ts from Byte 03 unchanged.
 ```
 
-**Expected output:** The badge responds to browser online/offline events and unregisters listeners when removed.
+**Expected result:** The interactive Resolve/Reopen workflow still works.
 
-**Execution explanation:** Follow the component inputs, the code decision, the changed React output and what a user can observe. Keep the example small enough to explain aloud during an interview.
+### Step 2 — Load saved tickets once
+
+```tsx
+// src/App.tsx — inside App, replace useState(initialTickets)
+const [tickets, setTickets] = useState(() => {
+  if (typeof window === 'undefined') return initialTickets;
+  try {
+    const saved = window.localStorage.getItem('support-tickets-demo');
+    return saved ? JSON.parse(saved) as typeof initialTickets : initialTickets;
+  } catch { return initialTickets; }
+});
+```
+
+**Expected result:** React starts with locally saved tickets when valid JSON exists.
+
+### Step 3 — Synchronize updates with localStorage
+
+```tsx
+// src/App.tsx — import useEffect, then add inside App
+useEffect(() => {
+  window.localStorage.setItem('support-tickets-demo', JSON.stringify(tickets));
+}, [tickets]);
+```
+
+**Expected result:** After a ticket update, React commits and the Effect stores the new list.
+
+### Step 4 — Observe the flow
+
+```tsx
+// No further code required: click Resolve, then refresh the page.
+// To start over, clear the support-tickets-demo key in DevTools.
+```
+
+**Expected result:** The resolved ticket remains visible after refresh in the same browser.
+
+
+### Try it yourself
+
+Explain why `tickets.filter(t => t.status === 'open').length` belongs in render rather than in a useEffect.
 
 ## Common useEffect mistakes
 
