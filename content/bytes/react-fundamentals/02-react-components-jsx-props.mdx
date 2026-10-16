@@ -1,9 +1,9 @@
 ---
-title: "React Components, JSX and Props Explained"
+title: "React Components, JSX and Props for Beginners"
 slug: "02-react-components-jsx-props"
-summary: "A ticket list must show many tickets without duplicating each card's markup."
+summary: "Build a reusable greeting card and customize it using props."
 category: "react-fundamentals"
-tags: ["React.js", "React tutorial for beginners", "JSX and props"]
+tags: ["React JS", "React beginners", "JSX props"]
 level: "beginner"
 duration: "20 min"
 updatedAt: "2026-10-16"
@@ -12,138 +12,122 @@ order: 2
 
 <ReactByteHero byte={2} />
 
-## Why reusable components matter
+## Why repeatable UI matters
 
-A ticket list must show many tickets without duplicating each card's markup.
+You should not copy the same HTML for every greeting. Build one Greeting component and pass each person's name as a prop.
 
-**You will learn:** Explain the concept, predict the visible UI result and implement one small change. **Prerequisite:** Familiarity with basic JavaScript expressions helps, but no prior React experience is required.
+**Goal:** Explain the concept in simple words and create an output that you can see in your browser. **Prerequisite:** Basic JavaScript is useful; advanced React knowledge is not required.
 
-## Ticket cards in a customer-support system
+## Two greeting cards, one component
 
-Imagine a software company's customer-support dashboard. Staff read tickets, filter the list, change ticket status and navigate between records. We use this *illustrative* workflow to learn React rather than claiming it is a real company's internal application.
+JSX lets a component describe UI. Props are read-only inputs passed from a parent to a child. One component can produce different output when its props change.
 
-JSX: syntax for declaring UI. Component: capitalized function returning UI. Props: parent-to-child inputs. Children: nested UI content. Key: stable identity for items in a list. Composition: building larger views from smaller components.
+Think about what someone sees first. Learn the smallest React concept that makes that visible result possible.
 
-## How JSX, components and props work together
+## JSX and props in plain English
 
-Create a TicketCard once, then pass subject and priority as props. Props are read-only. Render lists using stable IDs; do not use random keys that change every render.
+JSX lets a component describe UI. Props are read-only inputs passed from a parent to a child. One component can produce different output when its props change.
 
-A useful analogy is an office display board: inputs describe which cards belong on the board and an update changes the visible board. React coordinates that display; a real backend remains responsible for permanent records and access control.
+**Remember:** A React component describes interface output. React is not a database, and this beginner example does not need an enterprise application.
 
-## From ticket data to rendered cards
-
-**Visual execution path**
+## How a parent passes props
 
 ```text
-TicketList(data) → map(ticket) → TicketCard(subject, priority) → rendered card.
+App → name='Anu' / name='Ravi' → Greeting component → two different greetings
 ```
 
-Read the arrows in sequence. Identify which part is a user action, which is React behaviour and which result the browser displays.
+Read each arrow as a small change: input or click, JavaScript/React action, and the browser result.
 
-## Change props and observe the UI
+## Change props and see the result
 
 <ReactLearningExplorer byte={2} />
 
-Use the visual explorer first: change an input, follow the updated UI, then answer the decision question below.
+Use the interactive visual to predict what happens next. Then check your choice.
 
 <ReactConceptLab byte={2} />
 
-## Build the Support Dashboard: Step-by-Step Code
+## Code along: reusable greeting cards
 
-Props are read-only inputs. One TicketCard can display many different support cases, so we avoid copying the same JSX.
+Follow these steps in a **small React + TypeScript project**. Each step gives you a visible result.
 
-**Connected learning:** These files belong to one `support-desk` application. Each code step updates or adds to the same project. The final code from this Byte is the starting point for the next Byte. **Project checkpoint:** Ticket data → props → reusable cards.
-
-### Step 1 — Extract a typed card
+### Step 1 — Create a reusable component
 
 ```tsx
-// src/components/TicketCard.tsx
-export type Ticket = { id: number; subject: string; priority: 'High' | 'Medium' | 'Low' };
-export default function TicketCard({ ticket }: { ticket: Ticket }) {
-  return <article><strong>#{ticket.id} {ticket.subject}</strong><p>Priority: {ticket.priority}</p></article>;
+// src/Greeting.tsx
+export default function Greeting({ name }: { name: string }) {
+  return <p>Hello, {name}!</p>;
 }
 ```
 
-**Expected result:** Each card reads its values from a ticket prop.
+**What you should see:** Greeting shows whichever name it receives.
 
-### Step 2 — Keep example data separately
-
-```tsx
-// src/data/tickets.ts
-import type { Ticket } from '../components/TicketCard';
-export const initialTickets: Ticket[] = [
- { id: 101, subject: 'Login problem', priority: 'High' },
- { id: 102, subject: 'Payment question', priority: 'Medium' }
-];
-```
-
-**Expected result:** Two tickets are represented as structured data.
-
-### Step 3 — Render the list
+### Step 2 — Use it in App
 
 ```tsx
 // src/App.tsx
-import TicketCard from './components/TicketCard';
-import { initialTickets } from './data/tickets';
+import Greeting from './Greeting';
 export default function App() {
-  return <main><h1>Support Desk</h1>{initialTickets.map(ticket =>
-    <TicketCard key={ticket.id} ticket={ticket} />
-  )}</main>;
+  return <main><h1>Welcome</h1><Greeting name="Anu" /><Greeting name="Ravi" /></main>;
 }
 ```
 
-**Expected result:** Two different ticket cards display, each with its own stable key.
+**What you should see:** Hello, Anu! and Hello, Ravi! both appear.
 
+### Step 3 — Add another input
 
-### Try it yourself
+```tsx
+// src/Greeting.tsx
+export default function Greeting({ name, role }: { name: string; role: string }) {
+  return <p>Hello, {name}! You are a {role}.</p>;
+}
+// src/App.tsx — pass name and role to each Greeting
+// <Greeting name="Anu" role="learner" />
+```
 
-Add ticket #103 in data/tickets.ts and confirm a third card appears without copying the JSX.
+**What you should see:** One reusable component now displays two kinds of information.
 
-## Common JSX and props mistakes
+## Common props mistakes
 
-Avoid mutating props or using array indexes as keys when records can reorder.
+Do not change props inside the child. Use correct JSX attribute syntax and capitalize component names.
 
-If the UI looks wrong, inspect data input, state updates, console errors and element semantics separately. Compare the expected output above with the actual browser result.
+If the output differs from the example, inspect the browser console, component syntax, event handlers and state updates before adding more code.
 
-## Component reuse in software teams
+## Where teams reuse components
 
-Frontend engineers maintain design systems; reviewers ensure semantic elements and stable keys. Product managers describe the workflow outcome and acceptance criteria. A support team member can validate that the wording and action match the intended business process.
+A frontend developer uses this concept while building forms, menus, product cards and dashboards. The same simple idea can appear in large applications, but understanding it does not require learning an entire business workflow.
 
-## Visible cards versus component inputs
+## What users see vs component inputs
 
-| What the user sees | What happens underneath |
+| What you see | What React does |
 |---|---|
-| User sees multiple unique cards | Parent maps data to child instances using stable keys |
-| A responsive interface | React decides which UI description to reconcile with the DOM |
-| A visible result after interaction | The application determines whether data is only local or saved remotely |
+| Different names appear | App passes different props into the same Greeting function |
+| You change a component input or interact with the page | React updates the output according to props and state |
 
-## Try it: extend the ticket card
+## Practice: create another greeting
 
-**Try it:** Extend TicketCard to display the ticket owner while preserving the reusable prop structure.
+Create a third Greeting for your own name and role; explain what changes and what stays the same.
 
-**Check your result:** The UI, or your component-tree sketch, must show the expected change. Explain which data is an input, which part is state (if any) and how React produces the output.
+**Success check:** Show the result in the browser and describe which line of code made it happen.
 
-## Key takeaways
+## Eight things to remember
 
-1. Begin with the real user problem.
-2. Separate UI from persistent backend concerns.
-3. Name each component or Hook by its purpose.
-4. Distinguish inputs from state.
-5. Trace interactions step by step.
-6. Inspect the rendered result, not only code.
-7. Prefer clarity over unnecessary complexity.
-8. Validate behaviour, accessibility and failure cases.
-
-**Continue:** Browse the other standalone React fundamentals lessons when ready.
+1. Begin with one simple problem.
+2. Identify what should appear in the browser.
+3. Use readable component names.
+4. Keep code small and understandable.
+5. Separate component inputs from state.
+6. Trace changes from action to result.
+7. Check expected output after each step.
+8. Choose simple React patterns before optimizing.
 
 ## FAQ, knowledge check and references
 
-Can a component receive objects? Yes. Can children be props? Yes. Must props be mutable? No.
+- Can props contain numbers? Yes.
+- Can a child edit a prop? Props should be treated as read-only.
+- Do props update the interface? Changed props cause React to render updated output.
 
-**Interview-ready explanation:** Create a TicketCard once, then pass subject and priority as props.
+**Interview explanation:** JSX lets a component describe UI. Props are read-only inputs passed from a parent to a child. One component can produce different output when its props change.
 
 <ReactFiveQuestionQuiz byte={2} />
 
-**Primary reference:** [Official React documentation](https://react.dev/learn/passing-props-to-a-component).
-
-**Further reading:** [React Learn](https://react.dev/learn), [Vite guide](https://vite.dev/guide/).
+**References:** [React official documentation](https://react.dev/learn/passing-props-to-a-component) · [React Learn](https://react.dev/learn) · [Vite guide](https://vite.dev/guide/).
