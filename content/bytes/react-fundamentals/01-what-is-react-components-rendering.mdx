@@ -46,22 +46,56 @@ Use the visual explorer first: change an input, follow the updated UI, then answ
 
 <ReactConceptLab byte={1} />
 
-## Build your first React component
+## Build the Support Dashboard: Step-by-Step Code
 
-This is a small standalone teaching example. For a real Vite app use the React + TypeScript template, place it in a component file, import it into App and run the development server.
+A React component is a function describing a piece of the interface. React renders components to make what people see in the browser.
+
+**Connected learning:** These files belong to one `support-desk` application. Each code step updates or adds to the same project. The final code from this Byte is the starting point for the next Byte. **Project checkpoint:** App → main → TicketCard → browser UI.
+
+### Step 1 — Create the project
 
 ```tsx
-function TicketCard({ title }: { title: string }) {
-  return <article><h2>{title}</h2></article>;
-}
+npm create vite@latest support-desk -- --template react-ts
+cd support-desk
+npm install
+npm run dev
+```
+
+**Expected result:** Vite launches a local React + TypeScript development server.
+
+### Step 2 — Create a starting dashboard
+
+```tsx
+// src/App.tsx
 export default function App() {
-  return <TicketCard title="Payment issue" />;
+  return <main>
+    <h1>Support Desk</h1>
+    <p>Tickets waiting for the team</p>
+    <article>Ticket #101 — Login problem</article>
+  </main>;
 }
 ```
 
-**Expected output:** A card displays Payment issue.
+**Expected result:** A heading, description and first ticket appear.
 
-**Execution explanation:** Follow the component inputs, the code decision, the changed React output and what a user can observe. Keep the example small enough to explain aloud during an interview.
+### Step 3 — Introduce a child component
+
+```tsx
+// src/App.tsx
+function TicketCard() {
+  return <article>Ticket #101 — Login problem</article>;
+}
+export default function App() {
+  return <main><h1>Support Desk</h1><TicketCard /></main>;
+}
+```
+
+**Expected result:** The same ticket now comes from a reusable React component.
+
+
+### Try it yourself
+
+Add a second TicketCard to the dashboard. Observe that both show the same text; Byte 02 will solve that with props.
 
 ## Common React misconceptions
 
