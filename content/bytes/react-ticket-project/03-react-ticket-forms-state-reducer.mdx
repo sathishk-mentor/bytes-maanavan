@@ -1,0 +1,146 @@
+---
+title: "Create, Assign and Resolve Tickets with React State"
+slug: "03-react-ticket-forms-state-reducer"
+summary: "A dashboard becomes useful when an agent can create, update and resolve tickets."
+category: "react-ticket-project"
+tags: ["React project","React TypeScript","Customer support dashboard","useReducer"]
+level: "intermediate"
+duration: "30 min"
+updatedAt: "2026-10-16"
+order: 3
+---
+
+## What you will build
+
+A dashboard becomes useful when an agent can create, update and resolve tickets.
+
+**Visible checkpoint:** Create adds a card; dispatching a status action updates its status without mutating the original array. You can study this Byte by itself, though the project can also be built progressively.
+
+## Understand the concept first
+
+Controlled form fields keep typed values in React state. useReducer can express create, status change and assignment as explicit actions. Reject empty subject values and preserve immutable updates.
+
+In plain language, an interface should show useful information and respond predictably to users. We begin with one small technical change before introducing more features.
+
+## Architecture: what happens underneath
+
+**Execution path**
+
+```text
+Form input → validation → dispatch action → next state → card updates
+```
+
+Follow the arrows and explain which step is React state, which is a browser action, and which would require a real backend.
+
+## Explore a realistic preview
+
+<TicketProjectExplorer byte={3} />
+
+Use the visual to predict what a user would see. The preview uses simulated demo data and does not represent a connected enterprise service.
+
+## Coding walkthrough step by step
+
+### Step 1 — Create a reducer for changes
+
+**Edit or create the indicated file.**
+
+```tsx
+// src/ticketReducer.ts
+import type {Ticket} from './data/tickets';
+export type Action={type:'add';ticket:Ticket}|{type:'status';id:number;status:Ticket['status']};
+export function ticketReducer(state:Ticket[],action:Action):Ticket[]{
+ switch(action.type){
+ case 'add':return [...state,action.ticket];
+ case 'status':return state.map(t=>t.id===action.id?{...t,status:action.status}:t);
+ }
+}
+```
+
+**What this step accomplishes:** A dashboard becomes useful when an agent can create, update and resolve tickets.
+
+**Check:** Run your app or inspect the updated component before continuing.
+
+### Step 2 — Add reducer and controlled input
+
+**Edit or create the indicated file.**
+
+```tsx
+// src/App.tsx — inside App, replacing the static ticket source
+const [tickets,dispatch]=useReducer(ticketReducer,initialTickets);
+const [subject,setSubject]=useState('');
+function addTicket(){const title=subject.trim();if(!title)return;
+ dispatch({type:'add',ticket:{id:Date.now(),subject:title,priority:'Low',status:'Open'}});setSubject('');}
+```
+
+**What this step accomplishes:** Create adds a card; dispatching a status action updates its status without mutating the original array.
+
+**Check:** Run your app or inspect the updated component before continuing.
+
+### Step 3 — Connect controls to the screen
+
+**Edit or create the indicated file.**
+
+```tsx
+// Add above ticket cards inside the JSX:
+<label htmlFor="subject">Issue subject</label>
+<input id="subject" value={subject} onChange={e=>setSubject(e.target.value)} className="border p-2"/>
+<button type="button" onClick={addTicket}>Create ticket</button>
+// Pass tickets.map(...) to cards; to resolve a ticket dispatch:
+dispatch({type:'status',id:101,status:'Resolved'});
+```
+
+**What this step accomplishes:** Create adds a card; dispatching a status action updates its status without mutating the original array.
+
+**Check:** Run your app or inspect the updated component before continuing.
+
+## Expected screen and execution
+
+**What you should observe:** Create adds a card; dispatching a status action updates its status without mutating the original array.
+
+**Trace it:** Form input → validation → dispatch action → next state → card updates. A user-visible output is stronger evidence than a code snippet alone.
+
+## Interactive decision and diagnosis
+
+If the expected result does not appear, inspect the relevant file and resolve the first console error. Compare your current code to the preceding checkpoint.
+
+**Typical issue:** The code fragments modify Byte 02; import useReducer, useState and ticketReducer in App. The dispatch call belongs in an event handler, not inside render.
+
+## How teams use this pattern
+
+A frontend developer implements the interface, a tester verifies accessible controls and failure behavior, and the product owner describes the expected result. This is a simplified demonstration of that collaboration, not a representation of a particular company's internal infrastructure.
+
+## Compare UI and implementation
+
+| What the user sees | What the application does |
+|---|---|
+| Create adds a card; dispatching a status action updates its status without mutating the original array. | Form input → validation → dispatch action → next state → card updates |
+| An action or failure | A typed handler, state transition or error boundary determines the visible response |
+
+## Hands-on practice
+
+Add a status button to TicketCard using an onResolve callback and validate a blank title.
+
+**Evidence:** Capture the visible result, explain the code you changed, and reproduce one failure case.
+
+## Interview Bit and Key Takeaways
+
+**Interview question:** Why a reducer? It makes related state transitions explicit and testable, while simple inputs can remain in useState.
+
+**Eight takeaways:**
+
+1. Start with a visible user goal.
+2. Explain the React concept before writing code.
+3. Keep UI components small and reusable.
+4. Use typed interfaces and explicit data flows.
+5. Validate inputs and failures clearly.
+6. Test behavior from a user's perspective.
+7. Avoid premature optimization and needless dependencies.
+8. Confirm each project milestone works before continuing.
+
+## Knowledge Check and Primary Sources
+
+<TicketProjectQuiz byte={3} />
+
+**Frequently asked:** Is a real backend required for this Byte? No; this handbook uses a mock boundary until you supply a real API. Does the demo contain real customer data? No.
+
+**Primary sources:** [Extracting state logic into a reducer](https://react.dev/learn/extracting-state-logic-into-a-reducer) · [React forms](https://react.dev/reference/react-dom/components/input).
