@@ -46,23 +46,56 @@ Use the visual explorer first: change an input, follow the updated UI, then answ
 
 <ReactConceptLab byte={2} />
 
-## Build reusable TicketCard components
+## Build the Support Dashboard: Step-by-Step Code
 
-This is a small standalone teaching example. For a real Vite app use the React + TypeScript template, place it in a component file, import it into App and run the development server.
+Props are read-only inputs. One TicketCard can display many different support cases, so we avoid copying the same JSX.
+
+**Connected learning:** These files belong to one `support-desk` application. Each code step updates or adds to the same project. The final code from this Byte is the starting point for the next Byte. **Project checkpoint:** Ticket data → props → reusable cards.
+
+### Step 1 — Extract a typed card
 
 ```tsx
-type Ticket = { id: string; subject: string; priority: string };
-function TicketCard({ subject, priority }: Omit<Ticket, "id">) {
-  return <article><h3>{subject}</h3><span>{priority}</span></article>;
-}
-export function TicketList({ tickets }: { tickets: Ticket[] }) {
-  return <section>{tickets.map(t => <TicketCard key={t.id} subject={t.subject} priority={t.priority} />)}</section>;
+// src/components/TicketCard.tsx
+export type Ticket = { id: number; subject: string; priority: 'High' | 'Medium' | 'Low' };
+export default function TicketCard({ ticket }: { ticket: Ticket }) {
+  return <article><strong>#{ticket.id} {ticket.subject}</strong><p>Priority: {ticket.priority}</p></article>;
 }
 ```
 
-**Expected output:** Each ticket renders a reusable subject and priority card.
+**Expected result:** Each card reads its values from a ticket prop.
 
-**Execution explanation:** Follow the component inputs, the code decision, the changed React output and what a user can observe. Keep the example small enough to explain aloud during an interview.
+### Step 2 — Keep example data separately
+
+```tsx
+// src/data/tickets.ts
+import type { Ticket } from '../components/TicketCard';
+export const initialTickets: Ticket[] = [
+ { id: 101, subject: 'Login problem', priority: 'High' },
+ { id: 102, subject: 'Payment question', priority: 'Medium' }
+];
+```
+
+**Expected result:** Two tickets are represented as structured data.
+
+### Step 3 — Render the list
+
+```tsx
+// src/App.tsx
+import TicketCard from './components/TicketCard';
+import { initialTickets } from './data/tickets';
+export default function App() {
+  return <main><h1>Support Desk</h1>{initialTickets.map(ticket =>
+    <TicketCard key={ticket.id} ticket={ticket} />
+  )}</main>;
+}
+```
+
+**Expected result:** Two different ticket cards display, each with its own stable key.
+
+
+### Try it yourself
+
+Add ticket #103 in data/tickets.ts and confirm a third card appears without copying the JSX.
 
 ## Common JSX and props mistakes
 
