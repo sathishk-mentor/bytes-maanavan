@@ -14,29 +14,31 @@ order: 4
 
 ## Why tasks disappear after refresh
 
-useEffect is for synchronizing React with an external system. Browser localStorage is outside React. Read saved tasks using a lazy state initializer, and synchronize later task changes in an Effect. Do not use an Effect just to compute a pending count.
+Our To-Do List now works until the browser refreshes. React component state is memory, not permanent storage. We can keep a small personal demo list in **localStorage**, a browser feature, and use `useEffect` to synchronize changes.
 
-**In this Byte:** First understand the concept, then apply it to one small Task Manager milestone. **What you need:** Basic JavaScript. You do not need to know advanced React.
+**What you will build:** Milestone 4 of a small browser-based To-Do List. No backend or advanced architecture is needed.
 
 ## Saving tasks in the browser
 
-Saving to browser storage is like keeping a copy of the task board in a drawer so you can reopen it after a refresh.
-
-**Important words:** Effect, dependency array, external system, localStorage, lazy initializer, synchronization, cleanup. Take each term one at a time; the code below makes the idea visible.
+The task list on screen is like a whiteboard. `localStorage` is a notebook where we keep a copy. When the page opens, we read the notebook. Whenever the list changes, we update the notebook.
 
 ## Effects and browser synchronization
 
-useEffect is for synchronizing React with an external system. Browser localStorage is outside React. Read saved tasks using a lazy state initializer, and synchronize later task changes in an Effect. Do not use an Effect just to compute a pending count.
-
-**Why this matters:** The Task Manager gives us a consistent visible result. The principle is useful in many other kinds of React interfaces.
+An **Effect** runs after React has committed the UI and can synchronize with something *outside React*. `useEffect(() => { localStorage.setItem(...) }, [tasks])` says: after `tasks` changes, save a JSON representation. A lazy `useState(() => ...)` initializer reads saved tasks only at initial mounting in this client-only Vite example. `JSON.stringify` converts the array to text; `JSON.parse` reads it back. The `[tasks]` dependency tells React which reactive value the Effect uses. Not all Effects need cleanup: saving one value doesn't create a subscription. Timers and event listeners do need cleanup.
 
 ## Trace save and restore
 
-```text
-Initial state reads localStorage → render tasks → task changes → render commits → Effect writes localStorage → refresh restores tasks
-```
+1. App mounts → lazy state initializer reads saved JSON or defaults.
 
-Follow the arrows from the starting input to the final browser output. These are simplified teaching flows, not a full explanation of React's internal reconciler.
+2. React renders the current tasks.
+
+3. Learner adds or completes a task.
+
+4. React commits the changed list.
+
+5. Effect writes the new list to localStorage.
+
+6. Refresh creates a new app instance → initial state reads the saved list.
 
 ## Explore the Effect lifecycle
 
@@ -114,9 +116,11 @@ useEffect(() => {
 
 ## Common useEffect mistakes
 
-Avoid reading localStorage during server rendering. JSON.parse can fail on corrupt values; this demo catches that case. localStorage is not secure shared data storage. Effects may run extra setup/cleanup checks in development Strict Mode.
-
-When something breaks, read the first error message, identify the file involved, and compare your code against the prior working checkpoint.
+- **Calling `JSON.parse` without handling failures:** Damaged text can crash initialization; use `try/catch`.
+- **Effect with no dependency array:** It runs after every committed render; define the relevant dependencies.
+- **Saving a derived count separately:** Compute pending tasks during render instead.
+- **Mistaking browser storage for a database:** It is local to that browser and is not suitable for shared accounts or confidential data.
+- **Confusing cleanup:** A one-off storage write needs no cleanup; interval/listener subscriptions do.
 
 ## Where synchronization matters
 
@@ -131,20 +135,22 @@ React uses the same underlying idea in many applications: a product list, a shop
 
 ## Clear saved tasks and restore defaults
 
-Use developer tools to clear the my-tasks storage key, refresh, and explain why the original tasks return.
+**Challenge 1:** Add `Buy notebook`, complete it, and refresh. Both the item and its completed checkbox should persist.
 
-**Verification:** Perform the action, observe the visible result, and explain which React concept made it possible.
+**Challenge 2:** Open DevTools → Application → Local Storage and locate `my-tasks`.
+
+**Challenge 3:** Delete that key and refresh. Explain why the starter tasks return.
 
 ## Key takeaways
 
-1. Begin with the user-facing result.
-2. Learn the concept before writing code.
-3. Keep one clear goal per change.
-4. Use components for reusable UI.
-5. Treat props as read-only inputs.
-6. Update state with setter functions.
-7. Inspect the browser after every step.
-8. Prefer simple code to unnecessary optimization.
+1. React state does not persist across refresh by itself.
+2. localStorage stores browser-local string values.
+3. JSON.stringify converts task objects to text.
+4. JSON.parse restores text into data.
+5. Lazy state initialization reads existing saved data.
+6. useEffect synchronizes with browser storage.
+7. The dependency array contains tasks.
+8. Refreshing now restores the personal demo list.
 
 ## FAQ and knowledge check
 
