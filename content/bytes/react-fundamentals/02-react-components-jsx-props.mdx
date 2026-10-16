@@ -10,25 +10,25 @@ updatedAt: "2026-10-16"
 order: 2
 ---
 
-## S1 — Quick Start
+## Why reusable components matter
 
 A ticket list must show many tickets without duplicating each card's markup.
 
 **You will learn:** Explain the concept, predict the visible UI result and implement one small change. **Prerequisite:** Familiarity with basic JavaScript expressions helps, but no prior React experience is required.
 
-## S2 — Start from Basics: Familiar Scenario
+## Ticket cards in a customer-support system
 
 Imagine a software company's customer-support dashboard. Staff read tickets, filter the list, change ticket status and navigate between records. We use this *illustrative* workflow to learn React rather than claiming it is a real company's internal application.
 
 JSX: syntax for declaring UI. Component: capitalized function returning UI. Props: parent-to-child inputs. Children: nested UI content. Key: stable identity for items in a list. Composition: building larger views from smaller components.
 
-## S3 — Core Explanation
+## How JSX, components and props work together
 
 Create a TicketCard once, then pass subject and priority as props. Props are read-only. Render lists using stable IDs; do not use random keys that change every render.
 
 A useful analogy is an office display board: inputs describe which cards belong on the board and an update changes the visible board. React coordinates that display; a real backend remains responsible for permanent records and access control.
 
-## S4 — Architecture and Flow
+## From ticket data to rendered cards
 
 **Visual execution path**
 
@@ -38,7 +38,7 @@ TicketList(data) → map(ticket) → TicketCard(subject, priority) → rendered 
 
 Read the arrows in sequence. Identify which part is a user action, which is React behaviour and which result the browser displays.
 
-## S5 — Interactive Concept Lab
+## Change props and observe the UI
 
 <ReactLearningExplorer byte={2} />
 
@@ -46,7 +46,7 @@ Use the visual explorer first: change an input, follow the updated UI, then answ
 
 <ReactConceptLab byte={2} />
 
-## S6 — Guided Walkthrough
+## Build reusable TicketCard components
 
 This is a small standalone teaching example. For a real Vite app use the React + TypeScript template, place it in a component file, import it into App and run the development server.
 
@@ -64,17 +64,17 @@ export function TicketList({ tickets }: { tickets: Ticket[] }) {
 
 **Execution explanation:** Follow the component inputs, the code decision, the changed React output and what a user can observe. Keep the example small enough to explain aloud during an interview.
 
-## S7 — Failure Cases and Common Mistakes
+## Common JSX and props mistakes
 
 Avoid mutating props or using array indexes as keys when records can reorder.
 
 If the UI looks wrong, inspect data input, state updates, console errors and element semantics separately. Compare the expected output above with the actual browser result.
 
-## S8 — Role-Based Application
+## Component reuse in software teams
 
 Frontend engineers maintain design systems; reviewers ensure semantic elements and stable keys. Product managers describe the workflow outcome and acceptance criteria. A support team member can validate that the wording and action match the intended business process.
 
-## S9 — Compare User View and System View
+## Visible cards versus component inputs
 
 | What the user sees | What happens underneath |
 |---|---|
@@ -82,13 +82,13 @@ Frontend engineers maintain design systems; reviewers ensure semantic elements a
 | A responsive interface | React decides which UI description to reconcile with the DOM |
 | A visible result after interaction | The application determines whether data is only local or saved remotely |
 
-## S10 — Hands-On Practice
+## Try it: extend the ticket card
 
 **Try it:** Extend TicketCard to display the ticket owner while preserving the reusable prop structure.
 
 **Check your result:** The UI, or your component-tree sketch, must show the expected change. Explain which data is an input, which part is state (if any) and how React produces the output.
 
-## S11 — Final Thought and Next Path
+## Key takeaways
 
 1. Begin with the real user problem.
 2. Separate UI from persistent backend concerns.
@@ -101,7 +101,7 @@ Frontend engineers maintain design systems; reviewers ensure semantic elements a
 
 **Continue:** Browse the other standalone React fundamentals lessons when ready.
 
-## S12 — FAQ, Knowledge Check and References
+## FAQ, knowledge check and references
 
 Can a component receive objects? Yes. Can children be props? Yes. Must props be mutable? No.
 
