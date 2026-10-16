@@ -1,3 +1,4 @@
+import './bytes-reading-audit.css';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import { JourneyTracker } from '@/components/analytics/JourneyTracker';
