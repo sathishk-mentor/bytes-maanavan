@@ -1,0 +1,116 @@
+---
+title: "React with TypeScript: Props, Events and API Boundaries"
+slug: "04-react-typescript-components-hooks"
+summary: "A wrong prop value or unexpected API payload can quietly break a screen."
+category: "advanced-react"
+tags: ["Advanced React", "React TypeScript", "TypeScript"]
+level: "intermediate"
+duration: "25 min"
+updatedAt: "2026-10-16"
+order: 4
+---
+
+## Why this concept matters
+
+A wrong prop value or unexpected API payload can quietly break a screen. **You will learn:** explain the idea, follow the execution flow, read a compact example and try one realistic decision. Basic React components, props and useState are helpful; this Byte also works as a standalone introduction.
+
+## Start with a familiar scenario
+
+Think of a form that accepts only Low, Medium or High priority. TypeScript checks your code before execution; a server can still send invalid data at runtime.
+
+**Vocabulary:** TypeScript, TSX, union type, props, runtime validation.
+
+## Understand the core concept
+
+Use TSX files for typed JSX. Give props meaningful types and use string unions for restricted options. TypeScript types disappear at runtime, so validate external JSON before trusting it. Use typed event handlers only where inference is insufficient.
+
+**When not to use it:** Select the simplest React feature that solves the actual problem. An advanced API or Hook is not a requirement for every component.
+
+## Architecture and execution flow
+
+Trace the information as it moves through the application. Every stage has a specific purpose.
+
+<AdvancedReactFlow byte={4} />
+
+```text
+API value → runtime validation → typed prop → component → rendered badge
+```
+
+## Interactive decision lab
+
+Choose an answer to a realistic development situation. Review the resulting explanation before writing code.
+
+<AdvancedReactLab byte={4} />
+
+## Guided code walkthrough
+
+**Step 1 — Identify the inputs and the expected output.** A wrong prop value or unexpected API payload can quietly break a screen.
+
+**Step 2 — Read the implementation.** The example is intentionally small; it isolates the concept before introducing additional application architecture.
+
+```tsx
+type Priority = 'low' | 'medium' | 'high';
+type Issue = { id: number; title: string; priority: Priority };
+function IssueBadge({ priority }: { priority: Priority }) {
+  return <span>{priority.toUpperCase()}</span>;
+}
+// <IssueBadge priority='urgent' /> is a TypeScript error.
+```
+
+**Step 3 — Predict the browser result.** An allowed priority renders as a badge; an unsupported literal produces a TypeScript error during development.
+
+**Step 4 — Explain the execution.** API value; then runtime validation; then typed prop; then component; then rendered badge.
+
+**Step 5 — Verify.** Run the example in a React/TypeScript project with the appropriate installed package or mock API. The purpose is understanding behavior, not copy-pasting an unexplained application.
+
+## Common mistakes and recovery
+
+Assuming as Issue validates remote JSON; unnecessary any; broad string types for restricted values.
+
+When behavior is surprising, verify the inputs and first observable failure. Check browser-console warnings, network responses and visible error states before adding complexity.
+
+## How developers use this at work
+
+This pattern appears in customer portals, internal dashboards and SaaS products. Developers use it to make interfaces predictable and maintainable. QA engineers test the user-facing outcome, while product teams define valid states and errors.
+
+## What users see versus system behavior
+
+| User-visible experience | Underlying behavior |
+|---|---|
+| An allowed priority renders as a badge; an unsupported literal produces a TypeScript error during development. | API value → runtime validation → typed prop → component → rendered badge |
+| Recovery from a failure | The application handles an invalid input, request or state explicitly |
+
+## Practice task
+
+Create a typed IssueCard; try an invalid priority and examine the error.
+
+**Success check:** describe the input, the React action and the output. Try the failure case once, then explain the recovery.
+
+## Interview Bit and key takeaways
+
+**Interview question:** Does TypeScript verify API responses at runtime?
+
+**Simple answer:** No. TypeScript helps during development; use runtime guards or schemas for untrusted responses.
+
+**Eight takeaways:**
+
+1. Start by describing the user's problem.
+2. Identify which values are local and which originate outside React.
+3. Use explicit types and state transitions where helpful.
+4. Prefer readable components over one large file.
+5. Show loading, invalid and error states clearly.
+6. Verify the observable result after changes.
+7. Avoid unnecessary Effects and premature optimization.
+8. Choose tools according to actual complexity.
+
+## FAQ, knowledge check and primary sources
+
+**FAQ: Is this technique required in every React component?** No; apply it only when the corresponding problem exists.
+
+**FAQ: Can it be tested without a real backend?** Yes, with local examples and mock responses.
+
+**FAQ: Should learners understand the underlying JavaScript?** Yes. Hooks and libraries build on ordinary functions, arrays, objects and promises.
+
+<AdvancedReactQuiz byte={4} />
+
+**Primary sources:** [Official reference 1](https://www.typescriptlang.org/docs/handbook/jsx.html) · [Official reference 2](https://react.dev/learn/typescript).
