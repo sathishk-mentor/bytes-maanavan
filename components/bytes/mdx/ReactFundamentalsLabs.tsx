@@ -2,11 +2,11 @@
 import { useState } from 'react';
 type Case={prompt:string;options:string[];correct:number;feedback:string;result:string};
 const cases:Record<number,Case[]>={
-1:[{prompt:'Which code creates a reusable React component?',options:['function Welcome(){ return <h1>Hello!</h1> }','const text = "Hello"','document.querySelector("h1")'],correct:0,feedback:'A component is a function returning JSX.',result:'Welcome → JSX → Hello!'}],
-2:[{prompt:'How can Greeting display a different name?',options:['Copy the component for each person','Pass a name prop to Greeting','Edit the browser DOM directly'],correct:1,feedback:'Props are read-only component inputs.',result:'<Greeting name="Anu" /> → Hello Anu'}],
-3:[{prompt:'What updates the count after a button click?',options:['count = count + 1','setCount(previous => previous + 1)','Changing a CSS class'],correct:1,feedback:'Use the state setter so React can render the new value.',result:'0 → click + → 1'}],
-4:[{prompt:'How do you stop a timer created by an Effect?',options:['Return a cleanup calling clearInterval','Add another timer','Store the interval in JSX'],correct:0,feedback:'Cleanup prevents timers from running after unmount.',result:'Effect → setInterval → cleanup → clearInterval'}],
-5:[{prompt:'Which Hook can focus an input element?',options:['useMemo','useCallback','useRef'],correct:2,feedback:'useRef can keep a reference to the input DOM node.',result:'ref.current?.focus()'}]
+1:[{prompt:'Which React component describes the Task Manager screen?',options:['A database connection','A function returning JSX','A CSS animation'],correct:1,feedback:'Components return JSX describing the UI.',result:'App → JSX → task list on screen'}],
+2:[{prompt:'How should TaskItem receive a different title?',options:['Via a title prop','By rewriting the component for every item','By changing browser HTML manually'],correct:0,feedback:'Props are reusable read-only inputs.',result:'<TaskItem title="Read React notes" />'}],
+3:[{prompt:'Which action correctly updates the task list?',options:['tasks.push(newTask)','setTasks(current => [...current, newTask])','Reassign the props'],correct:1,feedback:'Create a new array and update state through its setter.',result:'Add click → setTasks → UI refreshes'}],
+4:[{prompt:'Why use an Effect to save tasks?',options:['To calculate pending count','To synchronize with browser localStorage','To create JSX'],correct:1,feedback:'An Effect syncs with a system outside React.',result:'State changes → effect writes storage'}],
+5:[{prompt:'Which Hook lets the Focus button select the search input?',options:['useRef','useMemo','useCallback'],correct:0,feedback:'useRef holds an input DOM reference.',result:'searchRef.current?.focus()'}]
 };
 export function ReactConceptLab({byte=1}:{byte?:number}){
  const [step,setStep]=useState(0);const [selected,setSelected]=useState<number|null>(null);const c=(cases[byte]||cases[1])[step]; const correct=selected===c.correct;
