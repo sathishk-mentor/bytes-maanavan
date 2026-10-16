@@ -12,25 +12,25 @@ order: 4
 
 <TaskManagerByteHero byte={4} />
 
-## Why this React concept matters
+## Why tasks disappear after refresh
 
 useEffect is for synchronizing React with an external system. Browser localStorage is outside React. Read saved tasks using a lazy state initializer, and synchronize later task changes in an Effect. Do not use an Effect just to compute a pending count.
 
 **In this Byte:** First understand the concept, then apply it to one small Task Manager milestone. **What you need:** Basic JavaScript. You do not need to know advanced React.
 
-## Understand the concept with a familiar example
+## Saving tasks in the browser
 
 Saving to browser storage is like keeping a copy of the task board in a drawer so you can reopen it after a refresh.
 
 **Important words:** Effect, dependency array, external system, localStorage, lazy initializer, synchronization, cleanup. Take each term one at a time; the code below makes the idea visible.
 
-## How React works behind the screen
+## Effects and browser synchronization
 
 useEffect is for synchronizing React with an external system. Browser localStorage is outside React. Read saved tasks using a lazy state initializer, and synchronize later task changes in an Effect. Do not use an Effect just to compute a pending count.
 
 **Why this matters:** The Task Manager gives us a consistent visible result. The principle is useful in many other kinds of React interfaces.
 
-## Visual flow of the concept
+## Trace save and restore
 
 ```text
 Initial state reads localStorage → render tasks → task changes → render commits → Effect writes localStorage → refresh restores tasks
@@ -38,7 +38,7 @@ Initial state reads localStorage → render tasks → task changes → render co
 
 Follow the arrows from the starting input to the final browser output. These are simplified teaching flows, not a full explanation of React's internal reconciler.
 
-## Explore it interactively
+## Explore the Effect lifecycle
 
 <TaskManagerConceptLab byte={4} />
 
@@ -46,7 +46,7 @@ Follow the arrows from the starting input to the final browser output. These are
 
 <ReactConceptLab byte={4} />
 
-## Build the Task Manager step by step
+## Persist tasks using localStorage
 
 **Our learning project:** A tiny Task Manager, not an enterprise support system. The app grows gradually across the five Bytes; each code step below tells you exactly which file to edit.
 
@@ -112,24 +112,24 @@ useEffect(() => {
 
 **Project checkpoint:** Tasks survive refresh.
 
-## Common mistakes and how to avoid them
+## Common useEffect mistakes
 
 Avoid reading localStorage during server rendering. JSON.parse can fail on corrupt values; this demo catches that case. localStorage is not secure shared data storage. Effects may run extra setup/cleanup checks in development Strict Mode.
 
 When something breaks, read the first error message, identify the file involved, and compare your code against the prior working checkpoint.
 
-## Where this concept is used
+## Where synchronization matters
 
 React uses the same underlying idea in many applications: a product list, a shopping basket, a learning progress page, or a dashboard. We are using task management only to keep the learning journey simple.
 
-## What learners see versus what React does
+## What happens during a page refresh
 
 | What a learner sees | What React or the browser does |
 |---|---|
 | refresh restores tasks | Initial state reads localStorage  →  render tasks  →  task changes  →  render commits  →  Effect writes localStorage |
 | A task list ready for interaction | React creates output from component inputs and state |
 
-## Practice and expected outcome
+## Clear saved tasks and restore defaults
 
 Use developer tools to clear the my-tasks storage key, refresh, and explain why the original tasks return.
 
