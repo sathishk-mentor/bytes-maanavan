@@ -24,11 +24,27 @@ const questions:Record<number,[string,string,string,string,number,string][]>={
 };
 export function ReactFiveQuestionQuiz({byte=1}:{byte?:number}){
  const rows=(questions[byte]||questions[1]).map(([q,a,b,c,answer,why],i)=>{
-  const opts=[a,b,c];const shift=(i+byte)%3;
-  const rotated=opts.map((_,j)=>opts[(j+shift)%3]);
-  return {q,opts:rotated,a:(answer-shift+3)%3,why};
+  const opts=[a,b,c], shift=(i+byte)%3;
+  return {q,opts:opts.map((_,j)=>opts[(j+shift)%3]),a:(answer-shift+3)%3,why};
  });
- const [answers,setAnswers]=useState<Record<number,number>>({});const [submitted,setSubmitted]=useState(false);
+ const [answers,setAnswers]=useState<Record<number,number>>({}),[submitted,setSubmitted]=useState(false);
  const score=rows.filter((r,i)=>answers[i]===r.a).length;
- return <section aria-label="Five question React knowledge check" className="my-8 rounded-2xl border border-slate-200 bg-white p-5"><h3 className="font-bold text-xl">Knowledge check · 5 questions</h3><p>Choose one answer for every question. Submit to see your score and explanations.</p>{rows.map((r,i)=><fieldset key={i} className="border-t py-4 mt-3"><legend className="font-semibold">{i+1}. {r.q}</legend>{r.opts.map((o,j)=><label key={j} className="flex gap-2 my-2 items-start"><input type="radio" name={'react-'+byte+'-'+i} checked={answers[i]===j} disabled={submitted} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/><span>{o}</span></label>)}{submitted&&<p aria-live="polite" className="text-sm mt-2">{answers[i]===r.a?'Correct. ':'Review: '}{r.why}</p>}</fieldset>)}<div aria-live="polite">{submitted&&<strong>Score: {score}/5</strong>}</div><div className="flex gap-4 mt-4"><button className="rounded-lg bg-slate-900 text-white px-4 py-2 disabled:opacity-50" type="button" disabled={Object.keys(answers).length!==5||submitted} onClick={()=>setSubmitted(true)}>Check answers</button><button className="underline" type="button" onClick={()=>{setSubmitted(false);setAnswers({})}}>Reset / Retry</button></div></section>
+ return <section aria-label="Five question React knowledge check" className="my-9 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+  <div className="border-b bg-gradient-to-r from-slate-50 to-blue-50 px-5 py-5 sm:px-7">
+    <p className="text-xs font-bold uppercase tracking-widest text-blue-700">PRACTISE AND CHECK</p>
+    <h3 className="mt-2 text-xl font-bold text-slate-900">Knowledge Check · 5 questions</h3>
+    <p className="mt-2 text-sm leading-relaxed text-slate-600">Choose one answer for every question. Submit to see your score and explanations.</p>
+    <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="Questions answered" aria-valuemin={0} aria-valuemax={5} aria-valuenow={Object.keys(answers).length}><div className="h-full rounded-full bg-blue-600 transition-all" style={{width:(Object.keys(answers).length/5*100)+'%'}}/></div>
+    <p className="mt-1 text-right text-xs text-slate-500">{Object.keys(answers).length} of 5 answered</p>
+  </div>
+  <div className="space-y-4 p-4 sm:p-6">{rows.map((r,i)=><fieldset key={i} className="min-w-0 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+    <legend className="sr-only">Question {i+1}</legend>
+    <p className="mb-4 font-semibold leading-relaxed text-slate-900"><span className="mr-2 text-blue-700">{String(i+1).padStart(2,'0')}.</span>{r.q}?</p>
+    <div className="grid gap-2">{r.opts.map((o,j)=><label key={j} className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 text-sm leading-6 transition-colors focus-within:ring-2 focus-within:ring-blue-500 ${answers[i]===j?'border-blue-500 bg-blue-50':'border-slate-200 bg-slate-50 hover:border-slate-300'} ${submitted?'cursor-default':''}`}>
+      <input className="mt-1 h-4 w-4 shrink-0 accent-blue-700" type="radio" name={'react-'+byte+'-'+i} checked={answers[i]===j} disabled={submitted} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/><span>{o}</span>
+    </label>)}</div>
+    {submitted&&<div role="status" className={`mt-3 rounded-lg p-3 text-sm leading-relaxed ${answers[i]===r.a?'bg-emerald-50 text-emerald-800':'bg-amber-50 text-amber-900'}`}><strong>{answers[i]===r.a?'Correct. ':'Review this answer. '}</strong>{r.why} <span className="block mt-1">Correct choice: {r.opts[r.a]}.</span></div>}
+  </fieldset>)}</div>
+  <footer className="flex flex-wrap items-center justify-between gap-3 border-t bg-slate-50 p-5 sm:px-7"><div aria-live="polite" className="text-sm font-semibold text-slate-800">{submitted?`Your score: ${score}/5`:'Answer all five questions to check your understanding.'}</div><div className="flex flex-wrap gap-2"><button className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold" type="button" onClick={()=>{setSubmitted(false);setAnswers({})}}>Reset / Retry</button><button className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" type="button" disabled={Object.keys(answers).length!==5||submitted} onClick={()=>setSubmitted(true)}>Check answers</button></div></footer>
+ </section>;
 }
