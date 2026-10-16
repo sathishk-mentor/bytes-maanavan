@@ -12,6 +12,8 @@ order: 5
 
 ## What you will build
 
+**Milestone 15:** Prove that core logic works through tests, compile a build, then verify URLs and accessibility. Learn what remains before a real support desk could safely handle customer records.
+
 The final project needs reliable outcomes, accessible forms and a repeatable release process.
 
 **Visible checkpoint:** Tests demonstrate the reducer's expected behavior, the project builds, and a reviewed deployment is accessible. You can study this Byte by itself, though the project can also be built progressively.
@@ -23,6 +25,8 @@ Test user behavior, form validation, reducer transitions, loading and error stat
 In plain language, an interface should show useful information and respond predictably to users. We begin with one small technical change before introducing more features.
 
 ## Architecture: what happens underneath
+
+<ReactTicketLearningFlow byte={5} />
 
 **Execution path**
 
@@ -39,6 +43,8 @@ Follow the arrows and explain which step is React state, which is a browser acti
 Use the visual to predict what a user would see. The preview uses simulated demo data and does not represent a connected enterprise service.
 
 ## Coding walkthrough step by step
+
+**Complete, ordered project checkpoints:** [Read the source-of-truth build guide](https://github.com/sathishk-mentor/bytes-maanavan/blob/feature/react-ticket-gold-standard/docs/react-ticket-project-complete-checkpoints.md). Use the full replacement files from that guide alongside the focused explanations below. Some snippets below demonstrate an insertion rather than a complete file.
 
 ### Step 1 — Install tests
 
@@ -130,20 +136,22 @@ Write one failed-validation UI test and one retry test, then document remaining 
 
 **Evidence:** Capture the visible result, explain the code you changed, and reproduce one failure case.
 
-## Interview Bit and Key Takeaways
+## Interview Bit
 
-**Interview question:** How do you verify a React feature? Test the observable behavior and failure paths, then validate the built preview on desktop and mobile.
+**Question:** How does this milestone change what the learner can actually do?
 
-**Eight takeaways:**
+**Answer:** It verifies behavior and release readiness while distinguishing demonstration code from secure production infrastructure.
 
-1. Start with a visible user goal.
-2. Explain the React concept before writing code.
-3. Keep UI components small and reusable.
-4. Use typed interfaces and explicit data flows.
-5. Validate inputs and failures clearly.
-6. Test behavior from a user's perspective.
-7. Avoid premature optimization and needless dependencies.
-8. Confirm each project milestone works before continuing.
+## Key Takeaways
+
+1. Vitest can run fast reducer tests.
+2. Testing Library verifies user-visible behavior.
+3. Tests should include invalid inputs and error states.
+4. Accessible roles and labels support learners and tests.
+5. A passing build does not prove the app is secure.
+6. Nested client routes need appropriate hosting fallback.
+7. Performance changes should follow measurement.
+8. Real customer data requires backend security controls.
 
 ## Knowledge Check and Primary Sources
 
