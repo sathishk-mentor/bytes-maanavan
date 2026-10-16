@@ -1,3 +1,4 @@
+import { ReactDistinctHero } from './ReactDistinctHero';
 import Link from 'next/link';
 import {
   Blocks, Bot, Box, Braces, BriefcaseBusiness, Bug, CheckCircle2, ChevronRight, Clock3, Code2,
@@ -99,6 +100,6 @@ export function ByteHeader({ byte, chapterNumber }: { byte: ByteMetadata; chapte
   return <header className="byte-editorial-hero"><div className="byte-hero-inner">
     <nav aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href={`/${byte.category}/`}>{category?.title}</Link><span>/</span><b>Chapter {chapterNumber}</b></nav>
     <div className="byte-hero-grid"><div><p className="byte-eyebrow"><Sparkles/>{category?.title} · PRACTICAL GUIDE</p><h1>{byte.title}</h1><p className="byte-deck">{byte.summary}</p><div className="byte-byline"><span><Clock3/>{byte.duration} read</span><time dateTime={byte.updatedAt}>Updated {byte.updatedAt}</time><span>Free learning guide</span></div></div>
-    <TopicHeroVisual slug={byte.slug} category={byte.category} /></div>
+    {byte.category === 'react-fundamentals' ? <ReactDistinctHero slug={byte.slug} /> : <TopicHeroVisual slug={byte.slug} category={byte.category} />}</div>
   </div></header>;
 }
