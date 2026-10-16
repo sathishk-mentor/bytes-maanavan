@@ -23,7 +23,11 @@ const questions:Record<number,[string,string,string,string,number,string][]>={
 5:[['DOM focus reference uses','useRef','useMemo','useEffect for every click',0,'Refs reference DOM nodes.'],['useMemo is mainly for','Caching expensive calculation when appropriate','All variables','Network authentication',0,'Avoid unnecessary memoization.'],['useCallback caches','Function identity','API response','DOM mutation',0,'It caches a function reference.'],['Changing ref.current usually','Does not cause a render','Always causes render','Resets state',0,'Refs do not notify React.'],['A custom Hook name begins with','use','Component','handle',0,'Hook naming follows use prefix.']]
 };
 export function ReactFiveQuestionQuiz({byte=1}:{byte?:number}){
- const rows=(questions[byte]||questions[1]).map(([q,a,b,c,answer,why])=>({q,opts:[a,b,c],a:answer,why}));
+ const rows=(questions[byte]||questions[1]).map(([q,a,b,c,answer,why],i)=>{
+  const opts=[a,b,c];const shift=(i+byte)%3;
+  const rotated=opts.map((_,j)=>opts[(j+shift)%3]);
+  return {q,opts:rotated,a:(answer-shift+3)%3,why};
+ });
  const [answers,setAnswers]=useState<Record<number,number>>({});const [submitted,setSubmitted]=useState(false);
  const score=rows.filter((r,i)=>answers[i]===r.a).length;
  return <section aria-label="Five question React knowledge check" className="my-8 rounded-2xl border border-slate-200 bg-white p-5"><h3 className="font-bold text-xl">Knowledge check · 5 questions</h3><p>Choose one answer for every question. Submit to see your score and explanations.</p>{rows.map((r,i)=><fieldset key={i} className="border-t py-4 mt-3"><legend className="font-semibold">{i+1}. {r.q}</legend>{r.opts.map((o,j)=><label key={j} className="flex gap-2 my-2 items-start"><input type="radio" name={'react-'+byte+'-'+i} checked={answers[i]===j} disabled={submitted} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/><span>{o}</span></label>)}{submitted&&<p aria-live="polite" className="text-sm mt-2">{answers[i]===r.a?'Correct. ':'Review: '}{r.why}</p>}</fieldset>)}<div aria-live="polite">{submitted&&<strong>Score: {score}/5</strong>}</div><div className="flex gap-4 mt-4"><button className="rounded-lg bg-slate-900 text-white px-4 py-2 disabled:opacity-50" type="button" disabled={Object.keys(answers).length!==5||submitted} onClick={()=>setSubmitted(true)}>Check answers</button><button className="underline" type="button" onClick={()=>{setSubmitted(false);setAnswers({})}}>Reset / Retry</button></div></section>
