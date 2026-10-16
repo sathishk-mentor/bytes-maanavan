@@ -1,147 +1,167 @@
 ---
-title: "React Hooks Basics: useRef, useMemo and useCallback"
+title: "React Hooks in Practice: Search, Focus and Filter Tasks"
 slug: "05-react-hooks-useref-usememo-usecallback"
-summary: "Understand when to focus an input, filter a list and avoid unnecessary memoization."
+summary: "Learn useRef and sensible memoization through a simple progressive Task Manager example."
 category: "react-fundamentals"
-tags: ["React JS", "React beginners", "React Hooks"]
+tags: ["React.js","React for beginners","React Hooks"]
 level: "beginner"
-duration: "20 min"
+duration: "25 min"
 updatedAt: "2026-10-16"
 order: 5
 ---
 
 <ReactByteHero byte={5} />
 
-## Why different Hooks exist
+## Why this React concept matters
 
-Not every UI problem needs the same Hook. Use a small list of names to understand useState, useRef, and optional useMemo without complex application architecture.
+useRef can hold a DOM input reference without triggering rendering. A simple task filter should usually be calculated directly. useMemo can cache an expensive calculation if profiling justifies it; useCallback can retain function identity when there is a concrete reason. Do not introduce extra Hooks for decoration.
 
-**Goal:** Explain the concept in simple words and create an output that you can see in your browser. **Prerequisite:** Basic JavaScript is useful; advanced React knowledge is not required.
+**In this Byte:** First understand the concept, then apply it to one small Task Manager milestone. **What you need:** Basic JavaScript. You do not need to know advanced React.
 
-## A simple search input
+## Understand the concept with a familiar example
 
-useRef holds a DOM reference and can focus an input without triggering a render. useMemo can cache a calculated value when beneficial. useCallback can keep a function reference stable when needed. Start with simple code.
+A ref is like pointing at the search field; a memo is like keeping a calculated list handy only when recalculating it is costly.
 
-Think about what someone sees first. Learn the smallest React concept that makes that visible result possible.
+**Important words:** useRef, DOM node, derived state, useMemo, useCallback, dependencies, performance. Take each term one at a time; the code below makes the idea visible.
 
-## Choose the correct Hook
+## How React works behind the screen
 
-useRef holds a DOM reference and can focus an input without triggering a render. useMemo can cache a calculated value when beneficial. useCallback can keep a function reference stable when needed. Start with simple code.
+useRef can hold a DOM input reference without triggering rendering. A simple task filter should usually be calculated directly. useMemo can cache an expensive calculation if profiling justifies it; useCallback can retain function identity when there is a concrete reason. Do not introduce extra Hooks for decoration.
 
-**Remember:** A React component describes interface output. React is not a database, and this beginner example does not need an enterprise application.
+**Why this matters:** The Task Manager gives us a consistent visible result. The principle is useful in many other kinds of React interfaces.
 
-## How state, refs and memoization differ
+## Visual flow of the concept
 
 ```text
-Type query → useState → filtered names → UI; click Focus → useRef → input receives focus
+Type query → setQuery → React renders matching tasks; Focus button → ref.current.focus(); optional memo caches derived list
 ```
 
-Read each arrow as a small change: input or click, JavaScript/React action, and the browser result.
+Follow the arrows from the starting input to the final browser output. These are simplified teaching flows, not a full explanation of React's internal reconciler.
 
-## Explore the Hooks playground
+## Explore it interactively
 
 <ReactLearningExplorer byte={5} />
 
-Use the interactive visual to predict what happens next. Then check your choice.
+**Check the idea:** Answer this question before coding.
 
 <ReactConceptLab byte={5} />
 
-<ReactOutputPreview byte={5} />
+## Build the Task Manager step by step
 
-## Code along: focus and filter names
+**Our learning project:** A tiny Task Manager, not an enterprise support system. The app grows gradually across the five Bytes; each code step below tells you exactly which file to edit.
 
-Follow these steps in a **small React + TypeScript project**. Each step gives you a visible result.
+**Milestone 5:** React Hooks in Practice: Search, Focus and Filter Tasks.
 
-### Step 1 — Build a searchable list
+### Step 1: Add a search field
 
-```tsx
-// src/App.tsx
-import { useState } from 'react';
-export default function App() {
- const [query, setQuery] = useState('');
- const names = ['Anu', 'Ravi', 'Meena'];
- const visible = names.filter(name => name.toLowerCase().includes(query.toLowerCase()));
- return <main><input value={query} onChange={e => setQuery(e.target.value)} aria-label="Search names" />
- <ul>{visible.map(name => <li key={name}>{name}</li>)}</ul></main>;
-}
-```
-
-**What you should see:** Typing a name filters the list.
-
-### Step 2 — Focus the input
+**Where:** `src/App.tsx`
 
 ```tsx
-// Import useRef and add inside App:
+// Import useRef, then inside App:
 const searchRef = useRef<HTMLInputElement>(null);
-// Add ref={searchRef} to <input> and a button:
-<button onClick={() => searchRef.current?.focus()}>Focus search</button>
+const [query, setQuery] = useState('');
+
+// Add just above the task list in returned JSX:
+<label htmlFor="task-search">Search tasks</label>
+<input id="task-search" ref={searchRef}
+  value={query} onChange={e => setQuery(e.target.value)} />
+<button type="button" onClick={() => searchRef.current?.focus()}>
+  Focus search
+</button>
 ```
 
-**What you should see:** Clicking the button focuses the input.
+**Expected screen/result:** Typing updates the search state, and Focus sends keyboard focus to the input.
 
-### Step 3 — Understand optional memoization
+### Step 2: Filter the displayed tasks
+
+**Where:** `src/App.tsx`
 
 ```tsx
-// Import useMemo. Replace the visible calculation with:
-const visible = useMemo(() => names.filter(name =>
- name.toLowerCase().includes(query.toLowerCase())
-), [query]);
+// Inside App, before return:
+const visibleTasks = tasks.filter(task =>
+  task.title.toLowerCase().includes(query.toLowerCase())
+);
+
+// Replace tasks.map(...) with:
+visibleTasks.map(task =>
+  <TaskItem key={task.id} task={task} onToggle={toggleTask} />
+)
 ```
 
-**What you should see:** The output stays the same. Caching is not necessary for three names; this demonstrates the idea only.
+**Expected screen/result:** Only tasks matching the query appear; all original task data stays in state.
 
-### Step 4 — Recognize useCallback
+### Step 3: Explain optional useMemo
+
+**Where:** `src/App.tsx`
 
 ```tsx
-// Import useCallback, then inside App:
-const focusSearch = useCallback(() => searchRef.current?.focus(), []);
-// Change button to onClick={focusSearch}
+// Optional example only — use it when filtering is genuinely expensive:
+const visibleTasks = useMemo(() =>
+  tasks.filter(task =>
+    task.title.toLowerCase().includes(query.toLowerCase())
+  ), [tasks, query]);
 ```
 
-**What you should see:** The button behaves the same. A stable function reference matters in specific optimization cases, not every app.
+**Expected screen/result:** The same tasks appear. For a tiny task list, simple filter is preferable.
 
-## Common Hook misconceptions
+### Step 4: Explain useCallback with a real dependency
 
-Do not use a ref to store UI state that should render. Do not add useMemo or useCallback everywhere; use them only when they solve a real issue.
+**Where:** `src/App.tsx`
 
-If the output differs from the example, inspect the browser console, component syntax, event handlers and state updates before adding more code.
+```tsx
+// Optional example — stabilizes callback identity when needed:
+const focusSearch = useCallback(() => {
+  searchRef.current?.focus();
+}, []);
+// Use onClick={focusSearch} instead of an inline handler.
+```
 
-## How developers select Hooks
+**Expected screen/result:** The button behaves exactly the same; memoization only matters when its stable identity has a useful consumer.
 
-A frontend developer uses this concept while building forms, menus, product cards and dashboards. The same simple idea can appear in large applications, but understanding it does not require learning an entire business workflow.
+**Project checkpoint:** Search and focus with appropriate Hooks.
 
-## What the user sees vs React behavior
+## Common mistakes and how to avoid them
 
-| What you see | What React does |
+Do not use useMemo and useCallback everywhere. Do not store the query only in a ref if it must update the rendered list. Performance optimizations require evidence.
+
+When something breaks, read the first error message, identify the file involved, and compare your code against the prior working checkpoint.
+
+## Where this concept is used
+
+React uses the same underlying idea in many applications: a product list, a shopping basket, a learning progress page, or a dashboard. We are using task management only to keep the learning journey simple.
+
+## What learners see versus what React does
+
+| What a learner sees | What React or the browser does |
 |---|---|
-| Names filter and the input receives focus | State drives rendering, ref accesses the input, memoization optionally caches a calculation |
-| You change a component input or interact with the page | React updates the output according to props and state |
+| ref.current.focus(); optional memo caches derived list | Type query  →  setQuery  →  React renders matching tasks; Focus button |
+| A task list ready for interaction | React creates output from component inputs and state |
 
-## Practice: add another name
+## Practice and expected outcome
 
-Add two more names. Explain whether filtering five names really requires useMemo.
+Add an All / Pending / Completed filter using state; combine it with the text query.
 
-**Success check:** Show the result in the browser and describe which line of code made it happen.
+**Verification:** Perform the action, observe the visible result, and explain which React concept made it possible.
 
-## Eight things to remember
+## Key takeaways
 
-1. Begin with one simple problem.
-2. Identify what should appear in the browser.
-3. Use readable component names.
-4. Keep code small and understandable.
-5. Separate component inputs from state.
-6. Trace changes from action to result.
-7. Check expected output after each step.
-8. Choose simple React patterns before optimizing.
+1. Begin with the user-facing result.
+2. Learn the concept before writing code.
+3. Keep one clear goal per change.
+4. Use components for reusable UI.
+5. Treat props as read-only inputs.
+6. Update state with setter functions.
+7. Inspect the browser after every step.
+8. Prefer simple code to unnecessary optimization.
 
-## FAQ, knowledge check and references
+## FAQ and knowledge check
 
-- Does ref.current trigger a render? No.
-- Is useMemo always faster? No.
-- Must I use useCallback for onClick? No.
+- Does updating ref.current redraw the interface? No.
+- Must a filter use useMemo? No.
+- Is useCallback needed for every click handler? No.
 
-**Interview explanation:** useRef holds a DOM reference and can focus an input without triggering a render. useMemo can cache a calculated value when beneficial. useCallback can keep a function reference stable when needed. Start with simple code.
+**Interview-ready explanation:** useRef can hold a DOM input reference without triggering rendering. A simple task filter should usually be calculated directly. useMemo can cache an expensive calculation if profiling justifies it; useCallback can retain function identity when there is a concrete reason. Do not introduce extra Hooks for decoration.
 
 <ReactFiveQuestionQuiz byte={5} />
 
-**References:** [React official documentation](https://react.dev/reference/react/useRef) · [React Learn](https://react.dev/learn) · [Vite guide](https://vite.dev/guide/).
+**Primary references:** [React Learn](https://react.dev/learn) · [React API](https://react.dev/reference/react) · [Vite Guide](https://vite.dev/guide/).
