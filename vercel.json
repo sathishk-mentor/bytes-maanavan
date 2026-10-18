@@ -751,6 +751,11 @@
       "permanent": true
     },
     {
+      "source": "/bytes/:path*/",
+      "destination": "/handbooks/",
+      "permanent": true
+    },
+    {
       "source": "/bytes/:path*",
       "destination": "/handbooks/",
       "permanent": true
